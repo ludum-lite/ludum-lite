@@ -1,18 +1,2 @@
 Waiting for this to be resolved
 https://github.com/graphql-nexus/nexus/labels/platform%2Fwindows
-
-
-Thinking about setting up docker to handle this setup and environment stuff
-Node and nexus isn't playing nice with windows
-
-Docker container for ludum backend
-Docker container gql backend
-Docker container for frontend
-
-Setting up docker
-- Installed Docker Desktop https://docs.docker.com/docker-for-windows/install/
-- Tested to make sure it works https://docs.docker.com/docker-for-windows/
-- Shared C drive https://docs.docker.com/docker-for-windows/#resources
-
-Looks like it's going to be a lot of work to separate out vagrant from the project
-I'll continue with running backend on the side for now
