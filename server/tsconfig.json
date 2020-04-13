@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2019",
     "module": "commonjs",
-    "lib": ["dom", "es6"],
-    "outDir": "dist",
-    "rootDir": "src",
-    "removeComments": true,
+    "moduleResolution": "node",
+    "lib": ["es2019"],
+    "outDir": "./dist",
+    "rootDir": "./src",
     "strict": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "sourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true
   }
 }
