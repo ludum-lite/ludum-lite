@@ -54,14 +54,10 @@ export default class UserAPI extends BaseAPI {
   }
 
   async me() {
-    const response = await this.get('vx/user/get', undefined, {
-      headers: {
-        cookie: 'SIDS=ob3pkb32565b0gdasjq3kkim57',
-      },
-      credentials: 'include',
-    })
+    return apiUserToUser((await this.get('vx/user/get')).node)
+  }
 
-    console.log(response)
-    return response
+  async getUser(id: number) {
+    return apiUserToUser((await this.get(`vx/node2/get/${id}`)).node[0])
   }
 }

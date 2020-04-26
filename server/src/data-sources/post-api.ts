@@ -1,5 +1,6 @@
+import { sortBy } from 'lodash'
 import BaseAPI from './base-api'
-import { NexusGenFieldTypes } from '../ldjam-typegen'
+import { NexusGenFieldTypes, NexusGenEnums } from '../ldjam-typegen'
 
 type ApiPostDto = {
   id: number
@@ -23,7 +24,7 @@ type ApiPostDto = {
   ['notes-timestamp']: string
 }
 
-function postReducer(post: ApiPostDto): NexusGenFieldTypes['Post'] {
+function apiPostToPost(post: ApiPostDto): NexusGenFieldTypes['Post'] {
   return {
     id: post.id,
     parentId: post.parent,
@@ -48,24 +49,62 @@ function postReducer(post: ApiPostDto): NexusGenFieldTypes['Post'] {
 }
 
 export default class PostAPI extends BaseAPI {
-  async getAllPosts() {
-    const rawIds = (await this.get('vx/node/feed/1/all/post')).feed.map(
-      (p: any) => p.id
+  // async getAllPosts() {
+  //   const rawIds = (await this.get('vx/node/feed/1/all/post')).feed.map(
+  //     (p: any) => p.id
+  //   )
+
+  //   const response = await this.get(
+  //     `vx/node2/get/${rawIds.join('+')}?author&parent&superparent`
+  //   )
+  //   return response.node.map((p: ApiPostDto) => apiPostToPost(p))
+  // }
+
+  async searchPosts({
+    page,
+    limit,
+    filters: { postType },
+  }: {
+    page: number
+    limit: number
+    filters: { postType: NexusGenEnums['PostType'] }
+  }) {
+    const postIdsResponse = await this.get(
+      `vx/node/feed/1/all/post${postType === 'news' ? '/news' : ''}`,
+      {
+        offset: (page - 1) * limit,
+        limit,
+      }
     )
 
-    const response = await this.get(
-      `vx/node2/get/${rawIds.join('+')}?author&parent&superparent`
-    )
-    return response.node.map((p: ApiPostDto) => postReducer(p))
+    const postIds = postIdsResponse.feed.map((p: ApiPostDto) => p.id)
+
+    if (postIds.length > 0) {
+      const postsResponse = await this.get(
+        `vx/node2/get/${postIds.join('+')}`,
+        { author: true }
+      )
+
+      const posts = sortBy(
+        postsResponse.node
+          .filter((node: any) => node.type === 'post')
+          .map((p: ApiPostDto) => apiPostToPost(p)),
+        'publishedAt'
+      ).reverse()
+
+      return posts
+    }
+
+    return []
   }
 
-  async getPost(postId: string) {
-    const response = await this.get(
-      `vx/node2/get/${postId}?author&parent&superparent`
-    )
+  async getPost(id: string) {
+    const response = await this.get(`vx/node2/get/${id}`)
+
+    console.log(response)
 
     if (response.node.length === 1) {
-      return postReducer(response.node[0])
+      return apiPostToPost(response.node[0])
     } else {
       throw new Error(`got different length of nodes. ${response}`)
     }

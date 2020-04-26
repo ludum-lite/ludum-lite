@@ -25,12 +25,12 @@ const schema = makeSchema({
       Date: 'Date',
     },
   },
-  prettierConfig: path.join(__dirname, '../.prettierrc'),
+  prettierConfig: path.join(__dirname, '../../.prettierrc'),
 })
 
 new ApolloServer({
   schema,
-  context: new Context(),
+  context: ({ req: { headers } }) => new Context(headers),
   dataSources: () => ({
     postApi: new PostAPI(),
     userApi: new UserAPI(),

@@ -1,12 +1,20 @@
-import { objectType, queryField } from '@nexus/schema'
+import {
+  objectType,
+  queryField,
+  intArg,
+  arg,
+  enumType,
+  inputObjectType,
+} from '@nexus/schema'
+import { User } from './user'
 
 export const Post = objectType({
   name: 'Post',
   definition(t) {
-    t.int('id', { nullable: true })
-    t.int('parentId', { nullable: true })
-    t.int('superparentId', { nullable: true })
-    t.int('authorId', { nullable: true })
+    t.int('id')
+    t.int('parentId')
+    t.int('superparentId')
+    t.int('authorId')
     t.string('type', { nullable: true })
     t.string('subtype', { nullable: true })
     t.string('subsubtype', { nullable: true })
@@ -15,18 +23,55 @@ export const Post = objectType({
     t.string('modifiedDate', { nullable: true })
     t.string('slug', { nullable: true })
     t.string('name', { nullable: true })
-    t.string('body', { nullable: true })
+    t.string('body')
     t.string('path', { nullable: true })
     t.int('parentIds', { list: [false] })
     t.int('numLove', { nullable: true })
     t.string('lastLoveChangedDate', { nullable: true })
     t.int('numNotes', { nullable: true })
     t.string('lastNotesChangedDate', { nullable: true })
+    t.field('author', {
+      type: User,
+      resolve(root, __, ctx) {
+        return ctx.dataSources.userApi.getUser(root.authorId)
+      },
+    })
   },
 })
 
-export const posts = queryField('posts', {
+export const PostType = enumType({
+  name: 'PostType',
+  members: ['news', 'user'],
+})
+
+export const searchPosts = queryField('searchPosts', {
   type: Post,
   list: true,
-  resolve: (_, __, ctx) => ctx.dataSources.postApi.getAllPosts(),
+  args: {
+    page: intArg({ required: true }),
+    limit: intArg({ required: true }),
+    filters: arg({
+      required: true,
+      type: inputObjectType({
+        name: 'SearchPostsFiltersInput',
+        definition(t) {
+          t.field('postType', { type: 'PostType', required: true })
+        },
+      }),
+    }),
+  },
+  resolve: (_, args, ctx) => ctx.dataSources.postApi.searchPosts(args),
+})
+
+export const post = queryField('post', {
+  type: Post,
+  args: {
+    id: intArg({ required: true }),
+  },
+  resolve: async (_, { id }, ctx) => {
+    const post = await ctx.dataSources.postApi.getPost(id)
+    console.log(post)
+
+    return post
+  },
 })

@@ -29,38 +29,45 @@ declare global {
   interface NexusGen extends NexusGenTypes {}
 }
 
-export interface NexusGenInputs {}
+export interface NexusGenInputs {
+  SearchPostsFiltersInput: {
+    // input type
+    postType: NexusGenEnums['PostType'] // PostType!
+  }
+}
 
-export interface NexusGenEnums {}
+export interface NexusGenEnums {
+  PostType: 'news' | 'user'
+}
 
 export interface NexusGenRootTypes {
   Mutation: {}
   Post: {
     // root type
-    authorId?: number | null // Int
-    body?: string | null // String
+    authorId: number // Int!
+    body: string // String!
     createdDate?: string | null // String
-    id?: number | null // Int
+    id: number // Int!
     lastLoveChangedDate?: string | null // String
     lastNotesChangedDate?: string | null // String
     modifiedDate?: string | null // String
     name?: string | null // String
     numLove?: number | null // Int
     numNotes?: number | null // Int
-    parentId?: number | null // Int
+    parentId: number // Int!
     parentIds: Array<number | null> // [Int]!
     path?: string | null // String
     publishedDate?: string | null // String
     slug?: string | null // String
     subsubtype?: string | null // String
     subtype?: string | null // String
-    superparentId?: number | null // Int
+    superparentId: number // Int!
     type?: string | null // String
   }
   Query: {}
   User: {
     // root type
-    avatarPath: string // String!
+    avatarPath?: string | null // String
     createdDate: string // String!
     id: number // Int!
     modifiedDate: string // String!
@@ -78,7 +85,10 @@ export interface NexusGenRootTypes {
   Date: Date
 }
 
-export interface NexusGenAllTypes extends NexusGenRootTypes {}
+export interface NexusGenAllTypes extends NexusGenRootTypes {
+  SearchPostsFiltersInput: NexusGenInputs['SearchPostsFiltersInput']
+  PostType: NexusGenEnums['PostType']
+}
 
 export interface NexusGenFieldTypes {
   Mutation: {
@@ -87,34 +97,37 @@ export interface NexusGenFieldTypes {
   }
   Post: {
     // field return type
-    authorId: number | null // Int
-    body: string | null // String
+    author: NexusGenRootTypes['User'] // User!
+    authorId: number // Int!
+    body: string // String!
     createdDate: string | null // String
-    id: number | null // Int
+    id: number // Int!
     lastLoveChangedDate: string | null // String
     lastNotesChangedDate: string | null // String
     modifiedDate: string | null // String
     name: string | null // String
     numLove: number | null // Int
     numNotes: number | null // Int
-    parentId: number | null // Int
+    parentId: number // Int!
     parentIds: Array<number | null> // [Int]!
     path: string | null // String
     publishedDate: string | null // String
     slug: string | null // String
     subsubtype: string | null // String
     subtype: string | null // String
-    superparentId: number | null // Int
+    superparentId: number // Int!
     type: string | null // String
   }
   Query: {
     // field return type
     me: NexusGenRootTypes['User'] // User!
-    posts: NexusGenRootTypes['Post'][] // [Post!]!
+    post: NexusGenRootTypes['Post'] // Post!
+    searchPosts: NexusGenRootTypes['Post'][] // [Post!]!
+    user: NexusGenRootTypes['User'] // User!
   }
   User: {
     // field return type
-    avatarPath: string // String!
+    avatarPath: string | null // String
     createdDate: string // String!
     id: number // Int!
     modifiedDate: string // String!
@@ -134,6 +147,22 @@ export interface NexusGenArgTypes {
       password: string // String!
     }
   }
+  Query: {
+    post: {
+      // args
+      id: number // Int!
+    }
+    searchPosts: {
+      // args
+      filters: NexusGenInputs['SearchPostsFiltersInput'] // SearchPostsFiltersInput!
+      limit: number // Int!
+      page: number // Int!
+    }
+    user: {
+      // args
+      id: number // Int!
+    }
+  }
 }
 
 export interface NexusGenAbstractResolveReturnTypes {}
@@ -142,9 +171,9 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = 'Mutation' | 'Post' | 'Query' | 'User'
 
-export type NexusGenInputNames = never
+export type NexusGenInputNames = 'SearchPostsFiltersInput'
 
-export type NexusGenEnumNames = never
+export type NexusGenEnumNames = 'PostType'
 
 export type NexusGenInterfaceNames = never
 

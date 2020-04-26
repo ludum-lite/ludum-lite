@@ -11,34 +11,50 @@ type Mutation {
 }
 
 type Post {
-  authorId: Int
-  body: String
+  author: User!
+  authorId: Int!
+  body: String!
   createdDate: String
-  id: Int
+  id: Int!
   lastLoveChangedDate: String
   lastNotesChangedDate: String
   modifiedDate: String
   name: String
   numLove: Int
   numNotes: Int
-  parentId: Int
+  parentId: Int!
   parentIds: [Int]!
   path: String
   publishedDate: String
   slug: String
   subsubtype: String
   subtype: String
-  superparentId: Int
+  superparentId: Int!
   type: String
+}
+
+enum PostType {
+  news
+  user
 }
 
 type Query {
   me: User!
-  posts: [Post!]!
+  post(id: Int!): Post!
+  searchPosts(
+    filters: SearchPostsFiltersInput!
+    limit: Int!
+    page: Int!
+  ): [Post!]!
+  user(id: Int!): User!
+}
+
+input SearchPostsFiltersInput {
+  postType: PostType!
 }
 
 type User {
-  avatarPath: String!
+  avatarPath: String
   createdDate: String!
   id: Int!
   modifiedDate: String!
