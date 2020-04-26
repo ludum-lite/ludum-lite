@@ -3,8 +3,9 @@ import styled from 'styled-components/macro'
 import { useQuery, gql } from '@apollo/client'
 import * as Types from './__generated__/GetPostDetailsData'
 
-import { Typography, Collapse, IconButton } from '@material-ui/core'
+import { Typography, Collapse } from '@material-ui/core'
 import Markdown from 'components/common/Markdown'
+import Button from 'components/common/mui/Button'
 import UserPostedHeader from '../UserPostedHeader'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 
@@ -30,7 +31,6 @@ const Root = styled.div``
 const Header = styled.div`
   display: flex;
   align-items: center;
-  margin: 12px 12px 8px;
 `
 
 const HeaderContent = styled.div`
@@ -52,7 +52,6 @@ const TitleText = styled(Typography)`
 `
 
 const Content = styled.div`
-  margin: -1em 12px 0px 12px;
   position: relative;
 `
 
@@ -67,7 +66,7 @@ interface CollapseButtonContainerProps {
 const CollapseButtonContainer = styled.div<CollapseButtonContainerProps>`
   display: flex;
   justify-content: center;
-  padding-top: ${({ theme }) => theme.spacing(2)}px;
+  padding: ${({ theme }) => theme.spacing(1) * 1.5}px 0;
   background-color: white;
   box-shadow: 0 -23px 21px 7px #ffffff;
   z-index: 3;
@@ -157,14 +156,18 @@ export default function PostDetails({ postId, forceExpand }: Props) {
           <Markdown source={post.body} />
         </Collapse>
         <CollapseButtonContainer show={finalShouldCollapse}>
-          <IconButton
+          <Button
+            fullWidth
+            disableElevation
+            size="large"
             onClick={(e) => {
               e.stopPropagation()
               setShouldCollapse(false)
             }}
+            endIcon={<ExpandMore />}
           >
-            <ExpandMore fontSize="large" />
-          </IconButton>
+            Show More
+          </Button>
         </CollapseButtonContainer>
       </Content>
     </Root>

@@ -97,7 +97,7 @@ export interface NexusGenFieldTypes {
   }
   Post: {
     // field return type
-    author: NexusGenRootTypes['User'] // User!
+    author: NexusGenRootTypes['User'] | null // User
     authorId: number // Int!
     body: string // String!
     createdDate: string | null // String

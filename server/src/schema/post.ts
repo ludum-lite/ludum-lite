@@ -32,6 +32,7 @@ export const Post = objectType({
     t.string('lastNotesChangedDate', { nullable: true })
     t.field('author', {
       type: User,
+      nullable: true,
       resolve(root, __, ctx) {
         return ctx.dataSources.userApi.getUser(root.authorId)
       },

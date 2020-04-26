@@ -13,6 +13,8 @@ export interface GetPostsPageData_searchPosts {
   __typename: "Post";
   id: number;
   name: string | null;
+  numLove: number | null;
+  numNotes: number | null;
 }
 
 export interface GetPostsPageData {

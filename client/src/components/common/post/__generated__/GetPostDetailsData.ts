@@ -21,7 +21,7 @@ export interface GetPostDetailsData_post {
   name: string | null;
   body: string;
   publishedDate: string | null;
-  author: GetPostDetailsData_post_author;
+  author: GetPostDetailsData_post_author | null;
 }
 
 export interface GetPostDetailsData {
