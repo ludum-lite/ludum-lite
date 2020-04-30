@@ -117,6 +117,16 @@ const muiThemeGenerator = ({ mode }: { mode: Mode }) =>
           textTransform: 'none',
         },
       },
+      MuiIconButton: {
+        root: {
+          transition: 'none',
+        },
+      },
+      MuiListItem: {
+        button: {
+          transition: 'none',
+        },
+      },
     },
   })
 
