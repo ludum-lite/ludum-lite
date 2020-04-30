@@ -1,8 +1,10 @@
 import React, { Fragment } from 'react'
 import ReactDOM from 'react-dom'
-import { BrowserRouter, useNavigate } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 
-import { ApolloClient, HttpLink, ApolloProvider } from '@apollo/client'
+import { BatchHttpLink } from '@apollo/link-batch-http'
+import { ApolloClient, ApolloProvider } from '@apollo/client'
+
 import { cache } from './cache'
 import {
   createGlobalStyle,
@@ -27,7 +29,7 @@ import {
 
 const client = new ApolloClient({
   cache,
-  link: new HttpLink({
+  link: new BatchHttpLink({
     uri: 'http://localhost:4000/',
   }),
   typeDefs,
@@ -49,36 +51,51 @@ const styleVariables = {
   greenBlue: 'rgb(5, 142, 217)',
   bittersweet: 'rgb(248, 112, 96)',
   // greenShade: 'rgb(112, 169, 161)',
+  cultured: 'rgb(234, 235, 237)',
   ghostWhite: 'rgb(249, 249, 255)',
   white: 'rgb(253, 255, 255)',
+  boxShadow: {
+    light: 'rgba(255, 255, 255, 0.25)',
+  },
 } as const
 
 export type ThemeColors = {
   background: string
   globalNavBackground: string
   contextualNavBackground: string
-  posts: {
-    separatorColor: string
+  loaderBackground: string
+  loaderBarBackground: string
+  post: {
+    backgroundColor: string
   }
 }
 
-const themeColors = {
+type Themes = {
+  light: ThemeColors
+  dark: ThemeColors
+}
+
+const themeColors: Themes = {
   light: {
-    background: styleVariables.white,
+    background: styleVariables.greenBlue,
     globalNavBackground: styleVariables.sapphireBlue,
     contextualNavBackground: styleVariables.greenBlue,
-    posts: {
-      separatorColor: 'rgba(0, 0, 0, 0.15)',
+    loaderBackground: styleVariables.white,
+    loaderBarBackground: styleVariables.cultured,
+    post: {
+      backgroundColor: styleVariables.white,
     },
-  } as ThemeColors,
+  },
   dark: {
-    background: styleVariables.white,
+    background: styleVariables.greenBlue,
     globalNavBackground: styleVariables.prussianBlue,
     contextualNavBackground: styleVariables.greenBlue,
-    posts: {
-      separatorColor: 'rgba(0, 0, 0, 0.15)',
+    loaderBackground: styleVariables.white,
+    loaderBarBackground: styleVariables.cultured,
+    post: {
+      backgroundColor: styleVariables.white,
     },
-  } as ThemeColors,
+  },
 } as const
 
 type Mode = 'light' | 'dark'
@@ -93,6 +110,13 @@ const muiThemeGenerator = ({ mode }: { mode: Mode }) =>
         'Oxygen',
         '"Baloo Paaji 2"',
       ].join(','),
+    },
+    overrides: {
+      MuiButton: {
+        root: {
+          textTransform: 'none',
+        },
+      },
     },
   })
 

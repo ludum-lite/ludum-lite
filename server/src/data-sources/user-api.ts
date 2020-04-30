@@ -1,7 +1,11 @@
+import DataLoader from 'dataloader'
+import { DataSourceConfig } from 'apollo-datasource'
+import sort from 'dataloader-sort'
 import BaseAPI from './base-api'
 import { NexusGenFieldTypes } from '../ldjam-typegen'
+import { Context } from './context'
 
-type ApiUserDto = {
+export type ApiUserDto = {
   id: number
   created: string
   modified: string
@@ -35,6 +39,18 @@ function getCookieValue(cookies: string, a: string) {
 }
 
 export default class UserAPI extends BaseAPI {
+  initialize(config: DataSourceConfig<Context>) {
+    super.initialize(config)
+
+    if (!config.context.loaders.userLoader) {
+      config.context.loaders.userLoader = new DataLoader(async (keys) => {
+        const results = await this.get(`vx/node2/get/${keys.join('+')}`)
+
+        return sort(keys, results.node.map(apiUserToUser))
+      })
+    }
+  }
+
   async login(email: string, password: string) {
     const response = await this.post(
       'vx/user/login',
@@ -58,6 +74,6 @@ export default class UserAPI extends BaseAPI {
   }
 
   async getUser(id: number) {
-    return apiUserToUser((await this.get(`vx/node2/get/${id}`)).node[0])
+    return await this.context.loaders.userLoader.load(id)
   }
 }

@@ -45,8 +45,14 @@ type Query {
     filters: SearchPostsFiltersInput!
     limit: Int!
     page: Int!
-  ): [Post!]!
+  ): SearchPostResponse!
   user(id: Int!): User!
+}
+
+type SearchPostResponse {
+  limit: Int!
+  page: Int!
+  posts: [Post!]!
 }
 
 input SearchPostsFiltersInput {

@@ -1,8 +1,12 @@
+import DataLoader from 'dataloader'
 import { sortBy } from 'lodash'
+import { DataSourceConfig } from 'apollo-datasource'
+import sort from 'dataloader-sort'
 import BaseAPI from './base-api'
 import { NexusGenFieldTypes, NexusGenEnums } from '../ldjam-typegen'
+import { Context } from './context'
 
-type ApiPostDto = {
+export type ApiPostDto = {
   id: number
   parent: number
   superparent: number
@@ -45,20 +49,26 @@ function apiPostToPost(post: ApiPostDto): NexusGenFieldTypes['Post'] {
     lastLoveChangedDate: post['love-timestamp'],
     numNotes: post.notes,
     lastNotesChangedDate: post['notes-timestamp'],
+    author: null,
   }
 }
 
 export default class PostAPI extends BaseAPI {
-  // async getAllPosts() {
-  //   const rawIds = (await this.get('vx/node/feed/1/all/post')).feed.map(
-  //     (p: any) => p.id
-  //   )
+  constructor() {
+    super()
+  }
 
-  //   const response = await this.get(
-  //     `vx/node2/get/${rawIds.join('+')}?author&parent&superparent`
-  //   )
-  //   return response.node.map((p: ApiPostDto) => apiPostToPost(p))
-  // }
+  initialize(config: DataSourceConfig<Context>) {
+    super.initialize(config)
+
+    if (!config.context.loaders.postLoader) {
+      config.context.loaders.postLoader = new DataLoader(async (keys) => {
+        const results = await this.get(`vx/node2/get/${keys.join('+')}`)
+
+        return sort(keys, results.node.map(apiPostToPost))
+      })
+    }
+  }
 
   async searchPosts({
     page,
@@ -80,33 +90,27 @@ export default class PostAPI extends BaseAPI {
     const postIds = postIdsResponse.feed.map((p: ApiPostDto) => p.id)
 
     if (postIds.length > 0) {
-      const postsResponse = await this.get(
-        `vx/node2/get/${postIds.join('+')}`,
-        { author: true }
-      )
+      const postsResponse = (await this.context.loaders.postLoader.loadMany(
+        postIds
+      )) as NexusGenFieldTypes['Post'][]
 
-      const posts = sortBy(
-        postsResponse.node
-          .filter((node: any) => node.type === 'post')
-          .map((p: ApiPostDto) => apiPostToPost(p)),
-        'publishedAt'
-      ).reverse()
+      const posts = sortBy(postsResponse, 'publishedAt').reverse()
 
-      return posts
+      return {
+        page,
+        limit,
+        posts,
+      }
     }
 
-    return []
+    return {
+      page,
+      limit,
+      posts: [],
+    }
   }
 
-  async getPost(id: string) {
-    const response = await this.get(`vx/node2/get/${id}`)
-
-    console.log(response)
-
-    if (response.node.length === 1) {
-      return apiPostToPost(response.node[0])
-    } else {
-      throw new Error(`got different length of nodes. ${response}`)
-    }
+  async getPost(id: number) {
+    return await this.context.loaders.postLoader.load(id)
   }
 }

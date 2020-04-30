@@ -7,7 +7,6 @@ export function setCookie(name: string, value: string, days?: number) {
     expires = '; expires=' + date.toUTCString()
   }
 
-  console.log(name + '=' + (value || '') + expires + '; path=/')
   document.cookie = name + '=' + (value || '') + expires + '; path=/'
 }
 

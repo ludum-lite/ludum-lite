@@ -40,9 +40,6 @@ export const login = mutationField('login', {
     email: stringArg({ required: true }),
     password: stringArg({ required: true }),
   },
-  resolve: async (_, { email, password }, ctx) => {
-    const login = await ctx.dataSources.userApi.login(email, password)
-    console.log(login)
-    return login
-  },
+  resolve: (_, { email, password }, ctx) =>
+    ctx.dataSources.userApi.login(email, password),
 })

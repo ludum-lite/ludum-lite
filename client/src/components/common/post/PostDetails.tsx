@@ -26,7 +26,9 @@ const GET_DATA = gql`
   }
 `
 
-const Root = styled.div``
+const Root = styled.div`
+  width: 600px;
+`
 
 const Header = styled.div`
   display: flex;
@@ -105,7 +107,7 @@ export default function PostDetails({ postId, forceExpand }: Props) {
     let result = false
 
     const textLength = post.body.length
-    const maxTextLength = 500
+    const maxTextLength = 750
 
     const numLines = (post.body.match(/\n/g) || '').length + 1
     const maxNumLines = 10
@@ -127,12 +129,11 @@ export default function PostDetails({ postId, forceExpand }: Props) {
     else return shouldCollapse
   }, [forceExpand, initialShouldCollapse, shouldCollapse])
 
-  if (!post || !post.author) return null
-
-  if (!post.publishedDate) {
+  if (post && !post.publishedDate) {
     console.error('no publish date', post)
-    throw new Error('no publish date')
   }
+
+  if (!post || !post.author || !post.publishedDate) return null
 
   return (
     <Root>
@@ -152,7 +153,10 @@ export default function PostDetails({ postId, forceExpand }: Props) {
         </HeaderContent>
       </Header>
       <Content>
-        <Collapse in={!finalShouldCollapse} collapsedHeight={350}>
+        <Collapse
+          in={!finalShouldCollapse}
+          collapsedHeight={initialShouldCollapse ? 350 : 0}
+        >
           <Markdown source={post.body} />
         </Collapse>
         <CollapseButtonContainer show={finalShouldCollapse}>

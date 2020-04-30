@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@apollo/client@^3.0.0-beta.43":
-  version "3.0.0-beta.43"
-  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.0.0-beta.43.tgz#e6707ffc285b906dfb99fd9ac553bb1c9acb6829"
-  integrity sha512-ufE0QubCI6kP/BudcnV3AGZVgsN/ZJNWy70k6ZwcR8fnYWqPfjxW1aATTq8Ud54latHpO83UtKHVOHUQiClQOA==
+"@apollo/client@^3.0.0-beta.23", "@apollo/client@^3.0.0-beta.43":
+  version "3.0.0-beta.44"
+  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.0.0-beta.44.tgz#79c6083dc2fe81725ad64398bc78e641ed1c1d84"
+  integrity sha512-udNiabIYs9WLHWvj2j6tlsaWPNhgMZsHrZyBTKOh+69fLpmZZ4Vv4mepWq/3WCzyHoWa3n3FPi/ajNljkO/Olg==
   dependencies:
     "@types/zen-observable" "^0.8.0"
     "@wry/equality" "^0.1.9"
@@ -26,6 +26,23 @@
     apollo-server-env "^2.4.3"
     core-js "^3.4.0"
     lodash.xorby "^4.7.0"
+
+"@apollo/link-batch-http@^2.0.0-beta.3":
+  version "2.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@apollo/link-batch-http/-/link-batch-http-2.0.0-beta.3.tgz#fc5f17c1521c4fdab083c23d820597545bdfd73c"
+  integrity sha512-5/OWwlvGIPzDodbNUOoUVfwrYUpXl7KfwvphXcTUi5ql1ll7W0o+rczlHzrrE0yY7cFxZ9ys8lz/kNllLgaMyQ==
+  dependencies:
+    "@apollo/client" "^3.0.0-beta.23"
+    "@apollo/link-batch" "^2.0.0-beta.3"
+    tslib "^1.9.3"
+
+"@apollo/link-batch@^2.0.0-beta.3":
+  version "2.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@apollo/link-batch/-/link-batch-2.0.0-beta.3.tgz#4a63f0d559ab7824204ebc4409cc295e4f8af2cc"
+  integrity sha512-jHSksoQC8BQrv2LdWiRh16W9yH0lFG0CfPQo13xeG5qudH65znGDmpT+8mjKtF2wHDC13IXabkEgwKjt4+1X3Q==
+  dependencies:
+    "@apollo/client" "^3.0.0-beta.23"
+    tslib "^1.9.3"
 
 "@apollographql/apollo-tools@^0.4.5":
   version "0.4.5"

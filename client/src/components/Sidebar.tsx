@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core'
 
 import { Link as RouterLink, useParams } from 'react-router-dom'
+import GlobalNav from './GlobalNav'
 
 const Root = styled.div`
   display: flex;
@@ -16,11 +17,6 @@ const Root = styled.div`
   left: 0;
   bottom: 0;
   z-index: 100;
-`
-
-const GlobalNav = styled.div`
-  width: ${({ theme }) => theme.spacing(8)}px;
-  background: ${({ theme }) => theme.themeColors.globalNavBackground};
 `
 
 const ContextualNav = styled.div`
@@ -84,7 +80,7 @@ export default function Sidebar() {
       <GlobalNav />
       <ContextualNav>
         <Title>Ludum Dare</Title>
-        <List>
+        <List disablePadding>
           {paths.map((path) => (
             <ListItem
               key={path.url}

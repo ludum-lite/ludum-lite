@@ -45,9 +45,17 @@ export const PostType = enumType({
   members: ['news', 'user'],
 })
 
+const SearchPostResponse = objectType({
+  name: 'SearchPostResponse',
+  definition(t) {
+    t.list.field('posts', { type: Post })
+    t.int('page')
+    t.int('limit')
+  },
+})
+
 export const searchPosts = queryField('searchPosts', {
-  type: Post,
-  list: true,
+  type: SearchPostResponse,
   args: {
     page: intArg({ required: true }),
     limit: intArg({ required: true }),
@@ -71,7 +79,6 @@ export const post = queryField('post', {
   },
   resolve: async (_, { id }, ctx) => {
     const post = await ctx.dataSources.postApi.getPost(id)
-    console.log(post)
 
     return post
   },

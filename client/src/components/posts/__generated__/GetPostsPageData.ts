@@ -9,16 +9,20 @@ import { SearchPostsFiltersInput } from "./../../../__generated__/globalTypes";
 // GraphQL query operation: GetPostsPageData
 // ====================================================
 
-export interface GetPostsPageData_searchPosts {
+export interface GetPostsPageData_searchPosts_posts {
   __typename: "Post";
   id: number;
-  name: string | null;
-  numLove: number | null;
-  numNotes: number | null;
+  publishedDate: string | null;
+}
+
+export interface GetPostsPageData_searchPosts {
+  __typename: "SearchPostResponse";
+  page: number;
+  posts: GetPostsPageData_searchPosts_posts[];
 }
 
 export interface GetPostsPageData {
-  searchPosts: GetPostsPageData_searchPosts[];
+  searchPosts: GetPostsPageData_searchPosts;
 }
 
 export interface GetPostsPageDataVariables {

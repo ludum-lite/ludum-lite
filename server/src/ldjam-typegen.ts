@@ -65,6 +65,12 @@ export interface NexusGenRootTypes {
     type?: string | null // String
   }
   Query: {}
+  SearchPostResponse: {
+    // root type
+    limit: number // Int!
+    page: number // Int!
+    posts: NexusGenRootTypes['Post'][] // [Post!]!
+  }
   User: {
     // root type
     avatarPath?: string | null // String
@@ -122,8 +128,14 @@ export interface NexusGenFieldTypes {
     // field return type
     me: NexusGenRootTypes['User'] // User!
     post: NexusGenRootTypes['Post'] // Post!
-    searchPosts: NexusGenRootTypes['Post'][] // [Post!]!
+    searchPosts: NexusGenRootTypes['SearchPostResponse'] // SearchPostResponse!
     user: NexusGenRootTypes['User'] // User!
+  }
+  SearchPostResponse: {
+    // field return type
+    limit: number // Int!
+    page: number // Int!
+    posts: NexusGenRootTypes['Post'][] // [Post!]!
   }
   User: {
     // field return type
@@ -169,7 +181,12 @@ export interface NexusGenAbstractResolveReturnTypes {}
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = 'Mutation' | 'Post' | 'Query' | 'User'
+export type NexusGenObjectNames =
+  | 'Mutation'
+  | 'Post'
+  | 'Query'
+  | 'SearchPostResponse'
+  | 'User'
 
 export type NexusGenInputNames = 'SearchPostsFiltersInput'
 

@@ -1,16 +1,16 @@
+import DataLoader from 'dataloader'
 import PostAPI from './post-api'
 import UserAPI from './user-api'
-import { IncomingHttpHeaders } from 'http'
+import { NexusGenFieldTypes } from '../ldjam-typegen'
 
-export class Context {
-  dataSources!: {
+export type Context = {
+  authToken: string | undefined
+  dataSources: {
     postApi: PostAPI
     userApi: UserAPI
   }
-
-  authToken: string | undefined
-
-  constructor(headers: IncomingHttpHeaders) {
-    this.authToken = headers.authorization
+  loaders: {
+    postLoader: DataLoader<number, NexusGenFieldTypes['Post']>
+    userLoader: DataLoader<number, NexusGenFieldTypes['User']>
   }
 }
