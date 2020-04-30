@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components/macro'
 import { useQuery, gql } from '@apollo/client'
-import * as Types from './__generated__/GetPostData'
+import * as Types from '__generated__/Types'
 
 import PostDetails from 'components/common/post/PostDetails'
 import ButtonGroup from 'components/common/mui/ButtonGroup'

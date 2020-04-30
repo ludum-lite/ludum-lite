@@ -4,13 +4,12 @@ import { BrowserRouter } from 'react-router-dom'
 
 import { BatchHttpLink } from '@apollo/link-batch-http'
 import { ApolloClient, ApolloProvider } from '@apollo/client'
+import { cache, resolvers, typeDefs } from './resolvers'
 
-import { cache } from './cache'
 import {
   createGlobalStyle,
   ThemeProvider as ScThemeProvider,
 } from 'styled-components/macro'
-import { typeDefs } from './resolvers'
 
 import App from 'components/App'
 import * as serviceWorker from './serviceWorker'
@@ -33,6 +32,7 @@ const client = new ApolloClient({
     uri: 'http://localhost:4000/',
   }),
   typeDefs,
+  resolvers,
 })
 
 /**********/

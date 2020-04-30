@@ -3,8 +3,7 @@ import styled from 'styled-components/macro'
 import sortBy from 'lodash/sortBy'
 
 import { useQuery, gql } from '@apollo/client'
-import { PostType } from '../../__generated__/globalTypes'
-import * as Types from './__generated__/GetPostsPageData'
+import * as Types from '__generated__/Types'
 
 import Post from './Post'
 import Button from 'components/common/mui/Button'
@@ -78,7 +77,7 @@ export default function PostsPage({}: Props) {
   >(GET_DATA, {
     variables: {
       filters: {
-        postType: PostType.user,
+        postType: Types.PostType.user,
       },
       limit: 3,
       page: 1,

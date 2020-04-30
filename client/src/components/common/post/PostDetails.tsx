@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components/macro'
 import { useQuery, gql } from '@apollo/client'
-import * as Types from './__generated__/GetPostDetailsData'
+import * as Types from '__generated__/Types'
 
 import { Typography, Collapse } from '@material-ui/core'
 import Markdown from 'components/common/Markdown'

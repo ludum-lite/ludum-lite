@@ -2,14 +2,15 @@ import React from 'react'
 import styled from 'styled-components/macro'
 import {
   IconButton as MuiIconButton,
-  List,
   Menu as MuiMenu,
   MenuItem,
-  Popover,
   Fade,
 } from '@material-ui/core'
+import { isLoggedInVar } from 'resolvers'
+import { gql, useQuery, useMutation } from '@apollo/client'
 import MuiAddIcon from '@material-ui/icons/Add'
 import { ReactComponent as UserIcon } from 'assets/user.svg'
+import * as Types from '__generated__/Types'
 
 const Root = styled.div`
   display: flex;
@@ -70,8 +71,36 @@ const Footer = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing(1)}px;
 `
 
+const useGlobaNavData = () => {
+  const GET_DATA = React.useMemo(
+    () => gql`
+      query GetGlobalNavData {
+        isLoggedIn @client
+      }
+    `,
+    []
+  )
+
+  const { data } = useQuery<Types.GetGlobalNavData>(GET_DATA)
+
+  return data
+}
+
+const LOGIN = gql`
+  mutation Login($email: String!, $password: String!) {
+    login(email: $email, password: $password)
+  }
+`
+
 interface Props {}
 export default function GlobalNav({}: Props) {
+  const [login] = useMutation<Types.Login, Types.LoginVariables>(LOGIN, {
+    onCompleted({ login }) {
+      localStorage.setItem('token', login)
+      isLoggedInVar(true)
+    },
+  })
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -81,6 +110,24 @@ export default function GlobalNav({}: Props) {
   const handleClose = () => {
     setAnchorEl(null)
   }
+
+  const onLogin = () => {
+    handleClose()
+    login({
+      variables: {
+        email: 'noah.potter@outlook.com',
+        password: 'vhvL6YT7kQKRHNwVb3JG',
+      },
+    })
+  }
+
+  const onLogout = () => {
+    handleClose()
+    localStorage.removeItem('token')
+    isLoggedInVar(false)
+  }
+
+  const isLoggedIn = data?.isLoggedIn
 
   return (
     <Root>
@@ -99,7 +146,6 @@ export default function GlobalNav({}: Props) {
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
-          keepMounted
           onClose={handleClose}
           anchorOrigin={{
             vertical: 'bottom',
@@ -114,9 +160,12 @@ export default function GlobalNav({}: Props) {
           getContentAnchorEl={null}
           TransitionComponent={Fade}
         >
-          <MenuItem>Profile</MenuItem>
-          <MenuItem>Logout</MenuItem>
-          <MenuItem>Login</MenuItem>
+          <MenuItem onClick={handleClose}>Profile</MenuItem>
+          {isLoggedIn ? (
+            <MenuItem onClick={onLogout}>Logout</MenuItem>
+          ) : (
+            <MenuItem onClick={onLogin}>Login</MenuItem>
+          )}
         </Menu>
       </Footer>
     </Root>

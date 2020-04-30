@@ -1,4 +1,4 @@
-import { Resolvers, gql } from '@apollo/client'
+import { Resolvers, ApolloCache, gql, InMemoryCache } from '@apollo/client'
 
 export const typeDefs = gql`
   extend type Query {
@@ -6,7 +6,35 @@ export const typeDefs = gql`
   }
 `
 
-export const resolvers: Resolvers = {
+export const cache: InMemoryCache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        isLoggedIn() {
+          return isLoggedInVar()
+        },
+      },
+    },
+  },
+})
+
+type ResolverFn = (
+  parent: any,
+  args: any,
+  { cache }: { cache: ApolloCache<any> }
+) => any
+
+interface ResolverMap {
+  [field: string]: ResolverFn
+}
+
+interface AppResolvers extends Resolvers {
+  // We will update this with our app's resolvers later
+}
+
+export const resolvers: AppResolvers = {
+  Query: {},
+  Mutation: {},
   // Launch: {
   //   isInCart: (launch: LaunchTileTypes.LaunchTile, _, { cache }): boolean => {
   //     const queryResult = cache.readQuery<GetCartItemTypes.GetCartItems>({
@@ -18,8 +46,6 @@ export const resolvers: Resolvers = {
   //     return false
   //   },
   // },
-  Query: {},
-  // Mutation: {
   //   addOrRemoveFromCart: (_, { id }: { id: string }, { cache }): string[] => {
   //     const queryResult = cache.readQuery<GetCartItemTypes.GetCartItems>({
   //       query: GET_CART_ITEMS,
@@ -36,5 +62,8 @@ export const resolvers: Resolvers = {
   //     }
   //     return []
   //   },
-  // },
 }
+
+export const isLoggedInVar = cache.makeVar<boolean>(
+  !!localStorage.getItem('token')
+)
