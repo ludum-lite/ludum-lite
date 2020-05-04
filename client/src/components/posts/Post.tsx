@@ -66,8 +66,8 @@ const StatButtonComment = styled.div`
 `
 
 const GET_DATA = gql`
-  query GetPostData($id: Int!) {
-    post(id: $id) {
+  query GetPostData($input: GetByIdInput!) {
+    post(input: $input) {
       id
       numLove
       numNotes
@@ -95,7 +95,9 @@ export default function Post({ postId }: Props) {
     GET_DATA,
     {
       variables: {
-        id: postId,
+        input: {
+          id: postId,
+        },
       },
     }
   )

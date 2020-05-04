@@ -4,6 +4,35 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: Login
+// ====================================================
+
+export interface Login_login_LoginSuccessResponse {
+  __typename: "LoginSuccessResponse";
+  token: string;
+}
+
+export interface Login_login_LoginFailureResponse {
+  __typename: "LoginFailureResponse";
+  message: string;
+}
+
+export type Login_login = Login_login_LoginSuccessResponse | Login_login_LoginFailureResponse;
+
+export interface Login {
+  login: Login_login;
+}
+
+export interface LoginVariables {
+  input: LoginInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GetPostDetailsData
 // ====================================================
 
@@ -29,7 +58,7 @@ export interface GetPostDetailsData {
 }
 
 export interface GetPostDetailsDataVariables {
-  id: number;
+  input: GetByIdInput;
 }
 
 /* tslint:disable */
@@ -43,24 +72,6 @@ export interface GetPostDetailsDataVariables {
 
 export interface GetGlobalNavData {
   isLoggedIn: boolean;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL mutation operation: Login
-// ====================================================
-
-export interface Login {
-  login: string;
-}
-
-export interface LoginVariables {
-  email: string;
-  password: string;
 }
 
 /* tslint:disable */
@@ -96,7 +107,7 @@ export interface GetPostData {
 }
 
 export interface GetPostDataVariables {
-  id: number;
+  input: GetByIdInput;
 }
 
 /* tslint:disable */
@@ -142,6 +153,15 @@ export interface GetPostsPageDataVariables {
 export enum PostType {
   news = "news",
   user = "user",
+}
+
+export interface GetByIdInput {
+  id: number;
+}
+
+export interface LoginInput {
+  email: string;
+  password: string;
 }
 
 export interface SearchPostsFiltersInput {

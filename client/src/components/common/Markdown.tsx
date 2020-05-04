@@ -16,7 +16,6 @@ const Image = styled.img`
   /* // border: '1px solid rgba(0, 0, 0, 0.23)', */
   display: block;
   margin-bottom: 1em;
-  margin: 0px auto;
 
   &:not(:first-child) {
     margin-top: 1em;

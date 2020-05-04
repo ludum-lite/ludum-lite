@@ -2,8 +2,9 @@ import DataLoader from 'dataloader'
 import { DataSourceConfig } from 'apollo-datasource'
 import sort from 'dataloader-sort'
 import BaseAPI from './base-api'
-import { NexusGenFieldTypes } from '../ldjam-typegen'
 import { Context } from './context'
+import { AuthenticationError } from 'apollo-server'
+import { User, LoginResponse } from '../__generated__/schema-types'
 
 export type ApiUserDto = {
   id: number
@@ -19,7 +20,7 @@ export type ApiUserDto = {
   }
 }
 
-function apiUserToUser(user: ApiUserDto): NexusGenFieldTypes['User'] {
+function apiUserToUser(user: ApiUserDto): User {
   return {
     id: user.id,
     createdDate: user.created,
@@ -51,22 +52,36 @@ export default class UserAPI extends BaseAPI {
     }
   }
 
-  async login(email: string, password: string) {
-    const response = await this.post(
-      'vx/user/login',
-      `login=${email}&pw=${password}`,
-      {
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded',
-          includeHeaders: 'true',
-        },
-        credentials: 'include',
+  async login(email: string, password: string): Promise<LoginResponse> {
+    try {
+      const response = await this.post(
+        'vx/user/login',
+        `login=${email}&pw=${password}`,
+        {
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+            includeHeaders: 'true',
+          },
+          credentials: 'include',
+        }
+      )
+
+      console.log({ response })
+
+      const cookies = response._headers.get('set-cookie')
+
+      return {
+        __typename: 'LoginSuccessResponse',
+        success: true,
+        token: getCookieValue(cookies, 'SIDS') || '',
       }
-    )
-
-    const cookies = response._headers.get('set-cookie')
-
-    return getCookieValue(cookies, 'SIDS') || ''
+    } catch (e) {
+      return {
+        __typename: 'LoginFailureResponse',
+        success: false,
+        message: 'The given username/password is incorrect.',
+      }
+    }
   }
 
   async me() {

@@ -3,8 +3,8 @@ import { sortBy } from 'lodash'
 import { DataSourceConfig } from 'apollo-datasource'
 import sort from 'dataloader-sort'
 import BaseAPI from './base-api'
-import { NexusGenFieldTypes, NexusGenEnums } from '../ldjam-typegen'
 import { Context } from './context'
+import { Post, PostType } from '../__generated__/schema-types'
 
 export type ApiPostDto = {
   id: number
@@ -28,7 +28,7 @@ export type ApiPostDto = {
   ['notes-timestamp']: string
 }
 
-function apiPostToPost(post: ApiPostDto): NexusGenFieldTypes['Post'] {
+function apiPostToPost(post: ApiPostDto): Post {
   return {
     id: post.id,
     parentId: post.parent,
@@ -77,7 +77,7 @@ export default class PostAPI extends BaseAPI {
   }: {
     page: number
     limit: number
-    filters: { postType: NexusGenEnums['PostType'] }
+    filters: { postType: PostType }
   }) {
     const postIdsResponse = await this.get(
       `vx/node/feed/1/all/post${postType === 'news' ? '/news' : ''}`,
@@ -92,7 +92,7 @@ export default class PostAPI extends BaseAPI {
     if (postIds.length > 0) {
       const postsResponse = (await this.context.loaders.postLoader.loadMany(
         postIds
-      )) as NexusGenFieldTypes['Post'][]
+      )) as Post[]
 
       const posts = sortBy(postsResponse, 'publishedAt').reverse()
 

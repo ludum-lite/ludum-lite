@@ -72,12 +72,15 @@ const paths = [
   },
 ]
 
-export default function Sidebar() {
+interface Props {
+  setPromptLogin: (value: boolean) => void
+}
+export default function Sidebar({ setPromptLogin }: Props) {
   const { basePath } = useParams()
 
   return (
     <Root>
-      <GlobalNav />
+      <GlobalNav setPromptLogin={setPromptLogin} />
       <ContextualNav>
         <Title>Ludum Dare</Title>
         <List disablePadding>

@@ -1,78 +1,40 @@
 import { ApolloServer } from 'apollo-server'
-import { makeSchema, fieldAuthorizePlugin } from '@nexus/schema'
-import path from 'path'
-import * as types from './schema'
 import { Context } from './data-sources/context'
 import PostAPI from './data-sources/post-api'
 import UserAPI from './data-sources/user-api'
-// ;['debug', 'log', 'warn', 'error'].forEach((methodName) => {
-//   const originalLoggingMethod = console[methodName]
-//   console[methodName] = (firstArgument, ...otherArguments) => {
-//     const originalPrepareStackTrace = Error.prepareStackTrace
-//     Error.prepareStackTrace = (_, stack) => stack
-//     const callee = new Error().stack[1]
-//     Error.prepareStackTrace = originalPrepareStackTrace
-//     const relativeFileName = path.relative(process.cwd(), callee.getFileName())
-//     const prefix = `${relativeFileName}:${callee.getLineNumber()}:`
-//     if (typeof firstArgument === 'string') {
-//       originalLoggingMethod(prefix + ' ' + firstArgument, ...otherArguments)
-//     } else {
-//       originalLoggingMethod(prefix, firstArgument, ...otherArguments)
-//     }
-//   }
-// })
+import { Resolvers } from './__generated__/schema-types'
+import { typeDefs } from './schema'
 
-// ;['log', 'warn', 'error'].forEach((methodName) => {
-//   const originalMethod = console[methodName]
-//   console[methodName] = (...args) => {
-//     let initiator = 'unknown place'
-//     try {
-//       throw new Error()
-//     } catch (e) {
-//       if (typeof e.stack === 'string') {
-//         let isFirst = true
-//         for (const line of e.stack.split('\n')) {
-//           const matches = line.match(/^\s+at\s+(.*)/)
-//           if (matches) {
-//             if (!isFirst) {
-//               // first line - current function
-//               // second line - caller (what we are looking for)
-//               initiator = matches[1]
-//               break
-//             }
-//             isFirst = false
-//           }
-//         }
-//       }
-//     }
-//     originalMethod.apply(console, [...args, '\n', `  at ${initiator}`])
-//   }
-// })
-
-const schema = makeSchema({
-  types,
-  outputs: {
-    schema: path.join(__dirname, 'ldjam-schema.graphql'),
-    typegen: path.join(__dirname, 'ldjam-typegen.ts'),
-  },
-  plugins: [fieldAuthorizePlugin()],
-  typegenAutoConfig: {
-    contextType: 'ctx.Context',
-    sources: [
-      {
-        alias: 'ctx',
-        source: path.join(__dirname, 'data-sources', 'context.ts'),
-      },
-    ],
-    backingTypeMap: {
-      Date: 'Date',
+const resolvers: Resolvers<Context> = {
+  Query: {
+    me(_, __, context) {
+      return context.dataSources.userApi.me()
+    },
+    user(_, { input: { id } }, context) {
+      return context.dataSources.userApi.getUser(id)
+    },
+    post(_, { input: { id } }, context) {
+      return context.dataSources.postApi.getPost(id)
+    },
+    searchPosts(_, args, context) {
+      return context.dataSources.postApi.searchPosts(args)
     },
   },
-  prettierConfig: path.join(__dirname, '../../.prettierrc'),
-})
+  Mutation: {
+    login(_, { input: { email, password } }, context) {
+      return context.dataSources.userApi.login(email, password)
+    },
+  },
+  Post: {
+    author(post, __, context) {
+      return context.dataSources.userApi.getUser(post.authorId)
+    },
+  },
+}
 
 new ApolloServer({
-  schema,
+  typeDefs,
+  resolvers,
   context: ({ req: { headers } }): Context =>
     (({
       authToken: headers.authorization,

@@ -1,7 +1,7 @@
 import DataLoader from 'dataloader'
 import PostAPI from './post-api'
 import UserAPI from './user-api'
-import { NexusGenFieldTypes } from '../ldjam-typegen'
+import { Post, User } from '../__generated__/schema-types'
 
 export type Context = {
   authToken: string | undefined
@@ -10,7 +10,7 @@ export type Context = {
     userApi: UserAPI
   }
   loaders: {
-    postLoader: DataLoader<number, NexusGenFieldTypes['Post']>
-    userLoader: DataLoader<number, NexusGenFieldTypes['User']>
+    postLoader: DataLoader<number, Post>
+    userLoader: DataLoader<number, User>
   }
 }

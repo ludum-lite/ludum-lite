@@ -20,6 +20,7 @@ import {
   createMuiTheme,
   StylesProvider,
   Theme,
+  fade,
 } from '@material-ui/core'
 
 /*****************/
@@ -33,6 +34,14 @@ const client = new ApolloClient({
   }),
   typeDefs,
   resolvers,
+  defaultOptions: {
+    query: {
+      errorPolicy: 'all',
+    },
+    mutate: {
+      errorPolicy: 'all',
+    },
+  },
 })
 
 /**********/
@@ -49,7 +58,8 @@ const styleVariables = {
   prussianBlue: 'rgb(19, 41, 61)',
   sapphireBlue: 'rgb(0, 100, 148)',
   greenBlue: 'rgb(5, 142, 217)',
-  bittersweet: 'rgb(248, 112, 96)',
+  carolinaBlue: 'rgb(63, 166, 222)',
+  // bittersweet: 'rgb(248, 112, 96)',
   // greenShade: 'rgb(112, 169, 161)',
   cultured: 'rgb(234, 235, 237)',
   ghostWhite: 'rgb(249, 249, 255)',
@@ -100,9 +110,20 @@ const themeColors: Themes = {
 
 type Mode = 'light' | 'dark'
 
+const defaultTheme = createMuiTheme()
+
 const muiThemeGenerator = ({ mode }: { mode: Mode }) =>
   createMuiTheme({
+    palette: {
+      primary: {
+        dark: styleVariables.sapphireBlue,
+        main: styleVariables.greenBlue,
+        light: styleVariables.carolinaBlue,
+        contrastText: styleVariables.white,
+      },
+    },
     typography: {
+      htmlFontSize: 10,
       fontFamily: [
         // 'Ubuntu',
         // 'Roboto',
@@ -110,6 +131,14 @@ const muiThemeGenerator = ({ mode }: { mode: Mode }) =>
         'Oxygen',
         '"Baloo Paaji 2"',
       ].join(','),
+    },
+    props: {
+      MuiTextField: {
+        variant: 'filled',
+        InputProps: {
+          disableUnderline: true,
+        },
+      },
     },
     overrides: {
       MuiButton: {
@@ -125,6 +154,48 @@ const muiThemeGenerator = ({ mode }: { mode: Mode }) =>
       MuiListItem: {
         button: {
           transition: 'none',
+        },
+      },
+      MuiInput: {
+        root: {
+          border: '1px solid #e2e2e1',
+          overflow: 'hidden',
+          borderRadius: 4,
+          backgroundColor: '#fcfcfb',
+          transition: defaultTheme.transitions.create([
+            'border-color',
+            'box-shadow',
+          ]),
+          '&:hover': {
+            backgroundColor: '#fff',
+          },
+          '&$focused': {
+            backgroundColor: '#fff',
+            boxShadow: `${fade(
+              defaultTheme.palette.primary.main,
+              0.25
+            )} 0 0 0 2px`,
+            borderColor: defaultTheme.palette.primary.main,
+          },
+        },
+      },
+      MuiFilledInput: {
+        root: {
+          borderRadius: defaultTheme.shape.borderRadius,
+        },
+        input: {
+          paddingTop: 21,
+          paddingBottom: 8,
+          paddingRight: 27,
+        },
+      },
+      MuiInputLabel: {
+        filled: {
+          fontSize: '1.4rem',
+          transform: 'translate(12px, 17px) scale(1)',
+          '&.MuiInputLabel-shrink': {
+            transform: 'translate(12px, 8px) scale(0.7)',
+          },
         },
       },
     },
@@ -168,7 +239,11 @@ declare module 'styled-components' {
   export interface DefaultTheme extends ScThemeType {}
 }
 
-const GlobalStyle = createGlobalStyle``
+const GlobalStyle = createGlobalStyle`
+  html {
+    font-size: 62.5%;
+  }
+`
 
 /*********/
 /* Entry */

@@ -2,22 +2,32 @@
   "name": "server",
   "private": true,
   "scripts": {
-    "start": "ts-node-dev --ignore-watch src/generated --no-notify --transpileOnly --respawn ./src"
+    "start": "concurrently -n SERVER,TYPEGEN \"yarn watch-server\" \"yarn watch-schema\"",
+    "watch-server": "ts-node-dev --no-notify --transpileOnly --respawn ./src",
+    "watch-schema": "graphql-codegen --watch --config codegen.yml"
   },
   "dependencies": {
+    "@graphql-codegen/typescript-operations": "^1.13.5",
     "@nexus/schema": "^0.13.1",
     "@types/graphql-iso-date": "^3.3.3",
     "@types/lodash": "^4.14.149",
     "apollo-datasource-rest": "^0.8.1",
     "apollo-server": "^2.12.0",
+    "concurrently": "^5.2.0",
     "cuid": "^2.1.8",
     "dataloader": "^2.0.0",
     "dataloader-sort": "^0.0.5",
     "graphql": "^15.0.0",
     "graphql-iso-date": "^3.6.1",
+    "graphql.macro": "^1.4.2",
     "lodash": "^4.17.15"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "1.13.4",
+    "@graphql-codegen/introspection": "1.13.4",
+    "@graphql-codegen/schema-ast": "^1.13.5",
+    "@graphql-codegen/typescript": "1.13.4",
+    "@graphql-codegen/typescript-resolvers": "1.13.4",
     "babel-loader": "^8.1.0",
     "prettier": "2.0.4",
     "ts-node": "^8.8.2",

@@ -7,7 +7,7 @@ import {
   Fade,
 } from '@material-ui/core'
 import { isLoggedInVar } from 'resolvers'
-import { gql, useQuery, useMutation } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 import MuiAddIcon from '@material-ui/icons/Add'
 import { ReactComponent as UserIcon } from 'assets/user.svg'
 import * as Types from '__generated__/Types'
@@ -60,11 +60,7 @@ const ProfileButton = styled(IconButton)<ProfileButtonProps>`
   ${({ isLoggedIn }) =>
     !isLoggedIn &&
     css`
-      border: 3px solid rgba(255, 255, 255, 0.47);
-
       &:hover {
-        border-color: white;
-
         ${ProfileCircle} {
           svg {
             fill: white;
@@ -108,27 +104,11 @@ const useGlobalNavData = () => {
   }
 }
 
-const useLogin = () => {
-  const [login] = useMutation<Types.Login, Types.LoginVariables>(LOGIN, {
-    onCompleted({ login }) {
-      localStorage.setItem('token', login)
-      isLoggedInVar(true)
-    },
-  })
-
-  return login
+interface Props {
+  setPromptLogin: (value: boolean) => void
 }
-
-const LOGIN = gql`
-  mutation Login($email: String!, $password: String!) {
-    login(email: $email, password: $password)
-  }
-`
-
-interface Props {}
-export default function GlobalNav({}: Props) {
+export default function GlobalNav({ setPromptLogin }: Props) {
   const { isLoggedIn } = useGlobalNavData()
-  const login = useLogin()
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
@@ -142,12 +122,7 @@ export default function GlobalNav({}: Props) {
 
   const onLogin = () => {
     handleClose()
-    login({
-      variables: {
-        email: 'noah.potter@outlook.com',
-        password: 'vhvL6YT7kQKRHNwVb3JG',
-      },
-    })
+    setPromptLogin(true)
   }
 
   const onLogout = () => {
