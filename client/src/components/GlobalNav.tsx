@@ -71,7 +71,7 @@ const ProfileButton = styled(IconButton)<ProfileButtonProps>`
 `
 
 const AddIcon = styled(MuiAddIcon)`
-  font-size: 2rem;
+  font-size: 3.3rem;
 `
 
 const Menu = styled(MuiMenu)`

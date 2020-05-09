@@ -2,25 +2,49 @@ import { gql } from 'apollo-server'
 
 export const typeDefs = gql`
   type Query {
-    me: User!
-    post(input: GetByIdInput!): Post!
+    me: MeResponse!
+    post(input: IdInput!): Post!
     searchPosts(
       filters: SearchPostsFiltersInput!
       limit: Int!
       page: Int!
     ): SearchPostResponse!
-    user(input: GetByIdInput!): User!
+    user(input: IdInput!): User!
   }
 
   type Mutation {
     login(input: LoginInput!): LoginResponse!
+    lovePost(input: IdInput!): LovePostResponse!
+    unlovePost(input: IdInput!): UnlovePostResponse!
   }
 
   interface MutationResponse {
     success: Boolean!
   }
 
-  input GetByIdInput {
+  type UnauthorizedResponse {
+    code: String!
+  }
+
+  union MeResponse = Me | UnauthorizedResponse
+
+  type LovePostSuccess implements MutationResponse {
+    success: Boolean!
+    post: Post!
+    me: MeResponse
+  }
+
+  union LovePostResponse = LovePostSuccess | UnauthorizedResponse
+
+  type UnlovePostSuccess implements MutationResponse {
+    success: Boolean!
+    post: Post!
+    me: MeResponse
+  }
+
+  union UnlovePostResponse = UnlovePostSuccess | UnauthorizedResponse
+
+  input IdInput {
     id: Int!
   }
 
@@ -39,17 +63,17 @@ export const typeDefs = gql`
     postType: PostType!
   }
 
-  type LoginFailureResponse implements MutationResponse {
+  type LoginFailure implements MutationResponse {
     success: Boolean!
     message: String!
   }
 
-  type LoginSuccessResponse implements MutationResponse {
+  type LoginSuccess implements MutationResponse {
     success: Boolean!
     token: String!
   }
 
-  union LoginResponse = LoginFailureResponse | LoginSuccessResponse
+  union LoginResponse = LoginFailure | LoginSuccess
 
   enum PostType {
     news
@@ -79,7 +103,7 @@ export const typeDefs = gql`
     type: String
   }
 
-  type User {
+  interface BaseUser {
     avatarPath: String
     createdDate: String!
     id: Int!
@@ -89,5 +113,30 @@ export const typeDefs = gql`
     numPosts: Int!
     profilePath: String!
     type: String!
+  }
+
+  type User implements BaseUser {
+    avatarPath: String
+    createdDate: String!
+    id: Int!
+    modifiedDate: String!
+    name: String!
+    numGames: Int!
+    numPosts: Int!
+    profilePath: String!
+    type: String!
+  }
+
+  type Me implements BaseUser {
+    avatarPath: String
+    createdDate: String!
+    id: Int!
+    modifiedDate: String!
+    name: String!
+    numGames: Int!
+    numPosts: Int!
+    profilePath: String!
+    type: String!
+    lovedPosts: [Int!]
   }
 `

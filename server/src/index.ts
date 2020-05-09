@@ -1,4 +1,4 @@
-import { ApolloServer } from 'apollo-server'
+import { ApolloServer, makeExecutableSchema } from 'apollo-server'
 import { Context } from './data-sources/context'
 import PostAPI from './data-sources/post-api'
 import UserAPI from './data-sources/user-api'
@@ -24,17 +24,45 @@ const resolvers: Resolvers<Context> = {
     login(_, { input: { email, password } }, context) {
       return context.dataSources.userApi.login(email, password)
     },
+    lovePost(_, { input: { id } }, context) {
+      return context.dataSources.postApi.lovePost(id)
+    },
+    unlovePost(_, { input: { id } }, context) {
+      return context.dataSources.postApi.unlovePost(id)
+    },
   },
   Post: {
     author(post, __, context) {
       return context.dataSources.userApi.getUser(post.authorId)
     },
   },
+  Me: {
+    lovedPosts(_, __, context) {
+      return context.dataSources.userApi.getMyLovedPosts()
+    },
+  },
+  LovePostSuccess: {
+    me(_, __, context) {
+      return context.dataSources.userApi.me()
+    },
+  },
+  UnlovePostSuccess: {
+    me(_, __, context) {
+      return context.dataSources.userApi.me()
+    },
+  },
 }
 
-new ApolloServer({
+const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
+  resolverValidationOptions: {
+    requireResolversForResolveType: false,
+  },
+})
+
+new ApolloServer({
+  schema,
   context: ({ req: { headers } }): Context =>
     (({
       authToken: headers.authorization,

@@ -10,7 +10,7 @@ import UserPostedHeader from '../UserPostedHeader'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 
 const GET_DATA = gql`
-  query GetPostDetailsData($input: GetByIdInput!) {
+  query GetPostDetailsData($input: IdInput!) {
     post(input: $input) {
       id
       name
@@ -90,7 +90,7 @@ export default function PostDetails({ postId, forceExpand }: Props) {
     boolean | undefined
   >(undefined)
 
-  const { data, error } = useQuery<
+  const { data } = useQuery<
     Types.GetPostDetailsData,
     Types.GetPostDetailsDataVariables
   >(GET_DATA, {
@@ -166,6 +166,7 @@ export default function PostDetails({ postId, forceExpand }: Props) {
             fullWidth
             disableElevation
             size="large"
+            variant="contained"
             onClick={(e) => {
               e.stopPropagation()
               setShouldCollapse(false)

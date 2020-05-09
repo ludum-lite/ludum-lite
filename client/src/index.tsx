@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 
 import { BatchHttpLink } from '@apollo/link-batch-http'
-import { ApolloClient, ApolloProvider } from '@apollo/client'
+// import { onError } from '@apollo/link-error'
+import { setContext } from '@apollo/link-context'
+import { ApolloClient, ApolloProvider, ApolloLink } from '@apollo/client'
 import { cache, resolvers, typeDefs } from './resolvers'
 
 import {
@@ -27,11 +29,45 @@ import {
 /* Apollo Client */
 /*****************/
 
+// const errorLink = onError(({ graphQLErrors, networkError }) => {
+//   if (graphQLErrors) {
+//     Object.values(graphQLErrors).forEach((error) => {
+//       switch (error?.extensions?.code) {
+//         case 'UNAUTHENTICATED': {
+//           isLoggedInVar(false)
+//           window.history.pushState(null, '', '/')
+//           localStorage.removeItem('token')
+//         }
+//       }
+//     })
+//   }
+//   console.log({
+//     graphQLErrors,
+//     networkError,
+//   })
+// })
+
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const token = localStorage.getItem('token')
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token || '',
+    },
+  }
+})
+
+const batchHttpLink = new BatchHttpLink({
+  uri: 'http://localhost:4000/',
+})
+
+const link = ApolloLink.from([authLink, batchHttpLink])
+
 const client = new ApolloClient({
   cache,
-  link: new BatchHttpLink({
-    uri: 'http://localhost:4000/',
-  }),
+  link,
   typeDefs,
   resolvers,
   defaultOptions: {
@@ -59,7 +95,7 @@ const styleVariables = {
   sapphireBlue: 'rgb(0, 100, 148)',
   greenBlue: 'rgb(5, 142, 217)',
   carolinaBlue: 'rgb(63, 166, 222)',
-  // bittersweet: 'rgb(248, 112, 96)',
+  bittersweet: 'rgb(248, 112, 96)',
   // greenShade: 'rgb(112, 169, 161)',
   cultured: 'rgb(234, 235, 237)',
   ghostWhite: 'rgb(249, 249, 255)',
@@ -75,6 +111,9 @@ export type ThemeColors = {
   contextualNavBackground: string
   loaderBackground: string
   loaderBarBackground: string
+  error: {
+    background: string
+  }
   post: {
     backgroundColor: string
   }
@@ -92,6 +131,9 @@ const themeColors: Themes = {
     contextualNavBackground: styleVariables.greenBlue,
     loaderBackground: styleVariables.white,
     loaderBarBackground: styleVariables.cultured,
+    error: {
+      background: styleVariables.bittersweet,
+    },
     post: {
       backgroundColor: styleVariables.white,
     },
@@ -102,6 +144,9 @@ const themeColors: Themes = {
     contextualNavBackground: styleVariables.greenBlue,
     loaderBackground: styleVariables.white,
     loaderBarBackground: styleVariables.cultured,
+    error: {
+      background: styleVariables.bittersweet,
+    },
     post: {
       backgroundColor: styleVariables.white,
     },
@@ -144,6 +189,9 @@ const muiThemeGenerator = ({ mode }: { mode: Mode }) =>
       MuiButton: {
         root: {
           textTransform: 'none',
+        },
+        contained: {
+          backgroundColor: '#e8e8e8',
         },
       },
       MuiIconButton: {
@@ -242,6 +290,10 @@ declare module 'styled-components' {
 const GlobalStyle = createGlobalStyle`
   html {
     font-size: 62.5%;
+  }
+
+  body {
+    font-size: 1.4rem;
   }
 `
 

@@ -64,13 +64,20 @@ const GET_DATA = gql`
       posts {
         id
         publishedDate
+        ...Post_post
+      }
+    }
+    me {
+      ... on Me {
+        id
+        lovedPosts
       }
     }
   }
+  ${Post.fragments.post}
 `
 
-interface Props {}
-export default function PostsPage({}: Props) {
+export default function PostsPage() {
   const { data, loading, fetchMore } = useQuery<
     Types.GetPostsPageData,
     Types.GetPostsPageDataVariables
@@ -85,12 +92,23 @@ export default function PostsPage({}: Props) {
     notifyOnNetworkStatusChange: true,
   })
 
+  const lovedPosts = data?.me.__typename === 'Me' ? data?.me.lovedPosts : []
+
   const postComponents = sortBy(data?.searchPosts?.posts, 'publishedDate')
     ?.reverse()
     ?.map((post) => {
       if (!post) return null
 
-      return <Post key={post.id} postId={post.id} />
+      const hasLovedPost = !!lovedPosts?.includes(post.id)
+
+      return (
+        <Post
+          key={post.id}
+          postId={post.id}
+          post={post}
+          hasLovedPost={hasLovedPost}
+        />
+      )
     })
     .filter(Boolean)
 
@@ -104,7 +122,7 @@ export default function PostsPage({}: Props) {
     } else {
       return <NoItemsContainer />
     }
-  }, [postComponents, hasPosts])
+  }, [postComponents, hasPosts, loading])
 
   return (
     <Root>

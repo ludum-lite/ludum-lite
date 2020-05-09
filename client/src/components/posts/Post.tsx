@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components/macro'
-import { useQuery, gql } from '@apollo/client'
+import { useMutation, gql } from '@apollo/client'
 import * as Types from '__generated__/Types'
 
 import PostDetails from 'components/common/post/PostDetails'
@@ -22,63 +22,99 @@ const Root = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing(2)}px;
 `
 
-const Card = styled.div`
-  display: flex;
-  flex-direction: column;
-  overflow: visible;
-`
+// const Card = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   overflow: visible;
+// `
 
 const RightIcon = styled.div`
   margin-right: ${({ theme }) => theme.spacing(1)}px;
-  font-size: 1.32rem;
+  font-size: 2rem;
 `
 
 const ActionRow = styled.div`
   display: flex;
 `
 
-const PlaceholderContainer = styled.div`
-  /* // Keep scroll bar on bar while loading so the page doesn't jump sideways */
-  align-self: stretch;
-`
+// const PlaceholderContainer = styled.div`
+//   /* // Keep scroll bar on bar while loading so the page doesn't jump sideways */
+//   align-self: stretch;
+// `
 
-const PlaceholderCard = styled(Card)`
-  display: flex;
-  flex-direction: column;
-  padding: 12px;
-  height: 301px;
-`
+// const PlaceholderCard = styled(Card)`
+//   display: flex;
+//   flex-direction: column;
+//   padding: 12px;
+//   height: 301px;
+// `
 
-const StatButtonFavorite = styled.div`
-  /* color: theme.palette.getContrastText(pink[500]), */
-  /* background-color: pink[500]; */
-  &:hover {
-    /* background-color: pink[700]; */
-  }
-`
+// const StatButtonFavorite = styled.div`
+//   /* color: theme.palette.getContrastText(pink[500]), */
+//   /* background-color: pink[500]; */
+//   &:hover {
+//     /* background-color: pink[700]; */
+//   }
+// `
 
-const StatButtonComment = styled.div`
-  /* color: theme.palette.getContrastText(blue[500]); */
-  /* background-color: blue[500]; */
-  &:hover {
-    /* background-color: blue[700]; */
-  }
-`
+// const StatButtonComment = styled.div`
+//   /* color: theme.palette.getContrastText(blue[500]); */
+//   /* background-color: blue[500]; */
+//   &:hover {
+//     /* background-color: blue[700]; */
+//   }
+// `
 
-const GET_DATA = gql`
-  query GetPostData($input: GetByIdInput!) {
-    post(input: $input) {
+const POST_FRAGMENT = gql`
+  fragment Post_post on Post {
+    id
+    numLove
+    numNotes
+    name
+    body
+    publishedDate
+    author {
       id
-      numLove
-      numNotes
+      profilePath
+      avatarPath
       name
-      body
-      publishedDate
-      author {
-        id
-        profilePath
-        avatarPath
-        name
+    }
+  }
+`
+
+const LOVE_POST = gql`
+  mutation LovePost($input: IdInput!) {
+    lovePost(input: $input) {
+      ... on LovePostSuccess {
+        post {
+          id
+          numLove
+        }
+        me {
+          ... on Me {
+            id
+            lovedPosts
+          }
+        }
+      }
+    }
+  }
+`
+
+const UNLOVE_POST = gql`
+  mutation UnlovePost($input: IdInput!) {
+    unlovePost(input: $input) {
+      ... on UnlovePostSuccess {
+        post {
+          id
+          numLove
+        }
+        me {
+          ... on Me {
+            id
+            lovedPosts
+          }
+        }
       }
     }
   }
@@ -86,13 +122,12 @@ const GET_DATA = gql`
 
 interface Props {
   postId: number
+  post: Types.Post_post
+  hasLovedPost: boolean
 }
-export default function Post({ postId }: Props) {
-  const hasLovedPost = false // myLove.includes(post.id)
-  const hasFavoritedPost = false // pinnedPostIds.includes(post.id)
-
-  const { data } = useQuery<Types.GetPostData, Types.GetPostDataVariables>(
-    GET_DATA,
+export default function Post({ postId, post, hasLovedPost }: Props) {
+  const [lovePost] = useMutation<Types.LovePost, Types.LovePostVariables>(
+    LOVE_POST,
     {
       variables: {
         input: {
@@ -102,7 +137,18 @@ export default function Post({ postId }: Props) {
     }
   )
 
-  const post = data?.post
+  const [unlovePost] = useMutation<Types.UnlovePost, Types.UnlovePostVariables>(
+    UNLOVE_POST,
+    {
+      variables: {
+        input: {
+          id: postId,
+        },
+      },
+    }
+  )
+
+  const hasFavoritedPost = false // pinnedPostIds.includes(post.id)
 
   const onClickCard = React.useCallback((id) => {
     // navigate(`/feed/posts/${id}`)
@@ -117,10 +163,13 @@ export default function Post({ postId }: Props) {
       <ActionRow>
         <ButtonGroup>
           <Button
-            size="small"
             onClick={(e) => {
               e.stopPropagation()
-              // store.postStore.toggleLovePost(post.id)
+              if (!hasLovedPost) {
+                lovePost()
+              } else {
+                unlovePost()
+              }
             }}
           >
             {hasLovedPost ? (
@@ -130,12 +179,11 @@ export default function Post({ postId }: Props) {
             )}
             {post.numLove}
           </Button>
-          <Button size="small">
+          <Button>
             <RightIcon as={CommentIcon} />
             {post.numNotes}
           </Button>
           <Button
-            size="small"
             onClick={(e) => {
               e.stopPropagation()
               // store.postStore.togglePinnedPost(post.id)
@@ -147,4 +195,8 @@ export default function Post({ postId }: Props) {
       </ActionRow>
     </Root>
   )
+}
+
+Post.fragments = {
+  post: POST_FRAGMENT,
 }

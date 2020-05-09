@@ -1,10 +1,17 @@
 import DataLoader from 'dataloader'
-import { sortBy } from 'lodash'
+import { sortBy, isNil } from 'lodash'
 import { DataSourceConfig } from 'apollo-datasource'
 import sort from 'dataloader-sort'
 import BaseAPI from './base-api'
 import { Context } from './context'
-import { Post, PostType } from '../__generated__/schema-types'
+import {
+  Post,
+  PostType,
+  LovePostResponse,
+  UnlovePostResponse,
+} from '../__generated__/schema-types'
+import { unauthorizedResponse } from './const'
+import { delegateToSchema } from 'apollo-server'
 
 export type ApiPostDto = {
   id: number
@@ -112,5 +119,41 @@ export default class PostAPI extends BaseAPI {
 
   async getPost(id: number) {
     return await this.context.loaders.postLoader.load(id)
+  }
+
+  async lovePost(id: number): Promise<LovePostResponse> {
+    try {
+      const post = await this.context.loaders.postLoader.load(id)
+      await this.get(`vx/node/love/add/${id}`)
+
+      // The api caches the feed, so we need to manually update the amount of love on the post
+      post.numLove = isNil(post.numLove) ? 0 : post.numLove + 1
+
+      return {
+        __typename: 'LovePostSuccess',
+        success: true,
+        post,
+      }
+    } catch (e) {
+      return unauthorizedResponse
+    }
+  }
+
+  async unlovePost(id: number): Promise<UnlovePostResponse> {
+    try {
+      const post = await this.context.loaders.postLoader.load(id)
+      await this.get(`vx/node/love/remove/${id}`)
+
+      // The api caches the feed, so we need to manually update the amount of love on the post
+      post.numLove = Math.max(isNil(post.numLove) ? 0 : post.numLove - 1, 0)
+
+      return {
+        __typename: 'UnlovePostSuccess',
+        success: true,
+        post,
+      }
+    } catch (e) {
+      return unauthorizedResponse
+    }
   }
 }

@@ -26,56 +26,51 @@ const AppContent = styled.div`
 const LOGIN = gql`
   mutation Login($input: LoginInput!) {
     login(input: $input) {
-      ... on LoginSuccessResponse {
+      ... on LoginSuccess {
         token
       }
-      ... on LoginFailureResponse {
+      ... on LoginFailure {
         message
       }
     }
   }
 `
 
-const useLogin = ({ onCompleted }: { onCompleted: () => void }) => {
-  const [login] = useMutation<Types.Login, Types.LoginVariables>(LOGIN, {
-    onCompleted({ login }) {
-      if (login.__typename === 'LoginSuccessResponse') {
-        const { token } = login
-        localStorage.setItem('token', token)
-        isLoggedInVar(true)
-      } else if (login.__typename === 'LoginFailureResponse') {
-        isLoggedInVar(false)
-      }
-
-      onCompleted()
-    },
-  })
-
-  console.log(login)
-
-  return login
-}
-
 const useLoginComponent = () => {
   const [promptLogin, setPromptLogin] = React.useState(false)
-  const loginMutation = useLogin({
-    onCompleted: () => {
-      setPromptLogin(false)
-    },
-  })
+  const [error, setError] = React.useState('')
+  const [loginMutation] = useMutation<Types.Login, Types.LoginVariables>(
+    LOGIN,
+    {
+      onCompleted: ({ login }) => {
+        if (login.__typename === 'LoginSuccess') {
+          const { token } = login
+          localStorage.setItem('token', token)
+          setPromptLogin(false)
+          window.location.reload()
+          isLoggedInVar(true)
+        } else if (login.__typename === 'LoginFailure') {
+          setError(login.message)
+          isLoggedInVar(false)
+        }
+      },
+    }
+  )
 
   const login = React.useCallback(
     ({ username, password }: { username: string; password: string }) => {
+      setError('')
+
       loginMutation({
         variables: {
           input: {
-            email: username || 'noah.potter@outlook.com',
-            password: password || 'vhvL6YT7kQKRHNwVb3JG',
+            email: username,
+            password: password,
           },
         },
       })
     },
-    [loginMutation, setPromptLogin]
+    [loginMutation]
   )
 
   const loginComponent = React.useMemo(() => {
@@ -85,10 +80,10 @@ const useLoginComponent = () => {
         anchor="left"
         onClose={() => setPromptLogin(false)}
       >
-        <LoginForm login={login} />
+        <LoginForm login={login} error={error} />
       </Drawer>
     )
-  }, [promptLogin])
+  }, [promptLogin, login, error])
 
   return {
     login,
@@ -98,24 +93,49 @@ const useLoginComponent = () => {
   }
 }
 
-interface Props {}
-export default function Root({}: Props) {
+const GET_APP_DATA = gql`
+  query GetAppData {
+    me {
+      ... on Me {
+        id
+      }
+    }
+  }
+`
+
+export default function Root() {
+  const [hasLoadedUser, setHasLoadedUser] = React.useState(false)
   const { setPromptLogin, loginComponent } = useLoginComponent()
 
-  return (
-    <App>
-      <Routes>
-        <Route
-          path="/:basePath*"
-          element={<Sidebar setPromptLogin={setPromptLogin} />}
-        />
-      </Routes>
-      <AppContent>
-        <RoutesWithFallback>
-          <Route path="/posts" element={<PostsPage />} />
-        </RoutesWithFallback>
-      </AppContent>
-      {loginComponent}
-    </App>
-  )
+  useQuery<Types.GetAppData>(GET_APP_DATA, {
+    onCompleted(data) {
+      if (data.me.__typename === 'UnauthorizedResponse') {
+        isLoggedInVar(false)
+        localStorage.removeItem('token')
+      }
+
+      setHasLoadedUser(true)
+    },
+  })
+
+  if (hasLoadedUser) {
+    return (
+      <App>
+        <Routes>
+          <Route
+            path="/:basePath*"
+            element={<Sidebar setPromptLogin={setPromptLogin} />}
+          />
+        </Routes>
+        <AppContent>
+          <RoutesWithFallback>
+            <Route path="/posts" element={<PostsPage />} />
+          </RoutesWithFallback>
+        </AppContent>
+        {loginComponent}
+      </App>
+    )
+  }
+
+  return null
 }

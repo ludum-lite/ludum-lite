@@ -3,8 +3,13 @@ import { DataSourceConfig } from 'apollo-datasource'
 import sort from 'dataloader-sort'
 import BaseAPI from './base-api'
 import { Context } from './context'
-import { AuthenticationError } from 'apollo-server'
-import { User, LoginResponse } from '../__generated__/schema-types'
+import { unauthorizedResponse } from './const'
+import {
+  User,
+  LoginResponse,
+  UnauthorizedResponse,
+  Me,
+} from '../__generated__/schema-types'
 
 export type ApiUserDto = {
   id: number
@@ -22,6 +27,7 @@ export type ApiUserDto = {
 
 function apiUserToUser(user: ApiUserDto): User {
   return {
+    __typename: 'User',
     id: user.id,
     createdDate: user.created,
     modifiedDate: user.modified,
@@ -66,18 +72,16 @@ export default class UserAPI extends BaseAPI {
         }
       )
 
-      console.log({ response })
-
       const cookies = response._headers.get('set-cookie')
 
       return {
-        __typename: 'LoginSuccessResponse',
+        __typename: 'LoginSuccess',
         success: true,
         token: getCookieValue(cookies, 'SIDS') || '',
       }
     } catch (e) {
       return {
-        __typename: 'LoginFailureResponse',
+        __typename: 'LoginFailure',
         success: false,
         message: 'The given username/password is incorrect.',
       }
@@ -85,7 +89,21 @@ export default class UserAPI extends BaseAPI {
   }
 
   async me() {
-    return apiUserToUser((await this.get('vx/user/get')).node)
+    try {
+      return {
+        ...apiUserToUser((await this.get('vx/user/get')).node),
+        __typename: 'Me',
+      } as Me
+    } catch (e) {
+      return unauthorizedResponse
+    }
+  }
+
+  async getMyLovedPosts() {
+    const response = await this.get('vx/node/love/getmy')
+    const lovedPosts = response['my-love']
+
+    return lovedPosts
   }
 
   async getUser(id: number) {
