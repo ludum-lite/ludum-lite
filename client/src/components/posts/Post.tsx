@@ -7,6 +7,7 @@ import { favoritedIdsVar } from 'resolvers'
 import PostDetails from 'components/common/post/PostDetails'
 import ButtonGroup from 'components/common/mui/ButtonGroup'
 import Button from 'components/common/mui/Button'
+import LoginContext from 'components/contexts/LoginContext'
 
 import FavoriteIcon from '@material-ui/icons/FavoriteRounded'
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorderRounded'
@@ -124,12 +125,14 @@ interface Props {
   post: Types.Post_post
   hasLovedPost: boolean
   hasFavoritedPost: boolean
+  isLoggedIn: boolean
 }
 export default function Post({
   postId,
   post,
   hasLovedPost,
   hasFavoritedPost,
+  isLoggedIn,
 }: Props) {
   const [lovePost] = useMutation<Types.LovePost, Types.LovePostVariables>(
     LOVE_POST,
@@ -153,6 +156,8 @@ export default function Post({
     }
   )
 
+  const { promptLogin } = React.useContext(LoginContext)
+
   const onClickCard = React.useCallback((id) => {
     // navigate(`/feed/posts/${id}`)
     // setHasClickedPost(true)
@@ -166,14 +171,18 @@ export default function Post({
       <ActionRow>
         <ButtonGroup>
           <Button
-            onClick={(e) => {
-              e.stopPropagation()
-              if (hasLovedPost) {
-                unlovePost()
-              } else {
-                lovePost()
-              }
-            }}
+            onClick={
+              isLoggedIn
+                ? (e) => {
+                    e.stopPropagation()
+                    if (hasLovedPost) {
+                      unlovePost()
+                    } else {
+                      lovePost()
+                    }
+                  }
+                : promptLogin
+            }
           >
             {hasLovedPost ? (
               <RightIcon as={FavoriteIcon} />

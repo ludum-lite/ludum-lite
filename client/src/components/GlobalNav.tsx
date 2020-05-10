@@ -9,8 +9,11 @@ import {
 import { isLoggedInVar } from 'resolvers'
 import { gql, useQuery } from '@apollo/client'
 import MuiAddIcon from '@material-ui/icons/Add'
+import MuiLightBrightnessIcon from '@material-ui/icons/Brightness4'
+import MuiDarkBrightnessIcon from '@material-ui/icons/Brightness4Outlined'
 import { ReactComponent as UserIcon } from 'assets/user.svg'
 import * as Types from '__generated__/Types'
+import { ThemeMode } from 'utils/types'
 
 const Root = styled.div`
   display: flex;
@@ -22,13 +25,13 @@ const Root = styled.div`
 const Header = styled.div``
 
 const IconButton = styled(MuiIconButton)`
-  color: ${({ theme }) => theme.white};
+  color: white;
   width: 48px;
   height: 48px;
   padding: 0;
 
   &:hover {
-    background-color: ${({ theme }) => theme.boxShadow.light};
+    background-color: rgba(255, 255, 255, 0.25);
   }
 `
 
@@ -83,8 +86,13 @@ const Menu = styled(MuiMenu)`
 
 const Footer = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   margin-bottom: ${({ theme }) => theme.spacing(1)}px;
+
+  & > * {
+    margin-top: ${({ theme }) => theme.spacing(1)}px;
+  }
 `
 
 const useGlobalNavData = () => {
@@ -106,8 +114,14 @@ const useGlobalNavData = () => {
 
 interface Props {
   setPromptLogin: (value: boolean) => void
+  toggleTheme: () => void
+  themeMode: ThemeMode
 }
-export default function GlobalNav({ setPromptLogin }: Props) {
+export default function GlobalNav({
+  setPromptLogin,
+  toggleTheme,
+  themeMode,
+}: Props) {
   const { isLoggedIn } = useGlobalNavData()
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
@@ -126,9 +140,9 @@ export default function GlobalNav({ setPromptLogin }: Props) {
   }
 
   const onLogout = () => {
-    handleClose()
     localStorage.removeItem('token')
     isLoggedInVar(false)
+    window.location.reload()
   }
 
   return (
@@ -140,6 +154,13 @@ export default function GlobalNav({ setPromptLogin }: Props) {
         </IconButton>
       </Body>
       <Footer>
+        <IconButton>
+          {themeMode === 'light' ? (
+            <MuiLightBrightnessIcon onClick={toggleTheme} />
+          ) : (
+            <MuiDarkBrightnessIcon onClick={toggleTheme} />
+          )}
+        </IconButton>
         <ProfileButton onClick={handleClick} isLoggedIn={isLoggedIn}>
           <ProfileCircle isLoggedIn={isLoggedIn}>
             <UserIcon />

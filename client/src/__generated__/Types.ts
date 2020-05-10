@@ -252,6 +252,7 @@ export interface GetPostsPageData_me_Me {
 export type GetPostsPageData_me = GetPostsPageData_me_UnauthorizedResponse | GetPostsPageData_me_Me;
 
 export interface GetPostsPageData {
+  isLoggedIn: boolean;
   searchPosts: GetPostsPageData_searchPosts;
   me: GetPostsPageData_me;
 }

@@ -9,6 +9,8 @@ import RoutesWithFallback from './RoutesWithFallback'
 import PostsPage from 'components/posts/PostsPage'
 import LoginForm from './login/LoginForm'
 import * as Types from '__generated__/Types'
+import { ThemeMode } from 'utils/types'
+import LoginContext from 'components/contexts/LoginContext'
 
 const App = styled.div`
   display: flex;
@@ -47,8 +49,8 @@ const useLoginComponent = () => {
           const { token } = login
           localStorage.setItem('token', token)
           setPromptLogin(false)
-          window.location.reload()
           isLoggedInVar(true)
+          window.location.reload()
         } else if (login.__typename === 'LoginFailure') {
           setError(login.message)
           isLoggedInVar(false)
@@ -103,7 +105,11 @@ const GET_APP_DATA = gql`
   }
 `
 
-export default function Root() {
+interface Props {
+  toggleTheme: () => void
+  themeMode: ThemeMode
+}
+export default function Root({ toggleTheme, themeMode }: Props) {
   const [hasLoadedUser, setHasLoadedUser] = React.useState(false)
   const { setPromptLogin, loginComponent } = useLoginComponent()
 
@@ -118,20 +124,32 @@ export default function Root() {
     },
   })
 
+  const promptLogin = React.useCallback(() => {
+    setPromptLogin(true)
+  }, [setPromptLogin])
+
   if (hasLoadedUser) {
     return (
       <App>
         <Routes>
           <Route
             path="/:basePath*"
-            element={<Sidebar setPromptLogin={setPromptLogin} />}
+            element={
+              <Sidebar
+                setPromptLogin={setPromptLogin}
+                toggleTheme={toggleTheme}
+                themeMode={themeMode}
+              />
+            }
           />
         </Routes>
-        <AppContent>
-          <RoutesWithFallback>
-            <Route path="/posts" element={<PostsPage />} />
-          </RoutesWithFallback>
-        </AppContent>
+        <LoginContext.Provider value={{ promptLogin }}>
+          <AppContent>
+            <RoutesWithFallback>
+              <Route path="/posts" element={<PostsPage />} />
+            </RoutesWithFallback>
+          </AppContent>
+        </LoginContext.Provider>
         {loginComponent}
       </App>
     )

@@ -6,9 +6,12 @@ import {
   ListItemText,
   Typography,
 } from '@material-ui/core'
+import { ReactComponent as LudumLogo } from 'assets/ludum.svg'
+import { ReactComponent as DareLogo } from 'assets/dare.svg'
 
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import GlobalNav from './GlobalNav'
+import { ThemeMode } from 'utils/types'
 
 const Root = styled.div`
   display: flex;
@@ -28,9 +31,13 @@ const ContextualNav = styled.div`
 `
 
 const Title = styled(Typography)`
-  color: white;
-  font-size: 32px;
-  padding: ${({ theme }) => theme.spacing(4)}px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background: ${({ theme }) => theme.themeColors.logoBackground};
+  margin: ${({ theme }) => theme.spacing(2)}px 0px;
+  padding: ${({ theme }) => theme.spacing(2)}px;
+  border-radius: ${({ theme }) => theme.shape.borderRadius}px;
 `
 
 const ListItem = styled(MuiListItem)`
@@ -53,6 +60,17 @@ const ListItem = styled(MuiListItem)`
   }
 ` as typeof MuiListItem
 
+const StyledLudumLogo = styled(LudumLogo)`
+  fill: ${({ theme }) => theme.ldStyleVariables.portlandOrange};
+  height: 35px;
+`
+
+const StyledDareLogo = styled(DareLogo)`
+  fill: ${({ theme }) => theme.ldStyleVariables.darkOrange};
+  height: 35px;
+  margin-top: 10px;
+`
+
 const paths = [
   {
     url: 'posts',
@@ -74,15 +92,28 @@ const paths = [
 
 interface Props {
   setPromptLogin: (value: boolean) => void
+  toggleTheme: () => void
+  themeMode: ThemeMode
 }
-export default function Sidebar({ setPromptLogin }: Props) {
+export default function Sidebar({
+  setPromptLogin,
+  toggleTheme,
+  themeMode,
+}: Props) {
   const { basePath } = useParams()
 
   return (
     <Root>
-      <GlobalNav setPromptLogin={setPromptLogin} />
+      <GlobalNav
+        setPromptLogin={setPromptLogin}
+        toggleTheme={toggleTheme}
+        themeMode={themeMode}
+      />
       <ContextualNav>
-        <Title>Ludum Dare</Title>
+        <Title>
+          <StyledLudumLogo />
+          <StyledDareLogo />
+        </Title>
         <List disablePadding>
           {paths.map((path) => (
             <ListItem

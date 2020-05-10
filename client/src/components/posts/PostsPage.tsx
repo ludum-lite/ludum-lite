@@ -43,7 +43,6 @@ const SortButton = styled(Button)`
 
 const SortActions = styled.div`
   display: flex;
-  background: white;
   padding-top: ${({ theme }) => theme.spacing(4)}px;
   padding-bottom: ${({ theme }) => theme.spacing(8)}px;
 
@@ -79,6 +78,7 @@ const GET_DATA = gql`
     $limit: Int!
     $page: Int!
   ) {
+    isLoggedIn @client
     searchPosts(filters: $filters, limit: $limit, page: $page) {
       page
       posts {
@@ -130,24 +130,16 @@ export default function PostsPage() {
 
   const lovedPosts = data?.me.__typename === 'Me' ? data?.me.lovedPosts : []
 
-  const postComponents = data?.searchPosts?.posts
-    ?.map((post) => {
-      if (!post) return null
-
-      const hasLovedPost = !!lovedPosts?.includes(post.id)
-      const hasFavoritedPost = !!favoritedIds?.includes(post.id)
-
-      return (
-        <Post
-          key={post.id}
-          postId={post.id}
-          post={post}
-          hasLovedPost={hasLovedPost}
-          hasFavoritedPost={hasFavoritedPost}
-        />
-      )
-    })
-    .filter(Boolean)
+  const postComponents = data?.searchPosts?.posts?.map((post) => (
+    <Post
+      key={post.id}
+      postId={post.id}
+      post={post}
+      hasLovedPost={!!lovedPosts?.includes(post.id)}
+      hasFavoritedPost={!!favoritedIds?.includes(post.id)}
+      isLoggedIn={!!data?.isLoggedIn}
+    />
+  ))
 
   const hasPosts = postComponents && postComponents.length > 0
 

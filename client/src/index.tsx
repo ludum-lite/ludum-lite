@@ -7,6 +7,7 @@ import { BatchHttpLink } from '@apollo/link-batch-http'
 import { setContext } from '@apollo/link-context'
 import { ApolloClient, ApolloProvider, ApolloLink } from '@apollo/client'
 import { cache, resolvers, typeDefs } from './resolvers'
+import { ThemeMode } from 'utils/types'
 
 import {
   createGlobalStyle,
@@ -90,8 +91,37 @@ declare module '@material-ui/core/styles/createMuiTheme' {
   interface ThemeOptions {}
 }
 
+export type ThemeColors = {
+  background: string
+  globalNavBackground: string
+  contextualNavBackground: string
+  loaderBackground: string
+  loaderBarBackground: string
+  logoBackground: string
+  error: {
+    background: string
+  }
+  post: {
+    backgroundColor: string
+  }
+  palette: {
+    primary: {
+      dark: string
+      main: string
+      light: string
+      contrastText: string
+    }
+  }
+}
+
+type Themes = {
+  light: ThemeColors
+  dark: ThemeColors
+}
+
 const styleVariables = {
   prussianBlue: 'rgb(19, 41, 61)',
+  indigoDye: 'rgb(0, 69, 103)',
   sapphireBlue: 'rgb(0, 100, 148)',
   greenBlue: 'rgb(5, 142, 217)',
   carolinaBlue: 'rgb(63, 166, 222)',
@@ -105,68 +135,79 @@ const styleVariables = {
   },
 } as const
 
-export type ThemeColors = {
-  background: string
-  globalNavBackground: string
-  contextualNavBackground: string
-  loaderBackground: string
-  loaderBarBackground: string
+const lightTheme: ThemeColors = {
+  background: styleVariables.white,
+  globalNavBackground: styleVariables.sapphireBlue,
+  contextualNavBackground: styleVariables.greenBlue,
+  loaderBackground: 'rgba(0, 0, 0, 0.166)',
+  loaderBarBackground: 'rgba(0, 0, 0, 0.166)',
+  logoBackground: styleVariables.indigoDye,
   error: {
-    background: string
-  }
+    background: styleVariables.bittersweet,
+  },
   post: {
-    backgroundColor: string
-  }
-}
-
-type Themes = {
-  light: ThemeColors
-  dark: ThemeColors
-}
-
-const themeColors: Themes = {
-  light: {
-    background: styleVariables.white,
-    globalNavBackground: styleVariables.sapphireBlue,
-    contextualNavBackground: styleVariables.greenBlue,
-    loaderBackground: 'rgba(0, 0, 0, 0.166)',
-    loaderBarBackground: 'rgba(0, 0, 0, 0.166)',
-    error: {
-      background: styleVariables.bittersweet,
-    },
-    post: {
-      backgroundColor: styleVariables.white,
+    backgroundColor: styleVariables.white,
+  },
+  palette: {
+    primary: {
+      dark: styleVariables.sapphireBlue,
+      main: styleVariables.greenBlue,
+      light: styleVariables.carolinaBlue,
+      contrastText: styleVariables.white,
     },
   },
-  dark: {
-    background: styleVariables.greenBlue,
-    globalNavBackground: styleVariables.prussianBlue,
-    contextualNavBackground: styleVariables.greenBlue,
-    loaderBackground: 'rgba(0, 0, 0, 0.166)',
-    loaderBarBackground: 'rgba(0, 0, 0, 0.166)',
-    error: {
-      background: styleVariables.bittersweet,
-    },
-    post: {
-      backgroundColor: styleVariables.white,
-    },
+}
+
+const ldStyleVariables = {
+  raisinBlack: 'rgb(31, 36, 41)',
+  slateGray: 'rgb(111, 121, 132)',
+  lightGray: 'rgb(208, 208, 216)',
+  cultured: 'rgb(238, 242, 247)',
+  darkOrange: 'rgb(247, 145, 34)',
+  sunglow: 'rgb(255, 204, 17)',
+  portlandOrange: 'rgb(238, 85, 51)',
+  blueDeFrance: 'rgb(34, 136, 247)',
+  white: 'rgb(253, 255, 255)',
+  boxShadow: {
+    light: 'rgba(255, 255, 255, 0.25)',
   },
 } as const
 
-type Mode = 'light' | 'dark'
+const darkTheme: ThemeColors = {
+  background: ldStyleVariables.cultured,
+  globalNavBackground: ldStyleVariables.raisinBlack,
+  contextualNavBackground: ldStyleVariables.slateGray,
+  loaderBackground: 'rgba(0, 0, 0, 0.166)',
+  loaderBarBackground: 'rgba(0, 0, 0, 0.166)',
+  logoBackground: ldStyleVariables.raisinBlack,
+  error: {
+    background: styleVariables.bittersweet,
+  },
+  post: {
+    backgroundColor: styleVariables.cultured,
+  },
+  palette: {
+    primary: {
+      dark: ldStyleVariables.raisinBlack,
+      main: ldStyleVariables.slateGray,
+      light: ldStyleVariables.lightGray,
+      contrastText: ldStyleVariables.white,
+    },
+  },
+}
+
+const themeColors: Themes = {
+  light: lightTheme,
+  dark: darkTheme,
+} as const
 
 const defaultTheme = createMuiTheme()
 
-const muiThemeGenerator = ({ mode }: { mode: Mode }) =>
-  createMuiTheme({
-    palette: {
-      primary: {
-        dark: styleVariables.sapphireBlue,
-        main: styleVariables.greenBlue,
-        light: styleVariables.carolinaBlue,
-        contrastText: styleVariables.white,
-      },
-    },
+const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
+  const theme = themeColors[themeMode]
+
+  return createMuiTheme({
+    palette: theme.palette,
     typography: {
       htmlFontSize: 10,
       fontFamily: [
@@ -193,9 +234,15 @@ const muiThemeGenerator = ({ mode }: { mode: Mode }) =>
         root: {
           textTransform: 'none',
           transition: 'none',
+          '&:hover': {
+            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+          },
         },
         contained: {
-          backgroundColor: '#e8e8e8',
+          backgroundColor: 'rgba(0, 0, 0, 0.1)',
+          '&:hover': {
+            backgroundColor: 'rgba(0, 0, 0, 0.2)',
+          },
         },
       },
       MuiIconButton: {
@@ -252,19 +299,21 @@ const muiThemeGenerator = ({ mode }: { mode: Mode }) =>
       },
     },
   })
+}
 
-const muiTheme = muiThemeGenerator({ mode: 'light' })
+const muiTheme = muiThemeGenerator({ themeMode: 'light' })
 
 const scThemeGenerator = ({
-  mode,
+  themeMode,
   selectedMuiTheme,
 }: {
-  mode: Mode
+  themeMode: ThemeMode
   selectedMuiTheme: Theme
 }) => ({
   ...selectedMuiTheme,
-  ...styleVariables,
-  themeColors: themeColors[mode],
+  styleVariables,
+  ldStyleVariables,
+  themeColors: themeColors[themeMode],
   // prettier-ignore
   layout: {
     1: '0.125rem',   // 2
@@ -279,7 +328,10 @@ const scThemeGenerator = ({
   } as const
 })
 
-const scTheme = scThemeGenerator({ mode: 'light', selectedMuiTheme: muiTheme })
+const scTheme = scThemeGenerator({
+  themeMode: 'light',
+  selectedMuiTheme: muiTheme,
+})
 
 type ScThemeType = typeof scTheme
 
@@ -306,14 +358,23 @@ const GlobalStyle = createGlobalStyle`
 /*********/
 
 const Root = () => {
-  const mode: Mode = (localStorage.getItem('themeMode') as Mode) || 'light'
+  const [themeMode, setThemeMode] = React.useState<ThemeMode>(
+    (localStorage.getItem('themeMode') as ThemeMode) || 'light'
+  )
 
-  const selectedMuiTheme = React.useMemo(() => muiThemeGenerator({ mode }), [
-    mode,
-  ])
+  const toggleTheme = React.useCallback(() => {
+    const newMode = themeMode === 'light' ? 'dark' : 'light'
+    setThemeMode(newMode)
+    localStorage.setItem('themeMode', newMode)
+  }, [themeMode])
+
+  const selectedMuiTheme = React.useMemo(
+    () => muiThemeGenerator({ themeMode }),
+    [themeMode]
+  )
   const selectedScTheme = React.useMemo(
-    () => scThemeGenerator({ mode, selectedMuiTheme }),
-    [selectedMuiTheme, mode]
+    () => scThemeGenerator({ themeMode, selectedMuiTheme }),
+    [selectedMuiTheme, themeMode]
   )
 
   return (
@@ -325,7 +386,7 @@ const Root = () => {
           <MuiThemeProvider theme={selectedMuiTheme}>
             <ScThemeProvider theme={selectedScTheme}>
               <BrowserRouter>
-                <App />
+                <App toggleTheme={toggleTheme} themeMode={themeMode} />
               </BrowserRouter>
             </ScThemeProvider>
           </MuiThemeProvider>

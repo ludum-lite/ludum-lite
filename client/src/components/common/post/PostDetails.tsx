@@ -69,8 +69,8 @@ const CollapseButtonContainer = styled.div<CollapseButtonContainerProps>`
   display: flex;
   justify-content: center;
   padding: ${({ theme }) => theme.spacing(1) * 1.5}px 0;
-  background-color: white;
-  box-shadow: 0 -1px 20px 28px #ffffff;
+  background-color: ${({ theme }) => theme.themeColors.background};
+  box-shadow: 0 -1px 20px 28px ${({ theme }) => theme.themeColors.background};
   z-index: 3;
   position: absolute;
   bottom: 0;
@@ -79,6 +79,7 @@ const CollapseButtonContainer = styled.div<CollapseButtonContainerProps>`
   opacity: ${({ show }) => (show ? 1 : 0)};
   transition: opacity 250ms;
   transition-delay: 100ms;
+  pointer-events: ${({ show }) => (show ? undefined : 'none')};
 `
 
 type Props = {
