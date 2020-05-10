@@ -9,6 +9,7 @@ import {
   PostType,
   LovePostResponse,
   UnlovePostResponse,
+  QuerySearchPostsArgs,
 } from '../__generated__/schema-types'
 import { unauthorizedResponse } from './const'
 import { delegateToSchema } from 'apollo-server'
@@ -80,40 +81,47 @@ export default class PostAPI extends BaseAPI {
   async searchPosts({
     page,
     limit,
-    filters: { postType },
-  }: {
-    page: number
-    limit: number
-    filters: { postType: PostType }
-  }) {
-    const postIdsResponse = await this.get(
-      `vx/node/feed/1/all/post${postType === 'news' ? '/news' : ''}`,
-      {
-        offset: (page - 1) * limit,
-        limit,
-      }
-    )
+    filters: { postType, favoritedIds },
+  }: QuerySearchPostsArgs) {
+    if (postType === PostType.All || postType === PostType.News) {
+      const postIdsResponse = await this.get(
+        `vx/node/feed/1/all/post${postType === 'news' ? '/news' : ''}`,
+        {
+          offset: page * limit,
+          limit,
+        }
+      )
 
-    const postIds = postIdsResponse.feed.map((p: ApiPostDto) => p.id)
+      const postIds = postIdsResponse.feed.map((p: ApiPostDto) => p.id)
 
-    if (postIds.length > 0) {
       const postsResponse = (await this.context.loaders.postLoader.loadMany(
         postIds
       )) as Post[]
 
-      const posts = sortBy(postsResponse, 'publishedAt').reverse()
+      const posts = sortBy(postsResponse, 'publishedAt')
 
       return {
         page,
         limit,
         posts,
       }
-    }
+    } else if (postType === PostType.Favorites) {
+      // Assume oldest favorites are at the front of the list, reverse to oldest are last
+      const sortedFavoriteIds = favoritedIds?.reverse()
 
-    return {
-      page,
-      limit,
-      posts: [],
+      const offset = page * limit
+
+      const ids = sortedFavoriteIds?.slice(offset, offset + limit) || []
+
+      const posts = (await this.context.loaders.postLoader.loadMany(
+        ids
+      )) as Post[]
+
+      return {
+        page,
+        limit,
+        posts,
+      }
     }
   }
 

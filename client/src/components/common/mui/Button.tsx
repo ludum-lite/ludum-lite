@@ -5,10 +5,11 @@ import styled, { css } from 'styled-components/macro'
 interface StyledButtonProps {
   border?: boolean
   noShadow?: boolean
+  active?: boolean
 }
 
 const StyledButton = styled(MuiButton).withConfig({
-  shouldForwardProp: (prop) => !['border', 'noShadow'].includes(prop),
+  shouldForwardProp: (prop) => !['border', 'noShadow', 'active'].includes(prop),
 })<StyledButtonProps>`
   ${({ border }) =>
     border &&
@@ -24,16 +25,27 @@ const StyledButton = styled(MuiButton).withConfig({
     css`
       box-shadow: 0 0 0 1px #00000017;
     `}
+  
+  ${({ active }) => active && css``}
 `
 
 export interface Props {
   border?: boolean
   noShadow?: boolean
+  active?: boolean
 }
 export default function Button({
   border,
   noShadow,
+  active,
   ...other
 }: Props & Omit<ButtonProps, keyof Props>) {
-  return <StyledButton border={border} noShadow={noShadow} {...other} />
+  return (
+    <StyledButton
+      border={border}
+      noShadow={noShadow}
+      active={active}
+      {...other}
+    />
+  )
 }

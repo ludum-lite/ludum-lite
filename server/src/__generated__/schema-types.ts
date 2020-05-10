@@ -105,6 +105,7 @@ export type SearchPostResponse = {
 
 export type SearchPostsFiltersInput = {
   postType: PostType;
+  favoritedIds?: Maybe<Array<Scalars['Int']>>;
 };
 
 export type LoginFailure = MutationResponse & {
@@ -122,8 +123,9 @@ export type LoginSuccess = MutationResponse & {
 export type LoginResponse = LoginFailure | LoginSuccess;
 
 export enum PostType {
+  All = 'all',
   News = 'news',
-  User = 'user'
+  Favorites = 'favorites'
 }
 
 export type Post = {

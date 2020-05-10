@@ -3,6 +3,7 @@ import { Resolvers, ApolloCache, gql, InMemoryCache } from '@apollo/client'
 export const typeDefs = gql`
   extend type Query {
     isLoggedIn: Boolean!
+    favoritedIds: [Int!]
   }
 `
 
@@ -12,6 +13,9 @@ export const cache: InMemoryCache = new InMemoryCache({
       fields: {
         isLoggedIn() {
           return isLoggedInVar()
+        },
+        favoritedIds() {
+          return favoritedIdsVar()
         },
       },
     },
@@ -66,4 +70,8 @@ export const resolvers: AppResolvers = {
 
 export const isLoggedInVar = cache.makeVar<boolean>(
   !!localStorage.getItem('token')
+)
+
+export const favoritedIdsVar = cache.makeVar<number[]>(
+  JSON.parse(localStorage.getItem('favoritedIds') || '[]')
 )

@@ -198,6 +198,19 @@ export interface UnlovePostVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetFavoritedIds
+// ====================================================
+
+export interface GetFavoritedIds {
+  favoritedIds: number[] | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GetPostsPageData
 // ====================================================
 
@@ -287,8 +300,9 @@ export interface Post_post {
 //==============================================================
 
 export enum PostType {
+  all = "all",
+  favorites = "favorites",
   news = "news",
-  user = "user",
 }
 
 export interface IdInput {
@@ -302,6 +316,7 @@ export interface LoginInput {
 
 export interface SearchPostsFiltersInput {
   postType: PostType;
+  favoritedIds?: number[] | null;
 }
 
 //==============================================================

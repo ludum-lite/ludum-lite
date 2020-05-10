@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components/macro'
 import { useMutation, gql } from '@apollo/client'
 import * as Types from '__generated__/Types'
+import { favoritedIdsVar } from 'resolvers'
 
 import PostDetails from 'components/common/post/PostDetails'
 import ButtonGroup from 'components/common/mui/ButtonGroup'
@@ -17,9 +18,7 @@ const Root = styled.div`
   display: flex;
   flex-direction: column;
   overflow: visible;
-  background: white;
-  padding: ${({ theme }) => theme.spacing(4)}px;
-  margin-bottom: ${({ theme }) => theme.spacing(2)}px;
+  padding-bottom: ${({ theme }) => theme.spacing(16)}px;
 `
 
 // const Card = styled.div`
@@ -124,8 +123,14 @@ interface Props {
   postId: number
   post: Types.Post_post
   hasLovedPost: boolean
+  hasFavoritedPost: boolean
 }
-export default function Post({ postId, post, hasLovedPost }: Props) {
+export default function Post({
+  postId,
+  post,
+  hasLovedPost,
+  hasFavoritedPost,
+}: Props) {
   const [lovePost] = useMutation<Types.LovePost, Types.LovePostVariables>(
     LOVE_POST,
     {
@@ -148,8 +153,6 @@ export default function Post({ postId, post, hasLovedPost }: Props) {
     }
   )
 
-  const hasFavoritedPost = false // pinnedPostIds.includes(post.id)
-
   const onClickCard = React.useCallback((id) => {
     // navigate(`/feed/posts/${id}`)
     // setHasClickedPost(true)
@@ -165,10 +168,10 @@ export default function Post({ postId, post, hasLovedPost }: Props) {
           <Button
             onClick={(e) => {
               e.stopPropagation()
-              if (!hasLovedPost) {
-                lovePost()
-              } else {
+              if (hasLovedPost) {
                 unlovePost()
+              } else {
+                lovePost()
               }
             }}
           >
@@ -186,7 +189,21 @@ export default function Post({ postId, post, hasLovedPost }: Props) {
           <Button
             onClick={(e) => {
               e.stopPropagation()
-              // store.postStore.togglePinnedPost(post.id)
+              let newFavoritedIds: number[]
+
+              if (hasFavoritedPost) {
+                newFavoritedIds = favoritedIdsVar().filter(
+                  (id) => post.id !== id
+                )
+              } else {
+                newFavoritedIds = [...favoritedIdsVar(), post.id]
+              }
+
+              favoritedIdsVar(newFavoritedIds)
+              window.localStorage.setItem(
+                'favoritedIds',
+                JSON.stringify(newFavoritedIds)
+              )
             }}
           >
             {hasFavoritedPost ? <BookmarkIcon /> : <BookmarkBorderIcon />}

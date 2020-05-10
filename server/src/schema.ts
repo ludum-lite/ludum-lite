@@ -61,6 +61,7 @@ export const typeDefs = gql`
 
   input SearchPostsFiltersInput {
     postType: PostType!
+    favoritedIds: [Int!]
   }
 
   type LoginFailure implements MutationResponse {
@@ -76,8 +77,9 @@ export const typeDefs = gql`
   union LoginResponse = LoginFailure | LoginSuccess
 
   enum PostType {
+    all
     news
-    user
+    favorites
   }
 
   type Post {

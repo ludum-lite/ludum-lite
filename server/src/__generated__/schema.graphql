@@ -54,6 +54,7 @@ type SearchPostResponse {
 
 input SearchPostsFiltersInput {
   postType: PostType!
+  favoritedIds: [Int!]
 }
 
 type LoginFailure implements MutationResponse {
@@ -69,8 +70,9 @@ type LoginSuccess implements MutationResponse {
 union LoginResponse = LoginFailure | LoginSuccess
 
 enum PostType {
+  all
   news
-  user
+  favorites
 }
 
 type Post {

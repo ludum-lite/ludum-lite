@@ -28,6 +28,7 @@ const GET_DATA = gql`
 
 const Root = styled.div`
   width: 600px;
+  overflow: hidden;
 `
 
 const Header = styled.div`
@@ -41,12 +42,11 @@ const HeaderContent = styled.div`
   flex-direction: column;
 `
 
-const HeaderUserContainer = styled.div`
-  margin-bottom: 8px;
-`
+const HeaderUserContainer = styled.div``
 
 const Title = styled.div`
   margin-right: 8px;
+  margin-bottom: ${({ theme }) => theme.spacing(1)}px;
 `
 
 const TitleText = styled(Typography)`
@@ -70,7 +70,7 @@ const CollapseButtonContainer = styled.div<CollapseButtonContainerProps>`
   justify-content: center;
   padding: ${({ theme }) => theme.spacing(1) * 1.5}px 0;
   background-color: white;
-  box-shadow: 0 -23px 21px 7px #ffffff;
+  box-shadow: 0 -1px 20px 28px #ffffff;
   z-index: 3;
   position: absolute;
   bottom: 0;
@@ -141,6 +141,9 @@ export default function PostDetails({ postId, forceExpand }: Props) {
     <Root>
       <Header>
         <HeaderContent>
+          <Title>
+            <TitleText variant="h5">{post.name}</TitleText>
+          </Title>
           <HeaderUserContainer>
             <UserPostedHeader
               userProfilePath={post.author.profilePath}
@@ -149,9 +152,6 @@ export default function PostDetails({ postId, forceExpand }: Props) {
               postedDate={post.publishedDate}
             />
           </HeaderUserContainer>
-          <Title>
-            <TitleText variant="h5">{post.name}</TitleText>
-          </Title>
         </HeaderContent>
       </Header>
       <Content>

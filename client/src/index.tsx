@@ -126,11 +126,11 @@ type Themes = {
 
 const themeColors: Themes = {
   light: {
-    background: styleVariables.greenBlue,
+    background: styleVariables.white,
     globalNavBackground: styleVariables.sapphireBlue,
     contextualNavBackground: styleVariables.greenBlue,
-    loaderBackground: styleVariables.white,
-    loaderBarBackground: styleVariables.cultured,
+    loaderBackground: 'rgba(0, 0, 0, 0.166)',
+    loaderBarBackground: 'rgba(0, 0, 0, 0.166)',
     error: {
       background: styleVariables.bittersweet,
     },
@@ -142,8 +142,8 @@ const themeColors: Themes = {
     background: styleVariables.greenBlue,
     globalNavBackground: styleVariables.prussianBlue,
     contextualNavBackground: styleVariables.greenBlue,
-    loaderBackground: styleVariables.white,
-    loaderBarBackground: styleVariables.cultured,
+    loaderBackground: 'rgba(0, 0, 0, 0.166)',
+    loaderBarBackground: 'rgba(0, 0, 0, 0.166)',
     error: {
       background: styleVariables.bittersweet,
     },
@@ -184,11 +184,15 @@ const muiThemeGenerator = ({ mode }: { mode: Mode }) =>
           disableUnderline: true,
         },
       },
+      MuiButton: {
+        disableElevation: true,
+      },
     },
     overrides: {
       MuiButton: {
         root: {
           textTransform: 'none',
+          transition: 'none',
         },
         contained: {
           backgroundColor: '#e8e8e8',
