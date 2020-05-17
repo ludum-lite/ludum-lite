@@ -25,8 +25,6 @@ const StyledButton = styled(MuiButton).withConfig({
     css`
       box-shadow: 0 0 0 1px #00000017;
     `}
-  
-  ${({ active }) => active && css``}
 `
 
 export interface Props {

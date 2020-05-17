@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 
 import { BatchHttpLink } from '@apollo/link-batch-http'
+import { SingletonHooksContainer } from 'react-singleton-hook'
 // import { onError } from '@apollo/link-error'
 import { setContext } from '@apollo/link-context'
 import { ApolloClient, ApolloProvider, ApolloLink } from '@apollo/client'
@@ -81,15 +82,15 @@ const client = new ApolloClient({
   },
 })
 
+declare global {
+  interface Window {
+    hasNavigatedWithin: boolean
+  }
+}
+
 /**********/
 /* Styles */
 /**********/
-
-declare module '@material-ui/core/styles/createMuiTheme' {
-  interface Theme {}
-
-  interface ThemeOptions {}
-}
 
 export type ThemeColors = {
   background: string
@@ -98,6 +99,7 @@ export type ThemeColors = {
   loaderBackground: string
   loaderBarBackground: string
   logoBackground: string
+  borderColor: string
   error: {
     background: string
   }
@@ -119,6 +121,8 @@ type Themes = {
   dark: ThemeColors
 }
 
+const borderColor = 'rgba(0, 0, 0, 0.22)'
+
 const styleVariables = {
   prussianBlue: 'rgb(19, 41, 61)',
   indigoDye: 'rgb(0, 69, 103)',
@@ -127,7 +131,7 @@ const styleVariables = {
   carolinaBlue: 'rgb(63, 166, 222)',
   bittersweet: 'rgb(248, 112, 96)',
   // greenShade: 'rgb(112, 169, 161)',
-  cultured: 'rgb(234, 235, 237)',
+  cultured: 'rgb(238, 242, 247)',
   ghostWhite: 'rgb(249, 249, 255)',
   white: 'rgb(253, 255, 255)',
   boxShadow: {
@@ -136,12 +140,13 @@ const styleVariables = {
 } as const
 
 const lightTheme: ThemeColors = {
-  background: styleVariables.white,
+  background: styleVariables.cultured,
   globalNavBackground: styleVariables.sapphireBlue,
   contextualNavBackground: styleVariables.greenBlue,
   loaderBackground: 'rgba(0, 0, 0, 0.166)',
   loaderBarBackground: 'rgba(0, 0, 0, 0.166)',
   logoBackground: styleVariables.indigoDye,
+  borderColor,
   error: {
     background: styleVariables.bittersweet,
   },
@@ -180,11 +185,12 @@ const darkTheme: ThemeColors = {
   loaderBackground: 'rgba(0, 0, 0, 0.166)',
   loaderBarBackground: 'rgba(0, 0, 0, 0.166)',
   logoBackground: ldStyleVariables.raisinBlack,
+  borderColor,
   error: {
     background: styleVariables.bittersweet,
   },
   post: {
-    backgroundColor: styleVariables.cultured,
+    backgroundColor: styleVariables.white,
   },
   palette: {
     primary: {
@@ -201,13 +207,18 @@ const themeColors: Themes = {
   dark: darkTheme,
 } as const
 
-const defaultTheme = createMuiTheme()
+const defaultTheme = createMuiTheme({
+  shape: {
+    borderRadius: 8,
+  },
+})
 
 const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
-  const theme = themeColors[themeMode]
+  const selectedThemeColors = themeColors[themeMode]
 
   return createMuiTheme({
-    palette: theme.palette,
+    ...defaultTheme,
+    palette: selectedThemeColors.palette,
     typography: {
       htmlFontSize: 10,
       fontFamily: [
@@ -234,9 +245,9 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
         root: {
           textTransform: 'none',
           transition: 'none',
-          '&:hover': {
-            backgroundColor: 'rgba(0, 0, 0, 0.1)',
-          },
+          // '&:hover': {
+          //   backgroundColor: 'rgba(0, 0, 0, 0.1)',
+          // },
         },
         contained: {
           backgroundColor: 'rgba(0, 0, 0, 0.1)',
@@ -248,11 +259,23 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       MuiIconButton: {
         root: {
           transition: 'none',
+          color: 'rgba(0, 0, 0, 0.78)',
+          borderRadius: defaultTheme.shape.borderRadius,
         },
       },
       MuiListItem: {
         button: {
           transition: 'none',
+        },
+      },
+      MuiLinearProgress: {
+        root: {
+          height: 112,
+          borderRadius: defaultTheme.shape.borderRadius,
+          backgroundColor: selectedThemeColors.loaderBackground,
+        },
+        barColorPrimary: {
+          backgroundColor: selectedThemeColors.loaderBarBackground,
         },
       },
       MuiInput: {
@@ -346,10 +369,15 @@ declare module 'styled-components' {
 const GlobalStyle = createGlobalStyle`
   html {
     font-size: 62.5%;
+    overflow-x: hidden;
   }
 
   body {
     font-size: 1.4rem;
+  }
+
+  hr {
+    border-color: ${borderColor};
   }
 `
 
@@ -382,6 +410,7 @@ const Root = () => {
       <Fragment>
         <CssBaseline />
         <GlobalStyle />
+        <SingletonHooksContainer />
         <StylesProvider injectFirst>
           <MuiThemeProvider theme={selectedMuiTheme}>
             <ScThemeProvider theme={selectedScTheme}>

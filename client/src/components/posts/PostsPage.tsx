@@ -7,10 +7,7 @@ import * as Types from '__generated__/Types'
 
 import Post from './Post'
 import Button from 'components/common/mui/Button'
-import {
-  Typography,
-  LinearProgress as MuiLinearProgress,
-} from '@material-ui/core'
+import { Typography, LinearProgress } from '@material-ui/core'
 
 const Root = styled.div`
   display: flex;
@@ -21,20 +18,19 @@ const Root = styled.div`
   margin: 0px ${({ theme }) => theme.spacing(4)}px;
 `
 
-const Posts = styled.div``
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+`
+
+const Posts = styled.div`
+  display: flex;
+  flex-direction: column;
+`
 
 const MoreButton = styled(Button)`
   padding: ${({ theme }) => theme.spacing(5)}px 0;
-`
-
-const LinearProgress = styled(MuiLinearProgress)`
-  height: 112px;
-  border-radius: ${({ theme }) => theme.shape.borderRadius}px;
-  background-color: ${({ theme }) => theme.themeColors.loaderBackground};
-
-  .MuiLinearProgress-barColorPrimary {
-    background-color: ${({ theme }) => theme.themeColors.loaderBarBackground};
-  }
 `
 
 const SortButton = styled(Button)`
@@ -43,8 +39,7 @@ const SortButton = styled(Button)`
 
 const SortActions = styled.div`
   display: flex;
-  padding-top: ${({ theme }) => theme.spacing(4)}px;
-  padding-bottom: ${({ theme }) => theme.spacing(8)}px;
+  padding: ${({ theme }) => theme.spacing(4)}px 0;
 
   ${SortButton} {
     margin-right: ${({ theme }) => theme.spacing(2)}px;
@@ -88,13 +83,11 @@ const GET_DATA = gql`
       }
     }
     me {
-      ... on Me {
-        id
-        lovedPosts
-      }
+      ...Post_me
     }
   }
   ${Post.fragments.post}
+  ${Post.fragments.me}
 `
 
 export default function PostsPage() {
@@ -128,16 +121,12 @@ export default function PostsPage() {
     notifyOnNetworkStatusChange: true,
   })
 
-  const lovedPosts = data?.me.__typename === 'Me' ? data?.me.lovedPosts : []
-
   const postComponents = data?.searchPosts?.posts?.map((post) => (
     <Post
       key={post.id}
-      postId={post.id}
       post={post}
-      hasLovedPost={!!lovedPosts?.includes(post.id)}
+      me={data?.me}
       hasFavoritedPost={!!favoritedIds?.includes(post.id)}
-      isLoggedIn={!!data?.isLoggedIn}
     />
   ))
 
@@ -229,8 +218,10 @@ export default function PostsPage() {
           Favorites
         </SortButton>
       </SortActions>
-      {body}
-      {footer}
+      <Content>
+        {body}
+        {footer}
+      </Content>
     </Root>
   )
 }

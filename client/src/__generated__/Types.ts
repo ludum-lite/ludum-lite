@@ -4,35 +4,6 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: Login
-// ====================================================
-
-export interface Login_login_LoginSuccess {
-  __typename: "LoginSuccess";
-  token: string;
-}
-
-export interface Login_login_LoginFailure {
-  __typename: "LoginFailure";
-  message: string;
-}
-
-export type Login_login = Login_login_LoginSuccess | Login_login_LoginFailure;
-
-export interface Login {
-  login: Login_login;
-}
-
-export interface LoginVariables {
-  input: LoginInput;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
 // GraphQL query operation: GetAppData
 // ====================================================
 
@@ -57,44 +28,10 @@ export interface GetAppData {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetPostDetailsData
+// GraphQL query operation: PostLoveButtonGlobalData
 // ====================================================
 
-export interface GetPostDetailsData_post_author {
-  __typename: "User";
-  id: number;
-  profilePath: string;
-  avatarPath: string | null;
-  name: string;
-}
-
-export interface GetPostDetailsData_post {
-  __typename: "Post";
-  id: number;
-  name: string | null;
-  body: string;
-  publishedDate: string | null;
-  author: GetPostDetailsData_post_author | null;
-}
-
-export interface GetPostDetailsData {
-  post: GetPostDetailsData_post;
-}
-
-export interface GetPostDetailsDataVariables {
-  input: IdInput;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL query operation: GetGlobalNavData
-// ====================================================
-
-export interface GetGlobalNavData {
+export interface PostLoveButtonGlobalData {
   isLoggedIn: boolean;
 }
 
@@ -198,6 +135,54 @@ export interface UnlovePostVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetPostOverlayPageData
+// ====================================================
+
+export interface GetPostOverlayPageData_post_author {
+  __typename: "User";
+  id: number;
+  profilePath: string;
+  avatarPath: string | null;
+  name: string;
+}
+
+export interface GetPostOverlayPageData_post {
+  __typename: "Post";
+  id: number;
+  name: string | null;
+  publishedDate: string | null;
+  body: string;
+  author: GetPostOverlayPageData_post_author | null;
+  numLove: number | null;
+}
+
+export interface GetPostOverlayPageData_me_UnauthorizedResponse {
+  __typename: "UnauthorizedResponse";
+}
+
+export interface GetPostOverlayPageData_me_Me {
+  __typename: "Me";
+  id: number;
+  lovedPosts: number[] | null;
+}
+
+export type GetPostOverlayPageData_me = GetPostOverlayPageData_me_UnauthorizedResponse | GetPostOverlayPageData_me_Me;
+
+export interface GetPostOverlayPageData {
+  post: GetPostOverlayPageData_post;
+  me: GetPostOverlayPageData_me;
+}
+
+export interface GetPostOverlayPageDataVariables {
+  input: IdInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GetFavoritedIds
 // ====================================================
 
@@ -269,6 +254,48 @@ export interface GetPostsPageDataVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetGlobalNavData
+// ====================================================
+
+export interface GetGlobalNavData {
+  isLoggedIn: boolean;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: Login
+// ====================================================
+
+export interface Login_login_LoginSuccess {
+  __typename: "LoginSuccess";
+  token: string;
+}
+
+export interface Login_login_LoginFailure {
+  __typename: "LoginFailure";
+  message: string;
+}
+
+export type Login_login = Login_login_LoginSuccess | Login_login_LoginFailure;
+
+export interface Login {
+  login: Login_login;
+}
+
+export interface LoginVariables {
+  input: LoginInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: Post_post
 // ====================================================
 
@@ -290,6 +317,89 @@ export interface Post_post {
   publishedDate: string | null;
   author: Post_post_author | null;
 }
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: Post_me
+// ====================================================
+
+export interface Post_me_UnauthorizedResponse {
+  __typename: "UnauthorizedResponse";
+}
+
+export interface Post_me_Me {
+  __typename: "Me";
+  id: number;
+  lovedPosts: number[] | null;
+}
+
+export type Post_me = Post_me_UnauthorizedResponse | Post_me_Me;
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: PostDetails_post
+// ====================================================
+
+export interface PostDetails_post_author {
+  __typename: "User";
+  id: number;
+  profilePath: string;
+  avatarPath: string | null;
+  name: string;
+}
+
+export interface PostDetails_post {
+  __typename: "Post";
+  id: number;
+  name: string | null;
+  body: string;
+  publishedDate: string | null;
+  author: PostDetails_post_author | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: PostLoveButton_post
+// ====================================================
+
+export interface PostLoveButton_post {
+  __typename: "Post";
+  id: number;
+  numLove: number | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: PostLoveButton_me
+// ====================================================
+
+export interface PostLoveButton_me_UnauthorizedResponse {
+  __typename: "UnauthorizedResponse";
+}
+
+export interface PostLoveButton_me_Me {
+  __typename: "Me";
+  id: number;
+  lovedPosts: number[] | null;
+}
+
+export type PostLoveButton_me = PostLoveButton_me_UnauthorizedResponse | PostLoveButton_me_Me;
 
 /* tslint:disable */
 /* eslint-disable */

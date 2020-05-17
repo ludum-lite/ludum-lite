@@ -14,6 +14,7 @@ import MuiDarkBrightnessIcon from '@material-ui/icons/Brightness4Outlined'
 import { ReactComponent as UserIcon } from 'assets/user.svg'
 import * as Types from '__generated__/Types'
 import { ThemeMode } from 'utils/types'
+import { useLogin } from 'hooks/useLogin'
 
 const Root = styled.div`
   display: flex;
@@ -59,7 +60,9 @@ const ProfileCircle = styled.div<ProfileCircleProps>`
 interface ProfileButtonProps {
   isLoggedIn: boolean
 }
-const ProfileButton = styled(IconButton)<ProfileButtonProps>`
+const ProfileButton = styled(IconButton).withConfig({
+  shouldForwardProp: (prop) => !['isLoggedIn'].includes(prop),
+})<ProfileButtonProps>`
   ${({ isLoggedIn }) =>
     !isLoggedIn &&
     css`
@@ -113,15 +116,11 @@ const useGlobalNavData = () => {
 }
 
 interface Props {
-  setPromptLogin: (value: boolean) => void
   toggleTheme: () => void
   themeMode: ThemeMode
 }
-export default function GlobalNav({
-  setPromptLogin,
-  toggleTheme,
-  themeMode,
-}: Props) {
+export default function GlobalNav({ toggleTheme, themeMode }: Props) {
+  const { promptLogin } = useLogin()
   const { isLoggedIn } = useGlobalNavData()
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
@@ -136,7 +135,7 @@ export default function GlobalNav({
 
   const onLogin = () => {
     handleClose()
-    setPromptLogin(true)
+    promptLogin()
   }
 
   const onLogout = () => {
@@ -154,11 +153,11 @@ export default function GlobalNav({
         </IconButton>
       </Body>
       <Footer>
-        <IconButton>
+        <IconButton onClick={toggleTheme}>
           {themeMode === 'light' ? (
-            <MuiLightBrightnessIcon onClick={toggleTheme} />
+            <MuiLightBrightnessIcon />
           ) : (
-            <MuiDarkBrightnessIcon onClick={toggleTheme} />
+            <MuiDarkBrightnessIcon />
           )}
         </IconButton>
         <ProfileButton onClick={handleClick} isLoggedIn={isLoggedIn}>

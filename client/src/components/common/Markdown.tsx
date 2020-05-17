@@ -26,7 +26,7 @@ interface Props extends ReactMarkdownProps {
   source: string
 }
 
-export const Markdown: React.FC<Props> = ({ source, ...props }) => {
+const Markdown: React.FC<Props> = ({ source, ...props }) => {
   const renderers: { [index: string]: React.ElementType<any> } = {}
 
   const imageRenderer = ({ src, ...props }: { src: string }) => {
@@ -52,17 +52,35 @@ export const Markdown: React.FC<Props> = ({ source, ...props }) => {
 
   const processedSource = imagePreprocessor(source)
 
+  const linkRenderer = (
+    props: React.AnchorHTMLAttributes<HTMLAnchorElement>
+  ) => {
+    return (
+      // eslint-disable-next-line jsx-a11y/anchor-has-content
+      <a
+        {...props}
+        target="_blank"
+        rel="noreferrer noopener"
+        onClick={(e) => {
+          // e.preventDefault()
+          e.stopPropagation()
+        }}
+      />
+    )
+  }
+
   renderers.image = imageRenderer
+  renderers.link = linkRenderer
 
   return (
     <ReactMarkdown
       source={processedSource}
       renderers={renderers}
       transformImageUri={(
-        uri: string,
-        children?: React.ReactNode,
-        title?: string | undefined,
-        alt?: string | undefined
+        uri: string
+        // children?: React.ReactNode,
+        // title?: string | undefined,
+        // alt?: string | undefined
       ) => getStaticUrl(uri)}
       {...props}
     />

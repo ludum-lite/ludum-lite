@@ -1,99 +1,41 @@
 import React from 'react'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { Routes, Route } from 'react-router-dom'
-import { gql, useQuery, useMutation } from '@apollo/client'
-import { Drawer } from '@material-ui/core'
+import { gql, useQuery } from '@apollo/client'
 import { isLoggedInVar } from 'resolvers'
-import Sidebar from './Sidebar'
-import RoutesWithFallback from './RoutesWithFallback'
+import Sidebar from './side-bar/Sidebar'
+import RoutesWithFallback from './common/RoutesWithFallback'
 import PostsPage from 'components/posts/PostsPage'
-import LoginForm from './login/LoginForm'
 import * as Types from '__generated__/Types'
 import { ThemeMode } from 'utils/types'
-import LoginContext from 'components/contexts/LoginContext'
+import { usePostOverlayed } from 'hooks/usePostOverlay'
+import PostPage from './posts/PostPage'
+import { useLogin } from 'hooks/useLogin'
+import { useHasNavigatedWithin } from 'hooks/useHasNavigatedWithin'
 
-const App = styled.div`
+interface AppProps {
+  showingOverlay: boolean
+}
+const App = styled.div<AppProps>`
   display: flex;
   min-height: 100vh;
   background: ${({ theme }) => theme.themeColors.background};
+
+  ${({ showingOverlay }) =>
+    showingOverlay &&
+    css`
+      height: 100vh;
+      overflow: hidden;
+    `}
 `
 
 const AppContent = styled.div`
   display: flex;
   flex-direction: column;
-  padding-left: ${({ theme }) => theme.spacing(42)}px;
+  margin-left: ${({ theme }) => theme.spacing(42)}px;
   flex: 1 1 auto;
+  position: relative;
 `
-
-const LOGIN = gql`
-  mutation Login($input: LoginInput!) {
-    login(input: $input) {
-      ... on LoginSuccess {
-        token
-      }
-      ... on LoginFailure {
-        message
-      }
-    }
-  }
-`
-
-const useLoginComponent = () => {
-  const [promptLogin, setPromptLogin] = React.useState(false)
-  const [error, setError] = React.useState('')
-  const [loginMutation] = useMutation<Types.Login, Types.LoginVariables>(
-    LOGIN,
-    {
-      onCompleted: ({ login }) => {
-        if (login.__typename === 'LoginSuccess') {
-          const { token } = login
-          localStorage.setItem('token', token)
-          setPromptLogin(false)
-          isLoggedInVar(true)
-          window.location.reload()
-        } else if (login.__typename === 'LoginFailure') {
-          setError(login.message)
-          isLoggedInVar(false)
-        }
-      },
-    }
-  )
-
-  const login = React.useCallback(
-    ({ username, password }: { username: string; password: string }) => {
-      setError('')
-
-      loginMutation({
-        variables: {
-          input: {
-            email: username,
-            password: password,
-          },
-        },
-      })
-    },
-    [loginMutation]
-  )
-
-  const loginComponent = React.useMemo(() => {
-    return (
-      <Drawer
-        open={promptLogin}
-        anchor="left"
-        onClose={() => setPromptLogin(false)}
-      >
-        <LoginForm login={login} error={error} />
-      </Drawer>
-    )
-  }, [promptLogin, login, error])
-
-  return {
-    login,
-    promptLogin,
-    setPromptLogin,
-    loginComponent,
-  }
-}
 
 const GET_APP_DATA = gql`
   query GetAppData {
@@ -110,8 +52,10 @@ interface Props {
   themeMode: ThemeMode
 }
 export default function Root({ toggleTheme, themeMode }: Props) {
+  useHasNavigatedWithin()
+  const [postOverlayed] = usePostOverlayed()
   const [hasLoadedUser, setHasLoadedUser] = React.useState(false)
-  const { setPromptLogin, loginComponent } = useLoginComponent()
+  const { loginComponent } = useLogin()
 
   useQuery<Types.GetAppData>(GET_APP_DATA, {
     onCompleted(data) {
@@ -124,32 +68,35 @@ export default function Root({ toggleTheme, themeMode }: Props) {
     },
   })
 
-  const promptLogin = React.useCallback(() => {
-    setPromptLogin(true)
-  }, [setPromptLogin])
-
   if (hasLoadedUser) {
     return (
-      <App>
+      <App showingOverlay={postOverlayed}>
         <Routes>
           <Route
             path="/:basePath*"
             element={
-              <Sidebar
-                setPromptLogin={setPromptLogin}
-                toggleTheme={toggleTheme}
-                themeMode={themeMode}
-              />
+              <Sidebar toggleTheme={toggleTheme} themeMode={themeMode} />
             }
           />
         </Routes>
-        <LoginContext.Provider value={{ promptLogin }}>
-          <AppContent>
-            <RoutesWithFallback>
-              <Route path="/posts" element={<PostsPage />} />
-            </RoutesWithFallback>
-          </AppContent>
-        </LoginContext.Provider>
+        <AppContent>
+          <RoutesWithFallback>
+            <Route path="/posts" element={<PostsPage />} />
+            {postOverlayed ? (
+              <Route
+                path="/posts/:id"
+                element={
+                  <>
+                    <PostsPage />
+                    <PostPage />
+                  </>
+                }
+              />
+            ) : (
+              <Route path="/posts/:id" element={<PostPage />} />
+            )}
+          </RoutesWithFallback>
+        </AppContent>
         {loginComponent}
       </App>
     )

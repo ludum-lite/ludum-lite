@@ -91,24 +91,15 @@ const paths = [
 ]
 
 interface Props {
-  setPromptLogin: (value: boolean) => void
   toggleTheme: () => void
   themeMode: ThemeMode
 }
-export default function Sidebar({
-  setPromptLogin,
-  toggleTheme,
-  themeMode,
-}: Props) {
+export default function Sidebar({ toggleTheme, themeMode }: Props) {
   const { basePath } = useParams()
 
   return (
     <Root>
-      <GlobalNav
-        setPromptLogin={setPromptLogin}
-        toggleTheme={toggleTheme}
-        themeMode={themeMode}
-      />
+      <GlobalNav toggleTheme={toggleTheme} themeMode={themeMode} />
       <ContextualNav>
         <Title>
           <StyledLudumLogo />

@@ -1,33 +1,15 @@
 import React from 'react'
 import styled from 'styled-components/macro'
-import { useQuery, gql } from '@apollo/client'
+import { gql } from '@apollo/client'
 import * as Types from '__generated__/Types'
 
 import { Typography, Collapse } from '@material-ui/core'
 import Markdown from 'components/common/Markdown'
 import Button from 'components/common/mui/Button'
-import UserPostedHeader from '../UserPostedHeader'
+import UserPostedHeader from './UserPostedHeader'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 
-const GET_DATA = gql`
-  query GetPostDetailsData($input: IdInput!) {
-    post(input: $input) {
-      id
-      name
-      body
-      publishedDate
-      author {
-        id
-        profilePath
-        avatarPath
-        name
-      }
-    }
-  }
-`
-
 const Root = styled.div`
-  width: 600px;
   overflow: hidden;
 `
 
@@ -68,9 +50,9 @@ interface CollapseButtonContainerProps {
 const CollapseButtonContainer = styled.div<CollapseButtonContainerProps>`
   display: flex;
   justify-content: center;
-  padding: ${({ theme }) => theme.spacing(1) * 1.5}px 0;
-  background-color: ${({ theme }) => theme.themeColors.background};
-  box-shadow: 0 -1px 20px 28px ${({ theme }) => theme.themeColors.background};
+  padding-top: ${({ theme }) => theme.spacing(1) * 1.5}px;
+  background-color: ${({ theme }) => theme.themeColors.post.backgroundColor};
+  box-shadow: 0 -1px 20px 28px ${({ theme }) => theme.themeColors.post.backgroundColor};
   z-index: 3;
   position: absolute;
   bottom: 0;
@@ -82,27 +64,29 @@ const CollapseButtonContainer = styled.div<CollapseButtonContainerProps>`
   pointer-events: ${({ show }) => (show ? undefined : 'none')};
 `
 
+const POST_DETAILS_FRAGMENT = gql`
+  fragment PostDetails_post on Post {
+    id
+    name
+    body
+    publishedDate
+    author {
+      id
+      profilePath
+      avatarPath
+      name
+    }
+  }
+`
+
 type Props = {
-  postId: number
+  post: Types.PostDetails_post
   forceExpand?: boolean
 }
-export default function PostDetails({ postId, forceExpand }: Props) {
+export default function PostDetails({ post, forceExpand }: Props) {
   const [shouldCollapse, setShouldCollapse] = React.useState<
     boolean | undefined
   >(undefined)
-
-  const { data } = useQuery<
-    Types.GetPostDetailsData,
-    Types.GetPostDetailsDataVariables
-  >(GET_DATA, {
-    variables: {
-      input: {
-        id: postId,
-      },
-    },
-  })
-
-  const post = data?.post
 
   const initialShouldCollapse = React.useMemo(() => {
     if (!post) return false
@@ -180,4 +164,8 @@ export default function PostDetails({ postId, forceExpand }: Props) {
       </Content>
     </Root>
   )
+}
+
+PostDetails.fragments = {
+  post: POST_DETAILS_FRAGMENT,
 }

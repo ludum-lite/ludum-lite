@@ -1,25 +1,30 @@
 import React from 'react'
 import styled from 'styled-components/macro'
-import { useMutation, gql } from '@apollo/client'
+import { gql } from '@apollo/client'
+import { filter } from 'graphql-anywhere'
 import * as Types from '__generated__/Types'
 import { favoritedIdsVar } from 'resolvers'
+import { useNavigate } from 'react-router-dom'
 
-import PostDetails from 'components/common/post/PostDetails'
+import PostDetails from './PostDetails'
 import ButtonGroup from 'components/common/mui/ButtonGroup'
 import Button from 'components/common/mui/Button'
-import LoginContext from 'components/contexts/LoginContext'
 
-import FavoriteIcon from '@material-ui/icons/FavoriteRounded'
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorderRounded'
 import CommentIcon from '@material-ui/icons/CommentRounded'
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder'
 import BookmarkIcon from '@material-ui/icons/Bookmark'
+import Card from 'components/common/mui/Card'
+import { usePostOverlayed } from 'hooks/usePostOverlay'
+import PostLoveButton from './PostLoveButton'
 
-const Root = styled.div`
+const Root = styled(Card)`
   display: flex;
   flex-direction: column;
-  overflow: visible;
-  padding-bottom: ${({ theme }) => theme.spacing(16)}px;
+  background: ${({ theme }) => theme.themeColors.post.backgroundColor};
+  padding: ${({ theme }) =>
+    `${theme.spacing(2)}px ${theme.spacing(2)}px ${theme.spacing(1)}px`};
+  margin-bottom: ${({ theme }) => theme.spacing(4)}px;
+  border-radius: ${({ theme }) => theme.shape.borderRadius}px;
 `
 
 // const Card = styled.div`
@@ -35,6 +40,7 @@ const RightIcon = styled.div`
 
 const ActionRow = styled.div`
   display: flex;
+  padding-top: ${({ theme }) => theme.spacing(1)}px;
 `
 
 // const PlaceholderContainer = styled.div`
@@ -65,132 +71,34 @@ const ActionRow = styled.div`
 //   }
 // `
 
-const POST_FRAGMENT = gql`
-  fragment Post_post on Post {
-    id
-    numLove
-    numNotes
-    name
-    body
-    publishedDate
-    author {
-      id
-      profilePath
-      avatarPath
-      name
-    }
-  }
-`
-
-const LOVE_POST = gql`
-  mutation LovePost($input: IdInput!) {
-    lovePost(input: $input) {
-      ... on LovePostSuccess {
-        post {
-          id
-          numLove
-        }
-        me {
-          ... on Me {
-            id
-            lovedPosts
-          }
-        }
-      }
-    }
-  }
-`
-
-const UNLOVE_POST = gql`
-  mutation UnlovePost($input: IdInput!) {
-    unlovePost(input: $input) {
-      ... on UnlovePostSuccess {
-        post {
-          id
-          numLove
-        }
-        me {
-          ... on Me {
-            id
-            lovedPosts
-          }
-        }
-      }
-    }
-  }
-`
-
 interface Props {
-  postId: number
   post: Types.Post_post
-  hasLovedPost: boolean
+  me: Types.Post_me
   hasFavoritedPost: boolean
-  isLoggedIn: boolean
 }
-export default function Post({
-  postId,
-  post,
-  hasLovedPost,
-  hasFavoritedPost,
-  isLoggedIn,
-}: Props) {
-  const [lovePost] = useMutation<Types.LovePost, Types.LovePostVariables>(
-    LOVE_POST,
-    {
-      variables: {
-        input: {
-          id: postId,
-        },
-      },
-    }
+export default function Post({ post, me, hasFavoritedPost }: Props) {
+  const navigate = useNavigate()
+  const [, setPostOverlayed] = usePostOverlayed()
+
+  const onClickCard = React.useCallback(
+    (id) => {
+      setPostOverlayed(true)
+      navigate(`/posts/${id}`)
+    },
+    [navigate, setPostOverlayed]
   )
-
-  const [unlovePost] = useMutation<Types.UnlovePost, Types.UnlovePostVariables>(
-    UNLOVE_POST,
-    {
-      variables: {
-        input: {
-          id: postId,
-        },
-      },
-    }
-  )
-
-  const { promptLogin } = React.useContext(LoginContext)
-
-  const onClickCard = React.useCallback((id) => {
-    // navigate(`/feed/posts/${id}`)
-    // setHasClickedPost(true)
-  }, [])
 
   if (!post) return null
 
   return (
-    <Root onClick={() => onClickCard(post.id)}>
-      <PostDetails postId={post.id} />
+    <Root onClick={() => onClickCard(post.id)} clickable>
+      <PostDetails post={filter(PostDetails.fragments.post, post)} />
       <ActionRow>
         <ButtonGroup>
-          <Button
-            onClick={
-              isLoggedIn
-                ? (e) => {
-                    e.stopPropagation()
-                    if (hasLovedPost) {
-                      unlovePost()
-                    } else {
-                      lovePost()
-                    }
-                  }
-                : promptLogin
-            }
-          >
-            {hasLovedPost ? (
-              <RightIcon as={FavoriteIcon} />
-            ) : (
-              <RightIcon as={FavoriteBorderIcon} />
-            )}
-            {post.numLove}
-          </Button>
+          <PostLoveButton
+            post={filter(PostLoveButton.fragments.post, post)}
+            me={filter(PostLoveButton.fragments.me, me)}
+          />
           <Button>
             <RightIcon as={CommentIcon} />
             {post.numNotes}
@@ -224,5 +132,30 @@ export default function Post({
 }
 
 Post.fragments = {
-  post: POST_FRAGMENT,
+  post: gql`
+    fragment Post_post on Post {
+      id
+      numLove
+      numNotes
+      name
+      body
+      publishedDate
+      author {
+        id
+        profilePath
+        avatarPath
+        name
+      }
+      ...PostDetails_post
+      ...PostLoveButton_post
+    }
+    ${PostDetails.fragments.post}
+    ${PostLoveButton.fragments.post}
+  `,
+  me: gql`
+    fragment Post_me on MeResponse {
+      ...PostLoveButton_me
+    }
+    ${PostLoveButton.fragments.me}
+  `,
 }
