@@ -8,9 +8,10 @@ import PopupPage from './PopupPage'
 import UserPostedHeader from './UserPostedHeader'
 import { useParams } from 'react-router'
 import Markdown from 'components/common/Markdown'
-import PostLoveButton from './PostLoveButton'
-import PostBookmarkButton from './PostBookmarkButton'
+import PostLoveButton from './post-buttons/PostLoveButton'
+import PostBookmarkButton from './post-buttons/PostBookmarkButton'
 import { filter } from 'graphql-anywhere'
+import { useActivePostId } from 'hooks/useActivePostId'
 
 const Header = styled.div`
   display: flex;
@@ -38,6 +39,10 @@ const ActionRow = styled.div`
   flex: 1 1 0px;
   display: flex;
   justify-content: flex-end;
+
+  & > * {
+    margin-left: ${({ theme }) => theme.spacing(1)}px;
+  }
 `
 
 const GET_DATA = gql`
@@ -63,8 +68,16 @@ const GET_DATA = gql`
   ${PostLoveButton.fragments.me}
 `
 
-export default function PostOverlayPage() {
+export default function PostPage() {
   const { id: postId } = useParams()
+
+  const { setActivePostId } = useActivePostId()
+
+  React.useEffect(() => {
+    return () => {
+      setActivePostId(parseInt(postId))
+    }
+  })
 
   const { data, loading } = useQuery<
     Types.GetPostOverlayPageData,
@@ -117,7 +130,7 @@ export default function PostOverlayPage() {
               me={filter(PostLoveButton.fragments.me, me)}
             />
           )}
-          <PostBookmarkButton />
+          {post && <PostBookmarkButton postId={post.id} />}
         </ActionRow>
       )
     }

@@ -34,10 +34,7 @@ const Title = styled(Typography)`
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  background: ${({ theme }) => theme.themeColors.logoBackground};
-  margin: ${({ theme }) => theme.spacing(2)}px 0px;
-  padding: ${({ theme }) => theme.spacing(2)}px;
-  border-radius: ${({ theme }) => theme.shape.borderRadius}px;
+  margin: ${({ theme }) => theme.spacing(4)}px 0px;
 `
 
 const ListItem = styled(MuiListItem)`

@@ -138,9 +138,9 @@ export type Post = {
   lastLoveChangedDate?: Maybe<Scalars['String']>;
   lastNotesChangedDate?: Maybe<Scalars['String']>;
   modifiedDate?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-  numLove?: Maybe<Scalars['Int']>;
-  numNotes?: Maybe<Scalars['Int']>;
+  name: Scalars['String'];
+  numLove: Scalars['Int'];
+  numNotes: Scalars['Int'];
   parentId: Scalars['Int'];
   parentIds: Array<Maybe<Scalars['Int']>>;
   path?: Maybe<Scalars['String']>;
@@ -188,7 +188,7 @@ export type Me = BaseUser & {
   numPosts: Scalars['Int'];
   profilePath: Scalars['String'];
   type: Scalars['String'];
-  lovedPosts?: Maybe<Array<Scalars['Int']>>;
+  lovedPosts: Array<Scalars['Int']>;
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -400,9 +400,9 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
   lastLoveChangedDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   lastNotesChangedDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   modifiedDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  numLove?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>,
-  numNotes?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>,
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  numLove?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
+  numNotes?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   parentId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   parentIds?: Resolver<Array<Maybe<ResolversTypes['Int']>>, ParentType, ContextType>,
   path?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
@@ -451,7 +451,7 @@ export type MeResolvers<ContextType = any, ParentType extends ResolversParentTyp
   numPosts?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   profilePath?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  lovedPosts?: Resolver<Maybe<Array<ResolversTypes['Int']>>, ParentType, ContextType>,
+  lovedPosts?: Resolver<Array<ResolversTypes['Int']>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;
 

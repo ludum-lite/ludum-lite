@@ -84,9 +84,9 @@ type Post {
   lastLoveChangedDate: String
   lastNotesChangedDate: String
   modifiedDate: String
-  name: String
-  numLove: Int
-  numNotes: Int
+  name: String!
+  numLove: Int!
+  numNotes: Int!
   parentId: Int!
   parentIds: [Int]!
   path: String
@@ -132,5 +132,5 @@ type Me implements BaseUser {
   numPosts: Int!
   profilePath: String!
   type: String!
-  lovedPosts: [Int!]
+  lovedPosts: [Int!]!
 }

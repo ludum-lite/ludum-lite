@@ -132,10 +132,11 @@ export default class PostAPI extends BaseAPI {
   async lovePost(id: number): Promise<LovePostResponse> {
     try {
       const post = await this.context.loaders.postLoader.load(id)
-      await this.get(`vx/node/love/add/${id}`)
 
       // The api caches the feed, so we need to manually update the amount of love on the post
       post.numLove = isNil(post.numLove) ? 0 : post.numLove + 1
+
+      await this.get(`vx/node/love/add/${id}`)
 
       return {
         __typename: 'LovePostSuccess',
@@ -150,10 +151,12 @@ export default class PostAPI extends BaseAPI {
   async unlovePost(id: number): Promise<UnlovePostResponse> {
     try {
       const post = await this.context.loaders.postLoader.load(id)
-      await this.get(`vx/node/love/remove/${id}`)
+      console.log(post.numLove)
 
       // The api caches the feed, so we need to manually update the amount of love on the post
       post.numLove = Math.max(isNil(post.numLove) ? 0 : post.numLove - 1, 0)
+
+      await this.get(`vx/node/love/remove/${id}`)
 
       return {
         __typename: 'UnlovePostSuccess',

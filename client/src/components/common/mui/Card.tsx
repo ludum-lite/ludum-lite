@@ -21,11 +21,7 @@ const StyledCard = styled(MuiCard).withConfig({
   ${({ clickable, border }) =>
     clickable &&
     css`
-      border: ${border ? undefined : '1px solid transparent'};
-      transition: border-color 150ms;
-
       &:hover {
-        border: 1px solid rgba(0, 0, 0, 0.17);
         cursor: pointer;
       }
     `}

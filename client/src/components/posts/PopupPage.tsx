@@ -30,6 +30,7 @@ const Root = styled.div<RootProps>`
 `
 
 const Card = styled.div`
+  max-width: 900px;
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
@@ -41,7 +42,7 @@ const Card = styled.div`
 const ActionRowTop = styled.div`
   position: sticky;
   top: -${BORDER_RADIUS}px;
-  background: ${({ theme }) => theme.themeColors.background};
+  background: ${({ theme }) => theme.themeColors.popupPage.background};
   padding: ${BORDER_RADIUS}px 0;
   margin-bottom: -${BORDER_RADIUS}px;
   border-radius: ${BORDER_RADIUS}px ${BORDER_RADIUS}px 0 0;
@@ -51,7 +52,7 @@ const ActionRowTop = styled.div`
 const ActionRowContainer = styled.div`
   position: sticky;
   top: ${BORDER_RADIUS}px;
-  background: ${({ theme }) => theme.themeColors.background};
+  background: ${({ theme }) => theme.themeColors.popupPage.background};
   height: ${ACTION_ROW_HEIGHT - BORDER_RADIUS}px;
   display: flex;
   align-items: flex-end;
@@ -83,7 +84,7 @@ const Content = styled.div`
   flex: 1 1 0px;
   padding: ${({ theme }) =>
     `0 ${theme.spacing(2)}px ${theme.spacing(2)}px 26px`};
-  background: ${({ theme }) => theme.themeColors.background};
+  background: ${({ theme }) => theme.themeColors.popupPage.background};
   border-radius: 0 0 20px 20px;
 `
 

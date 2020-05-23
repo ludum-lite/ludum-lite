@@ -2,11 +2,16 @@ import React, { Fragment } from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 
-import { BatchHttpLink } from '@apollo/link-batch-http'
+// import { BatchHttpLink } from '@apollo/link-batch-http'
 import { SingletonHooksContainer } from 'react-singleton-hook'
 // import { onError } from '@apollo/link-error'
 import { setContext } from '@apollo/link-context'
-import { ApolloClient, ApolloProvider, ApolloLink } from '@apollo/client'
+import {
+  ApolloClient,
+  ApolloProvider,
+  ApolloLink,
+  HttpLink,
+} from '@apollo/client'
 import { cache, resolvers, typeDefs } from './resolvers'
 import { ThemeMode } from 'utils/types'
 
@@ -61,7 +66,7 @@ const authLink = setContext((_, { headers }) => {
   }
 })
 
-const batchHttpLink = new BatchHttpLink({
+const batchHttpLink = new HttpLink({
   uri: 'http://localhost:4000/',
 })
 
@@ -100,11 +105,31 @@ export type ThemeColors = {
   loaderBarBackground: string
   logoBackground: string
   borderColor: string
+  link: {
+    color: string
+  }
   error: {
     background: string
   }
   post: {
     backgroundColor: string
+    activeBorderColor: string
+  }
+  moreButton: {
+    background: string
+    hoverBackground: string
+  }
+  loveButton: {
+    activeColor: string
+  }
+  commentsButton: {
+    activeColor: string
+  }
+  bookmarkButton: {
+    activeColor: string
+  }
+  popupPage: {
+    background: string
   }
   palette: {
     primary: {
@@ -122,7 +147,10 @@ type Themes = {
 }
 
 const borderColor = 'rgba(0, 0, 0, 0.22)'
+const buttonRootBackgroundColor = 'rgba(0, 0, 0, 0.12)'
+const buttonContainedBackgroundColor = 'rgba(0, 0, 0, 0.1)'
 
+// https://coolors.co/13293d-006494-058ed9-3fa6de-6ab8e2-004567-eaebed-f9f9ff-fdffff
 const styleVariables = {
   prussianBlue: 'rgb(19, 41, 61)',
   indigoDye: 'rgb(0, 69, 103)',
@@ -130,7 +158,7 @@ const styleVariables = {
   greenBlue: 'rgb(5, 142, 217)',
   carolinaBlue: 'rgb(63, 166, 222)',
   bittersweet: 'rgb(248, 112, 96)',
-  // greenShade: 'rgb(112, 169, 161)',
+  greenShade: 'rgb(112, 169, 161)',
   cultured: 'rgb(238, 242, 247)',
   ghostWhite: 'rgb(249, 249, 255)',
   white: 'rgb(253, 255, 255)',
@@ -147,11 +175,31 @@ const lightTheme: ThemeColors = {
   loaderBarBackground: 'rgba(0, 0, 0, 0.166)',
   logoBackground: styleVariables.indigoDye,
   borderColor,
+  link: {
+    color: styleVariables.greenBlue,
+  },
   error: {
     background: styleVariables.bittersweet,
   },
   post: {
     backgroundColor: styleVariables.white,
+    activeBorderColor: styleVariables.greenBlue,
+  },
+  loveButton: {
+    activeColor: styleVariables.bittersweet,
+  },
+  commentsButton: {
+    activeColor: styleVariables.greenBlue,
+  },
+  bookmarkButton: {
+    activeColor: styleVariables.greenShade,
+  },
+  moreButton: {
+    background: styleVariables.white,
+    hoverBackground: styleVariables.cultured,
+  },
+  popupPage: {
+    background: styleVariables.white,
   },
   palette: {
     primary: {
@@ -163,15 +211,19 @@ const lightTheme: ThemeColors = {
   },
 }
 
+// https://coolors.co/1f2429-6f7984-d0d0d8-eef2f7-f79122-ffcc11-ee5533-2288f7-fdffff
 const ldStyleVariables = {
   raisinBlack: 'rgb(31, 36, 41)',
   slateGray: 'rgb(111, 121, 132)',
+  metalicSilver: 'rgb(160, 165, 174)', // secondary color to lightGray, not to be used often
   lightGray: 'rgb(208, 208, 216)',
   cultured: 'rgb(238, 242, 247)',
   darkOrange: 'rgb(247, 145, 34)',
   sunglow: 'rgb(255, 204, 17)',
   portlandOrange: 'rgb(238, 85, 51)',
   blueDeFrance: 'rgb(34, 136, 247)',
+  green: 'rgb(51, 175, 0)',
+  blueGreen: 'rgb(0, 210, 152)',
   white: 'rgb(253, 255, 255)',
   boxShadow: {
     light: 'rgba(255, 255, 255, 0.25)',
@@ -179,18 +231,38 @@ const ldStyleVariables = {
 } as const
 
 const darkTheme: ThemeColors = {
-  background: ldStyleVariables.cultured,
-  globalNavBackground: ldStyleVariables.raisinBlack,
-  contextualNavBackground: ldStyleVariables.slateGray,
-  loaderBackground: 'rgba(0, 0, 0, 0.166)',
-  loaderBarBackground: 'rgba(0, 0, 0, 0.166)',
-  logoBackground: ldStyleVariables.raisinBlack,
+  background: ldStyleVariables.slateGray,
+  globalNavBackground: ldStyleVariables.portlandOrange,
+  contextualNavBackground: ldStyleVariables.raisinBlack,
+  loaderBackground: ldStyleVariables.portlandOrange,
+  loaderBarBackground: ldStyleVariables.darkOrange,
+  logoBackground: '',
   borderColor,
+  link: {
+    color: ldStyleVariables.darkOrange,
+  },
   error: {
     background: styleVariables.bittersweet,
   },
   post: {
-    backgroundColor: styleVariables.white,
+    backgroundColor: ldStyleVariables.cultured,
+    activeBorderColor: ldStyleVariables.portlandOrange,
+  },
+  moreButton: {
+    background: ldStyleVariables.cultured,
+    hoverBackground: ldStyleVariables.lightGray,
+  },
+  loveButton: {
+    activeColor: ldStyleVariables.portlandOrange,
+  },
+  commentsButton: {
+    activeColor: ldStyleVariables.darkOrange,
+  },
+  bookmarkButton: {
+    activeColor: ldStyleVariables.blueGreen,
+  },
+  popupPage: {
+    background: ldStyleVariables.cultured,
   },
   palette: {
     primary: {
@@ -202,7 +274,7 @@ const darkTheme: ThemeColors = {
   },
 }
 
-const themeColors: Themes = {
+const themes: Themes = {
   light: lightTheme,
   dark: darkTheme,
 } as const
@@ -214,7 +286,7 @@ const defaultTheme = createMuiTheme({
 })
 
 const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
-  const selectedThemeColors = themeColors[themeMode]
+  const selectedThemeColors = themes[themeMode]
 
   return createMuiTheme({
     ...defaultTheme,
@@ -245,12 +317,13 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
         root: {
           textTransform: 'none',
           transition: 'none',
-          // '&:hover': {
-          //   backgroundColor: 'rgba(0, 0, 0, 0.1)',
-          // },
+          backgroundColor: buttonRootBackgroundColor,
+          '&:hover': {
+            backgroundColor: 'rgba(0, 0, 0, 0.19)',
+          },
         },
         contained: {
-          backgroundColor: 'rgba(0, 0, 0, 0.1)',
+          backgroundColor: buttonContainedBackgroundColor,
           '&:hover': {
             backgroundColor: 'rgba(0, 0, 0, 0.2)',
           },
@@ -272,6 +345,8 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
         root: {
           height: 112,
           borderRadius: defaultTheme.shape.borderRadius,
+        },
+        colorPrimary: {
           backgroundColor: selectedThemeColors.loaderBackground,
         },
         barColorPrimary: {
@@ -327,16 +402,18 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
 const muiTheme = muiThemeGenerator({ themeMode: 'light' })
 
 const scThemeGenerator = ({
-  themeMode,
+  themeColors,
   selectedMuiTheme,
 }: {
-  themeMode: ThemeMode
+  themeColors: ThemeColors
   selectedMuiTheme: Theme
 }) => ({
   ...selectedMuiTheme,
   styleVariables,
   ldStyleVariables,
-  themeColors: themeColors[themeMode],
+  themeColors: themeColors,
+  buttonRootBackgroundColor,
+  buttonContainedBackgroundColor,
   // prettier-ignore
   layout: {
     1: '0.125rem',   // 2
@@ -352,7 +429,7 @@ const scThemeGenerator = ({
 })
 
 const scTheme = scThemeGenerator({
-  themeMode: 'light',
+  themeColors: themes.light,
   selectedMuiTheme: muiTheme,
 })
 
@@ -366,20 +443,34 @@ declare module 'styled-components' {
   export interface DefaultTheme extends ScThemeType {}
 }
 
-const GlobalStyle = createGlobalStyle`
-  html {
-    font-size: 62.5%;
-    overflow-x: hidden;
-  }
+const globalStyleGenerator = ({
+  themeColors,
+}: {
+  themeColors: ThemeColors
+}) => {
+  return createGlobalStyle`
+    html {
+      font-size: 62.5%;
+      overflow-x: hidden;
+    }
+  
+    body {
+      font-size: 1.4rem;
+    }
+  
+    hr {
+      border-color: ${borderColor};
+    }
+  
+    a {
+      color: ${themeColors.link.color};
 
-  body {
-    font-size: 1.4rem;
-  }
-
-  hr {
-    border-color: ${borderColor};
-  }
-`
+      &:hover {
+        font-weight: 500;
+      }
+    }
+  `
+}
 
 /*********/
 /* Entry */
@@ -401,9 +492,14 @@ const Root = () => {
     [themeMode]
   )
   const selectedScTheme = React.useMemo(
-    () => scThemeGenerator({ themeMode, selectedMuiTheme }),
+    () =>
+      scThemeGenerator({ themeColors: themes[themeMode], selectedMuiTheme }),
     [selectedMuiTheme, themeMode]
   )
+
+  const GlobalStyle = globalStyleGenerator({
+    themeColors: themes[themeMode],
+  })
 
   return (
     <ApolloProvider client={client}>

@@ -144,7 +144,7 @@ export default function PostDetails({ post, forceExpand }: Props) {
           in={!finalShouldCollapse}
           collapsedHeight={initialShouldCollapse ? 350 : 0}
         >
-          <Markdown source={post.body} />
+          <Markdown source={post.body} removeHrefs />
         </Collapse>
         <CollapseButtonContainer show={finalShouldCollapse}>
           <Button

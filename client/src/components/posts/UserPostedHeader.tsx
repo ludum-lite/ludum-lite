@@ -23,8 +23,6 @@ const Avatar = styled.img`
   height: 20px;
   width: 20px;
   border-radius: 4px;
-  background: hsl(192, 100%, 61%);
-  border: 1px solid hsl(0, 0%, 81%);
 `
 const UserLink = styled(Link)`
   margin-right: 4px;

@@ -28,6 +28,19 @@ export interface GetAppData {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: PostBookmarkButton_GetFavoritedIds
+// ====================================================
+
+export interface PostBookmarkButton_GetFavoritedIds {
+  favoritedIds: number[] | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: PostLoveButtonGlobalData
 // ====================================================
 
@@ -51,7 +64,7 @@ export interface LovePost_lovePost_UnauthorizedResponse {
 export interface LovePost_lovePost_LovePostSuccess_post {
   __typename: "Post";
   id: number;
-  numLove: number | null;
+  numLove: number;
 }
 
 export interface LovePost_lovePost_LovePostSuccess_me_UnauthorizedResponse {
@@ -61,7 +74,7 @@ export interface LovePost_lovePost_LovePostSuccess_me_UnauthorizedResponse {
 export interface LovePost_lovePost_LovePostSuccess_me_Me {
   __typename: "Me";
   id: number;
-  lovedPosts: number[] | null;
+  lovedPosts: number[];
 }
 
 export type LovePost_lovePost_LovePostSuccess_me = LovePost_lovePost_LovePostSuccess_me_UnauthorizedResponse | LovePost_lovePost_LovePostSuccess_me_Me;
@@ -98,7 +111,7 @@ export interface UnlovePost_unlovePost_UnauthorizedResponse {
 export interface UnlovePost_unlovePost_UnlovePostSuccess_post {
   __typename: "Post";
   id: number;
-  numLove: number | null;
+  numLove: number;
 }
 
 export interface UnlovePost_unlovePost_UnlovePostSuccess_me_UnauthorizedResponse {
@@ -108,7 +121,7 @@ export interface UnlovePost_unlovePost_UnlovePostSuccess_me_UnauthorizedResponse
 export interface UnlovePost_unlovePost_UnlovePostSuccess_me_Me {
   __typename: "Me";
   id: number;
-  lovedPosts: number[] | null;
+  lovedPosts: number[];
 }
 
 export type UnlovePost_unlovePost_UnlovePostSuccess_me = UnlovePost_unlovePost_UnlovePostSuccess_me_UnauthorizedResponse | UnlovePost_unlovePost_UnlovePostSuccess_me_Me;
@@ -149,11 +162,11 @@ export interface GetPostOverlayPageData_post_author {
 export interface GetPostOverlayPageData_post {
   __typename: "Post";
   id: number;
-  name: string | null;
+  name: string;
   publishedDate: string | null;
   body: string;
   author: GetPostOverlayPageData_post_author | null;
-  numLove: number | null;
+  numLove: number;
 }
 
 export interface GetPostOverlayPageData_me_UnauthorizedResponse {
@@ -163,7 +176,7 @@ export interface GetPostOverlayPageData_me_UnauthorizedResponse {
 export interface GetPostOverlayPageData_me_Me {
   __typename: "Me";
   id: number;
-  lovedPosts: number[] | null;
+  lovedPosts: number[];
 }
 
 export type GetPostOverlayPageData_me = GetPostOverlayPageData_me_UnauthorizedResponse | GetPostOverlayPageData_me_Me;
@@ -183,10 +196,10 @@ export interface GetPostOverlayPageDataVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetFavoritedIds
+// GraphQL query operation: PostsPage_GetFavoritedIds
 // ====================================================
 
-export interface GetFavoritedIds {
+export interface PostsPage_GetFavoritedIds {
   favoritedIds: number[] | null;
 }
 
@@ -211,9 +224,9 @@ export interface GetPostsPageData_searchPosts_posts {
   __typename: "Post";
   id: number;
   publishedDate: string | null;
-  numLove: number | null;
-  numNotes: number | null;
-  name: string | null;
+  numLove: number;
+  numNotes: number;
+  name: string;
   body: string;
   author: GetPostsPageData_searchPosts_posts_author | null;
 }
@@ -231,7 +244,7 @@ export interface GetPostsPageData_me_UnauthorizedResponse {
 export interface GetPostsPageData_me_Me {
   __typename: "Me";
   id: number;
-  lovedPosts: number[] | null;
+  lovedPosts: number[];
 }
 
 export type GetPostsPageData_me = GetPostsPageData_me_UnauthorizedResponse | GetPostsPageData_me_Me;
@@ -310,9 +323,9 @@ export interface Post_post_author {
 export interface Post_post {
   __typename: "Post";
   id: number;
-  numLove: number | null;
-  numNotes: number | null;
-  name: string | null;
+  numLove: number;
+  numNotes: number;
+  name: string;
   body: string;
   publishedDate: string | null;
   author: Post_post_author | null;
@@ -334,10 +347,25 @@ export interface Post_me_UnauthorizedResponse {
 export interface Post_me_Me {
   __typename: "Me";
   id: number;
-  lovedPosts: number[] | null;
+  lovedPosts: number[];
 }
 
 export type Post_me = Post_me_UnauthorizedResponse | Post_me_Me;
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: PostCommentButton_post
+// ====================================================
+
+export interface PostCommentButton_post {
+  __typename: "Post";
+  id: number;
+  numNotes: number;
+}
 
 /* tslint:disable */
 /* eslint-disable */
@@ -359,7 +387,7 @@ export interface PostDetails_post_author {
 export interface PostDetails_post {
   __typename: "Post";
   id: number;
-  name: string | null;
+  name: string;
   body: string;
   publishedDate: string | null;
   author: PostDetails_post_author | null;
@@ -377,7 +405,7 @@ export interface PostDetails_post {
 export interface PostLoveButton_post {
   __typename: "Post";
   id: number;
-  numLove: number | null;
+  numLove: number;
 }
 
 /* tslint:disable */
@@ -396,7 +424,7 @@ export interface PostLoveButton_me_UnauthorizedResponse {
 export interface PostLoveButton_me_Me {
   __typename: "Me";
   id: number;
-  lovedPosts: number[] | null;
+  lovedPosts: number[];
 }
 
 export type PostLoveButton_me = PostLoveButton_me_UnauthorizedResponse | PostLoveButton_me_Me;

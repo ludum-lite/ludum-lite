@@ -15,11 +15,13 @@ const Column = styled.div`
 
 type Props = {
   direction?: 'row' | 'column'
+  className?: string
 }
 
 export const ButtonGroup: React.FC<Props> = ({
   children,
   direction = 'row',
+  className,
 }) => {
   const component = React.useMemo(() => {
     if (direction === 'row') return Row
@@ -27,7 +29,12 @@ export const ButtonGroup: React.FC<Props> = ({
   }, [direction])
 
   return (
-    <Box display="flex" flexDirection={direction} component={component}>
+    <Box
+      className={className}
+      display="flex"
+      flexDirection={direction}
+      component={component}
+    >
       {children}
     </Box>
   )

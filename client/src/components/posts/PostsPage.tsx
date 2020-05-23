@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { useSearchParams } from 'react-router-dom'
 
 import { useQuery, gql, NetworkStatus } from '@apollo/client'
@@ -31,10 +31,31 @@ const Posts = styled.div`
 
 const MoreButton = styled(Button)`
   padding: ${({ theme }) => theme.spacing(5)}px 0;
+  background-color: ${({ theme }) => theme.themeColors.moreButton.background};
+
+  &:hover {
+    background-color: ${({ theme }) =>
+      theme.themeColors.moreButton.hoverBackground};
+  }
 `
 
-const SortButton = styled(Button)`
+interface SortButtonProps {
+  active: boolean
+}
+const SortButton = styled(Button)<SortButtonProps>`
   padding: 6px 16px;
+  color: white;
+
+  ${({ active }) =>
+    active &&
+    css`
+      background-color: ${({ theme }) => theme.themeColors.globalNavBackground};
+
+      &:hover {
+        background-color: ${({ theme }) =>
+          theme.themeColors.globalNavBackground};
+      }
+    `}
 `
 
 const SortActions = styled.div`
@@ -62,7 +83,7 @@ const NoItemsContainer = () => (
 )
 
 const GET_FAVORITED_IDS = gql`
-  query GetFavoritedIds {
+  query PostsPage_GetFavoritedIds {
     favoritedIds @client
   }
 `
@@ -97,11 +118,9 @@ export default function PostsPage() {
 
   const postType = searchParams.get('postType') as Types.PostType
 
-  const { data: favoritedIdsData } = useQuery<Types.GetFavoritedIds>(
+  const { data: favoritedIdsData } = useQuery<Types.PostsPage_GetFavoritedIds>(
     GET_FAVORITED_IDS
   )
-
-  const favoritedIds = favoritedIdsData?.favoritedIds
 
   const { data, loading, fetchMore, networkStatus } = useQuery<
     Types.GetPostsPageData,
@@ -122,12 +141,7 @@ export default function PostsPage() {
   })
 
   const postComponents = data?.searchPosts?.posts?.map((post) => (
-    <Post
-      key={post.id}
-      post={post}
-      me={data?.me}
-      hasFavoritedPost={!!favoritedIds?.includes(post.id)}
-    />
+    <Post key={post.id} post={post} me={data?.me} />
   ))
 
   const hasPosts = postComponents && postComponents.length > 0
@@ -194,8 +208,8 @@ export default function PostsPage() {
           onClick={() =>
             setSearchParams({ postType: Types.PostType.all }, undefined)
           }
-          variant={postType === Types.PostType.all ? 'contained' : 'text'}
-          color={postType === Types.PostType.all ? 'primary' : 'default'}
+          variant={'contained'}
+          active={postType === Types.PostType.all}
         >
           All
         </SortButton>
@@ -203,8 +217,8 @@ export default function PostsPage() {
           onClick={() =>
             setSearchParams({ postType: Types.PostType.news }, undefined)
           }
-          variant={postType === Types.PostType.news ? 'contained' : 'text'}
-          color={postType === Types.PostType.news ? 'primary' : 'default'}
+          variant={'contained'}
+          active={postType === Types.PostType.news}
         >
           News
         </SortButton>
@@ -212,8 +226,8 @@ export default function PostsPage() {
           onClick={() =>
             setSearchParams({ postType: Types.PostType.favorites }, undefined)
           }
-          variant={postType === Types.PostType.favorites ? 'contained' : 'text'}
-          color={postType === Types.PostType.favorites ? 'primary' : 'default'}
+          variant={'contained'}
+          active={postType === Types.PostType.favorites}
         >
           Favorites
         </SortButton>

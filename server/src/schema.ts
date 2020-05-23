@@ -91,9 +91,9 @@ export const typeDefs = gql`
     lastLoveChangedDate: String
     lastNotesChangedDate: String
     modifiedDate: String
-    name: String
-    numLove: Int
-    numNotes: Int
+    name: String!
+    numLove: Int!
+    numNotes: Int!
     parentId: Int!
     parentIds: [Int]!
     path: String
@@ -139,6 +139,6 @@ export const typeDefs = gql`
     numPosts: Int!
     profilePath: String!
     type: String!
-    lovedPosts: [Int!]
+    lovedPosts: [Int!]!
   }
 `

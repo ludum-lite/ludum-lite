@@ -1,30 +1,60 @@
 import React from 'react'
-import styled from 'styled-components/macro'
+import styled, { css, keyframes } from 'styled-components/macro'
 import { gql } from '@apollo/client'
 import { filter } from 'graphql-anywhere'
 import * as Types from '__generated__/Types'
-import { favoritedIdsVar } from 'resolvers'
 import { useNavigate } from 'react-router-dom'
 
 import PostDetails from './PostDetails'
 import ButtonGroup from 'components/common/mui/ButtonGroup'
-import Button from 'components/common/mui/Button'
 
-import CommentIcon from '@material-ui/icons/CommentRounded'
-import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder'
-import BookmarkIcon from '@material-ui/icons/Bookmark'
 import Card from 'components/common/mui/Card'
 import { usePostOverlayed } from 'hooks/usePostOverlay'
-import PostLoveButton from './PostLoveButton'
+import PostLoveButton from './post-buttons/PostLoveButton'
+import PostBookmarkButton from './post-buttons/PostBookmarkButton'
+import PostCommentButton from './post-buttons/PostCommentButton'
+import { useActivePostId } from 'hooks/useActivePostId'
 
-const Root = styled(Card)`
+const activeBoxShadowKeyFrames = (color: string) => keyframes`
+  0% {
+    box-shadow: 0 0 0px 4px transparent;
+  }
+
+  100% {
+    box-shadow: 0 0 0px 4px ${color};
+  }
+`
+
+interface RootProps {
+  active: boolean
+}
+const Root = styled(Card).withConfig({
+  shouldForwardProp: (prop) => !['active'].includes(prop),
+})<RootProps>`
   display: flex;
   flex-direction: column;
   background: ${({ theme }) => theme.themeColors.post.backgroundColor};
-  padding: ${({ theme }) =>
-    `${theme.spacing(2)}px ${theme.spacing(2)}px ${theme.spacing(1)}px`};
+  padding: ${({ theme }) => theme.spacing(2)}px;
   margin-bottom: ${({ theme }) => theme.spacing(4)}px;
   border-radius: ${({ theme }) => theme.shape.borderRadius}px;
+  transition: box-shadow 5000ms;
+
+  ${({ active, theme }) =>
+    active &&
+    css`
+      animation: ${activeBoxShadowKeyFrames(
+          theme.themeColors.post.activeBorderColor
+        )}
+        250ms forwards;
+    `}
+`
+
+const StyledButtonGroup = styled(ButtonGroup)`
+  flex: 1 1 0px;
+`
+
+const Separator = styled.div`
+  flex: 1 1 0px;
 `
 
 // const Card = styled.div`
@@ -32,11 +62,6 @@ const Root = styled(Card)`
 //   flex-direction: column;
 //   overflow: visible;
 // `
-
-const RightIcon = styled.div`
-  margin-right: ${({ theme }) => theme.spacing(1)}px;
-  font-size: 2rem;
-`
 
 const ActionRow = styled.div`
   display: flex;
@@ -74,11 +99,11 @@ const ActionRow = styled.div`
 interface Props {
   post: Types.Post_post
   me: Types.Post_me
-  hasFavoritedPost: boolean
 }
-export default function Post({ post, me, hasFavoritedPost }: Props) {
+export default function Post({ post, me }: Props) {
   const navigate = useNavigate()
   const [, setPostOverlayed] = usePostOverlayed()
+  const { activePostId } = useActivePostId()
 
   const onClickCard = React.useCallback(
     (id) => {
@@ -91,41 +116,24 @@ export default function Post({ post, me, hasFavoritedPost }: Props) {
   if (!post) return null
 
   return (
-    <Root onClick={() => onClickCard(post.id)} clickable>
+    <Root
+      onClick={() => onClickCard(post.id)}
+      clickable
+      active={activePostId === post.id}
+    >
       <PostDetails post={filter(PostDetails.fragments.post, post)} />
       <ActionRow>
-        <ButtonGroup>
+        <StyledButtonGroup>
           <PostLoveButton
             post={filter(PostLoveButton.fragments.post, post)}
             me={filter(PostLoveButton.fragments.me, me)}
           />
-          <Button>
-            <RightIcon as={CommentIcon} />
-            {post.numNotes}
-          </Button>
-          <Button
-            onClick={(e) => {
-              e.stopPropagation()
-              let newFavoritedIds: number[]
-
-              if (hasFavoritedPost) {
-                newFavoritedIds = favoritedIdsVar().filter(
-                  (id) => post.id !== id
-                )
-              } else {
-                newFavoritedIds = [...favoritedIdsVar(), post.id]
-              }
-
-              favoritedIdsVar(newFavoritedIds)
-              window.localStorage.setItem(
-                'favoritedIds',
-                JSON.stringify(newFavoritedIds)
-              )
-            }}
-          >
-            {hasFavoritedPost ? <BookmarkIcon /> : <BookmarkBorderIcon />}
-          </Button>
-        </ButtonGroup>
+          <PostCommentButton
+            post={filter(PostCommentButton.fragments.post, post)}
+          />
+          <Separator />
+          <PostBookmarkButton postId={post.id} />
+        </StyledButtonGroup>
       </ActionRow>
     </Root>
   )
@@ -148,9 +156,11 @@ Post.fragments = {
       }
       ...PostDetails_post
       ...PostLoveButton_post
+      ...PostCommentButton_post
     }
     ${PostDetails.fragments.post}
     ${PostLoveButton.fragments.post}
+    ${PostCommentButton.fragments.post}
   `,
   me: gql`
     fragment Post_me on MeResponse {

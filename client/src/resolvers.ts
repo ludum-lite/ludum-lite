@@ -8,6 +8,9 @@ export const typeDefs = gql`
 `
 
 export const cache: InMemoryCache = new InMemoryCache({
+  possibleTypes: {
+    MeResponse: ['Me', 'UnauthorizedResponse'],
+  },
   typePolicies: {
     Query: {
       fields: {
