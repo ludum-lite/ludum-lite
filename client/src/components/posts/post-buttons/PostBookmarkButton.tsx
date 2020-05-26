@@ -6,11 +6,16 @@ import { useQuery, gql } from '@apollo/client'
 import * as Types from '__generated__/Types'
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder'
 import BookmarkIcon from '@material-ui/icons/Bookmark'
+import { ignoreProps } from 'utils'
 
 interface StyledButtonProps {
   active: boolean
 }
-const StyledButton = styled(Button)<StyledButtonProps>`
+const StyledButton = styled(Button).withConfig({
+  shouldForwardProp: ignoreProps(['active']),
+})<StyledButtonProps>`
+  padding: 6px 1rem;
+
   ${({ active }) =>
     !active &&
     css`
@@ -32,6 +37,10 @@ const StyledButton = styled(Button)<StyledButtonProps>`
           theme.themeColors.bookmarkButton.activeColor};
       }
     `}
+`
+
+const Icon = styled.div`
+  font-size: 1.5rem;
 `
 
 interface Props {
@@ -85,7 +94,7 @@ export default function PostBookmarkButton({ postId }: Props) {
         setIsHovering(false)
       }}
     >
-      <IconComponent />
+      <Icon as={IconComponent} />
     </StyledButton>
   )
 }

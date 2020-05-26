@@ -2,14 +2,16 @@ import React from 'react'
 import { Button as MuiButton, ButtonProps } from '@material-ui/core'
 import styled, { css } from 'styled-components/macro'
 
+type Padding = 'wide'
+
 interface StyledButtonProps {
   border?: boolean
   noShadow?: boolean
-  active?: boolean
+  padding?: Padding
 }
 
 const StyledButton = styled(MuiButton).withConfig({
-  shouldForwardProp: (prop) => !['border', 'noShadow', 'active'].includes(prop),
+  shouldForwardProp: (prop) => !['border', 'noShadow'].includes(prop),
 })<StyledButtonProps>`
   ${({ border }) =>
     border &&
@@ -25,24 +27,30 @@ const StyledButton = styled(MuiButton).withConfig({
     css`
       box-shadow: 0 0 0 1px #00000017;
     `}
+
+  ${({ padding }) =>
+    padding === 'wide' &&
+    css`
+      padding: 0.375rem 1rem;
+    `}
 `
 
 export interface Props {
   border?: boolean
   noShadow?: boolean
-  active?: boolean
+  padding?: Padding
 }
 export default function Button({
   border,
   noShadow,
-  active,
+  padding,
   ...other
 }: Props & Omit<ButtonProps, keyof Props>) {
   return (
     <StyledButton
       border={border}
       noShadow={noShadow}
-      active={active}
+      padding={padding}
       {...other}
     />
   )

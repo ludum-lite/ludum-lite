@@ -159,6 +159,13 @@ export interface GetPostOverlayPageData_post_author {
   name: string;
 }
 
+export interface GetPostOverlayPageData_post_comments {
+  __typename: "Comment";
+  id: number;
+  body: string;
+  numLove: number;
+}
+
 export interface GetPostOverlayPageData_post {
   __typename: "Post";
   id: number;
@@ -166,6 +173,7 @@ export interface GetPostOverlayPageData_post {
   publishedDate: string | null;
   body: string;
   author: GetPostOverlayPageData_post_author | null;
+  comments: GetPostOverlayPageData_post_comments[] | null;
   numLove: number;
 }
 
@@ -309,6 +317,89 @@ export interface LoginVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: Comment_comment
+// ====================================================
+
+export interface Comment_comment {
+  __typename: "Comment";
+  id: number;
+  body: string;
+  numLove: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: Comments_comment
+// ====================================================
+
+export interface Comments_comment {
+  __typename: "Comment";
+  id: number;
+  body: string;
+  numLove: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: PostCommentButton_post
+// ====================================================
+
+export interface PostCommentButton_post {
+  __typename: "Post";
+  id: number;
+  numNotes: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: PostLoveButton_post
+// ====================================================
+
+export interface PostLoveButton_post {
+  __typename: "Post";
+  id: number;
+  numLove: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: PostLoveButton_me
+// ====================================================
+
+export interface PostLoveButton_me_UnauthorizedResponse {
+  __typename: "UnauthorizedResponse";
+}
+
+export interface PostLoveButton_me_Me {
+  __typename: "Me";
+  id: number;
+  lovedPosts: number[];
+}
+
+export type PostLoveButton_me = PostLoveButton_me_UnauthorizedResponse | PostLoveButton_me_Me;
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: Post_post
 // ====================================================
 
@@ -358,21 +449,6 @@ export type Post_me = Post_me_UnauthorizedResponse | Post_me_Me;
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: PostCommentButton_post
-// ====================================================
-
-export interface PostCommentButton_post {
-  __typename: "Post";
-  id: number;
-  numNotes: number;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
 // GraphQL fragment: PostDetails_post
 // ====================================================
 
@@ -392,42 +468,6 @@ export interface PostDetails_post {
   publishedDate: string | null;
   author: PostDetails_post_author | null;
 }
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL fragment: PostLoveButton_post
-// ====================================================
-
-export interface PostLoveButton_post {
-  __typename: "Post";
-  id: number;
-  numLove: number;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL fragment: PostLoveButton_me
-// ====================================================
-
-export interface PostLoveButton_me_UnauthorizedResponse {
-  __typename: "UnauthorizedResponse";
-}
-
-export interface PostLoveButton_me_Me {
-  __typename: "Me";
-  id: number;
-  lovedPosts: number[];
-}
-
-export type PostLoveButton_me = PostLoveButton_me_UnauthorizedResponse | PostLoveButton_me_Me;
 
 /* tslint:disable */
 /* eslint-disable */

@@ -123,6 +123,12 @@ export default class PostAPI extends BaseAPI {
         posts,
       }
     }
+
+    return {
+      page: 0,
+      limit: 0,
+      posts: [],
+    }
   }
 
   async getPost(id: number) {

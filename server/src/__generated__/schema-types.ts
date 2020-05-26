@@ -142,7 +142,7 @@ export type Post = {
   numLove: Scalars['Int'];
   numNotes: Scalars['Int'];
   parentId: Scalars['Int'];
-  parentIds: Array<Maybe<Scalars['Int']>>;
+  parentIds: Array<Scalars['Int']>;
   path?: Maybe<Scalars['String']>;
   publishedDate?: Maybe<Scalars['String']>;
   slug?: Maybe<Scalars['String']>;
@@ -150,6 +150,20 @@ export type Post = {
   subtype?: Maybe<Scalars['String']>;
   superparentId: Scalars['Int'];
   type?: Maybe<Scalars['String']>;
+  comments?: Maybe<Array<Comment>>;
+};
+
+export type Comment = {
+   __typename?: 'Comment';
+  id: Scalars['Int'];
+  authorId: Scalars['Int'];
+  createdDate?: Maybe<Scalars['String']>;
+  modifiedDate?: Maybe<Scalars['String']>;
+  post?: Maybe<Post>;
+  postId: Scalars['Int'];
+  currentUserHasLoved: Scalars['Boolean'];
+  body: Scalars['String'];
+  numLove: Scalars['Int'];
 };
 
 export type BaseUser = {
@@ -286,6 +300,7 @@ export type ResolversTypes = ResolversObject<{
   LoginResponse: ResolversTypes['LoginFailure'] | ResolversTypes['LoginSuccess'],
   PostType: PostType,
   Post: ResolverTypeWrapper<Post>,
+  Comment: ResolverTypeWrapper<Comment>,
   BaseUser: ResolversTypes['User'] | ResolversTypes['Me'],
   User: ResolverTypeWrapper<User>,
   Me: ResolverTypeWrapper<Me>,
@@ -314,6 +329,7 @@ export type ResolversParentTypes = ResolversObject<{
   LoginResponse: ResolversParentTypes['LoginFailure'] | ResolversParentTypes['LoginSuccess'],
   PostType: PostType,
   Post: Post,
+  Comment: Comment,
   BaseUser: ResolversParentTypes['User'] | ResolversParentTypes['Me'],
   User: User,
   Me: Me,
@@ -404,7 +420,7 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
   numLove?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   numNotes?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   parentId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
-  parentIds?: Resolver<Array<Maybe<ResolversTypes['Int']>>, ParentType, ContextType>,
+  parentIds?: Resolver<Array<ResolversTypes['Int']>, ParentType, ContextType>,
   path?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   publishedDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   slug?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
@@ -412,6 +428,20 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
   subtype?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   superparentId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   type?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  comments?: Resolver<Maybe<Array<ResolversTypes['Comment']>>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
+export type CommentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
+  authorId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
+  createdDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  modifiedDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  post?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType>,
+  postId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
+  currentUserHasLoved?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  body?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  numLove?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;
 
@@ -470,6 +500,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   LoginSuccess?: LoginSuccessResolvers<ContextType>,
   LoginResponse?: LoginResponseResolvers,
   Post?: PostResolvers<ContextType>,
+  Comment?: CommentResolvers<ContextType>,
   BaseUser?: BaseUserResolvers,
   User?: UserResolvers<ContextType>,
   Me?: MeResolvers<ContextType>,

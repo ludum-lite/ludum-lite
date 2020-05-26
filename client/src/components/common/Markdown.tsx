@@ -35,9 +35,10 @@ const LinkContainer = styled.p`
 interface Props extends ReactMarkdownProps {
   source: string
   removeHrefs?: boolean
+  className?: string
 }
 
-const Markdown: React.FC<Props> = ({ source, removeHrefs, ...props }) => {
+export default function Markdown({ source, removeHrefs, ...props }: Props) {
   const renderers: { [index: string]: React.ElementType<any> } = {}
 
   const rootRenderer = (props: React.HTMLAttributes<HTMLDivElement>) => {
@@ -109,7 +110,7 @@ const Markdown: React.FC<Props> = ({ source, removeHrefs, ...props }) => {
   renderers.paragraph = paragraphRenderer
 
   return (
-    <Typography variant="body1" component="div">
+    <Typography variant="body2" component="div">
       <ReactMarkdown
         source={processedSource}
         renderers={renderers}
@@ -124,5 +125,3 @@ const Markdown: React.FC<Props> = ({ source, removeHrefs, ...props }) => {
     </Typography>
   )
 }
-
-export default Markdown

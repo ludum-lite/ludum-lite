@@ -95,7 +95,7 @@ export const typeDefs = gql`
     numLove: Int!
     numNotes: Int!
     parentId: Int!
-    parentIds: [Int]!
+    parentIds: [Int!]!
     path: String
     publishedDate: String
     slug: String
@@ -103,6 +103,19 @@ export const typeDefs = gql`
     subtype: String
     superparentId: Int!
     type: String
+    comments: [Comment!]
+  }
+
+  type Comment {
+    id: Int!
+    authorId: Int!
+    createdDate: String
+    modifiedDate: String
+    post: Post
+    postId: Int!
+    currentUserHasLoved: Boolean!
+    body: String!
+    numLove: Int!
   }
 
   interface BaseUser {

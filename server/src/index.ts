@@ -4,6 +4,7 @@ import PostAPI from './data-sources/post-api'
 import UserAPI from './data-sources/user-api'
 import { Resolvers } from './__generated__/schema-types'
 import { typeDefs } from './schema'
+import ComementAPI from './data-sources/comment-api'
 
 const resolvers: Resolvers<Context> = {
   Query: {
@@ -34,6 +35,9 @@ const resolvers: Resolvers<Context> = {
   Post: {
     author(post, __, context) {
       return context.dataSources.userApi.getUser(post.authorId)
+    },
+    comments(post, __, context) {
+      return context.dataSources.commentApi.getCommentsForPost(post.id)
     },
   },
   Me: {
@@ -72,6 +76,7 @@ new ApolloServer({
     } as any) as Context),
   dataSources: () => ({
     postApi: new PostAPI(),
+    commentApi: new ComementAPI(),
     userApi: new UserAPI(),
   }),
   engine: {

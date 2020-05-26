@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import styled from 'styled-components/macro'
 import { gql, useQuery } from '@apollo/client'
 import * as Types from '__generated__/Types'
@@ -12,6 +12,8 @@ import PostLoveButton from './post-buttons/PostLoveButton'
 import PostBookmarkButton from './post-buttons/PostBookmarkButton'
 import { filter } from 'graphql-anywhere'
 import { useActivePostId } from 'hooks/useActivePostId'
+import AddCommentForm from './AddCommentForm'
+import Comments from './Comments'
 
 const Header = styled.div`
   display: flex;
@@ -31,6 +33,15 @@ const Title = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing(1)}px;
 `
 
+const Body = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+const Article = styled.div`
+  padding: 0 ${({ theme }) => theme.spacing(3)}px;
+`
+
 const TitleText = styled(Typography)`
   font-weight: 500;
 `
@@ -43,6 +54,23 @@ const ActionRow = styled.div`
   & > * {
     margin-left: ${({ theme }) => theme.spacing(1)}px;
   }
+`
+
+const StyledLinearProgress = styled(LinearProgress)`
+  margin: 0 ${({ theme }) => theme.spacing(3)}px;
+`
+
+const StyledAddCommentForm = styled(AddCommentForm)`
+  margin: 0 ${({ theme }) => theme.spacing(3)}px
+    ${({ theme }) => theme.spacing(3)}px;
+`
+
+const CommentsContained = styled.div`
+  padding: 0 ${({ theme }) => theme.spacing(3)}px;
+`
+
+const CommentsTitle = styled(Typography)`
+  margin: ${({ theme }) => theme.spacing(3)}px 0;
 `
 
 const GET_DATA = gql`
@@ -58,6 +86,9 @@ const GET_DATA = gql`
         avatarPath
         name
       }
+      comments {
+        ...Comments_comment
+      }
       ...PostLoveButton_post
     }
     me {
@@ -66,6 +97,7 @@ const GET_DATA = gql`
   }
   ${PostLoveButton.fragments.post}
   ${PostLoveButton.fragments.me}
+  ${Comments.fragments.comment}
 `
 
 export default function PostPage() {
@@ -96,28 +128,39 @@ export default function PostPage() {
   const body = React.useMemo(() => {
     if (!loading) {
       return (
-        <Fragment>
-          <Header>
-            <HeaderContent>
-              <Title>
-                <TitleText variant="h5">{post?.name}</TitleText>
-              </Title>
-              <HeaderUserContainer>
-                <UserPostedHeader
-                  userProfilePath={post?.author?.profilePath || 'N/A'}
-                  userAvatarPath={post?.author?.avatarPath || 'N/A'}
-                  userName={post?.author?.name || 'N/A'}
-                  postedDate={post?.publishedDate || 'N/A'}
-                />
-              </HeaderUserContainer>
-            </HeaderContent>
-          </Header>
-          {post?.body && <Markdown source={post.body} />}
-        </Fragment>
+        <Body>
+          <Article>
+            <Header>
+              <HeaderContent>
+                <Title>
+                  <TitleText variant="h5">{post?.name}</TitleText>
+                </Title>
+                <HeaderUserContainer>
+                  <UserPostedHeader
+                    userProfilePath={post?.author?.profilePath || 'N/A'}
+                    userAvatarPath={post?.author?.avatarPath || 'N/A'}
+                    userName={post?.author?.name || 'N/A'}
+                    postedDate={post?.publishedDate || 'N/A'}
+                  />
+                </HeaderUserContainer>
+              </HeaderContent>
+            </Header>
+            {post?.body && <Markdown source={post.body} />}
+          </Article>
+          <StyledAddCommentForm />
+          <CommentsContained>
+            <CommentsTitle variant="h5">Comments</CommentsTitle>
+            {post?.comments && (
+              <Comments
+                comments={filter(Comments.fragments.comment, post?.comments)}
+              />
+            )}
+          </CommentsContained>
+        </Body>
       )
     }
 
-    return <LinearProgress />
+    return <StyledLinearProgress />
   }, [post, loading])
 
   const actionRow = React.useMemo(() => {

@@ -131,6 +131,12 @@ export type ThemeColors = {
   popupPage: {
     background: string
   }
+  addCommentForm: {
+    background: string
+    textFieldBackground: string
+    textFieldActiveBackground: string
+    boxShadow: string
+  }
   palette: {
     primary: {
       dark: string
@@ -158,7 +164,7 @@ const styleVariables = {
   greenBlue: 'rgb(5, 142, 217)',
   carolinaBlue: 'rgb(63, 166, 222)',
   bittersweet: 'rgb(248, 112, 96)',
-  greenShade: 'rgb(112, 169, 161)',
+  greenShade: 'rgb(103, 214, 198)',
   cultured: 'rgb(238, 242, 247)',
   ghostWhite: 'rgb(249, 249, 255)',
   white: 'rgb(253, 255, 255)',
@@ -200,6 +206,12 @@ const lightTheme: ThemeColors = {
   },
   popupPage: {
     background: styleVariables.white,
+  },
+  addCommentForm: {
+    background: styleVariables.greenBlue,
+    boxShadow: '0 0 6px 0px rgba(0,0,0,0.04)',
+    textFieldBackground: styleVariables.cultured,
+    textFieldActiveBackground: styleVariables.white,
   },
   palette: {
     primary: {
@@ -264,6 +276,12 @@ const darkTheme: ThemeColors = {
   popupPage: {
     background: ldStyleVariables.cultured,
   },
+  addCommentForm: {
+    background: ldStyleVariables.portlandOrange,
+    boxShadow: '0 0 6px 0px rgba(0,0,0,0.04)',
+    textFieldBackground: ldStyleVariables.white,
+    textFieldActiveBackground: ldStyleVariables.white,
+  },
   palette: {
     primary: {
       dark: ldStyleVariables.raisinBlack,
@@ -292,7 +310,7 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
     ...defaultTheme,
     palette: selectedThemeColors.palette,
     typography: {
-      htmlFontSize: 10,
+      fontSize: 16,
       fontFamily: [
         // 'Ubuntu',
         // 'Roboto',
@@ -300,6 +318,9 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
         'Oxygen',
         '"Baloo Paaji 2"',
       ].join(','),
+      body1: {
+        fontSize: '1rem',
+      },
     },
     props: {
       MuiTextField: {
@@ -307,6 +328,12 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
         InputProps: {
           disableUnderline: true,
         },
+      },
+      MuiInput: {
+        disableUnderline: true,
+      },
+      MuiFilledInput: {
+        disableUnderline: true,
       },
       MuiButton: {
         disableElevation: true,
@@ -326,6 +353,11 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
           backgroundColor: buttonContainedBackgroundColor,
           '&:hover': {
             backgroundColor: 'rgba(0, 0, 0, 0.2)',
+          },
+        },
+        iconSizeLarge: {
+          '& > *:first-child': {
+            fontSize: '1.625rem',
           },
         },
       },
@@ -351,6 +383,14 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
         },
         barColorPrimary: {
           backgroundColor: selectedThemeColors.loaderBarBackground,
+        },
+      },
+      MuiInputBase: {
+        input: {
+          '&::placeholder': {
+            color: 'rgba(0, 0, 0, 0.38)',
+            opacity: 1,
+          },
         },
       },
       MuiInput: {
@@ -379,6 +419,13 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       MuiFilledInput: {
         root: {
           borderRadius: defaultTheme.shape.borderRadius,
+          backgroundColor: 'rgba(75, 80, 97, 0.17)',
+          '&:hover': {
+            backgroundColor: 'rgba(63, 65, 72, 0.23)',
+          },
+          '&$focused': {
+            backgroundColor: 'rgba(75, 80, 97, 0.17)',
+          },
         },
         input: {
           paddingTop: 21,
@@ -388,7 +435,7 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       },
       MuiInputLabel: {
         filled: {
-          fontSize: '1.4rem',
+          // fontSize: '1.4rem',
           transform: 'translate(12px, 17px) scale(1)',
           '&.MuiInputLabel-shrink': {
             transform: 'translate(12px, 8px) scale(0.7)',
@@ -450,12 +497,7 @@ const globalStyleGenerator = ({
 }) => {
   return createGlobalStyle`
     html {
-      font-size: 62.5%;
       overflow-x: hidden;
-    }
-  
-    body {
-      font-size: 1.4rem;
     }
   
     hr {

@@ -14,6 +14,7 @@ import PostLoveButton from './post-buttons/PostLoveButton'
 import PostBookmarkButton from './post-buttons/PostBookmarkButton'
 import PostCommentButton from './post-buttons/PostCommentButton'
 import { useActivePostId } from 'hooks/useActivePostId'
+import { ignoreProps } from 'utils'
 
 const activeBoxShadowKeyFrames = (color: string) => keyframes`
   0% {
@@ -29,7 +30,7 @@ interface RootProps {
   active: boolean
 }
 const Root = styled(Card).withConfig({
-  shouldForwardProp: (prop) => !['active'].includes(prop),
+  shouldForwardProp: ignoreProps(['active']),
 })<RootProps>`
   display: flex;
   flex-direction: column;

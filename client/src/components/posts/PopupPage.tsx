@@ -62,6 +62,7 @@ const ActionRowContainer = styled.div`
 const ActionRow = styled.div`
   flex: 1 1 0px;
   display: flex;
+  align-items: center;
   padding: ${ACTION_ROW_PADDING}px;
 `
 
@@ -82,8 +83,8 @@ const ActionRowShadow = styled.div`
 
 const Content = styled.div`
   flex: 1 1 0px;
-  padding: ${({ theme }) =>
-    `0 ${theme.spacing(2)}px ${theme.spacing(2)}px 26px`};
+  /* padding: ${({ theme }) =>
+    `0 ${theme.spacing(2)}px ${theme.spacing(2)}px 26px`}; */
   background: ${({ theme }) => theme.themeColors.popupPage.background};
   border-radius: 0 0 20px 20px;
 `

@@ -8,6 +8,7 @@ import * as Types from '__generated__/Types'
 import Post from './Post'
 import Button from 'components/common/mui/Button'
 import { Typography, LinearProgress } from '@material-ui/core'
+import { ignoreProps } from 'utils'
 
 const Root = styled.div`
   display: flex;
@@ -42,7 +43,9 @@ const MoreButton = styled(Button)`
 interface SortButtonProps {
   active: boolean
 }
-const SortButton = styled(Button)<SortButtonProps>`
+const SortButton = styled(Button).withConfig({
+  shouldForwardProp: ignoreProps(['active']),
+})<SortButtonProps>`
   padding: 6px 16px;
   color: white;
 

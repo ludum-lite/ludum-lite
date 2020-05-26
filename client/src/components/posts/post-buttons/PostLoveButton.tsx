@@ -7,13 +7,16 @@ import FavoriteIcon from '@material-ui/icons/FavoriteRounded'
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorderRounded'
 import { useLogin } from 'hooks/useLogin'
 import Button from 'components/common/mui/Button'
+import { ignoreProps } from 'utils'
 
 interface StyledButtonProps {
   active: boolean
 }
-const StyledButton = styled(Button)<StyledButtonProps>`
-  font-size: 1.6rem;
-  line-height: 1.4rem;
+const StyledButton = styled(Button).withConfig({
+  shouldForwardProp: ignoreProps(['active']),
+})<StyledButtonProps>`
+  font-size: 1.125rem;
+  padding: 6px 1rem;
 
   ${({ active }) =>
     !active &&
@@ -38,7 +41,7 @@ const StyledButton = styled(Button)<StyledButtonProps>`
 
 const RightIcon = styled.div`
   margin-right: ${({ theme }) => theme.spacing(1)}px;
-  font-size: 2rem;
+  font-size: 1.25rem;
 `
 
 interface Props {
