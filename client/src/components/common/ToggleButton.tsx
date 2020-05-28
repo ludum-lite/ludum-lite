@@ -12,7 +12,7 @@ interface StyledButtonProps {
   activeColor: string
 }
 const StyledButton = styled(Button).withConfig({
-  shouldForwardProp: ignoreProps(['active', 'color']),
+  shouldForwardProp: ignoreProps(['active', 'activeColor']),
 })<StyledButtonProps>`
   font-size: 1rem;
   padding: 6px 1rem;
@@ -41,7 +41,9 @@ const StyledButton = styled(Button).withConfig({
 interface RightIconProps {
   padRight: boolean
 }
-const RightIcon = styled.div<RightIconProps>`
+const RightIcon = styled.div.withConfig({
+  shouldForwardProp: ignoreProps(['padRight']),
+})<RightIconProps>`
   margin-right: ${({ theme, padRight }) => padRight && theme.spacing(1)}px;
   font-size: 1.25rem;
 `

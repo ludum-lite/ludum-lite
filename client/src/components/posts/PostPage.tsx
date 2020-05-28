@@ -3,7 +3,14 @@ import styled from 'styled-components/macro'
 import { gql, useQuery } from '@apollo/client'
 import * as Types from '__generated__/Types'
 
-import { Typography, LinearProgress } from '@material-ui/core'
+import {
+  Typography,
+  LinearProgress,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from '@material-ui/core'
 import PopupPage from './PopupPage'
 import UserPostedHeader from './UserPostedHeader'
 import { useParams } from 'react-router'
@@ -14,6 +21,20 @@ import { filter } from 'graphql-anywhere'
 import { useActivePostId } from 'hooks/useActivePostId'
 import AddCommentForm from './AddCommentForm'
 import Comments from './Comments'
+import { getItemWithDefault } from 'utils'
+import { sortBy } from 'lodash'
+
+enum CommentSortBy {
+  DatePostedNewest = 'datePosted_newest',
+  DatePostedOldest = 'datePosted_oldest',
+  Loves = 'loves',
+}
+
+const CommentSortByToDisplay = {
+  [CommentSortBy.DatePostedNewest]: 'Date posted (Newest)',
+  [CommentSortBy.DatePostedOldest]: 'Date posted (Oldest)',
+  [CommentSortBy.Loves]: 'Popular',
+}
 
 const Header = styled.div`
   display: flex;
@@ -69,8 +90,16 @@ const CommentsContained = styled.div`
   padding: 0 ${({ theme }) => theme.spacing(3)}px;
 `
 
-const CommentsTitle = styled(Typography)`
+const CommentsTitleContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
   margin: ${({ theme }) => theme.spacing(3)}px 0;
+`
+
+const CommentsTitle = styled(Typography)`
+  /* Align bottom of text with container */
+  line-height: 0.9;
 `
 
 const GET_DATA = gql`
@@ -102,8 +131,21 @@ const GET_DATA = gql`
   ${Comments.fragments.post}
 `
 
+let storedCommentSortBy = getItemWithDefault<CommentSortBy>(
+  'comments_sortBy',
+  CommentSortBy.DatePostedNewest
+)
+
 export default function PostPage() {
   const { id: postId } = useParams()
+  const [commentSortBy, setSortBy] = React.useState<CommentSortBy>(
+    storedCommentSortBy
+  )
+
+  const onChangeSortBy = React.useCallback((sortBy: CommentSortBy) => {
+    localStorage.setItem('comments_sortBy', JSON.stringify(sortBy))
+    setSortBy(sortBy)
+  }, [])
 
   const { setActivePostId } = useActivePostId()
 
@@ -126,6 +168,22 @@ export default function PostPage() {
 
   const post = data?.post
   const me = data?.me
+
+  const comments = post?.comments
+
+  const sortedComments = React.useMemo(() => {
+    if (comments) {
+      if (commentSortBy === CommentSortBy.DatePostedNewest) {
+        return sortBy(comments, 'createdAt').reverse()
+      } else if (commentSortBy === CommentSortBy.DatePostedOldest) {
+        return sortBy(comments, 'createdAt')
+      } else if (commentSortBy === CommentSortBy.Loves) {
+        return sortBy(comments, ['numLove', 'createdAt']).reverse()
+      }
+    }
+
+    return []
+  }, [commentSortBy, comments])
 
   const body = React.useMemo(() => {
     if (!loading) {
@@ -151,10 +209,36 @@ export default function PostPage() {
           </Article>
           <StyledAddCommentForm />
           <CommentsContained>
-            <CommentsTitle variant="h5">Comments</CommentsTitle>
-            {post?.comments && (
+            <CommentsTitleContainer>
+              <CommentsTitle variant="h5">Comments</CommentsTitle>
+              <FormControl variant="filled">
+                <InputLabel id="demo-simple-select-filled-label">
+                  Sort By
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-filled-label"
+                  id="demo-simple-select-filled"
+                  value={commentSortBy}
+                  onChange={(e) => {
+                    console.log(e)
+                    onChangeSortBy(e.target.value as CommentSortBy)
+                  }}
+                >
+                  <MenuItem value={CommentSortBy.DatePostedNewest}>
+                    {CommentSortByToDisplay[CommentSortBy.DatePostedNewest]}
+                  </MenuItem>
+                  <MenuItem value={CommentSortBy.DatePostedOldest}>
+                    {CommentSortByToDisplay[CommentSortBy.DatePostedOldest]}
+                  </MenuItem>
+                  <MenuItem value={CommentSortBy.Loves}>
+                    {CommentSortByToDisplay[CommentSortBy.Loves]}
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </CommentsTitleContainer>
+            {post && (
               <Comments
-                comments={filter(Comments.fragments.comment, post.comments)}
+                comments={filter(Comments.fragments.comment, sortedComments)}
                 post={filter(Comments.fragments.post, post)}
               />
             )}
@@ -164,7 +248,7 @@ export default function PostPage() {
     }
 
     return <StyledLinearProgress />
-  }, [post, loading])
+  }, [post, loading, commentSortBy, onChangeSortBy, sortedComments])
 
   const actionRow = React.useMemo(() => {
     if (!loading) {

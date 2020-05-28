@@ -37,7 +37,6 @@ interface Props {
   className?: string
 }
 export default function Comment({ comment, post, className }: Props) {
-  console.log(comment)
   if (!comment) return null
 
   return (

@@ -161,6 +161,7 @@ const borderColor = 'rgba(0, 0, 0, 0.22)'
 const buttonRootBackgroundColor = 'rgba(0, 0, 0, 0.12)'
 const buttonContainedBackgroundColor = 'rgba(0, 0, 0, 0.1)'
 const cardBoxShadow = '0 0 6px 0px rgba(0,0,0,0.04)'
+const inputBackground = 'rgba(75, 80, 97, 0.17)'
 
 // https://coolors.co/13293d-006494-058ed9-3fa6de-6ab8e2-004567-eaebed-f9f9ff-fdffff
 const styleVariables = {
@@ -221,7 +222,7 @@ const lightTheme: ThemeColors = {
   },
   comment: {
     evenBackground: styleVariables.cultured,
-    oddBackground: 'rgba(116, 122, 138, 0.22)',
+    oddBackground: inputBackground,
     boxShadow: cardBoxShadow,
   },
   palette: {
@@ -295,7 +296,7 @@ const darkTheme: ThemeColors = {
   },
   comment: {
     evenBackground: ldStyleVariables.white,
-    oddBackground: 'rgba(116, 122, 138, 0.22)',
+    oddBackground: inputBackground,
     boxShadow: cardBoxShadow,
   },
   palette: {
@@ -435,12 +436,12 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       MuiFilledInput: {
         root: {
           borderRadius: defaultTheme.shape.borderRadius,
-          backgroundColor: 'rgba(75, 80, 97, 0.17)',
+          backgroundColor: inputBackground,
           '&:hover': {
             backgroundColor: 'rgba(63, 65, 72, 0.23)',
           },
           '&$focused': {
-            backgroundColor: 'rgba(75, 80, 97, 0.17)',
+            backgroundColor: inputBackground,
           },
         },
         input: {
