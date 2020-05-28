@@ -8,7 +8,7 @@ export default function RoutesWithFallback({ children }: Props) {
   return (
     <Routes>
       {children}
-      <Route path="*" element={<Navigate to="/posts" />} />
+      <Route path="*" element={<Navigate replace to="/posts" />} />
     </Routes>
   )
 }
