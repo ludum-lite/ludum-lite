@@ -16,6 +16,8 @@ export const typeDefs = gql`
     login(input: LoginInput!): LoginResponse!
     lovePost(input: IdInput!): LovePostResponse!
     unlovePost(input: IdInput!): UnlovePostResponse!
+    loveComment(input: IdInput!): LoveCommentResponse!
+    unloveComment(input: IdInput!): UnloveCommentResponse!
   }
 
   interface MutationResponse {
@@ -43,6 +45,22 @@ export const typeDefs = gql`
   }
 
   union UnlovePostResponse = UnlovePostSuccess | UnauthorizedResponse
+
+  type LoveCommentSuccess implements MutationResponse {
+    success: Boolean!
+    comment: Comment!
+    post: Post
+  }
+
+  union LoveCommentResponse = LoveCommentSuccess | UnauthorizedResponse
+
+  type UnloveCommentSuccess implements MutationResponse {
+    success: Boolean!
+    comment: Comment!
+    post: Post
+  }
+
+  union UnloveCommentResponse = UnloveCommentSuccess | UnauthorizedResponse
 
   input IdInput {
     id: Int!
@@ -104,12 +122,14 @@ export const typeDefs = gql`
     superparentId: Int!
     type: String
     comments: [Comment!]
+    myCommentLove: [Int!]
   }
 
   type Comment {
     id: Int!
     authorId: Int!
-    createdDate: String
+    author: User
+    createdDate: String!
     modifiedDate: String
     post: Post
     postId: Int!

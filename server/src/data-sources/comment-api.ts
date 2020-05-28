@@ -11,6 +11,8 @@ import {
   UnlovePostResponse,
   QuerySearchPostsArgs,
   IdInput,
+  LoveCommentResponse,
+  UnloveCommentResponse,
 } from '../__generated__/schema-types'
 import { unauthorizedResponse } from './const'
 import { delegateToSchema } from 'apollo-server'
@@ -20,7 +22,7 @@ export type ApiCommentDto = {
   author: number
   created: string
   modified: string
-  nodeId: number
+  node: number
   nodeType: string
   body: string
   love: number
@@ -32,14 +34,14 @@ function apiCommentToComment(comment: ApiCommentDto): Comment {
     authorId: comment.author,
     createdDate: comment.created,
     modifiedDate: comment.modified,
-    postId: comment.nodeId,
+    postId: comment.node,
     currentUserHasLoved: false,
     body: comment.body,
     numLove: comment.love,
   }
 }
 
-export default class ComementAPI extends BaseAPI {
+export default class CommentAPI extends BaseAPI {
   constructor() {
     super()
   }
@@ -49,17 +51,68 @@ export default class ComementAPI extends BaseAPI {
 
     if (!config.context.loaders.commentLoader) {
       config.context.loaders.commentLoader = new DataLoader(async (keys) => {
-        const results = await this.get(`vx/node2/get/${keys.join('+')}`)
+        const results = await this.get(`vx/comment/get/${keys.join('+')}`)
 
-        return sort(keys, results.node.map(apiCommentToComment))
+        return sort(keys, results.comment.map(apiCommentToComment))
       })
     }
+  }
+
+  async getComment(id: number) {
+    return this.context.loaders.commentLoader.load(id)
   }
 
   async getCommentsForPost(id: number) {
     const commentsResponse = await this.get(`vx/comment/getbynode/${id}`)
 
     return commentsResponse.note.map(apiCommentToComment)
+  }
+
+  async getMyLovedCommentsForPost(id: number) {
+    const commentsResponse = await this.get(`vx/comment/love/getmy/${id}`)
+
+    console.log(commentsResponse)
+
+    return commentsResponse['my-love']?.map((n: any) => n.note) || []
+  }
+
+  async loveComment(id: number): Promise<LoveCommentResponse> {
+    try {
+      await this.get(`vx/comment/love/add/${id}`)
+
+      // const comment = await this.context.loaders.commentLoader.load(id)
+
+      // // The api caches the feed, so we need to manually update the amount of love on the Comment
+      // comment.numLove = isNil(comment.numLove) ? 0 : comment.numLove + 1
+
+      return {
+        __typename: 'LoveCommentSuccess',
+        success: true,
+        comment: await this.getComment(id),
+      }
+    } catch (e) {
+      return unauthorizedResponse
+    }
+  }
+
+  async unloveComment(id: number): Promise<UnloveCommentResponse> {
+    try {
+      await this.get(`vx/comment/love/remove/${id}`)
+
+      // const comment = await this.context.loaders.commentLoader.load(id)
+      // console.log(comment.numLove)
+
+      // // The api caches the feed, so we need to manually update the amount of love on the Comment
+      // comment.numLove = Math.max(isNil(comment.numLove) ? 0 : comment.numLove - 1, 0)
+
+      return {
+        __typename: 'UnloveCommentSuccess',
+        success: true,
+        comment: await this.getComment(id),
+      }
+    } catch (e) {
+      return unauthorizedResponse
+    }
   }
 
   // async searchPosts({

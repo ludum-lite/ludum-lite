@@ -41,6 +41,8 @@ export type Mutation = {
   login: LoginResponse;
   lovePost: LovePostResponse;
   unlovePost: UnlovePostResponse;
+  loveComment: LoveCommentResponse;
+  unloveComment: UnloveCommentResponse;
 };
 
 
@@ -55,6 +57,16 @@ export type MutationLovePostArgs = {
 
 
 export type MutationUnlovePostArgs = {
+  input: IdInput;
+};
+
+
+export type MutationLoveCommentArgs = {
+  input: IdInput;
+};
+
+
+export type MutationUnloveCommentArgs = {
   input: IdInput;
 };
 
@@ -86,6 +98,24 @@ export type UnlovePostSuccess = MutationResponse & {
 };
 
 export type UnlovePostResponse = UnlovePostSuccess | UnauthorizedResponse;
+
+export type LoveCommentSuccess = MutationResponse & {
+   __typename?: 'LoveCommentSuccess';
+  success: Scalars['Boolean'];
+  comment: Comment;
+  post?: Maybe<Post>;
+};
+
+export type LoveCommentResponse = LoveCommentSuccess | UnauthorizedResponse;
+
+export type UnloveCommentSuccess = MutationResponse & {
+   __typename?: 'UnloveCommentSuccess';
+  success: Scalars['Boolean'];
+  comment: Comment;
+  post?: Maybe<Post>;
+};
+
+export type UnloveCommentResponse = UnloveCommentSuccess | UnauthorizedResponse;
 
 export type IdInput = {
   id: Scalars['Int'];
@@ -151,13 +181,15 @@ export type Post = {
   superparentId: Scalars['Int'];
   type?: Maybe<Scalars['String']>;
   comments?: Maybe<Array<Comment>>;
+  myCommentLove?: Maybe<Array<Scalars['Int']>>;
 };
 
 export type Comment = {
    __typename?: 'Comment';
   id: Scalars['Int'];
   authorId: Scalars['Int'];
-  createdDate?: Maybe<Scalars['String']>;
+  author?: Maybe<User>;
+  createdDate: Scalars['String'];
   modifiedDate?: Maybe<Scalars['String']>;
   post?: Maybe<Post>;
   postId: Scalars['Int'];
@@ -284,13 +316,17 @@ export type ResolversTypes = ResolversObject<{
   Query: ResolverTypeWrapper<{}>,
   Int: ResolverTypeWrapper<Scalars['Int']>,
   Mutation: ResolverTypeWrapper<{}>,
-  MutationResponse: ResolversTypes['LovePostSuccess'] | ResolversTypes['UnlovePostSuccess'] | ResolversTypes['LoginFailure'] | ResolversTypes['LoginSuccess'],
+  MutationResponse: ResolversTypes['LovePostSuccess'] | ResolversTypes['UnlovePostSuccess'] | ResolversTypes['LoveCommentSuccess'] | ResolversTypes['UnloveCommentSuccess'] | ResolversTypes['LoginFailure'] | ResolversTypes['LoginSuccess'],
   UnauthorizedResponse: ResolverTypeWrapper<UnauthorizedResponse>,
   MeResponse: ResolversTypes['Me'] | ResolversTypes['UnauthorizedResponse'],
   LovePostSuccess: ResolverTypeWrapper<Omit<LovePostSuccess, 'me'> & { me?: Maybe<ResolversTypes['MeResponse']> }>,
   LovePostResponse: ResolversTypes['LovePostSuccess'] | ResolversTypes['UnauthorizedResponse'],
   UnlovePostSuccess: ResolverTypeWrapper<Omit<UnlovePostSuccess, 'me'> & { me?: Maybe<ResolversTypes['MeResponse']> }>,
   UnlovePostResponse: ResolversTypes['UnlovePostSuccess'] | ResolversTypes['UnauthorizedResponse'],
+  LoveCommentSuccess: ResolverTypeWrapper<LoveCommentSuccess>,
+  LoveCommentResponse: ResolversTypes['LoveCommentSuccess'] | ResolversTypes['UnauthorizedResponse'],
+  UnloveCommentSuccess: ResolverTypeWrapper<UnloveCommentSuccess>,
+  UnloveCommentResponse: ResolversTypes['UnloveCommentSuccess'] | ResolversTypes['UnauthorizedResponse'],
   IdInput: IdInput,
   LoginInput: LoginInput,
   SearchPostResponse: ResolverTypeWrapper<SearchPostResponse>,
@@ -313,13 +349,17 @@ export type ResolversParentTypes = ResolversObject<{
   Query: {},
   Int: Scalars['Int'],
   Mutation: {},
-  MutationResponse: ResolversParentTypes['LovePostSuccess'] | ResolversParentTypes['UnlovePostSuccess'] | ResolversParentTypes['LoginFailure'] | ResolversParentTypes['LoginSuccess'],
+  MutationResponse: ResolversParentTypes['LovePostSuccess'] | ResolversParentTypes['UnlovePostSuccess'] | ResolversParentTypes['LoveCommentSuccess'] | ResolversParentTypes['UnloveCommentSuccess'] | ResolversParentTypes['LoginFailure'] | ResolversParentTypes['LoginSuccess'],
   UnauthorizedResponse: UnauthorizedResponse,
   MeResponse: ResolversParentTypes['Me'] | ResolversParentTypes['UnauthorizedResponse'],
   LovePostSuccess: Omit<LovePostSuccess, 'me'> & { me?: Maybe<ResolversParentTypes['MeResponse']> },
   LovePostResponse: ResolversParentTypes['LovePostSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
   UnlovePostSuccess: Omit<UnlovePostSuccess, 'me'> & { me?: Maybe<ResolversParentTypes['MeResponse']> },
   UnlovePostResponse: ResolversParentTypes['UnlovePostSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
+  LoveCommentSuccess: LoveCommentSuccess,
+  LoveCommentResponse: ResolversParentTypes['LoveCommentSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
+  UnloveCommentSuccess: UnloveCommentSuccess,
+  UnloveCommentResponse: ResolversParentTypes['UnloveCommentSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
   IdInput: IdInput,
   LoginInput: LoginInput,
   SearchPostResponse: SearchPostResponse,
@@ -346,10 +386,12 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   login?: Resolver<ResolversTypes['LoginResponse'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>,
   lovePost?: Resolver<ResolversTypes['LovePostResponse'], ParentType, ContextType, RequireFields<MutationLovePostArgs, 'input'>>,
   unlovePost?: Resolver<ResolversTypes['UnlovePostResponse'], ParentType, ContextType, RequireFields<MutationUnlovePostArgs, 'input'>>,
+  loveComment?: Resolver<ResolversTypes['LoveCommentResponse'], ParentType, ContextType, RequireFields<MutationLoveCommentArgs, 'input'>>,
+  unloveComment?: Resolver<ResolversTypes['UnloveCommentResponse'], ParentType, ContextType, RequireFields<MutationUnloveCommentArgs, 'input'>>,
 }>;
 
 export type MutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{
-  __resolveType: TypeResolveFn<'LovePostSuccess' | 'UnlovePostSuccess' | 'LoginFailure' | 'LoginSuccess', ParentType, ContextType>,
+  __resolveType: TypeResolveFn<'LovePostSuccess' | 'UnlovePostSuccess' | 'LoveCommentSuccess' | 'UnloveCommentSuccess' | 'LoginFailure' | 'LoginSuccess', ParentType, ContextType>,
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
 }>;
 
@@ -382,6 +424,28 @@ export type UnlovePostSuccessResolvers<ContextType = any, ParentType extends Res
 
 export type UnlovePostResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UnlovePostResponse'] = ResolversParentTypes['UnlovePostResponse']> = ResolversObject<{
   __resolveType: TypeResolveFn<'UnlovePostSuccess' | 'UnauthorizedResponse', ParentType, ContextType>
+}>;
+
+export type LoveCommentSuccessResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoveCommentSuccess'] = ResolversParentTypes['LoveCommentSuccess']> = ResolversObject<{
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  comment?: Resolver<ResolversTypes['Comment'], ParentType, ContextType>,
+  post?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
+export type LoveCommentResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoveCommentResponse'] = ResolversParentTypes['LoveCommentResponse']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'LoveCommentSuccess' | 'UnauthorizedResponse', ParentType, ContextType>
+}>;
+
+export type UnloveCommentSuccessResolvers<ContextType = any, ParentType extends ResolversParentTypes['UnloveCommentSuccess'] = ResolversParentTypes['UnloveCommentSuccess']> = ResolversObject<{
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  comment?: Resolver<ResolversTypes['Comment'], ParentType, ContextType>,
+  post?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
+export type UnloveCommentResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UnloveCommentResponse'] = ResolversParentTypes['UnloveCommentResponse']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'UnloveCommentSuccess' | 'UnauthorizedResponse', ParentType, ContextType>
 }>;
 
 export type SearchPostResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['SearchPostResponse'] = ResolversParentTypes['SearchPostResponse']> = ResolversObject<{
@@ -429,13 +493,15 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
   superparentId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   type?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   comments?: Resolver<Maybe<Array<ResolversTypes['Comment']>>, ParentType, ContextType>,
+  myCommentLove?: Resolver<Maybe<Array<ResolversTypes['Int']>>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;
 
 export type CommentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = ResolversObject<{
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   authorId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
-  createdDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  author?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
+  createdDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   modifiedDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   post?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType>,
   postId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
@@ -495,6 +561,10 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   LovePostResponse?: LovePostResponseResolvers,
   UnlovePostSuccess?: UnlovePostSuccessResolvers<ContextType>,
   UnlovePostResponse?: UnlovePostResponseResolvers,
+  LoveCommentSuccess?: LoveCommentSuccessResolvers<ContextType>,
+  LoveCommentResponse?: LoveCommentResponseResolvers,
+  UnloveCommentSuccess?: UnloveCommentSuccessResolvers<ContextType>,
+  UnloveCommentResponse?: UnloveCommentResponseResolvers,
   SearchPostResponse?: SearchPostResponseResolvers<ContextType>,
   LoginFailure?: LoginFailureResolvers<ContextType>,
   LoginSuccess?: LoginSuccessResolvers<ContextType>,

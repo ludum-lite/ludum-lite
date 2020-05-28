@@ -4,7 +4,7 @@ import PostAPI from './data-sources/post-api'
 import UserAPI from './data-sources/user-api'
 import { Resolvers } from './__generated__/schema-types'
 import { typeDefs } from './schema'
-import ComementAPI from './data-sources/comment-api'
+import CommentAPI from './data-sources/comment-api'
 
 const resolvers: Resolvers<Context> = {
   Query: {
@@ -31,6 +31,12 @@ const resolvers: Resolvers<Context> = {
     unlovePost(_, { input: { id } }, context) {
       return context.dataSources.postApi.unlovePost(id)
     },
+    loveComment(_, { input: { id } }, context) {
+      return context.dataSources.commentApi.loveComment(id)
+    },
+    unloveComment(_, { input: { id } }, context) {
+      return context.dataSources.commentApi.unloveComment(id)
+    },
   },
   Post: {
     author(post, __, context) {
@@ -38,6 +44,14 @@ const resolvers: Resolvers<Context> = {
     },
     comments(post, __, context) {
       return context.dataSources.commentApi.getCommentsForPost(post.id)
+    },
+    myCommentLove(post, __, context) {
+      return context.dataSources.commentApi.getMyLovedCommentsForPost(post.id)
+    },
+  },
+  Comment: {
+    author(comment, __, context) {
+      return context.dataSources.userApi.getUser(comment.authorId)
     },
   },
   Me: {
@@ -53,6 +67,16 @@ const resolvers: Resolvers<Context> = {
   UnlovePostSuccess: {
     me(_, __, context) {
       return context.dataSources.userApi.me()
+    },
+  },
+  LoveCommentSuccess: {
+    post(response, __, context) {
+      return context.dataSources.postApi.getPost(response.comment.postId)
+    },
+  },
+  UnloveCommentSuccess: {
+    post(response, __, context) {
+      return context.dataSources.postApi.getPost(response.comment.postId)
     },
   },
 }
@@ -76,7 +100,7 @@ new ApolloServer({
     } as any) as Context),
   dataSources: () => ({
     postApi: new PostAPI(),
-    commentApi: new ComementAPI(),
+    commentApi: new CommentAPI(),
     userApi: new UserAPI(),
   }),
   engine: {

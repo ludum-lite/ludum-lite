@@ -6,33 +6,28 @@ import { getStaticUrl } from 'utils'
 
 import { Typography } from '@material-ui/core'
 import Link from 'components/common/mui/Link'
+import Avatar from './Avatar'
 
 const HeaderUserContainer = styled.div`
   display: flex;
   flex: 1 1 0px;
   align-items: center;
 `
-const AvatarContainer = styled.div`
+
+const StyledAvatar = styled(Avatar)`
   display: flex;
   margin-right: 8px;
 `
-const AvatarLink = styled(Link)`
-  display: flex;
-`
-const Avatar = styled.img`
-  height: 20px;
-  width: 20px;
-  border-radius: 4px;
-`
+
 const UserLink = styled(Link)`
   margin-right: 4px;
 `
 
 type Props = {
-  userProfilePath: string
-  userAvatarPath: string
-  userName: string
-  postedDate: string
+  userProfilePath?: string
+  userAvatarPath?: string | null
+  userName?: string
+  postedDate?: string | null
 }
 
 export default function UserPostedHeader({
@@ -43,18 +38,18 @@ export default function UserPostedHeader({
 }: Props) {
   return (
     <HeaderUserContainer>
-      <AvatarContainer>
-        <AvatarLink to={userProfilePath}>
-          <Avatar src={getStaticUrl(userAvatarPath)} alt="" />
-        </AvatarLink>
-      </AvatarContainer>
+      <StyledAvatar
+        avatarPath={getStaticUrl(userAvatarPath)}
+        linkPath={userProfilePath || ''}
+        size={30}
+      />
       <UserLink
-        to={userProfilePath}
+        to={userProfilePath || ''}
         color="textSecondary"
         variant="caption"
       >{`u/${userName}`}</UserLink>
       <Typography variant="caption" color="textPrimary">
-        {moment(postedDate).fromNow()}
+        {postedDate && moment(postedDate).fromNow()}
       </Typography>
     </HeaderUserContainer>
   )

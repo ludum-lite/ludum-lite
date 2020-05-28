@@ -8,7 +8,7 @@ import CommentOutlinedIcon from '@material-ui/icons/ModeCommentOutlined'
 import Button from 'components/common/mui/Button'
 
 const StyledButton = styled(Button)`
-  font-size: 1.125rem;
+  font-size: 1rem;
   padding: 6px 1rem;
 
   &:hover {

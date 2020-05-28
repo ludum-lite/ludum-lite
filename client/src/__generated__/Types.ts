@@ -28,11 +28,39 @@ export interface GetAppData {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: PostBookmarkButton_GetFavoritedIds
+// GraphQL mutation operation: LoveComment
 // ====================================================
 
-export interface PostBookmarkButton_GetFavoritedIds {
-  favoritedIds: number[] | null;
+export interface LoveComment_loveComment_UnauthorizedResponse {
+  __typename: "UnauthorizedResponse";
+}
+
+export interface LoveComment_loveComment_LoveCommentSuccess_comment {
+  __typename: "Comment";
+  id: number;
+  numLove: number;
+}
+
+export interface LoveComment_loveComment_LoveCommentSuccess_post {
+  __typename: "Post";
+  id: number;
+  myCommentLove: number[] | null;
+}
+
+export interface LoveComment_loveComment_LoveCommentSuccess {
+  __typename: "LoveCommentSuccess";
+  comment: LoveComment_loveComment_LoveCommentSuccess_comment;
+  post: LoveComment_loveComment_LoveCommentSuccess_post | null;
+}
+
+export type LoveComment_loveComment = LoveComment_loveComment_UnauthorizedResponse | LoveComment_loveComment_LoveCommentSuccess;
+
+export interface LoveComment {
+  loveComment: LoveComment_loveComment;
+}
+
+export interface LoveCommentVariables {
+  input: IdInput;
 }
 
 /* tslint:disable */
@@ -41,11 +69,52 @@ export interface PostBookmarkButton_GetFavoritedIds {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: PostLoveButtonGlobalData
+// GraphQL mutation operation: UnloveComment
 // ====================================================
 
-export interface PostLoveButtonGlobalData {
-  isLoggedIn: boolean;
+export interface UnloveComment_unloveComment_UnauthorizedResponse {
+  __typename: "UnauthorizedResponse";
+}
+
+export interface UnloveComment_unloveComment_UnloveCommentSuccess_comment {
+  __typename: "Comment";
+  id: number;
+  numLove: number;
+}
+
+export interface UnloveComment_unloveComment_UnloveCommentSuccess_post {
+  __typename: "Post";
+  id: number;
+  myCommentLove: number[] | null;
+}
+
+export interface UnloveComment_unloveComment_UnloveCommentSuccess {
+  __typename: "UnloveCommentSuccess";
+  comment: UnloveComment_unloveComment_UnloveCommentSuccess_comment;
+  post: UnloveComment_unloveComment_UnloveCommentSuccess_post | null;
+}
+
+export type UnloveComment_unloveComment = UnloveComment_unloveComment_UnauthorizedResponse | UnloveComment_unloveComment_UnloveCommentSuccess;
+
+export interface UnloveComment {
+  unloveComment: UnloveComment_unloveComment;
+}
+
+export interface UnloveCommentVariables {
+  input: IdInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: PostBookmarkButton_GetFavoritedIds
+// ====================================================
+
+export interface PostBookmarkButton_GetFavoritedIds {
+  favoritedIds: number[] | null;
 }
 
 /* tslint:disable */
@@ -159,11 +228,21 @@ export interface GetPostOverlayPageData_post_author {
   name: string;
 }
 
+export interface GetPostOverlayPageData_post_comments_author {
+  __typename: "User";
+  id: number;
+  avatarPath: string | null;
+  profilePath: string;
+  name: string;
+}
+
 export interface GetPostOverlayPageData_post_comments {
   __typename: "Comment";
   id: number;
   body: string;
   numLove: number;
+  createdDate: string;
+  author: GetPostOverlayPageData_post_comments_author | null;
 }
 
 export interface GetPostOverlayPageData_post {
@@ -175,6 +254,7 @@ export interface GetPostOverlayPageData_post {
   author: GetPostOverlayPageData_post_author | null;
   comments: GetPostOverlayPageData_post_comments[] | null;
   numLove: number;
+  myCommentLove: number[] | null;
 }
 
 export interface GetPostOverlayPageData_me_UnauthorizedResponse {
@@ -317,14 +397,82 @@ export interface LoginVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GlobalIsLoggedIn
+// ====================================================
+
+export interface GlobalIsLoggedIn {
+  isLoggedIn: boolean;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: CommentLoveButton_comment
+// ====================================================
+
+export interface CommentLoveButton_comment {
+  __typename: "Comment";
+  id: number;
+  numLove: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: CommentLoveButton_post
+// ====================================================
+
+export interface CommentLoveButton_post {
+  __typename: "Post";
+  id: number;
+  myCommentLove: number[] | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: Comment_comment
 // ====================================================
+
+export interface Comment_comment_author {
+  __typename: "User";
+  id: number;
+  avatarPath: string | null;
+  profilePath: string;
+  name: string;
+}
 
 export interface Comment_comment {
   __typename: "Comment";
   id: number;
   body: string;
   numLove: number;
+  createdDate: string;
+  author: Comment_comment_author | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: Comment_post
+// ====================================================
+
+export interface Comment_post {
+  __typename: "Post";
+  id: number;
+  myCommentLove: number[] | null;
 }
 
 /* tslint:disable */
@@ -336,11 +484,36 @@ export interface Comment_comment {
 // GraphQL fragment: Comments_comment
 // ====================================================
 
+export interface Comments_comment_author {
+  __typename: "User";
+  id: number;
+  avatarPath: string | null;
+  profilePath: string;
+  name: string;
+}
+
 export interface Comments_comment {
   __typename: "Comment";
   id: number;
   body: string;
   numLove: number;
+  createdDate: string;
+  author: Comments_comment_author | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: Comments_post
+// ====================================================
+
+export interface Comments_post {
+  __typename: "Post";
+  id: number;
+  myCommentLove: number[] | null;
 }
 
 /* tslint:disable */

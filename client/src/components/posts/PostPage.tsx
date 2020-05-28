@@ -90,6 +90,7 @@ const GET_DATA = gql`
         ...Comments_comment
       }
       ...PostLoveButton_post
+      ...Comments_post
     }
     me {
       ...PostLoveButton_me
@@ -98,6 +99,7 @@ const GET_DATA = gql`
   ${PostLoveButton.fragments.post}
   ${PostLoveButton.fragments.me}
   ${Comments.fragments.comment}
+  ${Comments.fragments.post}
 `
 
 export default function PostPage() {
@@ -152,7 +154,8 @@ export default function PostPage() {
             <CommentsTitle variant="h5">Comments</CommentsTitle>
             {post?.comments && (
               <Comments
-                comments={filter(Comments.fragments.comment, post?.comments)}
+                comments={filter(Comments.fragments.comment, post.comments)}
+                post={filter(Comments.fragments.post, post)}
               />
             )}
           </CommentsContained>

@@ -1,48 +1,13 @@
 import React from 'react'
-import styled, { css } from 'styled-components/macro'
-import { gql, useMutation, useQuery } from '@apollo/client'
+import { useTheme } from 'styled-components/macro'
+import { gql, useMutation } from '@apollo/client'
 import * as Types from '__generated__/Types'
 
 import FavoriteIcon from '@material-ui/icons/FavoriteRounded'
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorderRounded'
 import { useLogin } from 'hooks/useLogin'
-import Button from 'components/common/mui/Button'
-import { ignoreProps } from 'utils'
-
-interface StyledButtonProps {
-  active: boolean
-}
-const StyledButton = styled(Button).withConfig({
-  shouldForwardProp: ignoreProps(['active']),
-})<StyledButtonProps>`
-  font-size: 1.125rem;
-  padding: 6px 1rem;
-
-  ${({ active }) =>
-    !active &&
-    css`
-      &:hover {
-        color: ${({ theme }) => theme.themeColors.loveButton.activeColor};
-        background-color: ${({ theme }) => theme.buttonRootBackgroundColor};
-      }
-    `}
-
-  ${({ active }) =>
-    active &&
-    css`
-      background: ${({ theme }) => theme.themeColors.loveButton.activeColor};
-      color: white;
-
-      &:hover {
-        background: ${({ theme }) => theme.themeColors.loveButton.activeColor};
-      }
-    `}
-`
-
-const RightIcon = styled.div`
-  margin-right: ${({ theme }) => theme.spacing(1)}px;
-  font-size: 1.25rem;
-`
+import ToggleButton from 'components/common/ToggleButton'
+import { useIsLoggedIn } from 'hooks/useIsLoggedIn'
 
 interface Props {
   post: Types.PostLoveButton_post
@@ -50,11 +15,8 @@ interface Props {
 }
 export default function PostLoveButton({ me, post }: Props) {
   const { promptLogin } = useLogin()
-  const [isHovering, setIsHovering] = React.useState(false)
-
-  const { data: globalData } = useQuery<Types.PostLoveButtonGlobalData>(
-    GET_GLOBAL_DATA
-  )
+  const isLoggedIn = useIsLoggedIn()
+  const theme = useTheme()
 
   const [lovePost] = useMutation<Types.LovePost, Types.LovePostVariables>(
     LOVE_POST,
@@ -80,33 +42,16 @@ export default function PostLoveButton({ me, post }: Props) {
 
   const hasLovedPost =
     me.__typename === 'Me' && (me.lovedPosts || []).includes(post.id)
-  const isLoggedIn = globalData?.isLoggedIn
-
-  const IconComponent = React.useMemo(() => {
-    if (hasLovedPost) {
-      if (isHovering) {
-        return FavoriteBorderIcon
-      } else {
-        return FavoriteIcon
-      }
-    } else {
-      if (isHovering) {
-        return FavoriteIcon
-      } else {
-        return FavoriteBorderIcon
-      }
-    }
-  }, [hasLovedPost, isHovering])
 
   return (
-    <StyledButton
+    <ToggleButton
       active={hasLovedPost}
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
+      color={theme.themeColors.loveButton.activeColor}
+      activeIcon={FavoriteIcon}
+      defaultIcon={FavoriteBorderIcon}
       onClick={(e) => {
         e.stopPropagation()
         if (isLoggedIn && me.__typename === 'Me') {
-          setIsHovering(false)
           if (hasLovedPost) {
             unlovePost({
               optimisticResponse: {
@@ -151,9 +96,8 @@ export default function PostLoveButton({ me, post }: Props) {
         }
       }}
     >
-      <RightIcon as={IconComponent} />
       {post.numLove}
-    </StyledButton>
+    </ToggleButton>
   )
 }
 
@@ -174,12 +118,6 @@ PostLoveButton.fragments = {
     }
   `,
 }
-
-const GET_GLOBAL_DATA = gql`
-  query PostLoveButtonGlobalData {
-    isLoggedIn @client
-  }
-`
 
 const LOVE_POST = gql`
   mutation LovePost($input: IdInput!) {

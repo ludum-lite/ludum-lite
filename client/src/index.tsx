@@ -137,6 +137,11 @@ export type ThemeColors = {
     textFieldActiveBackground: string
     boxShadow: string
   }
+  comment: {
+    evenBackground: string
+    oddBackground: string
+    boxShadow: string
+  }
   palette: {
     primary: {
       dark: string
@@ -155,6 +160,7 @@ type Themes = {
 const borderColor = 'rgba(0, 0, 0, 0.22)'
 const buttonRootBackgroundColor = 'rgba(0, 0, 0, 0.12)'
 const buttonContainedBackgroundColor = 'rgba(0, 0, 0, 0.1)'
+const cardBoxShadow = '0 0 6px 0px rgba(0,0,0,0.04)'
 
 // https://coolors.co/13293d-006494-058ed9-3fa6de-6ab8e2-004567-eaebed-f9f9ff-fdffff
 const styleVariables = {
@@ -209,9 +215,14 @@ const lightTheme: ThemeColors = {
   },
   addCommentForm: {
     background: styleVariables.greenBlue,
-    boxShadow: '0 0 6px 0px rgba(0,0,0,0.04)',
+    boxShadow: cardBoxShadow,
     textFieldBackground: styleVariables.cultured,
     textFieldActiveBackground: styleVariables.white,
+  },
+  comment: {
+    evenBackground: styleVariables.cultured,
+    oddBackground: 'rgba(116, 122, 138, 0.22)',
+    boxShadow: cardBoxShadow,
   },
   palette: {
     primary: {
@@ -278,9 +289,14 @@ const darkTheme: ThemeColors = {
   },
   addCommentForm: {
     background: ldStyleVariables.portlandOrange,
-    boxShadow: '0 0 6px 0px rgba(0,0,0,0.04)',
+    boxShadow: cardBoxShadow,
     textFieldBackground: ldStyleVariables.white,
     textFieldActiveBackground: ldStyleVariables.white,
+  },
+  comment: {
+    evenBackground: ldStyleVariables.white,
+    oddBackground: 'rgba(116, 122, 138, 0.22)',
+    boxShadow: cardBoxShadow,
   },
   palette: {
     primary: {
