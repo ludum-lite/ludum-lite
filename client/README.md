@@ -1,44 +1,64 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Pin library versions in package.json
 
-## Available Scripts
+```
+  "eslint": "4.19.1",
+  "rollup": "0.67.3",
+```
 
-In the project directory, you can run:
+# Update libraries
 
-### `yarn start`
+```
+> vagrant ssh
+> cd ./www
+> npm install
+```
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+# Add to hosts file on local machine and in vagrant
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+```
+192.168.48.48 ludumdare.org
+192.168.48.48 api.ludumdare.org
+192.168.48.48 url.ludumdare.org
+192.168.48.48 jammer.work
+192.168.48.48 api.jammer.work
+192.168.48.48 url.jammer.work
+192.168.48.48 bio.jammer.work
+192.168.48.48 api.bio.jammer.work
+192.168.48.48 static.jammer.work
+```
 
-### `yarn test`
+## Windows
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+C:\Windows\System32\drivers\etc\hosts
 
-### `yarn build`
+## Vagrant
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+> vagrant ssh
+> sudo vim /etc/hosts
+paste and save (esc to normal mode and :x!)
+```
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+# Make
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+> vagrant ssh
+> cd ./www
+> make
+```
 
-### `yarn eject`
+# Simulate an event
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+> vagrant ssh
+> ./www/sandbox/simulator/simulate_ld_event 50 actions
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# Open the website
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+http://ludumdare.org/
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+# Helpful places
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+http://192.168.48.48/simulator/model_default
+Outlines the phases of an event. Search `SetupThemePhase`
