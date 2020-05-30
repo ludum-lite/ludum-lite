@@ -355,10 +355,10 @@ export interface GetPostsPageDataVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetGlobalNavData
+// GraphQL query operation: GlobalIsLoggedIn
 // ====================================================
 
-export interface GetGlobalNavData {
+export interface GlobalIsLoggedIn {
   isLoggedIn: boolean;
 }
 
@@ -397,11 +397,33 @@ export interface LoginVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GlobalIsLoggedIn
+// GraphQL mutation operation: AddComment
 // ====================================================
 
-export interface GlobalIsLoggedIn {
-  isLoggedIn: boolean;
+export interface AddComment_addComment_UnauthorizedResponse {
+  __typename: "UnauthorizedResponse";
+}
+
+export interface AddComment_addComment_AddCommentSuccess_comment {
+  __typename: "Comment";
+  id: number;
+  postId: number;
+  body: string;
+}
+
+export interface AddComment_addComment_AddCommentSuccess {
+  __typename: "AddCommentSuccess";
+  comment: AddComment_addComment_AddCommentSuccess_comment;
+}
+
+export type AddComment_addComment = AddComment_addComment_UnauthorizedResponse | AddComment_addComment_AddCommentSuccess;
+
+export interface AddComment {
+  addComment: AddComment_addComment;
+}
+
+export interface AddCommentVariables {
+  input: AddCommentInput;
 }
 
 /* tslint:disable */
@@ -655,6 +677,11 @@ export enum PostType {
   all = "all",
   favorites = "favorites",
   news = "news",
+}
+
+export interface AddCommentInput {
+  postId: number;
+  body: string;
 }
 
 export interface IdInput {

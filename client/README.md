@@ -58,7 +58,12 @@ paste and save (esc to normal mode and :x!)
 
 http://ludumdare.org/
 
+# Login with credentials
+
+Navigate to: `http://192.168.48.48/simulator/`  
+Open: `ld_event.<number>.event`
+
 # Helpful places
 
-http://192.168.48.48/simulator/model_default
-Outlines the phases of an event. Search `SetupThemePhase`
+- https://github.com/ludumdare/ludumdare/wiki/Adding-a-new-Event
+- https://github.com/ludumdare/ludumdare/wiki/Metadata-Documentation

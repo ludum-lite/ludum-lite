@@ -13,6 +13,13 @@ const imagePreprocessor = (source: string) =>
 
 const Root = styled.div`
   margin: 1em 0;
+
+  code {
+    padding: 0.25em 0.25em 0.125em;
+    border-radius: 0.25em;
+    background-color: ${({ theme }) =>
+      theme.themeColors.markdown.codeBackground};
+  }
 `
 
 const Image = styled.img`

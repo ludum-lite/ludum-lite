@@ -11,6 +11,7 @@ type Mutation {
   unlovePost(input: IdInput!): UnlovePostResponse!
   loveComment(input: IdInput!): LoveCommentResponse!
   unloveComment(input: IdInput!): UnloveCommentResponse!
+  addComment(input: AddCommentInput!): AddCommentResponse!
 }
 
 interface MutationResponse {
@@ -21,58 +22,52 @@ type UnauthorizedResponse {
   code: String!
 }
 
-union MeResponse = Me | UnauthorizedResponse
-
-type LovePostSuccess implements MutationResponse {
-  success: Boolean!
-  post: Post!
-  me: MeResponse
-}
-
-union LovePostResponse = LovePostSuccess | UnauthorizedResponse
-
-type UnlovePostSuccess implements MutationResponse {
-  success: Boolean!
-  post: Post!
-  me: MeResponse
-}
-
-union UnlovePostResponse = UnlovePostSuccess | UnauthorizedResponse
-
-type LoveCommentSuccess implements MutationResponse {
-  success: Boolean!
-  comment: Comment!
-  post: Post
-}
-
-union LoveCommentResponse = LoveCommentSuccess | UnauthorizedResponse
-
-type UnloveCommentSuccess implements MutationResponse {
-  success: Boolean!
-  comment: Comment!
-  post: Post
-}
-
-union UnloveCommentResponse = UnloveCommentSuccess | UnauthorizedResponse
-
 input IdInput {
   id: Int!
 }
 
+interface BaseUser {
+  avatarPath: String
+  createdDate: String!
+  id: Int!
+  modifiedDate: String!
+  name: String!
+  numGames: Int!
+  numPosts: Int!
+  profilePath: String!
+  type: String!
+}
+
+type User implements BaseUser {
+  avatarPath: String
+  createdDate: String!
+  id: Int!
+  modifiedDate: String!
+  name: String!
+  numGames: Int!
+  numPosts: Int!
+  profilePath: String!
+  type: String!
+}
+
+type Me implements BaseUser {
+  avatarPath: String
+  createdDate: String!
+  id: Int!
+  modifiedDate: String!
+  name: String!
+  numGames: Int!
+  numPosts: Int!
+  profilePath: String!
+  type: String!
+  lovedPosts: [Int!]!
+}
+
+union MeResponse = Me | UnauthorizedResponse
+
 input LoginInput {
   email: String!
   password: String!
-}
-
-type SearchPostResponse {
-  limit: Int!
-  page: Int!
-  posts: [Post!]!
-}
-
-input SearchPostsFiltersInput {
-  postType: PostType!
-  favoritedIds: [Int!]
 }
 
 type LoginFailure implements MutationResponse {
@@ -118,6 +113,33 @@ type Post {
   myCommentLove: [Int!]
 }
 
+type LovePostSuccess implements MutationResponse {
+  success: Boolean!
+  post: Post!
+  me: MeResponse
+}
+
+union LovePostResponse = LovePostSuccess | UnauthorizedResponse
+
+type UnlovePostSuccess implements MutationResponse {
+  success: Boolean!
+  post: Post!
+  me: MeResponse
+}
+
+union UnlovePostResponse = UnlovePostSuccess | UnauthorizedResponse
+
+type SearchPostResponse {
+  limit: Int!
+  page: Int!
+  posts: [Post!]!
+}
+
+input SearchPostsFiltersInput {
+  postType: PostType!
+  favoritedIds: [Int!]
+}
+
 type Comment {
   id: Int!
   authorId: Int!
@@ -131,39 +153,30 @@ type Comment {
   numLove: Int!
 }
 
-interface BaseUser {
-  avatarPath: String
-  createdDate: String!
-  id: Int!
-  modifiedDate: String!
-  name: String!
-  numGames: Int!
-  numPosts: Int!
-  profilePath: String!
-  type: String!
+type LoveCommentSuccess implements MutationResponse {
+  success: Boolean!
+  comment: Comment!
+  post: Post
 }
 
-type User implements BaseUser {
-  avatarPath: String
-  createdDate: String!
-  id: Int!
-  modifiedDate: String!
-  name: String!
-  numGames: Int!
-  numPosts: Int!
-  profilePath: String!
-  type: String!
+union LoveCommentResponse = LoveCommentSuccess | UnauthorizedResponse
+
+type UnloveCommentSuccess implements MutationResponse {
+  success: Boolean!
+  comment: Comment!
+  post: Post
 }
 
-type Me implements BaseUser {
-  avatarPath: String
-  createdDate: String!
-  id: Int!
-  modifiedDate: String!
-  name: String!
-  numGames: Int!
-  numPosts: Int!
-  profilePath: String!
-  type: String!
-  lovedPosts: [Int!]!
+union UnloveCommentResponse = UnloveCommentSuccess | UnauthorizedResponse
+
+input AddCommentInput {
+  postId: Int!
+  body: String!
 }
+
+type AddCommentSuccess implements MutationResponse {
+  success: Boolean!
+  comment: Comment!
+}
+
+union AddCommentResponse = AddCommentSuccess | UnauthorizedResponse

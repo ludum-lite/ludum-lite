@@ -31,8 +31,8 @@ enum CommentSortBy {
 }
 
 const CommentSortByToDisplay = {
-  [CommentSortBy.DatePostedNewest]: 'Date posted (Newest)',
-  [CommentSortBy.DatePostedOldest]: 'Date posted (Oldest)',
+  [CommentSortBy.DatePostedNewest]: 'Newest',
+  [CommentSortBy.DatePostedOldest]: 'Oldest',
   [CommentSortBy.Loves]: 'Popular',
 }
 
@@ -186,28 +186,28 @@ export default function PostPage() {
   }, [commentSortBy, comments])
 
   const body = React.useMemo(() => {
-    if (!loading) {
+    if (!loading && post) {
       return (
         <Body>
           <Article>
             <Header>
               <HeaderContent>
                 <Title>
-                  <TitleText variant="h5">{post?.name}</TitleText>
+                  <TitleText variant="h5">{post.name}</TitleText>
                 </Title>
                 <HeaderUserContainer>
                   <UserPostedHeader
-                    userProfilePath={post?.author?.profilePath || 'N/A'}
-                    userAvatarPath={post?.author?.avatarPath || 'N/A'}
-                    userName={post?.author?.name || 'N/A'}
-                    postedDate={post?.publishedDate || 'N/A'}
+                    userProfilePath={post.author?.profilePath || 'N/A'}
+                    userAvatarPath={post.author?.avatarPath || 'N/A'}
+                    userName={post.author?.name || 'N/A'}
+                    postedDate={post.publishedDate || 'N/A'}
                   />
                 </HeaderUserContainer>
               </HeaderContent>
             </Header>
-            {post?.body && <Markdown source={post.body} />}
+            {post.body && <Markdown source={post.body} />}
           </Article>
-          <StyledAddCommentForm />
+          <StyledAddCommentForm postId={post.id} />
           <CommentsContained>
             <CommentsTitleContainer>
               <CommentsTitle variant="h5">Comments</CommentsTitle>
@@ -220,7 +220,6 @@ export default function PostPage() {
                   id="demo-simple-select-filled"
                   value={commentSortBy}
                   onChange={(e) => {
-                    console.log(e)
                     onChangeSortBy(e.target.value as CommentSortBy)
                   }}
                 >

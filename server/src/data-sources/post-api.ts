@@ -157,7 +157,6 @@ export default class PostAPI extends BaseAPI {
   async unlovePost(id: number): Promise<UnlovePostResponse> {
     try {
       const post = await this.context.loaders.postLoader.load(id)
-      console.log(post.numLove)
 
       // The api caches the feed, so we need to manually update the amount of love on the post
       post.numLove = Math.max(isNil(post.numLove) ? 0 : post.numLove - 1, 0)

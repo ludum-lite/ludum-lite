@@ -6,6 +6,10 @@ import Button from 'components/common/mui/Button'
 import Markdown from 'components/common/Markdown'
 import Fade from '@material-ui/core/Fade'
 import { ignoreProps } from 'utils'
+import { gql, useMutation } from '@apollo/client'
+import * as Types from '__generated__/Types'
+import { useIsLoggedIn } from 'hooks/useIsLoggedIn'
+import { useLogin } from 'hooks/useLogin'
 
 const FADE_TIMEOUT = 150
 
@@ -114,13 +118,28 @@ const PreviewContainer = styled.div`
 `
 
 interface Props {
+  postId: number
   className?: string
 }
-export default function AddCommentForm({ className }: Props) {
+export default function AddCommentForm({ className, postId }: Props) {
+  const isLoggedIn = useIsLoggedIn()
+  const { promptLogin } = useLogin()
   const [selectedTab, setSelectedTab] = React.useState<'write' | 'preview'>(
     'write'
   )
   const [body, setBody] = React.useState('')
+
+  const [addComment] = useMutation<Types.AddComment, Types.AddCommentVariables>(
+    ADD_COMMENT,
+    {
+      variables: {
+        input: {
+          body,
+          postId,
+        },
+      },
+    }
+  )
 
   // const onSubmit = async (comment: any, form: FormApi<object>) => {
   //   try {
@@ -165,7 +184,11 @@ export default function AddCommentForm({ className }: Props) {
               variant="contained"
               color="primary"
               type="submit"
-              padding={'wide'}
+              padding="wide"
+              onClick={(e) => {
+                e.preventDefault()
+                addComment()
+              }}
             >
               Submit
             </SaveButton>
@@ -180,9 +203,19 @@ export default function AddCommentForm({ className }: Props) {
             value={body}
             hasContent={Boolean(body)}
             onChange={(e) => {
+              if (!isLoggedIn) {
+                promptLogin()
+                return
+              }
+
               setBody(e.target.value)
               e.preventDefault()
               e.stopPropagation()
+            }}
+            onClick={() => {
+              if (!isLoggedIn) {
+                promptLogin()
+              }
             }}
           />
         ) : (
@@ -194,3 +227,17 @@ export default function AddCommentForm({ className }: Props) {
     </Root>
   )
 }
+
+const ADD_COMMENT = gql`
+  mutation AddComment($input: AddCommentInput!) {
+    addComment(input: $input) {
+      ... on AddCommentSuccess {
+        comment {
+          id
+          postId
+          body
+        }
+      }
+    }
+  }
+`

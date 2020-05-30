@@ -7,14 +7,13 @@ import {
   Fade,
 } from '@material-ui/core'
 import { isLoggedInVar } from 'resolvers'
-import { gql, useQuery } from '@apollo/client'
 import MuiAddIcon from '@material-ui/icons/Add'
 import MuiLightBrightnessIcon from '@material-ui/icons/Brightness4'
 import MuiDarkBrightnessIcon from '@material-ui/icons/Brightness4Outlined'
 import { ReactComponent as UserIcon } from 'assets/user.svg'
-import * as Types from '__generated__/Types'
 import { ThemeMode } from 'utils/types'
 import { useLogin } from 'hooks/useLogin'
+import { useIsLoggedIn } from 'hooks/useIsLoggedIn'
 
 const Root = styled.div`
   display: flex;
@@ -98,34 +97,22 @@ const Footer = styled.div`
   }
 `
 
-const useGlobalNavData = () => {
-  const GET_DATA = React.useMemo(
-    () => gql`
-      query GetGlobalNavData {
-        isLoggedIn @client
-      }
-    `,
-    []
-  )
-
-  const { data } = useQuery<Types.GetGlobalNavData>(GET_DATA)
-
-  return {
-    isLoggedIn: Boolean(data?.isLoggedIn),
-  }
-}
-
 interface Props {
   toggleTheme: () => void
   themeMode: ThemeMode
 }
 export default function GlobalNav({ toggleTheme, themeMode }: Props) {
+  const isLoggedIn = useIsLoggedIn()
   const { promptLogin } = useLogin()
-  const { isLoggedIn } = useGlobalNavData()
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleProfileClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (!isLoggedIn) {
+      promptLogin()
+      return
+    }
+
     setAnchorEl(event.currentTarget)
   }
 
@@ -160,7 +147,7 @@ export default function GlobalNav({ toggleTheme, themeMode }: Props) {
             <MuiDarkBrightnessIcon />
           )}
         </IconButton>
-        <ProfileButton onClick={handleClick} isLoggedIn={isLoggedIn}>
+        <ProfileButton onClick={handleProfileClick} isLoggedIn={isLoggedIn}>
           <ProfileCircle isLoggedIn={isLoggedIn}>
             <UserIcon />
           </ProfileCircle>
@@ -183,11 +170,7 @@ export default function GlobalNav({ toggleTheme, themeMode }: Props) {
           TransitionComponent={Fade}
         >
           <MenuItem onClick={handleClose}>Profile</MenuItem>
-          {isLoggedIn ? (
-            <MenuItem onClick={onLogout}>Logout</MenuItem>
-          ) : (
-            <MenuItem onClick={onLogin}>Login</MenuItem>
-          )}
+          <MenuItem onClick={onLogout}>Logout</MenuItem>
         </Menu>
       </Footer>
     </Root>

@@ -105,6 +105,9 @@ export type ThemeColors = {
   loaderBarBackground: string
   logoBackground: string
   borderColor: string
+  markdown: {
+    codeBackground: string
+  }
   link: {
     color: string
   }
@@ -188,6 +191,9 @@ const lightTheme: ThemeColors = {
   loaderBarBackground: 'rgba(0, 0, 0, 0.166)',
   logoBackground: styleVariables.indigoDye,
   borderColor,
+  markdown: {
+    codeBackground: 'rgba(64, 75, 86, 0.15)',
+  },
   link: {
     color: styleVariables.greenBlue,
   },
@@ -262,6 +268,9 @@ const darkTheme: ThemeColors = {
   loaderBarBackground: ldStyleVariables.darkOrange,
   logoBackground: '',
   borderColor,
+  markdown: {
+    codeBackground: 'rgba(64, 75, 86, 0.11)',
+  },
   link: {
     color: ldStyleVariables.darkOrange,
   },

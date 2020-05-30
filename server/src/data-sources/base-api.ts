@@ -5,16 +5,20 @@ import {
   RequestOptions,
 } from 'apollo-datasource-rest'
 import { Context } from './context'
+import config from '../config'
 
 export default class BaseAPI extends RESTDataSource<Context> {
   constructor() {
     super()
-    this.baseURL = 'https://api.ldjam.com/'
+    this.baseURL = config.baseURL
   }
 
   willSendRequest(request: RequestOptions) {
     if (this.context.authToken) {
-      request.headers.set('cookie', `SIDS=${this.context.authToken}`)
+      request.headers.set(
+        'cookie',
+        `${config.authKey}=${this.context.authToken}`
+      )
     }
   }
 

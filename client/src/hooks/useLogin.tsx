@@ -47,11 +47,12 @@ export const useLogin = singletonHook(init, () => {
     {
       onCompleted: ({ login }) => {
         if (login.__typename === 'LoginSuccess') {
+          console.log(login)
           const { token } = login
           localStorage.setItem('token', token)
           setIsPromptingLogin(false)
           isLoggedInVar(true)
-          window.location.reload()
+          // window.location.reload()
         } else if (login.__typename === 'LoginFailure') {
           setError(login.message)
           isLoggedInVar(false)

@@ -13,6 +13,8 @@ import {
   IdInput,
   LoveCommentResponse,
   UnloveCommentResponse,
+  AddCommentInput,
+  AddCommentResponse,
 } from '../__generated__/schema-types'
 import { unauthorizedResponse } from './const'
 import { delegateToSchema } from 'apollo-server'
@@ -109,6 +111,25 @@ export default class CommentAPI extends BaseAPI {
         __typename: 'UnloveCommentSuccess',
         success: true,
         comment: await this.getComment(id),
+      }
+    } catch (e) {
+      return unauthorizedResponse
+    }
+  }
+
+  async addComment(input: AddCommentInput): Promise<AddCommentResponse> {
+    try {
+      const response = await this.post(`vx/comment/add/${input.postId}`, {
+        parent: 0,
+        body: input.body,
+      })
+
+      console.log(response)
+
+      return {
+        __typename: 'AddCommentSuccess',
+        success: true,
+        comment: await this.getComment(0),
       }
     } catch (e) {
       return unauthorizedResponse

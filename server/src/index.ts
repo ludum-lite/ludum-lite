@@ -37,6 +37,9 @@ const resolvers: Resolvers<Context> = {
     unloveComment(_, { input: { id } }, context) {
       return context.dataSources.commentApi.unloveComment(id)
     },
+    addComment(_, { input }, context) {
+      return context.dataSources.commentApi.addComment(input)
+    },
   },
   Post: {
     author(post, __, context) {
