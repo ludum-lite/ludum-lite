@@ -20,13 +20,12 @@ const Root = styled.div<RootProps>`
   position: absolute;
   display: flex;
   flex-direction: column;
-  background: ${({ theme }) => theme.themeColors.contextualNavBackground};
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 200;
-  overflow: auto;
+  background: ${({ theme }) => theme.themeColors.contextualNavBackground};
 `
 
 const Card = styled.div`
@@ -34,9 +33,10 @@ const Card = styled.div`
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  margin: ${CARD_MARGIN}px;
-  margin-left: 0;
+  padding: ${CARD_MARGIN}px;
+  padding-left: 0;
   z-index: 1;
+  background: ${({ theme }) => theme.themeColors.contextualNavBackground};
 `
 
 const ActionRowTop = styled.div`
