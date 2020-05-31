@@ -115,6 +115,11 @@ export type ThemeColors = {
   error: {
     background: string
   }
+  postsPage: {
+    toggleButtons: {
+      inactiveColor: string
+    }
+  }
   post: {
     backgroundColor: string
     activeBorderColor: string
@@ -164,7 +169,8 @@ type Themes = {
 
 const borderColor = 'rgba(0, 0, 0, 0.22)'
 const buttonRootBackgroundColor = 'rgba(0, 0, 0, 0.1)'
-const buttonContainedBackgroundColor = 'rgba(0, 0, 0, 0.09)'
+const buttonContainedBackgroundColor = 'rgba(0, 0, 0, 0.1)'
+const buttonContainedColor = 'rgba(0, 0, 0, 0.87)'
 const cardBoxShadow = '0 0 6px 0px rgba(0,0,0,0.04)'
 const inputBackground = 'rgba(75, 80, 97, 0.17)'
 
@@ -201,6 +207,11 @@ const lightTheme: ThemeColors = {
   },
   error: {
     background: styleVariables.bittersweet,
+  },
+  postsPage: {
+    toggleButtons: {
+      inactiveColor: buttonContainedColor,
+    },
   },
   post: {
     backgroundColor: styleVariables.white,
@@ -279,6 +290,11 @@ const darkTheme: ThemeColors = {
   },
   error: {
     background: styleVariables.bittersweet,
+  },
+  postsPage: {
+    toggleButtons: {
+      inactiveColor: 'white ',
+    },
   },
   post: {
     backgroundColor: ldStyleVariables.cultured,

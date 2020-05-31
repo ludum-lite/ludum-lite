@@ -47,12 +47,14 @@ const SortButton = styled(Button).withConfig({
   shouldForwardProp: ignoreProps(['active']),
 })<SortButtonProps>`
   padding: 6px 16px;
-  color: white;
+  color: ${({ theme }) =>
+    theme.themeColors.postsPage.toggleButtons.inactiveColor};
 
   ${({ active }) =>
     active &&
     css`
       background-color: ${({ theme }) => theme.themeColors.globalNavBackground};
+      color: white;
 
       &:hover {
         background-color: ${({ theme }) =>
