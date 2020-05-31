@@ -40,6 +40,9 @@ const resolvers: Resolvers<Context> = {
     addComment(_, { input }, context) {
       return context.dataSources.commentApi.addComment(input)
     },
+    editComment(_, { input }, context) {
+      return context.dataSources.commentApi.editComment(input)
+    },
   },
   Post: {
     author(post, __, context) {

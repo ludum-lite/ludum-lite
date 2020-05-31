@@ -1,17 +1,15 @@
 import React from 'react'
 import styled, { css } from 'styled-components/macro'
 import { Routes, Route } from 'react-router-dom'
-import { gql, useQuery } from '@apollo/client'
-import { isLoggedInVar } from 'resolvers'
 import Sidebar from './side-bar/Sidebar'
 import RoutesWithFallback from './common/RoutesWithFallback'
 import PostsPage from 'components/posts/PostsPage'
-import * as Types from '__generated__/Types'
 import { ThemeMode } from 'utils/types'
 import { usePostOverlayed } from 'hooks/usePostOverlay'
 import PostPage from './posts/PostPage'
 import { useLogin } from 'hooks/useLogin'
 import { useHasNavigatedWithin } from 'hooks/useHasNavigatedWithin'
+import { useMe } from 'hooks/useMe'
 
 interface AppProps {
   showingOverlay: boolean
@@ -37,16 +35,6 @@ const AppContent = styled.div`
   position: relative;
 `
 
-const GET_APP_DATA = gql`
-  query GetAppData {
-    me {
-      ... on Me {
-        id
-      }
-    }
-  }
-`
-
 interface Props {
   toggleTheme: () => void
   themeMode: ThemeMode
@@ -54,21 +42,10 @@ interface Props {
 export default function Root({ toggleTheme, themeMode }: Props) {
   useHasNavigatedWithin()
   const [postOverlayed] = usePostOverlayed()
-  const [hasLoadedUser, setHasLoadedUser] = React.useState(false)
   const { loginComponent } = useLogin()
+  const { hasLoaded } = useMe()
 
-  useQuery<Types.GetAppData>(GET_APP_DATA, {
-    onCompleted(data) {
-      if (data.me.__typename === 'UnauthorizedResponse') {
-        isLoggedInVar(false)
-        localStorage.removeItem('token')
-      }
-
-      setHasLoadedUser(true)
-    },
-  })
-
-  if (hasLoadedUser) {
+  if (hasLoaded) {
     return (
       <App showingOverlay={postOverlayed}>
         <Routes>

@@ -65,13 +65,19 @@ export default class UserAPI extends BaseAPI {
       // Make sure this token is used in the cookies on request
       this.context.authToken = token
 
-      await this.post('vx/user/login', `login=${email}&pw=${password}`, {
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded',
-          includeHeaders: 'true',
+      await this.post(
+        'vx/user/login',
+        {
+          login: email,
+          pw: password,
         },
-        credentials: 'include',
-      })
+        {
+          headers: {
+            includeHeaders: 'true',
+          },
+          credentials: 'include',
+        }
+      )
 
       return {
         __typename: 'LoginSuccess',
@@ -79,6 +85,7 @@ export default class UserAPI extends BaseAPI {
         token,
       }
     } catch (e) {
+      console.log(e)
       return {
         __typename: 'LoginFailure',
         success: false,

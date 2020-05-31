@@ -44,6 +44,7 @@ export type Mutation = {
   loveComment: LoveCommentResponse;
   unloveComment: UnloveCommentResponse;
   addComment: AddCommentResponse;
+  editComment: EditCommentResponse;
 };
 
 
@@ -74,6 +75,11 @@ export type MutationUnloveCommentArgs = {
 
 export type MutationAddCommentArgs = {
   input: AddCommentInput;
+};
+
+
+export type MutationEditCommentArgs = {
+  input: EditCommentInput;
 };
 
 export type MutationResponse = {
@@ -256,6 +262,20 @@ export type AddCommentSuccess = MutationResponse & {
 
 export type AddCommentResponse = AddCommentSuccess | UnauthorizedResponse;
 
+export type EditCommentInput = {
+  id: Scalars['Int'];
+  postId: Scalars['Int'];
+  body: Scalars['String'];
+};
+
+export type EditCommentSuccess = MutationResponse & {
+   __typename?: 'EditCommentSuccess';
+  success: Scalars['Boolean'];
+  comment: Comment;
+};
+
+export type EditCommentResponse = EditCommentSuccess | UnauthorizedResponse;
+
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
 
@@ -335,7 +355,7 @@ export type ResolversTypes = ResolversObject<{
   Query: ResolverTypeWrapper<{}>,
   Int: ResolverTypeWrapper<Scalars['Int']>,
   Mutation: ResolverTypeWrapper<{}>,
-  MutationResponse: ResolversTypes['LoginFailure'] | ResolversTypes['LoginSuccess'] | ResolversTypes['LovePostSuccess'] | ResolversTypes['UnlovePostSuccess'] | ResolversTypes['LoveCommentSuccess'] | ResolversTypes['UnloveCommentSuccess'] | ResolversTypes['AddCommentSuccess'],
+  MutationResponse: ResolversTypes['LoginFailure'] | ResolversTypes['LoginSuccess'] | ResolversTypes['LovePostSuccess'] | ResolversTypes['UnlovePostSuccess'] | ResolversTypes['LoveCommentSuccess'] | ResolversTypes['UnloveCommentSuccess'] | ResolversTypes['AddCommentSuccess'] | ResolversTypes['EditCommentSuccess'],
   UnauthorizedResponse: ResolverTypeWrapper<UnauthorizedResponse>,
   IdInput: IdInput,
   BaseUser: ResolversTypes['User'] | ResolversTypes['Me'],
@@ -362,6 +382,9 @@ export type ResolversTypes = ResolversObject<{
   AddCommentInput: AddCommentInput,
   AddCommentSuccess: ResolverTypeWrapper<AddCommentSuccess>,
   AddCommentResponse: ResolversTypes['AddCommentSuccess'] | ResolversTypes['UnauthorizedResponse'],
+  EditCommentInput: EditCommentInput,
+  EditCommentSuccess: ResolverTypeWrapper<EditCommentSuccess>,
+  EditCommentResponse: ResolversTypes['EditCommentSuccess'] | ResolversTypes['UnauthorizedResponse'],
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -371,7 +394,7 @@ export type ResolversParentTypes = ResolversObject<{
   Query: {},
   Int: Scalars['Int'],
   Mutation: {},
-  MutationResponse: ResolversParentTypes['LoginFailure'] | ResolversParentTypes['LoginSuccess'] | ResolversParentTypes['LovePostSuccess'] | ResolversParentTypes['UnlovePostSuccess'] | ResolversParentTypes['LoveCommentSuccess'] | ResolversParentTypes['UnloveCommentSuccess'] | ResolversParentTypes['AddCommentSuccess'],
+  MutationResponse: ResolversParentTypes['LoginFailure'] | ResolversParentTypes['LoginSuccess'] | ResolversParentTypes['LovePostSuccess'] | ResolversParentTypes['UnlovePostSuccess'] | ResolversParentTypes['LoveCommentSuccess'] | ResolversParentTypes['UnloveCommentSuccess'] | ResolversParentTypes['AddCommentSuccess'] | ResolversParentTypes['EditCommentSuccess'],
   UnauthorizedResponse: UnauthorizedResponse,
   IdInput: IdInput,
   BaseUser: ResolversParentTypes['User'] | ResolversParentTypes['Me'],
@@ -398,6 +421,9 @@ export type ResolversParentTypes = ResolversObject<{
   AddCommentInput: AddCommentInput,
   AddCommentSuccess: AddCommentSuccess,
   AddCommentResponse: ResolversParentTypes['AddCommentSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
+  EditCommentInput: EditCommentInput,
+  EditCommentSuccess: EditCommentSuccess,
+  EditCommentResponse: ResolversParentTypes['EditCommentSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
@@ -414,10 +440,11 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   loveComment?: Resolver<ResolversTypes['LoveCommentResponse'], ParentType, ContextType, RequireFields<MutationLoveCommentArgs, 'input'>>,
   unloveComment?: Resolver<ResolversTypes['UnloveCommentResponse'], ParentType, ContextType, RequireFields<MutationUnloveCommentArgs, 'input'>>,
   addComment?: Resolver<ResolversTypes['AddCommentResponse'], ParentType, ContextType, RequireFields<MutationAddCommentArgs, 'input'>>,
+  editComment?: Resolver<ResolversTypes['EditCommentResponse'], ParentType, ContextType, RequireFields<MutationEditCommentArgs, 'input'>>,
 }>;
 
 export type MutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{
-  __resolveType: TypeResolveFn<'LoginFailure' | 'LoginSuccess' | 'LovePostSuccess' | 'UnlovePostSuccess' | 'LoveCommentSuccess' | 'UnloveCommentSuccess' | 'AddCommentSuccess', ParentType, ContextType>,
+  __resolveType: TypeResolveFn<'LoginFailure' | 'LoginSuccess' | 'LovePostSuccess' | 'UnlovePostSuccess' | 'LoveCommentSuccess' | 'UnloveCommentSuccess' | 'AddCommentSuccess' | 'EditCommentSuccess', ParentType, ContextType>,
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
 }>;
 
@@ -587,6 +614,16 @@ export type AddCommentResponseResolvers<ContextType = any, ParentType extends Re
   __resolveType: TypeResolveFn<'AddCommentSuccess' | 'UnauthorizedResponse', ParentType, ContextType>
 }>;
 
+export type EditCommentSuccessResolvers<ContextType = any, ParentType extends ResolversParentTypes['EditCommentSuccess'] = ResolversParentTypes['EditCommentSuccess']> = ResolversObject<{
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  comment?: Resolver<ResolversTypes['Comment'], ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
+export type EditCommentResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['EditCommentResponse'] = ResolversParentTypes['EditCommentResponse']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'EditCommentSuccess' | 'UnauthorizedResponse', ParentType, ContextType>
+}>;
+
 export type Resolvers<ContextType = any> = ResolversObject<{
   Query?: QueryResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
@@ -612,6 +649,8 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   UnloveCommentResponse?: UnloveCommentResponseResolvers,
   AddCommentSuccess?: AddCommentSuccessResolvers<ContextType>,
   AddCommentResponse?: AddCommentResponseResolvers,
+  EditCommentSuccess?: EditCommentSuccessResolvers<ContextType>,
+  EditCommentResponse?: EditCommentResponseResolvers,
 }>;
 
 

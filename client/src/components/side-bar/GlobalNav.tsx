@@ -120,11 +120,6 @@ export default function GlobalNav({ toggleTheme, themeMode }: Props) {
     setAnchorEl(null)
   }
 
-  const onLogin = () => {
-    handleClose()
-    promptLogin()
-  }
-
   const onLogout = () => {
     localStorage.removeItem('token')
     isLoggedInVar(false)

@@ -7,6 +7,7 @@ const AvatarLink = styled(Link)`
 `
 const AvatarImg = styled.img`
   border-radius: 4px;
+  background: rgba(0, 0, 0, 0.1);
 `
 
 interface Props {

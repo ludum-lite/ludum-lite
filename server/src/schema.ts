@@ -19,6 +19,7 @@ export const typeDefs = gql`
     loveComment(input: IdInput!): LoveCommentResponse!
     unloveComment(input: IdInput!): UnloveCommentResponse!
     addComment(input: AddCommentInput!): AddCommentResponse!
+    editComment(input: EditCommentInput!): EditCommentResponse!
   }
 
   #########
@@ -210,4 +211,18 @@ export const typeDefs = gql`
   }
 
   union AddCommentResponse = AddCommentSuccess | UnauthorizedResponse
+
+  # Edit comment
+  input EditCommentInput {
+    id: Int!
+    postId: Int!
+    body: String!
+  }
+
+  type EditCommentSuccess implements MutationResponse {
+    success: Boolean!
+    comment: Comment!
+  }
+
+  union EditCommentResponse = EditCommentSuccess | UnauthorizedResponse
 `

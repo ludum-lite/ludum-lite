@@ -1,52 +1,26 @@
 import React from 'react'
-import styled from 'styled-components/macro'
+import { useTheme } from 'styled-components/macro'
 import { gql } from '@apollo/client'
 import * as Types from '__generated__/Types'
 
 import CommentIcon from '@material-ui/icons/ModeComment'
 import CommentOutlinedIcon from '@material-ui/icons/ModeCommentOutlined'
-import Button from 'components/common/mui/Button'
-
-const StyledButton = styled(Button)`
-  font-size: 1rem;
-  padding: 6px 1rem;
-
-  &:hover {
-    color: ${({ theme }) => theme.themeColors.commentsButton.activeColor};
-    background-color: ${({ theme }) => theme.buttonRootBackgroundColor};
-  }
-`
-
-const RightIcon = styled.div`
-  margin-right: ${({ theme }) => theme.spacing(1)}px;
-  font-size: 1.25rem;
-`
+import ToggleButton from 'components/common/ToggleButton'
 
 interface Props {
   post: Types.PostCommentButton_post
 }
 export default function PostCommentButon({ post }: Props) {
-  const [isHovering, setIsHovering] = React.useState(false)
-
-  const IconComponent = React.useMemo(() => {
-    if (isHovering) {
-      return CommentIcon
-    } else {
-      return CommentOutlinedIcon
-    }
-  }, [isHovering])
+  const theme = useTheme()
 
   return (
-    <StyledButton
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
-      onClick={(e) => {
-        setIsHovering(false)
-      }}
+    <ToggleButton
+      activeIcon={CommentIcon}
+      defaultIcon={CommentOutlinedIcon}
+      color={theme.themeColors.loveButton.activeColor}
     >
-      <RightIcon as={IconComponent} />
       {post.numNotes}
-    </StyledButton>
+    </ToggleButton>
   )
 }
 

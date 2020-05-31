@@ -70,6 +70,7 @@ const batchHttpLink = new HttpLink({
   uri: 'http://localhost:4000/',
 })
 
+// @ts-ignore
 const link = ApolloLink.from([authLink, batchHttpLink])
 
 const client = new ApolloClient({
@@ -161,8 +162,8 @@ type Themes = {
 }
 
 const borderColor = 'rgba(0, 0, 0, 0.22)'
-const buttonRootBackgroundColor = 'rgba(0, 0, 0, 0.12)'
-const buttonContainedBackgroundColor = 'rgba(0, 0, 0, 0.1)'
+const buttonRootBackgroundColor = 'rgba(0, 0, 0, 0.1)'
+const buttonContainedBackgroundColor = 'rgba(0, 0, 0, 0.09)'
 const cardBoxShadow = '0 0 6px 0px rgba(0,0,0,0.04)'
 const inputBackground = 'rgba(75, 80, 97, 0.17)'
 
@@ -370,6 +371,7 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
         root: {
           textTransform: 'none',
           transition: 'none',
+          color: 'rgba(0, 0, 0, 0.78)',
           backgroundColor: buttonRootBackgroundColor,
           '&:hover': {
             backgroundColor: 'rgba(0, 0, 0, 0.19)',
@@ -385,6 +387,9 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
           '& > *:first-child': {
             fontSize: '1.625rem',
           },
+        },
+        sizeSmall: {
+          padding: '3px 0.75rem',
         },
       },
       MuiIconButton: {

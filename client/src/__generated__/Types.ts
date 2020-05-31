@@ -4,22 +4,33 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetAppData
+// GraphQL mutation operation: AddComment
 // ====================================================
 
-export interface GetAppData_me_UnauthorizedResponse {
+export interface AddComment_addComment_UnauthorizedResponse {
   __typename: "UnauthorizedResponse";
 }
 
-export interface GetAppData_me_Me {
-  __typename: "Me";
+export interface AddComment_addComment_AddCommentSuccess_comment {
+  __typename: "Comment";
   id: number;
+  postId: number;
+  body: string;
 }
 
-export type GetAppData_me = GetAppData_me_UnauthorizedResponse | GetAppData_me_Me;
+export interface AddComment_addComment_AddCommentSuccess {
+  __typename: "AddCommentSuccess";
+  comment: AddComment_addComment_AddCommentSuccess_comment;
+}
 
-export interface GetAppData {
-  me: GetAppData_me;
+export type AddComment_addComment = AddComment_addComment_UnauthorizedResponse | AddComment_addComment_AddCommentSuccess;
+
+export interface AddComment {
+  addComment: AddComment_addComment;
+}
+
+export interface AddCommentVariables {
+  input: AddCommentInput;
 }
 
 /* tslint:disable */
@@ -102,6 +113,40 @@ export interface UnloveComment {
 
 export interface UnloveCommentVariables {
   input: IdInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: EditComment
+// ====================================================
+
+export interface EditComment_editComment_UnauthorizedResponse {
+  __typename: "UnauthorizedResponse";
+}
+
+export interface EditComment_editComment_EditCommentSuccess_comment {
+  __typename: "Comment";
+  id: number;
+  body: string;
+}
+
+export interface EditComment_editComment_EditCommentSuccess {
+  __typename: "EditCommentSuccess";
+  comment: EditComment_editComment_EditCommentSuccess_comment;
+}
+
+export type EditComment_editComment = EditComment_editComment_UnauthorizedResponse | EditComment_editComment_EditCommentSuccess;
+
+export interface EditComment {
+  editComment: EditComment_editComment;
+}
+
+export interface EditCommentVariables {
+  input: EditCommentInput;
 }
 
 /* tslint:disable */
@@ -243,6 +288,7 @@ export interface GetPostOverlayPageData_post_comments {
   numLove: number;
   createdDate: string;
   author: GetPostOverlayPageData_post_comments_author | null;
+  postId: number;
 }
 
 export interface GetPostOverlayPageData_post {
@@ -397,33 +443,42 @@ export interface LoginVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: AddComment
+// GraphQL query operation: GetMeData
 // ====================================================
 
-export interface AddComment_addComment_UnauthorizedResponse {
+export interface GetMeData_me_UnauthorizedResponse {
   __typename: "UnauthorizedResponse";
 }
 
-export interface AddComment_addComment_AddCommentSuccess_comment {
+export interface GetMeData_me_Me {
+  __typename: "Me";
+  id: number;
+}
+
+export type GetMeData_me = GetMeData_me_UnauthorizedResponse | GetMeData_me_Me;
+
+export interface GetMeData {
+  me: GetMeData_me;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: AddCommentForm_post
+// ====================================================
+
+export interface AddCommentForm_post_comments {
   __typename: "Comment";
   id: number;
-  postId: number;
-  body: string;
 }
 
-export interface AddComment_addComment_AddCommentSuccess {
-  __typename: "AddCommentSuccess";
-  comment: AddComment_addComment_AddCommentSuccess_comment;
-}
-
-export type AddComment_addComment = AddComment_addComment_UnauthorizedResponse | AddComment_addComment_AddCommentSuccess;
-
-export interface AddComment {
-  addComment: AddComment_addComment;
-}
-
-export interface AddCommentVariables {
-  input: AddCommentInput;
+export interface AddCommentForm_post {
+  __typename: "Post";
+  id: number;
+  comments: AddCommentForm_post_comments[] | null;
 }
 
 /* tslint:disable */
@@ -480,6 +535,7 @@ export interface Comment_comment {
   numLove: number;
   createdDate: string;
   author: Comment_comment_author | null;
+  postId: number;
 }
 
 /* tslint:disable */
@@ -521,6 +577,7 @@ export interface Comments_comment {
   numLove: number;
   createdDate: string;
   author: Comments_comment_author | null;
+  postId: number;
 }
 
 /* tslint:disable */
@@ -536,6 +593,22 @@ export interface Comments_post {
   __typename: "Post";
   id: number;
   myCommentLove: number[] | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: EditCommentForm_comment
+// ====================================================
+
+export interface EditCommentForm_comment {
+  __typename: "Comment";
+  id: number;
+  postId: number;
+  body: string;
 }
 
 /* tslint:disable */
@@ -680,6 +753,12 @@ export enum PostType {
 }
 
 export interface AddCommentInput {
+  postId: number;
+  body: string;
+}
+
+export interface EditCommentInput {
+  id: number;
   postId: number;
   body: string;
 }

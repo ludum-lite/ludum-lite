@@ -12,6 +12,7 @@ type Mutation {
   loveComment(input: IdInput!): LoveCommentResponse!
   unloveComment(input: IdInput!): UnloveCommentResponse!
   addComment(input: AddCommentInput!): AddCommentResponse!
+  editComment(input: EditCommentInput!): EditCommentResponse!
 }
 
 interface MutationResponse {
@@ -180,3 +181,16 @@ type AddCommentSuccess implements MutationResponse {
 }
 
 union AddCommentResponse = AddCommentSuccess | UnauthorizedResponse
+
+input EditCommentInput {
+  id: Int!
+  postId: Int!
+  body: String!
+}
+
+type EditCommentSuccess implements MutationResponse {
+  success: Boolean!
+  comment: Comment!
+}
+
+union EditCommentResponse = EditCommentSuccess | UnauthorizedResponse

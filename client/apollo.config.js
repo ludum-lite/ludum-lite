@@ -2,7 +2,8 @@ module.exports = {
   client: {
     service: {
       name: 'LDJam [web]',
-      localSchemaFile: '../server/src/__generated__/schema.graphql',
+      url: 'http://localhost:4000/graphql',
+      // localSchemaFile: '../server/src/__generated__/schema.graphql',
     },
   },
 }
