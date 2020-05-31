@@ -59,6 +59,7 @@ export default function Comment({ comment, post, className }: Props) {
             userAvatarPath={comment.author?.avatarPath}
             userName={comment.author?.name}
             postedDate={comment.createdDate}
+            highlightUserLink={comment.author?.id === post.authorId}
           />
         </TitleRow>
         <Body>
@@ -116,6 +117,7 @@ Comment.fragments = {
   `,
   post: gql`
     fragment Comment_post on Post {
+      authorId
       ...CommentLoveButton_post
     }
     ${CommentLoveButton.fragments.post}

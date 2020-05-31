@@ -79,7 +79,7 @@ const POST_DETAILS_FRAGMENT = gql`
   }
 `
 
-type Props = {
+interface Props {
   post: Types.PostDetails_post
   forceExpand?: boolean
 }

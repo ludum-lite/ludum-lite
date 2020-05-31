@@ -300,6 +300,7 @@ export interface GetPostOverlayPageData_post {
   author: GetPostOverlayPageData_post_author | null;
   comments: GetPostOverlayPageData_post_comments[] | null;
   numLove: number;
+  authorId: number;
   myCommentLove: number[] | null;
 }
 
@@ -549,6 +550,7 @@ export interface Comment_comment {
 
 export interface Comment_post {
   __typename: "Post";
+  authorId: number;
   id: number;
   myCommentLove: number[] | null;
 }
@@ -591,6 +593,7 @@ export interface Comments_comment {
 
 export interface Comments_post {
   __typename: "Post";
+  authorId: number;
   id: number;
   myCommentLove: number[] | null;
 }

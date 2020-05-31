@@ -145,6 +145,7 @@ export type ThemeColors = {
     evenBackground: string
     oddBackground: string
     boxShadow: string
+    postAuthorLinkColor: string
   }
   palette: {
     primary: {
@@ -231,6 +232,7 @@ const lightTheme: ThemeColors = {
     evenBackground: styleVariables.cultured,
     oddBackground: inputBackground,
     boxShadow: cardBoxShadow,
+    postAuthorLinkColor: styleVariables.greenBlue,
   },
   palette: {
     primary: {
@@ -308,6 +310,7 @@ const darkTheme: ThemeColors = {
     evenBackground: ldStyleVariables.white,
     oddBackground: inputBackground,
     boxShadow: cardBoxShadow,
+    postAuthorLinkColor: ldStyleVariables.darkOrange,
   },
   palette: {
     primary: {

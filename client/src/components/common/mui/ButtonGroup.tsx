@@ -13,7 +13,7 @@ const Column = styled.div`
   }
 `
 
-type Props = {
+interface Props {
   direction?: 'row' | 'column'
   className?: string
 }

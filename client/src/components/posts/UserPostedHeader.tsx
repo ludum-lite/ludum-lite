@@ -1,8 +1,8 @@
 import React from 'react'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import moment from 'moment'
-import { getStaticUrl } from 'utils'
+import { getStaticUrl, ignoreProps } from 'utils'
 
 import { Typography } from '@material-ui/core'
 import Link from 'components/common/mui/Link'
@@ -19,15 +19,27 @@ const StyledAvatar = styled(Avatar)`
   margin-right: 8px;
 `
 
-const UserLink = styled(Link)`
+interface UserLinkProps {
+  highlightUserLink?: boolean
+}
+const UserLink = styled(Link).withConfig({
+  shouldForwardProp: ignoreProps(['highlightUserLink']),
+})<UserLinkProps>`
   margin-right: 4px;
+  ${({ highlightUserLink }) =>
+    highlightUserLink &&
+    css`
+      color: ${({ theme }) => theme.themeColors.comment.postAuthorLinkColor};
+      font-weight: bold;
+    `}
 `
 
-type Props = {
+interface Props {
   userProfilePath?: string
   userAvatarPath?: string | null
   userName?: string
   postedDate?: string | null
+  highlightUserLink?: boolean
 }
 
 export default function UserPostedHeader({
@@ -35,6 +47,7 @@ export default function UserPostedHeader({
   userAvatarPath,
   userName,
   postedDate,
+  highlightUserLink,
 }: Props) {
   return (
     <HeaderUserContainer>
@@ -47,6 +60,7 @@ export default function UserPostedHeader({
         to={userProfilePath || ''}
         color="textSecondary"
         variant="caption"
+        highlightUserLink={highlightUserLink}
       >{`u/${userName}`}</UserLink>
       <Typography variant="caption" color="textPrimary">
         {postedDate && moment(postedDate).fromNow()}
