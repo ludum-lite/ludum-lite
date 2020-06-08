@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components/macro'
 import Button from 'components/common/mui/Button'
 import { ignoreProps } from 'utils'
 import { ButtonProps } from '@material-ui/core'
+import Icon from './mui/Icon'
 
 interface StyledButtonProps {
   active: boolean
@@ -12,8 +13,6 @@ interface StyledButtonProps {
 const StyledButton = styled(Button).withConfig({
   shouldForwardProp: ignoreProps(['active', 'activeColor']),
 })<StyledButtonProps>`
-  font-size: 1rem;
-
   ${({ active, activeColor }) =>
     !active &&
     css`
@@ -37,12 +36,12 @@ const StyledButton = styled(Button).withConfig({
 
 interface RightIconProps {
   padRight: boolean
+  size: ButtonProps['size']
 }
 const RightIcon = styled.div.withConfig({
-  shouldForwardProp: ignoreProps(['padRight']),
+  shouldForwardProp: ignoreProps(['padRight', 'size']),
 })<RightIconProps>`
-  margin-right: ${({ theme, padRight }) => padRight && theme.spacing(1)}px;
-  font-size: 1.25rem;
+  margin-right: ${({ theme, padRight }) => padRight && `${theme.spacing(1)}px`};
 `
 
 interface Props {
@@ -58,6 +57,7 @@ export default function ToggleButton({
   activeIcon,
   children,
   onClick,
+  size = 'medium',
   ...others
 }: Props & Omit<ButtonProps, 'color'>) {
   const [isHovering, setIsHovering] = React.useState(false)
@@ -84,7 +84,7 @@ export default function ToggleButton({
       activeColor={color}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
-      size="small"
+      size={size}
       onClick={(e) => {
         setIsHovering(false)
 
@@ -95,8 +95,10 @@ export default function ToggleButton({
       {...others}
     >
       <RightIcon
-        as={IconComponent}
+        as={Icon}
         padRight={children !== null && children !== undefined}
+        size={size}
+        icon={IconComponent}
       />
       {children}
     </StyledButton>

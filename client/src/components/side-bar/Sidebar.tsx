@@ -11,7 +11,6 @@ import { ReactComponent as DareLogo } from 'assets/dare.svg'
 
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import GlobalNav from './GlobalNav'
-import { ThemeMode } from 'utils/types'
 
 const Root = styled.div`
   display: flex;
@@ -87,16 +86,13 @@ const paths = [
   },
 ]
 
-interface Props {
-  toggleTheme: () => void
-  themeMode: ThemeMode
-}
-export default function Sidebar({ toggleTheme, themeMode }: Props) {
+interface Props {}
+export default function Sidebar({}: Props) {
   const { basePath } = useParams()
 
   return (
     <Root>
-      <GlobalNav toggleTheme={toggleTheme} themeMode={themeMode} />
+      <GlobalNav />
       <ContextualNav>
         <Title>
           <StyledLudumLogo />

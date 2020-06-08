@@ -8,6 +8,7 @@ import Markdown from 'components/common/Markdown'
 import Button from 'components/common/mui/Button'
 import UserPostedHeader from './UserPostedHeader'
 import ExpandMore from '@material-ui/icons/ExpandMore'
+import Icon from 'components/common/mui/Icon'
 
 const Root = styled.div`
   overflow: hidden;
@@ -156,7 +157,7 @@ export default function PostDetails({ post, forceExpand }: Props) {
               e.stopPropagation()
               setShouldCollapse(false)
             }}
-            endIcon={<ExpandMore />}
+            endIcon={<Icon icon={ExpandMore} />}
           >
             Show More
           </Button>

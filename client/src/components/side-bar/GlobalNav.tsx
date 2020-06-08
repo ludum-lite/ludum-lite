@@ -11,9 +11,9 @@ import MuiAddIcon from '@material-ui/icons/Add'
 import MuiLightBrightnessIcon from '@material-ui/icons/Brightness4'
 import MuiDarkBrightnessIcon from '@material-ui/icons/Brightness4Outlined'
 import { ReactComponent as UserIcon } from 'assets/user.svg'
-import { ThemeMode } from 'utils/types'
 import { useLogin } from 'hooks/useLogin'
 import { useIsLoggedIn } from 'hooks/useIsLoggedIn'
+import { useTheme } from 'hooks/useTheme'
 
 const Root = styled.div`
   display: flex;
@@ -97,12 +97,10 @@ const Footer = styled.div`
   }
 `
 
-interface Props {
-  toggleTheme: () => void
-  themeMode: ThemeMode
-}
-export default function GlobalNav({ toggleTheme, themeMode }: Props) {
+interface Props {}
+export default function GlobalNav({}: Props) {
   const isLoggedIn = useIsLoggedIn()
+  const { themeMode, toggleTheme } = useTheme()
   const { promptLogin } = useLogin()
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)

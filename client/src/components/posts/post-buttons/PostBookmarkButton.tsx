@@ -24,6 +24,7 @@ export default function PostBookmarkButton({ postId }: Props) {
       color={theme.themeColors.bookmarkButton.activeColor}
       activeIcon={BookmarkIcon}
       defaultIcon={BookmarkBorderIcon}
+      size="small"
       onClick={(e) => {
         e.stopPropagation()
         let newFavoritedIds: number[]

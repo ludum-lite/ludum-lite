@@ -67,3 +67,7 @@ Open: `ld_event.<number>.event`
 
 - https://github.com/ludumdare/ludumdare/wiki/Adding-a-new-Event
 - https://github.com/ludumdare/ludumdare/wiki/Metadata-Documentation
+
+# Notes
+
+Using moment@2.24.0 since apollo already has it as a dependency

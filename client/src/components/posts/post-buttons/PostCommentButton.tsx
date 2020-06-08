@@ -18,6 +18,7 @@ export default function PostCommentButon({ post }: Props) {
       activeIcon={CommentIcon}
       defaultIcon={CommentOutlinedIcon}
       color={theme.themeColors.loveButton.activeColor}
+      size="small"
     >
       {post.numNotes}
     </ToggleButton>

@@ -4,7 +4,6 @@ import { Routes, Route } from 'react-router-dom'
 import Sidebar from './side-bar/Sidebar'
 import RoutesWithFallback from './common/RoutesWithFallback'
 import PostsPage from 'components/posts/PostsPage'
-import { ThemeMode } from 'utils/types'
 import { usePostOverlayed } from 'hooks/usePostOverlay'
 import PostPage from './posts/PostPage'
 import { useLogin } from 'hooks/useLogin'
@@ -17,7 +16,6 @@ interface AppProps {
 const App = styled.div<AppProps>`
   display: flex;
   min-height: 100vh;
-  background: ${({ theme }) => theme.themeColors.background};
 
   ${({ showingOverlay }) =>
     showingOverlay &&
@@ -35,11 +33,8 @@ const AppContent = styled.div`
   position: relative;
 `
 
-interface Props {
-  toggleTheme: () => void
-  themeMode: ThemeMode
-}
-export default function Root({ toggleTheme, themeMode }: Props) {
+interface Props {}
+export default function Root({}: Props) {
   useHasNavigatedWithin()
   const [postOverlayed] = usePostOverlayed()
   const { loginComponent } = useLogin()
@@ -49,12 +44,7 @@ export default function Root({ toggleTheme, themeMode }: Props) {
     return (
       <App showingOverlay={postOverlayed}>
         <Routes>
-          <Route
-            path="/:basePath*"
-            element={
-              <Sidebar toggleTheme={toggleTheme} themeMode={themeMode} />
-            }
-          />
+          <Route path="/:basePath*" element={<Sidebar />} />
         </Routes>
         <AppContent>
           <RoutesWithFallback>

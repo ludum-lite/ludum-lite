@@ -145,7 +145,7 @@ export default function CommentForm({
               onClick={() => {
                 setSelectedTab('write')
               }}
-              padding="wide"
+              size="large"
             >
               Write
             </ActionButton>
@@ -154,13 +154,13 @@ export default function CommentForm({
               onClick={() => {
                 setSelectedTab('preview')
               }}
-              padding="wide"
+              size="large"
             >
               Preview
             </ActionButton>
             <Separator />
             {onCancel && (
-              <StyledButton color="primary" padding="wide" onClick={onCancel}>
+              <StyledButton color="primary" size="large" onClick={onCancel}>
                 Cancel
               </StyledButton>
             )}
@@ -168,7 +168,7 @@ export default function CommentForm({
               variant="contained"
               color="primary"
               type="submit"
-              padding="wide"
+              size="large"
               onClick={async (e) => {
                 e.preventDefault()
 

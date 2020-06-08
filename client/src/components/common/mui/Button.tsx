@@ -2,17 +2,34 @@ import React from 'react'
 import { Button as MuiButton, ButtonProps } from '@material-ui/core'
 import styled, { css } from 'styled-components/macro'
 
-type Padding = 'wide'
+export type Background = 'globalNav' | 'contextualNav' | 'page' | 'white'
 
 interface StyledButtonProps {
   border?: boolean
   noShadow?: boolean
-  padding?: Padding
+  background: Background
 }
 
 const StyledButton = styled(MuiButton).withConfig({
-  shouldForwardProp: (prop) => !['border', 'noShadow'].includes(prop),
+  shouldForwardProp: (prop) =>
+    !['border', 'noShadow', 'background'].includes(prop),
 })<StyledButtonProps>`
+  ${({ background, color, theme }) => {
+    const colors = theme.themeColors.button.background[background]
+
+    return css`
+      color: ${color === 'default' && colors.color};
+
+      &.MuiButton-text:hover {
+        background: ${colors.text?.hoverBackground};
+      }
+
+      &.MuiButton-contained:hover {
+        background: ${color === 'default' && colors.contained?.hoverBackground};
+      }
+    `
+  }}
+
   ${({ border }) =>
     border &&
     css`
@@ -27,30 +44,24 @@ const StyledButton = styled(MuiButton).withConfig({
     css`
       box-shadow: 0 0 0 1px #00000017;
     `}
-
-  ${({ padding }) =>
-    padding === 'wide' &&
-    css`
-      padding: 0.375rem 1rem;
-    `}
 `
 
 export interface Props {
   border?: boolean
   noShadow?: boolean
-  padding?: Padding
+  background?: Background
 }
 export default function Button({
   border,
   noShadow,
-  padding,
+  background = 'white',
   ...other
 }: Props & Omit<ButtonProps, keyof Props>) {
   return (
     <StyledButton
       border={border}
       noShadow={noShadow}
-      padding={padding}
+      background={background}
       {...other}
     />
   )

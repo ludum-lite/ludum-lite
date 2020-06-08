@@ -2,11 +2,12 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components/macro'
 import { usePostOverlayed } from 'hooks/usePostOverlay'
 import ChevronLeft from '@material-ui/icons/ChevronLeft'
+import Icon from 'components/common/mui/Icon'
 import { IconButton } from '@material-ui/core'
 import { useHasNavigatedWithin } from 'hooks/useHasNavigatedWithin'
 import { useNavigate } from 'react-router'
 
-const CARD_MARGIN = 16
+const CARD_MARGIN = 32
 const BORDER_RADIUS = 8
 const ACTION_ROW_INNER_HEIGHT = 48
 const ACTION_ROW_PADDING = 8
@@ -17,15 +18,9 @@ interface RootProps {
   postOverlayed: boolean
 }
 const Root = styled.div<RootProps>`
-  position: absolute;
   display: flex;
   flex-direction: column;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
   z-index: 200;
-  background: ${({ theme }) => theme.themeColors.contextualNavBackground};
 `
 
 const Card = styled.div`
@@ -34,9 +29,7 @@ const Card = styled.div`
   display: flex;
   flex-direction: column;
   padding: ${CARD_MARGIN}px;
-  padding-left: 0;
   z-index: 1;
-  background: ${({ theme }) => theme.themeColors.contextualNavBackground};
 `
 
 const ActionRowTop = styled.div`
@@ -53,7 +46,6 @@ const ActionRowContainer = styled.div`
   position: sticky;
   top: ${BORDER_RADIUS}px;
   background: ${({ theme }) => theme.themeColors.popupPage.background};
-  height: ${ACTION_ROW_HEIGHT - BORDER_RADIUS}px;
   display: flex;
   align-items: flex-end;
   z-index: 1;
@@ -62,8 +54,8 @@ const ActionRowContainer = styled.div`
 const ActionRow = styled.div`
   flex: 1 1 0px;
   display: flex;
-  align-items: center;
   padding: ${ACTION_ROW_PADDING}px;
+  padding-top: 0;
 `
 
 const ActionRowShadow = styled.div`
@@ -86,7 +78,7 @@ const Content = styled.div`
   /* padding: ${({ theme }) =>
     `0 ${theme.spacing(2)}px ${theme.spacing(2)}px 26px`}; */
   background: ${({ theme }) => theme.themeColors.popupPage.background};
-  border-radius: 0 0 20px 20px;
+  border-radius: 0 0 ${BORDER_RADIUS}px ${BORDER_RADIUS}px;
 `
 
 interface Props {
@@ -119,7 +111,7 @@ export default function PopupPage({ children, actionRow }: Props) {
                 }
               }}
             >
-              <ChevronLeft />
+              <Icon icon={ChevronLeft} />
             </IconButton>
             {actionRow}
           </ActionRow>

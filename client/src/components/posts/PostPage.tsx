@@ -78,7 +78,8 @@ const ActionRow = styled.div`
 `
 
 const StyledLinearProgress = styled(LinearProgress)`
-  margin: 0 ${({ theme }) => theme.spacing(3)}px;
+  margin: 0 ${({ theme }) => theme.spacing(3)}px
+    ${({ theme }) => theme.spacing(3)}px;
 `
 
 const StyledAddCommentForm = styled(AddCommentForm)`
