@@ -1,14 +1,16 @@
 import React from 'react'
 import styled from 'styled-components/macro'
 import { gql } from '@apollo/client'
+import { filter } from 'graphql-anywhere'
 import * as Types from '__generated__/Types'
 import Markdown from 'components/common/Markdown'
+import Button from 'components/common/mui/Button'
+import Icon from 'components/common/mui/Icon'
+import CreateIcon from '@material-ui/icons/Create'
+import { useMe } from 'hooks/useMe'
 import UserPostedHeader from './UserPostedHeader'
 import CommentLoveButton from './comment-buttons/CommentLoveButton'
-import { filter } from 'graphql-anywhere'
-import Button from 'components/common/mui/Button'
 import EditCommentForm from './EditCommentForm'
-import { useMe } from 'hooks/useMe'
 
 const Root = styled.div`
   border-radius: ${({ theme }) => theme.shape.borderRadius}px;
@@ -72,6 +74,9 @@ export default function Comment({ comment, post, className }: Props) {
                 setIsEditing(true)
               }}
               size="small"
+              startIcon={
+                <Icon icon={CreateIcon} />
+              }
             >
               Edit
             </Button>

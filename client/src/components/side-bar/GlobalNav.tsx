@@ -1,15 +1,11 @@
 import React from 'react'
 import styled, { css } from 'styled-components/macro'
-import {
-  IconButton as MuiIconButton,
-  Menu as MuiMenu,
-  MenuItem,
-  Fade,
-} from '@material-ui/core'
 import { isLoggedInVar } from 'resolvers'
+import { Menu as MuiMenu, MenuItem, Fade } from '@material-ui/core'
 import MuiAddIcon from '@material-ui/icons/Add'
 import MuiLightBrightnessIcon from '@material-ui/icons/Brightness4'
 import MuiDarkBrightnessIcon from '@material-ui/icons/Brightness4Outlined'
+import IconButton from 'components/common/mui/IconButton'
 import { ReactComponent as UserIcon } from 'assets/user.svg'
 import { useLogin } from 'hooks/useLogin'
 import { useIsLoggedIn } from 'hooks/useIsLoggedIn'
@@ -24,15 +20,15 @@ const Root = styled.div`
 
 const Header = styled.div``
 
-const IconButton = styled(MuiIconButton)`
-  color: white;
+const StyledIconButton = styled(IconButton)`
+  /* color: white; */
   width: 48px;
   height: 48px;
   padding: 0;
 
-  &:hover {
+  /* &:hover {
     background-color: rgba(255, 255, 255, 0.25);
-  }
+  } */
 `
 
 const Body = styled.div`
@@ -59,7 +55,7 @@ const ProfileCircle = styled.div<ProfileCircleProps>`
 interface ProfileButtonProps {
   isLoggedIn: boolean
 }
-const ProfileButton = styled(IconButton).withConfig({
+const ProfileButton = styled(StyledIconButton).withConfig({
   shouldForwardProp: (prop) => !['isLoggedIn'].includes(prop),
 })<ProfileButtonProps>`
   ${({ isLoggedIn }) =>
@@ -128,19 +124,23 @@ export default function GlobalNav({}: Props) {
     <Root>
       <Header />
       <Body>
-        <IconButton>
+        <StyledIconButton background="globalNav">
           <AddIcon />
-        </IconButton>
+        </StyledIconButton>
       </Body>
       <Footer>
-        <IconButton onClick={toggleTheme}>
+        <StyledIconButton onClick={toggleTheme} background="globalNav">
           {themeMode === 'light' ? (
             <MuiLightBrightnessIcon />
           ) : (
             <MuiDarkBrightnessIcon />
           )}
-        </IconButton>
-        <ProfileButton onClick={handleProfileClick} isLoggedIn={isLoggedIn}>
+        </StyledIconButton>
+        <ProfileButton
+          onClick={handleProfileClick}
+          isLoggedIn={isLoggedIn}
+          background="globalNav"
+        >
           <ProfileCircle isLoggedIn={isLoggedIn}>
             <UserIcon />
           </ProfileCircle>

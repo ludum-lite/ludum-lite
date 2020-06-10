@@ -48,11 +48,10 @@ interface ActionButtonProps {
 const ActionButton = styled(Button).withConfig({
   shouldForwardProp: ignoreProps(['active']),
 })<ActionButtonProps>`
-  background: transparent;
-
   ${({ active }) =>
     active &&
     css`
+      color: ${({ theme }) => theme.palette.text.primary};
       background: ${({ theme }) =>
         theme.themeColors.addCommentForm.textFieldActiveBackground};
 
@@ -61,23 +60,6 @@ const ActionButton = styled(Button).withConfig({
           theme.themeColors.addCommentForm.textFieldActiveBackground};
       }
     `}
-
-  ${({ active }) =>
-    !active &&
-    css`
-      color: white;
-    `}
-`
-
-const StyledButton = styled(Button)`
-  color: black;
-  background: ${({ theme }) =>
-    theme.themeColors.addCommentForm.textFieldActiveBackground};
-
-  &:hover {
-    background: ${({ theme }) =>
-      theme.themeColors.addCommentForm.textFieldActiveBackground};
-  }
 `
 
 const Separator = styled.div`
@@ -145,7 +127,7 @@ export default function CommentForm({
               onClick={() => {
                 setSelectedTab('write')
               }}
-              size="large"
+              background="globalNav"
             >
               Write
             </ActionButton>
@@ -154,21 +136,19 @@ export default function CommentForm({
               onClick={() => {
                 setSelectedTab('preview')
               }}
-              size="large"
+              background="globalNav"
             >
               Preview
             </ActionButton>
             <Separator />
             {onCancel && (
-              <StyledButton color="primary" size="large" onClick={onCancel}>
+              <Button background="globalNav" onClick={onCancel}>
                 Cancel
-              </StyledButton>
+              </Button>
             )}
-            <StyledButton
-              variant="contained"
-              color="primary"
+            <Button
               type="submit"
-              size="large"
+              background="globalNav"
               onClick={async (e) => {
                 e.preventDefault()
 
@@ -180,7 +160,7 @@ export default function CommentForm({
               }}
             >
               Submit
-            </StyledButton>
+            </Button>
           </ActionRow>
         </Fade>
         {selectedTab === 'write' ? (

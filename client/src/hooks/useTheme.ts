@@ -102,7 +102,7 @@ const borderColor = 'rgba(0, 0, 0, 0.22)'
 const buttonOutlinedBackgroundColor = 'rgba(0, 0, 0, 0.1)'
 const buttonContainedBackgroundColor = 'rgba(0, 0, 0, 0.1)'
 const buttonContainedHoverBackgroundColor = 'rgba(0,0,0,0.32)'
-const buttonLightBackgroundHoverColor = 'rgba(255,255,255,0.14)'
+const buttonLightBackgroundHoverColor = 'rgba(255,255,255,0.2)'
 const buttonContainedColor = 'rgba(0, 0, 0, 0.87)'
 const cardBoxShadow = '0 0 6px 0px rgba(0,0,0,0.04)'
 const inputBackground = 'rgba(75, 80, 97, 0.17)'
@@ -261,7 +261,7 @@ const darkTheme: ThemeColors = {
   button: {
     background: {
       globalNav: {
-        color: ldStyleVariables.cultured,
+        color: ldStyleVariables.white,
         text: {
           hoverBackground: buttonLightBackgroundHoverColor,
         },
@@ -273,7 +273,7 @@ const darkTheme: ThemeColors = {
         },
       },
       contextualNav: {
-        color: ldStyleVariables.cultured,
+        color: ldStyleVariables.white,
         text: {
           hoverBackground: buttonLightBackgroundHoverColor,
         },
@@ -285,7 +285,7 @@ const darkTheme: ThemeColors = {
         },
       },
       page: {
-        color: ldStyleVariables.cultured,
+        color: ldStyleVariables.white,
         text: {
           hoverBackground: buttonLightBackgroundHoverColor,
         },
@@ -582,11 +582,11 @@ const ICON_SCALING = [
   },
   {
     name: 'FavoriteRoundedIcon',
-    base: 0.9,
+    base: 0.85,
   },
   {
     name: 'FavoriteBorderRoundedIcon',
-    base: 0.9,
+    base: 0.85,
   },
   {
     name: 'ModeCommentIcon',
@@ -595,6 +595,10 @@ const ICON_SCALING = [
   {
     name: 'ModeCommentOutlinedIcon',
     base: 0.83,
+  },
+  {
+    name: 'ExpandMoreIcon',
+    base: 1.2,
   },
 ]
 
@@ -678,6 +682,8 @@ export const useTheme = singletonHook(init, () => {
       scThemeGenerator({ themeColors: themes[themeMode], selectedMuiTheme }),
     [selectedMuiTheme, themeMode]
   )
+
+  console.log('getting theme')
 
   const GlobalStyle = globalStyleGenerator({
     themeColors: themes[themeMode],

@@ -70,11 +70,7 @@ const StyledDareLogo = styled(DareLogo)`
 const paths = [
   {
     url: 'posts',
-    text: 'Posts',
-  },
-  {
-    url: 'news',
-    text: 'News',
+    text: 'Feed',
   },
   {
     url: 'games',

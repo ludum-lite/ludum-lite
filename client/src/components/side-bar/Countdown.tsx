@@ -109,7 +109,6 @@ const selectedTimeline = testTimeline
 
 const Root = styled.div`
   display: flex;
-  flex-direction: column;
   color: white;
 `
 
@@ -141,19 +140,17 @@ const ClockIcon = styled((props) => (
   z-index: 1;
 `
 
-const ClockSubtitle = styled.div`
-  display: flex;
-  font-weight: 100;
-  color: #ffffffd6;
-`
+// const ClockSubtitle = styled.div`
+//   display: flex;
+//   font-weight: 100;
+//   color: #ffffffd6;
+// `
 
 const ClockIndexes = styled.div`
   display: flex;
 `
 
 const ClockIndexRoot = styled.div`
-  margin-bottom: ${({ theme }) => theme.spacing(2)}px;
-
   &:not(:first-child) {
     margin-left: ${({ theme }) => theme.spacing(1)}px;
   }
@@ -170,7 +167,6 @@ const ClockIndexDigits = styled.div`
 
 const ClockDigitRoot = styled.div`
   position: relative;
-  padding: 4px;
   height: 45px;
   width: 34px;
   color: #000000b5;
@@ -288,7 +284,6 @@ function ClockIndex({ label, value }: ClockIndexProps) {
       return <ClockDigit key={index} value={Number.parseInt(digit)} />
     })
 
-  // TODO use flex grid instead, that's perfect for this
   return (
     <ClockIndexRoot>
       <ClockComponentLabel>{label}</ClockComponentLabel>
@@ -314,31 +309,21 @@ export default function Countdown({ targetDate }: Props) {
     }, 1000)
 
     return () => clearInterval(int)
-  }, [])
+  }, [targetDate])
 
   const duration = moment.duration(targetDate.diff(time))
   const countdownParts = getCountdownParts(duration)
 
   return (
     <Root>
-      <ClockDisplay>
-        <ClockIndexes>
-          {countdownParts.days !== null && (
-            <ClockIndex label="Days" value={countdownParts.days} />
-          )}
-          <ClockIndex label="Hours" value={countdownParts.hours} />
-          <ClockIndex label="Minutes" value={countdownParts.minutes} />
-          {countdownParts.seconds !== null && (
-            <ClockIndex label="Seconds" value={countdownParts.seconds} />
-          )}
-        </ClockIndexes>
-        <ClockSubtitle>
-          {`${moment.utc(targetDate).local().format('dddd')} at ${moment
-            .utc(targetDate)
-            .local()
-            .format('h:mm A')}`}
-        </ClockSubtitle>
-      </ClockDisplay>
+      {countdownParts.days !== null && (
+        <ClockIndex label="Days" value={countdownParts.days} />
+      )}
+      <ClockIndex label="Hours" value={countdownParts.hours} />
+      <ClockIndex label="Minutes" value={countdownParts.minutes} />
+      {countdownParts.seconds !== null && (
+        <ClockIndex label="Seconds" value={countdownParts.seconds} />
+      )}
     </Root>
   )
 }

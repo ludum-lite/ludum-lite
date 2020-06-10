@@ -46,10 +46,6 @@ interface SortButtonProps {
 const SortButton = styled(Button).withConfig({
   shouldForwardProp: ignoreProps(['active']),
 })<SortButtonProps>`
-  padding: 6px 16px;
-  color: ${({ theme }) =>
-    theme.themeColors.postsPage.toggleButtons.inactiveColor};
-
   ${({ active }) =>
     active &&
     css`
@@ -178,7 +174,6 @@ export default function PostsPage() {
     return (
       <MoreButton
         variant="contained"
-        size="large"
         disableElevation
         onClick={() => {
           fetchMore({
@@ -213,8 +208,10 @@ export default function PostsPage() {
           onClick={() =>
             setSearchParams({ postType: Types.PostType.all }, undefined)
           }
-          variant={'contained'}
+          variant="contained"
+          background="page"
           active={postType === Types.PostType.all}
+          focusRipple
         >
           All
         </SortButton>
@@ -222,7 +219,8 @@ export default function PostsPage() {
           onClick={() =>
             setSearchParams({ postType: Types.PostType.news }, undefined)
           }
-          variant={'contained'}
+          variant="contained"
+          background="page"
           active={postType === Types.PostType.news}
         >
           News
@@ -231,7 +229,8 @@ export default function PostsPage() {
           onClick={() =>
             setSearchParams({ postType: Types.PostType.favorites }, undefined)
           }
-          variant={'contained'}
+          variant="contained"
+          background="page"
           active={postType === Types.PostType.favorites}
         >
           Favorites

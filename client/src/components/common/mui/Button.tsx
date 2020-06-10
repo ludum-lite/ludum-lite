@@ -5,64 +5,50 @@ import styled, { css } from 'styled-components/macro'
 export type Background = 'globalNav' | 'contextualNav' | 'page' | 'white'
 
 interface StyledButtonProps {
-  border?: boolean
-  noShadow?: boolean
   background: Background
 }
 
 const StyledButton = styled(MuiButton).withConfig({
-  shouldForwardProp: (prop) =>
-    !['border', 'noShadow', 'background'].includes(prop),
+  shouldForwardProp: (prop) => !['background'].includes(prop),
 })<StyledButtonProps>`
-  ${({ background, color, theme }) => {
+  ${({ background, color, variant, theme }) => {
     const colors = theme.themeColors.button.background[background]
+
+    let hoverBackground: string | undefined
+
+    if (variant === 'text') {
+      hoverBackground = colors.text?.hoverBackground
+    } else if (color === 'default' && variant === 'contained') {
+      hoverBackground = colors.contained?.hoverBackground
+    }
 
     return css`
       color: ${color === 'default' && colors.color};
 
-      &.MuiButton-text:hover {
-        background: ${colors.text?.hoverBackground};
-      }
-
-      &.MuiButton-contained:hover {
-        background: ${color === 'default' && colors.contained?.hoverBackground};
+      &:hover {
+        background: ${hoverBackground};
       }
     `
   }}
-
-  ${({ border }) =>
-    border &&
-    css`
-      box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.14) inset;
-      &:hover: {
-        box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.3) inset;
-      }
-    `}
-
-  ${({ noShadow }) =>
-    noShadow &&
-    css`
-      box-shadow: 0 0 0 1px #00000017;
-    `}
 `
 
 export interface Props {
-  border?: boolean
-  noShadow?: boolean
   background?: Background
+  color?: ButtonProps['color']
+  variant?: ButtonProps['variant']
 }
 export default function Button({
-  border,
-  noShadow,
   background = 'white',
-  ...other
+  color = 'default',
+  variant = 'text',
+  ...others
 }: Props & Omit<ButtonProps, keyof Props>) {
   return (
     <StyledButton
-      border={border}
-      noShadow={noShadow}
       background={background}
-      {...other}
+      color={color}
+      variant={variant}
+      {...others}
     />
   )
 }

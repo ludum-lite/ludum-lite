@@ -5,6 +5,7 @@ import ToggleButton from './ToggleButton'
 import { ButtonProps } from '@material-ui/core/Button'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import { Typography } from '@material-ui/core'
+import Panel from 'components/storybook/Panel'
 
 export default {
   title: 'Button',
@@ -52,12 +53,8 @@ const WhiteBackground = styled(ButtonContainer)`
   background: ${({ theme }) => theme.themeColors.post.backgroundColor};
 `
 
-const Options = styled.div`
-  display: flex;
+const Options = styled(Panel)`
   flex-direction: column;
-  margin-bottom: ${({ theme }) => theme.spacing(2)}px;
-  padding: ${({ theme }) => theme.spacing(2)}px;
-  background: ${({ theme }) => theme.themeColors.popupPage.background};
 `
 
 const VARIANTS = ['text', 'outlined', 'contained'] as const
@@ -141,7 +138,7 @@ export const Basic = () => {
 
   return (
     <BasicRoot>
-      <Options>
+      <Options layout="column">
         <Typography>Padding</Typography>
         <ToggleButtonGroup
           value={size}
