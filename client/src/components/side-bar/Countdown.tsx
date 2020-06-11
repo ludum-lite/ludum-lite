@@ -1,15 +1,8 @@
 import React from 'react'
 import styled from 'styled-components/macro'
 import moment, { Moment, Duration } from 'moment'
-import { Typography, Icon } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import { useTransition, animated } from 'react-spring'
-
-type Event = {
-  label: string
-  date: Moment
-  compoEnd?: boolean
-  jamEnd?: boolean
-}
 
 interface CountdownParts {
   days: number | null
@@ -18,7 +11,16 @@ interface CountdownParts {
   seconds: number | null
 }
 
-export const getCountdownParts = (duration: Duration): CountdownParts => {
+function getCountdownParts(duration: Duration): CountdownParts {
+  if (duration.asSeconds() < 0) {
+    return {
+      days: null,
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+    }
+  }
+
   const days = Math.floor(duration.asDays())
 
   return {
@@ -29,136 +31,21 @@ export const getCountdownParts = (duration: Duration): CountdownParts => {
   }
 }
 
-const themeSubmissionStartDate = moment.utc('2020-10-04T22:00:00')
-// TODO add in the 3 phases of theme voting
-const themeVotingStartDate = themeSubmissionStartDate.clone().add(2, 'weeks')
-const themeRevealStartDate = themeVotingStartDate.clone().add(1, 'week')
-const compEndDate = themeRevealStartDate.clone().add(48, 'hours')
-const jamEndDate = themeRevealStartDate.clone().add(24, 'hours')
-const votingEndDate = themeRevealStartDate.clone().add(30, 'days')
-
-const timeline: Event[] = [
-  {
-    label: 'Theme Submission',
-    date: themeSubmissionStartDate,
-  },
-  {
-    label: 'Theme Voting',
-    date: themeVotingStartDate,
-  },
-  {
-    label: 'Theme Reveal',
-    date: themeRevealStartDate,
-  },
-  {
-    label: 'Compo End',
-    compoEnd: true,
-    date: compEndDate,
-  },
-  {
-    label: 'Jam End',
-    jamEnd: true,
-    date: jamEndDate,
-  },
-  {
-    label: 'Voting Ends',
-    date: votingEndDate,
-  },
-]
-
-const themeSubmissionStartDate_test = moment.utc('2020-10-04T22:00:00')
-// TODO add in the 3 phases of theme voting
-const themeVotingStartDate_test = themeSubmissionStartDate
-  .clone()
-  .add(2, 'weeks')
-const themeRevealStartDate_test = themeVotingStartDate.clone().add(1, 'week')
-const compEndDate_test = themeRevealStartDate.clone().add(48, 'hours')
-const jamEndDate_test = themeRevealStartDate.clone().add(24, 'hours')
-const votingEndDate_test = themeRevealStartDate.clone().add(30, 'days')
-
-const testTimeline: Event[] = [
-  {
-    label: 'Theme Submission',
-    date: themeSubmissionStartDate_test,
-  },
-  {
-    label: 'Theme Voting',
-    date: themeVotingStartDate_test,
-  },
-  {
-    label: 'Theme Reveal',
-    date: themeRevealStartDate_test,
-  },
-  {
-    label: 'Compo End',
-    compoEnd: true,
-    date: compEndDate_test,
-  },
-  {
-    label: 'Jam End',
-    jamEnd: true,
-    date: jamEndDate_test,
-  },
-  {
-    label: 'Voting Ends',
-    date: votingEndDate_test,
-  },
-]
-
-const selectedTimeline = testTimeline
-
 const Root = styled.div`
-  display: flex;
-  color: white;
-`
-
-const ClockDisplay = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-`
-
-const ClockInnerIcon = styled((props) => <Icon {...props}>access_timer</Icon>)`
-  font-size: 37px;
-  margin: -4px;
-`
-
-const ClockIcon = styled((props) => (
-  <div {...props}>
-    <ClockInnerIcon />
-  </div>
-))`
-  position: absolute;
-  display: flex;
-  color: ${({ theme }) => theme.palette.primary.main};
-  background: white;
-  top: -12px;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  left: calc(50% - 13px);
-  z-index: 1;
-`
-
-// const ClockSubtitle = styled.div`
-//   display: flex;
-//   font-weight: 100;
-//   color: #ffffffd6;
-// `
-
-const ClockIndexes = styled.div`
   display: flex;
 `
 
 const ClockIndexRoot = styled.div`
   &:not(:first-child) {
-    margin-left: ${({ theme }) => theme.spacing(1)}px;
+    margin-left: 12px;
   }
 `
 
-const ClockComponentLabel = styled(Typography)`
+const ClockLabel = styled(Typography)`
   font-weight: 100;
   text-align: center;
+  color: ${({ theme }) => theme.themeColors.countdown.fadedTextColor};
+  margin-bottom: 4px;
 `
 
 const ClockIndexDigits = styled.div`
@@ -253,20 +140,14 @@ const ClockDigit: React.FC<ClockDigitProps> = ({ value }) => {
   })
 
   return (
-    <>
-      <ClockDigitRoot>
-        <div>
-          {upperTransitions((style, item) => (
-            <animated.div style={style}>{item}</animated.div>
-          ))}
-        </div>
-        <div>
-          {lowerTransitions((style, item) => (
-            <animated.div style={style}>{item}</animated.div>
-          ))}
-        </div>
-      </ClockDigitRoot>
-    </>
+    <ClockDigitRoot>
+      {upperTransitions((style, item) => (
+        <animated.div style={style}>{item}</animated.div>
+      ))}
+      {lowerTransitions((style, item) => (
+        <animated.div style={style}>{item}</animated.div>
+      ))}
+    </ClockDigitRoot>
   )
 }
 
@@ -286,7 +167,7 @@ function ClockIndex({ label, value }: ClockIndexProps) {
 
   return (
     <ClockIndexRoot>
-      <ClockComponentLabel>{label}</ClockComponentLabel>
+      <ClockLabel>{label}</ClockLabel>
       <ClockIndexDigits>{digits}</ClockIndexDigits>
     </ClockIndexRoot>
   )
@@ -294,22 +175,25 @@ function ClockIndex({ label, value }: ClockIndexProps) {
 
 interface Props {
   targetDate: Moment
+  onReachedTargetDate?: () => void
 }
-export default function Countdown({ targetDate }: Props) {
+export default function Countdown({ targetDate, onReachedTargetDate }: Props) {
   const [time, setTime] = React.useState(moment.utc())
-  // const nextEvent = selectedTimeline.find((event) => time.isBefore(event.date))
-
-  // if (!nextEvent) {
-  //   return null
-  // }
 
   React.useEffect(() => {
     const int = setInterval(() => {
-      setTime(moment.utc())
+      const date = moment.utc()
+
+      if (targetDate.isSameOrAfter(date) && onReachedTargetDate) {
+        onReachedTargetDate()
+        clearInterval(int)
+      }
+
+      setTime(date)
     }, 1000)
 
     return () => clearInterval(int)
-  }, [targetDate])
+  }, [targetDate, onReachedTargetDate])
 
   const duration = moment.duration(targetDate.diff(time))
   const countdownParts = getCountdownParts(duration)

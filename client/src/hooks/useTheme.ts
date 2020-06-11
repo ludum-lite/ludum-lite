@@ -79,6 +79,10 @@ export type ThemeColors = {
     boxShadow: string
     postAuthorLinkColor: string
   }
+  countdown: {
+    fadedTextColor: string
+    titleColor: string
+  }
   palette: {
     primary: {
       dark?: string
@@ -207,6 +211,10 @@ const lightTheme: ThemeColors = {
     oddBackground: inputBackground,
     boxShadow: cardBoxShadow,
     postAuthorLinkColor: styleVariables.greenBlue,
+  },
+  countdown: {
+    fadedTextColor: 'rgba(255,255,255,0.9)',
+    titleColor: 'white',
   },
   palette: {
     primary: {
@@ -340,6 +348,10 @@ const darkTheme: ThemeColors = {
     oddBackground: inputBackground,
     boxShadow: cardBoxShadow,
     postAuthorLinkColor: ldStyleVariables.darkOrange,
+  },
+  countdown: {
+    fadedTextColor: 'rgba(255,255,255,0.85)',
+    titleColor: 'rgba(255, 255, 255, 0.9)',
   },
   palette: {
     primary: {
