@@ -1,69 +1,44 @@
-import React from 'react'
-import styled from 'styled-components/macro'
+import React, { Fragment } from 'react'
+import _ from 'lodash'
+import styled, { css } from 'styled-components/macro'
 import Countdown from './Countdown'
-import moment, { Moment } from 'moment'
-import { Typography, Icon as MuiIcon } from '@material-ui/core'
+import moment from 'moment'
+import {
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Popover,
+} from '@material-ui/core'
 import Button from 'components/common/mui/Button'
 import Icon from 'components/common/mui/Icon'
 import ExpandMore from '@material-ui/icons/ExpandMore'
-import IconButton from 'components/common/mui/IconButton'
-
-type Event = {
-  label: string
-  date: Moment
-  compoEnd?: boolean
-  jamEnd?: boolean
-}
-
-export type Timeline = Event[]
-
-const themeSubmissionStartDate = moment.utc('2020-10-04T22:00:00')
-// TODO add in the 3 phases of theme voting
-const themeVotingStartDate = themeSubmissionStartDate.clone().add(2, 'weeks')
-const themeRevealStartDate = themeVotingStartDate.clone().add(1, 'week')
-const compEndDate = themeRevealStartDate.clone().add(48, 'hours')
-const jamEndDate = themeRevealStartDate.clone().add(24, 'hours')
-const votingEndDate = themeRevealStartDate.clone().add(30, 'days')
-
-const ldTimeline: Timeline = [
-  {
-    label: 'Theme Submission',
-    date: themeSubmissionStartDate,
-  },
-  {
-    label: 'Theme Voting',
-    date: themeVotingStartDate,
-  },
-  {
-    label: 'Theme Reveal',
-    date: themeRevealStartDate,
-  },
-  {
-    label: 'Compo End',
-    compoEnd: true,
-    date: compEndDate,
-  },
-  {
-    label: 'Jam End',
-    jamEnd: true,
-    date: jamEndDate,
-  },
-  {
-    label: 'Voting Ends',
-    date: votingEndDate,
-  },
-]
+import ExpandLess from '@material-ui/icons/ExpandLess'
+import CheckCircle from '@material-ui/icons/CheckCircle'
+import RadioButtonChecked from '@material-ui/icons/RadioButtonChecked'
+import useLocalStorage from 'hooks/useLocalStorage'
+import RadioButtonUnchecked from '@material-ui/icons/RadioButtonUnchecked'
+import {
+  EventPhaseToLabel,
+  mapTimeline,
+  getCurrentEvent,
+  getEvent,
+  findNextPhase,
+  Event,
+} from 'utils/timeline'
+import { ignoreProps } from 'utils'
 
 // const selectedTimeline = testTimeline
 
 const Root = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
 `
 
 const TitleButton = styled(Button)`
-  margin-bottom: ${({ theme }) => theme.spacing(2)}px;
+  margin-bottom: ${({ theme }) => theme.spacing(1)}px;
   color: ${({ theme }) => theme.themeColors.countdown.titleColor};
 `
 
@@ -72,44 +47,219 @@ const Title = styled(Typography)`
 `
 
 const Subtitle = styled(Typography)`
-  flex: 1 1 auto;
   color: ${({ theme }) => theme.themeColors.countdown.fadedTextColor};
 `
 
 const ExpandButton = styled(Button)`
-  margin-top: 4px;
+  margin-top: 8px;
+`
+
+const EventList = styled(List)`
+  color: white;
+  overflow: auto;
+`
+
+const NextTitle = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: ${({ theme }) => theme.spacing(1)}px;
+  color: ${({ theme }) => theme.themeColors.countdown.titleColor};
+  background: rgba(255, 255, 255, 0.54);
+  border-radius: ${({ theme }) =>
+    `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`};
+`
+
+interface EventListItemProps {
+  isNext: boolean
+}
+// Having some typescript issues with normal wrapping, so using attrs here
+const EventListItem = styled.div
+  .attrs({ as: ListItem, disableGutters: true })
+  .withConfig({
+    shouldForwardProp: ignoreProps(['isNext']),
+  })<EventListItemProps>`
+  color: ${({ theme }) => theme.themeColors.countdown.titleColor};
+  padding-left: ${({ theme }) => theme.spacing(2)}px;
+
+  ${({ isNext }) =>
+    isNext &&
+    css`
+      background: rgba(255, 255, 255, 0.36);
+      border-radius: ${({ theme }) =>
+        `0 0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px`};
+    `}
+
+  .MuiListItemText-secondary {
+    color: ${({ theme }) => theme.themeColors.countdown.dateTextColor};
+    font-size: 0.872rem;
+  }
+`
+
+const CheckboxIcon = styled(ListItemIcon)`
+  color: white;
+  margin-right: ${({ theme }) => theme.spacing(1)}px;
+  min-width: 0;
+  position: relative;
 `
 
 interface Props {
-  timeline: Timeline
+  events: Event[]
+  className?: string
 }
-export default function CountdownWidget({ timeline }: Props) {
-  const [time, setTime] = React.useState(moment.utc())
+export default function CountdownWidget({ events, className }: Props) {
+  const [date] = React.useState(moment.utc())
+  const [selectedEventNum, setSelectedEventNum] = React.useState(
+    getCurrentEvent(events)?.eventNumber
+  )
+  const selectedEvent = selectedEventNum
+    ? getEvent(events, selectedEventNum)
+    : undefined
+  const nextPhase = selectedEvent
+    ? findNextPhase(selectedEvent.timeline, date)
+    : undefined
+  const isSelectedEventOver = !nextPhase
+  const [countdownWidgetExpanded, setCountdownWidgetExpanded] = useLocalStorage(
+    'countdownWidgetExpanded',
+    false
+  )
 
-  const nextEvent = timeline.find((event) => time.isBefore(event.date))
+  const handleChangeEvent = React.useCallback((eventNumber: number) => {
+    setSelectedEventNum(eventNumber)
+    setAnchorEl(null)
+  }, [])
 
-  if (!nextEvent) {
-    return null
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
+  const isEventSelectOpen = Boolean(anchorEl)
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
   }
 
+  const handleClose = React.useCallback(() => {
+    setAnchorEl(null)
+  }, [])
+
+  const body = React.useMemo(() => {
+    if (selectedEvent) {
+      if (countdownWidgetExpanded || isSelectedEventOver) {
+        return (
+          <Fragment>
+            <EventList disablePadding dense>
+              {mapTimeline(selectedEvent.timeline, (eventPhase, eventDate) => {
+                const alreadyPassed = eventDate.isBefore(date)
+                const isNext = eventPhase === nextPhase?.eventPhase
+
+                return (
+                  <Fragment key={eventPhase}>
+                    {isNext && (
+                      <NextTitle key="nextPhase">
+                        <Typography variant="body1">Next Up</Typography>
+                      </NextTitle>
+                    )}
+                    <EventListItem key={eventPhase} isNext={isNext}>
+                      <CheckboxIcon>
+                        <Icon
+                          icon={
+                            alreadyPassed
+                              ? CheckCircle
+                              : isNext
+                              ? RadioButtonChecked
+                              : RadioButtonUnchecked
+                          }
+                        />
+                      </CheckboxIcon>
+                      <ListItemText
+                        primary={EventPhaseToLabel[eventPhase]}
+                        secondary={eventDate
+                          .clone()
+                          .local()
+                          .format('MMM D, YYYY @ ha')}
+                      />
+                    </EventListItem>
+                  </Fragment>
+                )
+              })}
+            </EventList>
+            {!isSelectedEventOver && (
+              <ExpandButton
+                fullWidth
+                onClick={() => {
+                  setCountdownWidgetExpanded(false)
+                }}
+                endIcon={<Icon icon={ExpandLess} />}
+                background="contextualNav"
+              >
+                <Subtitle variant="body1">Collapse</Subtitle>
+              </ExpandButton>
+            )}
+          </Fragment>
+        )
+      } else if (nextPhase) {
+        return (
+          <Fragment>
+            <Countdown targetDate={nextPhase.date} />
+            <ExpandButton
+              fullWidth
+              onClick={() => {
+                setCountdownWidgetExpanded(true)
+              }}
+              endIcon={<Icon icon={ExpandMore} />}
+              background="contextualNav"
+            >
+              <Subtitle variant="body1">
+                until {EventPhaseToLabel[nextPhase.eventPhase]}
+              </Subtitle>
+            </ExpandButton>
+          </Fragment>
+        )
+      }
+    }
+  }, [
+    countdownWidgetExpanded,
+    setCountdownWidgetExpanded,
+    selectedEvent,
+    nextPhase,
+    isSelectedEventOver,
+  ])
+
   return (
-    <Root>
+    <Root className={className}>
       <TitleButton
         fullWidth
         endIcon={<Icon icon={ExpandMore} />}
         background="contextualNav"
+        onClick={handleClick}
       >
-        <Title variant="h5">Ludum Dare 47</Title>
+        <Title variant="h6">Ludum Dare {selectedEvent?.eventNumber}</Title>
       </TitleButton>
-      <Countdown targetDate={nextEvent.date} />
-      <ExpandButton
-        fullWidth
-        startIcon={<Icon icon={ExpandMore} />}
-        endIcon={<Icon icon={ExpandMore} />}
-        background="contextualNav"
+      <Popover
+        id="demo-controlled-open-select"
+        open={isEventSelectOpen}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
       >
-        <Subtitle variant="body1">until Theme Submission</Subtitle>
-      </ExpandButton>
+        <List>
+          {events.map((event) => (
+            <ListItem
+              button
+              onClick={() => {
+                handleChangeEvent(event.eventNumber)
+              }}
+            >
+              <ListItemText primary={`Ludum Dare ${event.eventNumber}`} />
+            </ListItem>
+          ))}
+        </List>
+      </Popover>
+      {body}
     </Root>
   )
 }

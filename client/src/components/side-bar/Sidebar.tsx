@@ -11,6 +11,8 @@ import { ReactComponent as DareLogo } from 'assets/dare.svg'
 
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import GlobalNav from './GlobalNav'
+import CountdownWidget from './CountdownWidget'
+import { events } from 'utils'
 
 const Root = styled.div`
   display: flex;
@@ -67,6 +69,15 @@ const StyledDareLogo = styled(DareLogo)`
   margin-top: 10px;
 `
 
+const Separator = styled.div`
+  flex: 1 1 0px;
+`
+
+const StyledCountdownWidget = styled(CountdownWidget)`
+  max-height: 500px;
+  margin-bottom: ${({ theme }) => theme.spacing(2)}px;
+`
+
 const paths = [
   {
     url: 'posts',
@@ -107,6 +118,8 @@ export default function Sidebar({}: Props) {
             </ListItem>
           ))}
         </List>
+        <Separator />
+        <StyledCountdownWidget events={events} />
       </ContextualNav>
     </Root>
   )

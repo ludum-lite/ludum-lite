@@ -24,7 +24,7 @@ function getCountdownParts(duration: Duration): CountdownParts {
   const days = Math.floor(duration.asDays())
 
   return {
-    days: days > 1 ? days : null,
+    days: days >= 1 ? days : null,
     hours: duration.hours(),
     minutes: duration.minutes(),
     seconds: days < 1 ? duration.seconds() : null,
@@ -36,6 +36,8 @@ const Root = styled.div`
 `
 
 const ClockIndexRoot = styled.div`
+  flex: 1 1 0px;
+
   &:not(:first-child) {
     margin-left: 12px;
   }
@@ -55,7 +57,9 @@ const ClockIndexDigits = styled.div`
 const ClockDigitRoot = styled.div`
   position: relative;
   height: 45px;
-  width: 34px;
+  max-width: 34px;
+  min-width: 28px;
+  flex: 1 1 0px;
   color: #000000b5;
   font-size: 25px;
   box-shadow: 0 1px 5px -2px #0000009c;
@@ -166,7 +170,7 @@ function ClockIndex({ label, value }: ClockIndexProps) {
     })
 
   return (
-    <ClockIndexRoot>
+    <ClockIndexRoot style={{ flex: `${digits.length} 0 0px` }}>
       <ClockLabel>{label}</ClockLabel>
       <ClockIndexDigits>{digits}</ClockIndexDigits>
     </ClockIndexRoot>

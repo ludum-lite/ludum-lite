@@ -1,55 +1,13 @@
 import React from 'react'
 import styled from 'styled-components/macro'
-import CountdownWidget, { Timeline } from './CountdownWidget'
-import moment, { Moment } from 'moment'
-import Button from 'components/common/mui/Button'
-import Panel from 'components/storybook/Panel'
+import CountdownWidget from './CountdownWidget'
+import moment from 'moment'
+import { Timeline, EventPhase, generateTimeline, Event } from 'utils/timeline'
 
 export default {
   title: 'CountdownWidget',
   component: CountdownWidget,
 }
-
-const themeSubmissionStartDate_test = moment.utc('2020-10-04T22:00:00')
-// TODO add in the 3 phases of theme voting
-const themeVotingStartDate_test = themeSubmissionStartDate_test
-  .clone()
-  .add(2, 'weeks')
-const themeRevealStartDate_test = themeVotingStartDate_test
-  .clone()
-  .add(1, 'week')
-const compEndDate_test = themeRevealStartDate_test.clone().add(48, 'hours')
-const jamEndDate_test = compEndDate_test.clone().add(24, 'hours')
-const votingEndDate_test = jamEndDate_test.clone().add(30, 'days')
-
-const timeline: Timeline = [
-  {
-    label: 'Theme Submission',
-    date: themeSubmissionStartDate_test,
-  },
-  {
-    label: 'Theme Voting',
-    date: themeVotingStartDate_test,
-  },
-  {
-    label: 'Theme Reveal',
-    date: themeRevealStartDate_test,
-  },
-  {
-    label: 'Compo End',
-    compoEnd: true,
-    date: compEndDate_test,
-  },
-  {
-    label: 'Jam End',
-    jamEnd: true,
-    date: jamEndDate_test,
-  },
-  {
-    label: 'Voting Ends',
-    date: votingEndDate_test,
-  },
-]
 
 const BasicRoot = styled.div`
   display: flex;
@@ -66,33 +24,59 @@ const CountdownBackground = styled.div`
 `
 
 export const Basic = () => {
-  // const [targetDate, setTargetDate] = React.useState<Moment>(
-  //   moment.utc().add(10, 'days')
-  // )
+  const event = React.useMemo<Event>(() => {
+    const eventDate = moment.utc().add(40, 'days')
+
+    // prettier-ignore
+    return {
+      eventNumber: 1,
+      timeline: generateTimeline({
+        [EventPhase.ThemeSubmission]:   eventDate.clone(),
+        [EventPhase.ThemeVotingRound1]: eventDate.add(2, 'weeks').clone(),
+        [EventPhase.ThemeVotingRound2]: eventDate.add(3, 'days').clone(),
+        [EventPhase.ThemeVotingRound3]: eventDate.add(3, 'days').clone(),
+        [EventPhase.ThemeReveal]:       eventDate.add(1, 'day').clone(),
+        [EventPhase.CompoEnd]:          eventDate.add(48, 'hours').clone(),
+        [EventPhase.JamEnd]:            eventDate.add(24, 'hours').clone(),
+        [EventPhase.VotingEnds]:        eventDate.add(2, 'weeks').clone(),
+        [EventPhase.Results]:           eventDate.add(4, 'hours').clone(),
+      })
+    }
+  }, [])
+
   return (
     <BasicRoot>
-      {/* <Panel layout="row">
-        <Button onClick={() => setTargetDate(moment.utc().add(200, 'days'))}>
-          In 200 days
-        </Button>
-        <Button onClick={() => setTargetDate(moment.utc().add(10, 'day'))}>
-          In 10 days
-        </Button>
-        <Button onClick={() => setTargetDate(moment.utc().add(1, 'day'))}>
-          In 1 day
-        </Button>
-        <Button onClick={() => setTargetDate(moment.utc().add(12, 'hours'))}>
-          In 12 hours
-        </Button>
-        <Button onClick={() => setTargetDate(moment.utc().add(1, 'hour'))}>
-          In 1 hour
-        </Button>
-        <Button onClick={() => setTargetDate(moment.utc().add(2, 'seconds'))}>
-          In 2 seconds
-        </Button>
-      </Panel> */}
       <CountdownBackground>
-        <CountdownWidget timeline={timeline} />
+        <CountdownWidget events={[event]} />
+      </CountdownBackground>
+    </BasicRoot>
+  )
+}
+export const ThemeRevealNext = () => {
+  const event = React.useMemo<Event>(() => {
+    const eventDate = moment.utc().subtract(40, 'days')
+
+    // prettier-ignore
+    return {
+      eventNumber: 1,
+      timeline: generateTimeline({
+        [EventPhase.ThemeSubmission]:   eventDate.clone(),
+        [EventPhase.ThemeVotingRound1]: eventDate.add(20, 'days').clone(),
+        [EventPhase.ThemeVotingRound2]: eventDate.add(3, 'days').clone(),
+        [EventPhase.ThemeVotingRound3]: eventDate.add(3, 'days').clone(),
+        [EventPhase.ThemeReveal]:       eventDate.add(14, 'days').clone(),
+        [EventPhase.CompoEnd]:          eventDate.add(48, 'hours').clone(),
+        [EventPhase.JamEnd]:            eventDate.add(24, 'hours').clone(),
+        [EventPhase.VotingEnds]:        eventDate.add(2, 'weeks').clone(),
+        [EventPhase.Results]:           eventDate.add(4, 'hours').clone(),
+      })
+    }
+  }, [])
+
+  return (
+    <BasicRoot>
+      <CountdownBackground>
+        <CountdownWidget events={[event]} />
       </CountdownBackground>
     </BasicRoot>
   )

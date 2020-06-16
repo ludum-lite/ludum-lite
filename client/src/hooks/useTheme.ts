@@ -80,8 +80,9 @@ export type ThemeColors = {
     postAuthorLinkColor: string
   }
   countdown: {
-    fadedTextColor: string
     titleColor: string
+    fadedTextColor: string
+    dateTextColor: string
   }
   palette: {
     primary: {
@@ -213,8 +214,9 @@ const lightTheme: ThemeColors = {
     postAuthorLinkColor: styleVariables.greenBlue,
   },
   countdown: {
-    fadedTextColor: 'rgba(255,255,255,0.9)',
     titleColor: 'white',
+    fadedTextColor: 'rgba(255,255,255,0.9)',
+    dateTextColor: 'rgba(255,255,255,0.65)',
   },
   palette: {
     primary: {
@@ -350,8 +352,9 @@ const darkTheme: ThemeColors = {
     postAuthorLinkColor: ldStyleVariables.darkOrange,
   },
   countdown: {
-    fadedTextColor: 'rgba(255,255,255,0.85)',
     titleColor: 'rgba(255, 255, 255, 0.9)',
+    fadedTextColor: 'rgba(255,255,255,0.85)',
+    dateTextColor: 'rgba(255,255,255,0.5)',
   },
   palette: {
     primary: {
@@ -612,6 +615,22 @@ const ICON_SCALING = [
     name: 'ExpandMoreIcon',
     base: 1.2,
   },
+  {
+    name: 'ExpandLessIcon',
+    base: 1.2,
+  },
+  {
+    name: 'CheckCircleIcon',
+    base: 0.8,
+  },
+  {
+    name: 'RadioButtonUncheckedIcon',
+    base: 0.8,
+  },
+  {
+    name: 'RadioButtonCheckedIcon',
+    base: 0.8,
+  },
 ]
 
 const globalStyleGenerator = ({
@@ -694,8 +713,6 @@ export const useTheme = singletonHook(init, () => {
       scThemeGenerator({ themeColors: themes[themeMode], selectedMuiTheme }),
     [selectedMuiTheme, themeMode]
   )
-
-  console.log('getting theme')
 
   const GlobalStyle = globalStyleGenerator({
     themeColors: themes[themeMode],
