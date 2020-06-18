@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components/macro'
+import { gql } from '@apollo/client'
 import {
   List,
   ListItem as MuiListItem,
@@ -9,6 +10,7 @@ import {
 import { ReactComponent as LudumLogo } from 'assets/ludum.svg'
 import { ReactComponent as DareLogo } from 'assets/dare.svg'
 
+import { useSidebarDataQuery, EventPhase } from '__generated__/client-types'
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import GlobalNav from './GlobalNav'
 import CountdownWidget from './CountdownWidget'
@@ -58,6 +60,10 @@ const ListItem = styled(MuiListItem)`
   }
 ` as typeof MuiListItem
 
+const JoinEventListItem = styled(ListItem)`
+  border: 2px dashed rgba(255, 255, 255, 0.85);
+`
+
 const StyledLudumLogo = styled(LudumLogo)`
   fill: ${({ theme }) => theme.ldStyleVariables.portlandOrange};
   height: 35px;
@@ -96,6 +102,22 @@ const paths = [
 interface Props {}
 export default function Sidebar({}: Props) {
   const { basePath } = useParams()
+  const { data } = useSidebarDataQuery()
+
+  const JoinButton = React.useMemo(() => {
+    if (data?.featuredEvent?.__typename === 'Event') {
+      const featuredEvent = data.featuredEvent
+
+      return (
+        featuredEvent.eventPhase === EventPhase.EventRunning &&
+        !featuredEvent.currentUserGameId && (
+          <JoinEventListItem button>
+            <ListItemText primary="Join Event!" />
+          </JoinEventListItem>
+        )
+      )
+    }
+  }, [data])
 
   return (
     <Root>
@@ -117,6 +139,7 @@ export default function Sidebar({}: Props) {
               <ListItemText primary={path.text} />
             </ListItem>
           ))}
+          {JoinButton}
         </List>
         <Separator />
         <StyledCountdownWidget events={events} />
@@ -124,3 +147,23 @@ export default function Sidebar({}: Props) {
     </Root>
   )
 }
+
+Sidebar.fragments = {
+  event: gql`
+    fragment Sidebar_event on Event {
+      id
+      currentUserGameId
+      eventPhase
+    }
+  `,
+}
+
+gql`
+  query SidebarData {
+    featuredEvent {
+      ...Sidebar_event
+    }
+
+    ${Sidebar.fragments.event}
+  }
+`

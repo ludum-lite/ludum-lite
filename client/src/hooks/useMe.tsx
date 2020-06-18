@@ -1,20 +1,10 @@
 import { singletonHook } from 'react-singleton-hook'
-import { gql, useQuery } from '@apollo/client'
-import * as Types from '__generated__/Types'
+import { gql } from '@apollo/client'
 import { isLoggedInVar } from 'resolvers'
-
-const GET_ME_DATA = gql`
-  query GetMeData {
-    me {
-      ... on Me {
-        id
-      }
-    }
-  }
-`
+import { useGetMeDataQuery, Me } from '__generated__/client-types'
 
 type UseMeReturnType = {
-  me: Types.GetMeData_me_Me | null
+  me: Me | null
   hasLoaded: boolean
 }
 
@@ -24,7 +14,7 @@ const init: UseMeReturnType = {
 }
 
 export const useMe = singletonHook(init, () => {
-  const { data, loading } = useQuery<Types.GetMeData>(GET_ME_DATA, {
+  const { data, loading } = useGetMeDataQuery({
     onCompleted(data) {
       if (data.me.__typename === 'UnauthorizedResponse') {
         isLoggedInVar(false)
@@ -38,3 +28,13 @@ export const useMe = singletonHook(init, () => {
     hasLoaded: !loading,
   }
 })
+
+gql`
+  query GetMeData {
+    me {
+      ... on Me {
+        id
+      }
+    }
+  }
+`

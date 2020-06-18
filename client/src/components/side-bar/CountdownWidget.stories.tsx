@@ -52,6 +52,7 @@ export const Basic = () => {
     </BasicRoot>
   )
 }
+
 export const ThemeRevealNext = () => {
   const event = React.useMemo<Event>(() => {
     const eventDate = moment.utc().subtract(40, 'days')
@@ -64,7 +65,37 @@ export const ThemeRevealNext = () => {
         [EventPhase.ThemeVotingRound1]: eventDate.add(20, 'days').clone(),
         [EventPhase.ThemeVotingRound2]: eventDate.add(3, 'days').clone(),
         [EventPhase.ThemeVotingRound3]: eventDate.add(3, 'days').clone(),
-        [EventPhase.ThemeReveal]:       eventDate.add(14, 'days').clone(),
+        [EventPhase.ThemeReveal]:       eventDate.add(21, 'days').clone(),
+        [EventPhase.CompoEnd]:          eventDate.add(48, 'hours').clone(),
+        [EventPhase.JamEnd]:            eventDate.add(24, 'hours').clone(),
+        [EventPhase.VotingEnds]:        eventDate.add(2, 'weeks').clone(),
+        [EventPhase.Results]:           eventDate.add(4, 'hours').clone(),
+      })
+    }
+  }, [])
+
+  return (
+    <BasicRoot>
+      <CountdownBackground>
+        <CountdownWidget events={[event]} />
+      </CountdownBackground>
+    </BasicRoot>
+  )
+}
+
+export const EventRunning = () => {
+  const event = React.useMemo<Event>(() => {
+    const eventDate = moment.utc().subtract(5, 'days')
+
+    // prettier-ignore
+    return {
+      eventNumber: 1,
+      timeline: generateTimeline({
+        [EventPhase.ThemeSubmission]:   eventDate.clone(),
+        [EventPhase.ThemeVotingRound1]: eventDate.add(1, 'days').clone(),
+        [EventPhase.ThemeVotingRound2]: eventDate.add(1, 'days').clone(),
+        [EventPhase.ThemeVotingRound3]: eventDate.add(1, 'days').clone(),
+        [EventPhase.ThemeReveal]:       eventDate.add(1, 'days').clone(),
         [EventPhase.CompoEnd]:          eventDate.add(48, 'hours').clone(),
         [EventPhase.JamEnd]:            eventDate.add(24, 'hours').clone(),
         [EventPhase.VotingEnds]:        eventDate.add(2, 'weeks').clone(),

@@ -1,9 +1,12 @@
 import React from 'react'
 import styled from 'styled-components/macro'
 import { gql } from '@apollo/client'
-import * as Types from '__generated__/Types'
 import Comment from './Comment'
 import { filter } from 'graphql-anywhere'
+import {
+  Comments_CommentFragment,
+  Comments_PostFragment,
+} from '__generated__/client-types'
 
 const Root = styled.div`
   display: flex;
@@ -16,8 +19,8 @@ const Root = styled.div`
 `
 
 interface Props {
-  comments: Types.Comments_comment[]
-  post: Types.Comments_post
+  comments: Comments_CommentFragment[]
+  post: Comments_PostFragment
 }
 export default function Comments({ comments, post }: Props) {
   return (

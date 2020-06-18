@@ -1,27 +1,29 @@
 import React from 'react'
 import { useTheme } from 'styled-components/macro'
-import { gql, useMutation, useQuery } from '@apollo/client'
-import * as Types from '__generated__/Types'
+import { gql } from '@apollo/client'
 
 import FavoriteIcon from '@material-ui/icons/FavoriteRounded'
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorderRounded'
 import { useLogin } from 'hooks/useLogin'
 import ToggleButton from 'components/common/ToggleButton'
 import { useIsLoggedIn } from 'hooks/useIsLoggedIn'
+import {
+  CommentLoveButton_CommentFragment,
+  CommentLoveButton_PostFragment,
+  useLoveCommentMutation,
+  useUnloveCommentMutation,
+} from '__generated__/client-types'
 
 interface Props {
-  comment: Types.CommentLoveButton_comment
-  post: Types.CommentLoveButton_post
+  comment: CommentLoveButton_CommentFragment
+  post: CommentLoveButton_PostFragment
 }
 export default function CommentLoveButton({ comment, post }: Props) {
   const { promptLogin } = useLogin()
   const isLoggedIn = useIsLoggedIn()
   const theme = useTheme()
 
-  const [loveComment] = useMutation<
-    Types.LoveComment,
-    Types.LoveCommentVariables
-  >(LOVE_COMMENT, {
+  const [loveComment] = useLoveCommentMutation({
     variables: {
       input: {
         id: comment.id,
@@ -29,10 +31,7 @@ export default function CommentLoveButton({ comment, post }: Props) {
     },
   })
 
-  const [unloveComment] = useMutation<
-    Types.UnloveComment,
-    Types.UnloveCommentVariables
-  >(UNLOVE_COMMENT, {
+  const [unloveComment] = useUnloveCommentMutation({
     variables: {
       input: {
         id: comment.id,
@@ -53,6 +52,7 @@ export default function CommentLoveButton({ comment, post }: Props) {
           if (hasLovedPost) {
             unloveComment({
               optimisticResponse: {
+                __typename: 'Mutation',
                 unloveComment: {
                   __typename: 'UnloveCommentSuccess' as const,
                   comment: {
@@ -73,6 +73,7 @@ export default function CommentLoveButton({ comment, post }: Props) {
           } else {
             loveComment({
               optimisticResponse: {
+                __typename: 'Mutation',
                 loveComment: {
                   __typename: 'LoveCommentSuccess' as const,
                   comment: {
@@ -114,7 +115,7 @@ CommentLoveButton.fragments = {
   `,
 }
 
-const LOVE_COMMENT = gql`
+gql`
   mutation LoveComment($input: IdInput!) {
     loveComment(input: $input) {
       ... on LoveCommentSuccess {
@@ -131,7 +132,7 @@ const LOVE_COMMENT = gql`
   ${CommentLoveButton.fragments.post}
 `
 
-const UNLOVE_COMMENT = gql`
+gql`
   mutation UnloveComment($input: IdInput!) {
     unloveComment(input: $input) {
       ... on UnloveCommentSuccess {

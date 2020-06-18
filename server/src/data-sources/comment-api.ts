@@ -68,8 +68,6 @@ export default class CommentAPI extends BaseAPI {
   async getMyLovedCommentsForPost(id: number) {
     const commentsResponse = await this.get(`vx/comment/love/getmy/${id}`)
 
-    console.log(commentsResponse)
-
     return commentsResponse['my-love']?.map((n: any) => n.note) || []
   }
 
@@ -131,7 +129,6 @@ export default class CommentAPI extends BaseAPI {
         comment: await this.getComment(input.id),
       }
     } catch (e) {
-      console.log(e)
       return unauthorizedResponse
     }
   }

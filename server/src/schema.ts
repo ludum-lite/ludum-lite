@@ -10,6 +10,7 @@ export const typeDefs = gql`
       page: Int!
     ): SearchPostResponse!
     user(input: IdInput!): User!
+    featuredEvent: FeaturedEventResponse!
   }
 
   type Mutation {
@@ -20,6 +21,7 @@ export const typeDefs = gql`
     unloveComment(input: IdInput!): UnloveCommentResponse!
     addComment(input: AddCommentInput!): AddCommentResponse!
     editComment(input: EditCommentInput!): EditCommentResponse!
+    joinEvent: JoinEventResponse!
   }
 
   #########
@@ -107,9 +109,9 @@ export const typeDefs = gql`
   ######
 
   enum PostType {
-    all
-    news
-    favorites
+    All
+    News
+    Favorites
   }
 
   type Post {
@@ -225,4 +227,37 @@ export const typeDefs = gql`
   }
 
   union EditCommentResponse = EditCommentSuccess | UnauthorizedResponse
+
+  #########
+  # Event
+  #########
+
+  type Event {
+    id: Int!
+    name: String!
+    body: String!
+    slug: String!
+    createdDate: String!
+    currentUserGameId: Int
+    eventPhase: EventPhase!
+  }
+
+  enum EventPhase {
+    ThemeSelection
+    ThemeSlaughter
+    ThemeVoting
+    EventRunning
+    GameVoting
+    Results
+  }
+
+  union FeaturedEventResponse = Event | UnauthorizedResponse
+
+  type JoinEventSuccess implements MutationResponse {
+    success: Boolean!
+    featuredEvent: Event
+    gameId: Int!
+  }
+
+  union JoinEventResponse = JoinEventSuccess | UnauthorizedResponse
 `

@@ -1,44 +1,43 @@
 import React from 'react'
 import { useTheme } from 'styled-components/macro'
-import { gql, useMutation } from '@apollo/client'
-import * as Types from '__generated__/Types'
+import { gql } from '@apollo/client'
 
 import FavoriteIcon from '@material-ui/icons/FavoriteRounded'
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorderRounded'
 import { useLogin } from 'hooks/useLogin'
 import ToggleButton from 'components/common/ToggleButton'
 import { useIsLoggedIn } from 'hooks/useIsLoggedIn'
+import {
+  PostLoveButton_PostFragment,
+  PostLoveButton_MeFragment,
+  useLovePostMutation,
+  useUnlovePostMutation,
+} from '__generated__/client-types'
 
 interface Props {
-  post: Types.PostLoveButton_post
-  me: Types.PostLoveButton_me
+  post: PostLoveButton_PostFragment
+  me: PostLoveButton_MeFragment
 }
 export default function PostLoveButton({ me, post }: Props) {
   const { promptLogin } = useLogin()
   const isLoggedIn = useIsLoggedIn()
   const theme = useTheme()
 
-  const [lovePost] = useMutation<Types.LovePost, Types.LovePostVariables>(
-    LOVE_POST,
-    {
-      variables: {
-        input: {
-          id: post.id,
-        },
+  const [lovePost] = useLovePostMutation({
+    variables: {
+      input: {
+        id: post.id,
       },
-    }
-  )
+    },
+  })
 
-  const [unlovePost] = useMutation<Types.UnlovePost, Types.UnlovePostVariables>(
-    UNLOVE_POST,
-    {
-      variables: {
-        input: {
-          id: post.id,
-        },
+  const [unlovePost] = useUnlovePostMutation({
+    variables: {
+      input: {
+        id: post.id,
       },
-    }
-  )
+    },
+  })
 
   const hasLovedPost =
     me.__typename === 'Me' && (me.lovedPosts || []).includes(post.id)
@@ -56,6 +55,7 @@ export default function PostLoveButton({ me, post }: Props) {
           if (hasLovedPost) {
             unlovePost({
               optimisticResponse: {
+                __typename: 'Mutation',
                 unlovePost: {
                   __typename: 'UnlovePostSuccess' as const,
                   me: {
@@ -76,6 +76,7 @@ export default function PostLoveButton({ me, post }: Props) {
           } else {
             lovePost({
               optimisticResponse: {
+                __typename: 'Mutation',
                 lovePost: {
                   __typename: 'LovePostSuccess' as const,
                   me: {
@@ -120,7 +121,7 @@ PostLoveButton.fragments = {
   `,
 }
 
-const LOVE_POST = gql`
+gql`
   mutation LovePost($input: IdInput!) {
     lovePost(input: $input) {
       ... on LovePostSuccess {
@@ -137,7 +138,7 @@ const LOVE_POST = gql`
   ${PostLoveButton.fragments.me}
 `
 
-const UNLOVE_POST = gql`
+gql`
   mutation UnlovePost($input: IdInput!) {
     unlovePost(input: $input) {
       ... on UnlovePostSuccess {

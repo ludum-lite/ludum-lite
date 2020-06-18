@@ -3,6 +3,7 @@ type Query {
   post(input: IdInput!): Post!
   searchPosts(filters: SearchPostsFiltersInput!, limit: Int!, page: Int!): SearchPostResponse!
   user(input: IdInput!): User!
+  featuredEvent: FeaturedEventResponse!
 }
 
 type Mutation {
@@ -13,6 +14,7 @@ type Mutation {
   unloveComment(input: IdInput!): UnloveCommentResponse!
   addComment(input: AddCommentInput!): AddCommentResponse!
   editComment(input: EditCommentInput!): EditCommentResponse!
+  joinEvent: JoinEventResponse!
 }
 
 interface MutationResponse {
@@ -84,9 +86,9 @@ type LoginSuccess implements MutationResponse {
 union LoginResponse = LoginFailure | LoginSuccess
 
 enum PostType {
-  all
-  news
-  favorites
+  All
+  News
+  Favorites
 }
 
 type Post {
@@ -194,3 +196,32 @@ type EditCommentSuccess implements MutationResponse {
 }
 
 union EditCommentResponse = EditCommentSuccess | UnauthorizedResponse
+
+type Event {
+  id: Int!
+  name: String!
+  body: String!
+  slug: String!
+  createdDate: String!
+  currentUserGameId: Int
+  eventPhase: EventPhase!
+}
+
+enum EventPhase {
+  ThemeSelection
+  ThemeSlaughter
+  ThemeVoting
+  EventRunning
+  GameVoting
+  Results
+}
+
+union FeaturedEventResponse = Event | UnauthorizedResponse
+
+type JoinEventSuccess implements MutationResponse {
+  success: Boolean!
+  featuredEvent: Event
+  gameId: Int!
+}
+
+union JoinEventResponse = JoinEventSuccess | UnauthorizedResponse

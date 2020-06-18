@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components/macro'
 import { gql } from '@apollo/client'
 import { filter } from 'graphql-anywhere'
-import * as Types from '__generated__/Types'
 import Markdown from 'components/common/Markdown'
 import Button from 'components/common/mui/Button'
 import Icon from 'components/common/mui/Icon'
@@ -11,6 +10,10 @@ import { useMe } from 'hooks/useMe'
 import UserPostedHeader from './UserPostedHeader'
 import CommentLoveButton from './comment-buttons/CommentLoveButton'
 import EditCommentForm from './EditCommentForm'
+import {
+  Comment_CommentFragment,
+  Comment_PostFragment,
+} from '__generated__/client-types'
 
 const Root = styled.div`
   border-radius: ${({ theme }) => theme.shape.borderRadius}px;
@@ -42,8 +45,8 @@ const ActionRow = styled.div`
 `
 
 interface Props {
-  comment: Types.Comment_comment
-  post: Types.Comment_post
+  comment: Comment_CommentFragment
+  post: Comment_PostFragment
   className?: string
 }
 export default function Comment({ comment, post, className }: Props) {
@@ -74,9 +77,7 @@ export default function Comment({ comment, post, className }: Props) {
                 setIsEditing(true)
               }}
               size="small"
-              startIcon={
-                <Icon icon={CreateIcon} />
-              }
+              startIcon={<Icon icon={CreateIcon} />}
             >
               Edit
             </Button>

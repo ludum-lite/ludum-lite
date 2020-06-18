@@ -26,6 +26,7 @@ import {
   getEvent,
   findNextPhase,
   Event,
+  EventPhase,
 } from 'utils/timeline'
 import { ignoreProps } from 'utils'
 
@@ -67,6 +68,15 @@ const NextTitle = styled.div`
   background: rgba(255, 255, 255, 0.54);
   border-radius: ${({ theme }) =>
     `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`};
+`
+
+const EventToggleButtons = styled.div`
+  display: flex;
+  margin-bottom: 8px;
+
+  & > *:not(:last-child) {
+    margin-right: ${({ theme }) => theme.spacing(1)}px;
+  }
 `
 
 interface EventListItemProps {
@@ -122,6 +132,20 @@ export default function CountdownWidget({ events, className }: Props) {
     'countdownWidgetExpanded',
     false
   )
+  const [preferredEventType, setPreferredEventType] = useLocalStorage<
+    'compo' | 'jam'
+  >('preferredEventType', 'compo')
+  const forceShowJam =
+    (nextPhase?.eventPhase === EventPhase.CompoEnd ||
+      nextPhase?.eventPhase === EventPhase.CompoSubmissionHourEnd) &&
+    preferredEventType === 'jam'
+
+  const nextPhaseForCountdown = forceShowJam
+    ? {
+        eventPhase: EventPhase.JamEnd,
+        date: selectedEvent?.timeline.JamEnd,
+      }
+    : nextPhase
 
   const handleChangeEvent = React.useCallback((eventNumber: number) => {
     setSelectedEventNum(eventNumber)
@@ -194,10 +218,12 @@ export default function CountdownWidget({ events, className }: Props) {
             )}
           </Fragment>
         )
-      } else if (nextPhase) {
+      } else if (nextPhaseForCountdown) {
         return (
           <Fragment>
-            <Countdown targetDate={nextPhase.date} />
+            {nextPhaseForCountdown.date && (
+              <Countdown targetDate={nextPhaseForCountdown.date} />
+            )}
             <ExpandButton
               fullWidth
               onClick={() => {
@@ -207,7 +233,7 @@ export default function CountdownWidget({ events, className }: Props) {
               background="contextualNav"
             >
               <Subtitle variant="body1">
-                until {EventPhaseToLabel[nextPhase.eventPhase]}
+                until {EventPhaseToLabel[nextPhaseForCountdown.eventPhase]}
               </Subtitle>
             </ExpandButton>
           </Fragment>
@@ -219,7 +245,9 @@ export default function CountdownWidget({ events, className }: Props) {
     setCountdownWidgetExpanded,
     selectedEvent,
     nextPhase,
+    nextPhaseForCountdown,
     isSelectedEventOver,
+    date,
   ])
 
   return (
@@ -232,6 +260,34 @@ export default function CountdownWidget({ events, className }: Props) {
       >
         <Title variant="h6">Ludum Dare {selectedEvent?.eventNumber}</Title>
       </TitleButton>
+      {(nextPhase?.eventPhase === EventPhase.CompoEnd ||
+        nextPhase?.eventPhase === EventPhase.CompoSubmissionHourEnd) &&
+        !countdownWidgetExpanded && (
+          <EventToggleButtons>
+            <Button
+              background="contextualNav"
+              variant={preferredEventType === 'compo' ? 'contained' : 'text'}
+              color={preferredEventType === 'compo' ? 'secondary' : 'default'}
+              fullWidth
+              onClick={() => {
+                setPreferredEventType('compo')
+              }}
+            >
+              Compo
+            </Button>
+            <Button
+              background="contextualNav"
+              variant={preferredEventType === 'jam' ? 'contained' : 'text'}
+              color={preferredEventType === 'jam' ? 'secondary' : 'default'}
+              fullWidth
+              onClick={() => {
+                setPreferredEventType('jam')
+              }}
+            >
+              Jam
+            </Button>
+          </EventToggleButtons>
+        )}
       <Popover
         id="demo-controlled-open-select"
         open={isEventSelectOpen}
@@ -249,6 +305,7 @@ export default function CountdownWidget({ events, className }: Props) {
         <List>
           {events.map((event) => (
             <ListItem
+              key={event.eventNumber}
               button
               onClick={() => {
                 handleChangeEvent(event.eventNumber)

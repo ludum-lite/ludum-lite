@@ -1,23 +1,10 @@
 import React from 'react'
 import { singletonHook } from 'react-singleton-hook'
-import { gql, useMutation } from '@apollo/client'
+import { gql } from '@apollo/client'
 import { isLoggedInVar } from 'resolvers'
-import * as Types from '__generated__/Types'
 import { Drawer } from '@material-ui/core'
 import LoginForm from 'components/login/LoginForm'
-
-const LOGIN = gql`
-  mutation Login($input: LoginInput!) {
-    login(input: $input) {
-      ... on LoginSuccess {
-        token
-      }
-      ... on LoginFailure {
-        message
-      }
-    }
-  }
-`
+import { useLoginMutation } from '__generated__/client-types'
 
 type UseLoginReturnType = {
   login: ({
@@ -42,24 +29,21 @@ const init: UseLoginReturnType = {
 export const useLogin = singletonHook(init, () => {
   const [isPromptingLogin, setIsPromptingLogin] = React.useState(false)
   const [error, setError] = React.useState('')
-  const [loginMutation] = useMutation<Types.Login, Types.LoginVariables>(
-    LOGIN,
-    {
-      onCompleted: ({ login }) => {
-        if (login.__typename === 'LoginSuccess') {
-          console.log(login)
-          const { token } = login
-          localStorage.setItem('token', token)
-          setIsPromptingLogin(false)
-          isLoggedInVar(true)
-          window.location.reload()
-        } else if (login.__typename === 'LoginFailure') {
-          setError(login.message)
-          isLoggedInVar(false)
-        }
-      },
-    }
-  )
+  const [loginMutation] = useLoginMutation({
+    onCompleted: ({ login }) => {
+      if (login.__typename === 'LoginSuccess') {
+        console.log(login)
+        const { token } = login
+        localStorage.setItem('token', token)
+        setIsPromptingLogin(false)
+        isLoggedInVar(true)
+        window.location.reload()
+      } else if (login.__typename === 'LoginFailure') {
+        setError(login.message)
+        isLoggedInVar(false)
+      }
+    },
+  })
 
   const login = React.useCallback(
     ({ username, password }: { username: string; password: string }) => {
@@ -100,3 +84,16 @@ export const useLogin = singletonHook(init, () => {
     loginComponent,
   }
 })
+
+gql`
+  mutation Login($input: LoginInput!) {
+    login(input: $input) {
+      ... on LoginSuccess {
+        token
+      }
+      ... on LoginFailure {
+        message
+      }
+    }
+  }
+`

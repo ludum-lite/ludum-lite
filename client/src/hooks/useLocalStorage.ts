@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function useLocalStorage(key: string, initialValue: any) {
+export default function useLocalStorage<T>(key: string, initialValue: T) {
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
-  const [storedValue, setStoredValue] = React.useState(() => {
+  const [storedValue, setStoredValue] = React.useState<T>(() => {
     try {
       // Get from local storage by key
       const item = window.localStorage.getItem(key)
@@ -18,7 +18,7 @@ export default function useLocalStorage(key: string, initialValue: any) {
 
   // Return a wrapped version of useState's setter function that ...
   // ... persists the new value to localStorage.
-  const setValue = (value: any) => {
+  const setValue = (value: T) => {
     try {
       // Allow value to be a function so we have same API as useState
       const valueToStore =
@@ -33,5 +33,5 @@ export default function useLocalStorage(key: string, initialValue: any) {
     }
   }
 
-  return [storedValue, setValue]
+  return [storedValue, setValue] as const
 }

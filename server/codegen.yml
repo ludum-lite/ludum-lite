@@ -8,6 +8,14 @@ generates:
       - 'typescript-resolvers'
     config:
       useIndexSignature: true
+      enumValues:
+        EventPhase:
+          ThemeSelection: 1
+          ThemeSlaughter: 2
+          ThemeVoting: 4
+          EventRunning: 5
+          GameVoting: 6
+          Results: 7
   ./src/__generated__/schema.graphql:
     plugins:
       - schema-ast

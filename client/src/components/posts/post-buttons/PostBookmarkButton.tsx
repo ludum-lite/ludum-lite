@@ -1,20 +1,18 @@
 import React from 'react'
 import { useTheme } from 'styled-components/macro'
 import { favoritedIdsVar } from 'resolvers'
-import { useQuery, gql } from '@apollo/client'
-import * as Types from '__generated__/Types'
+import { gql } from '@apollo/client'
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder'
 import BookmarkIcon from '@material-ui/icons/Bookmark'
 import ToggleButton from 'components/common/ToggleButton'
+import { usePostBookmarkButton_GetFavoritedIdsQuery } from '__generated__/client-types'
 
 interface Props {
   postId: number
 }
 export default function PostBookmarkButton({ postId }: Props) {
   const theme = useTheme()
-  const { data: globalData } = useQuery<
-    Types.PostBookmarkButton_GetFavoritedIds
-  >(GET_GLOBAL_DATA)
+  const { data: globalData } = usePostBookmarkButton_GetFavoritedIdsQuery()
   const favoritedIds = globalData?.favoritedIds
   const hasFavoritedPost = !!favoritedIds?.includes(postId)
 
@@ -45,7 +43,7 @@ export default function PostBookmarkButton({ postId }: Props) {
   )
 }
 
-const GET_GLOBAL_DATA = gql`
+gql`
   query PostBookmarkButton_GetFavoritedIds {
     favoritedIds @client
   }

@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components/macro'
-import { gql, useQuery } from '@apollo/client'
-import * as Types from '__generated__/Types'
+import { gql } from '@apollo/client'
 
 import {
   Typography,
@@ -21,8 +20,9 @@ import { filter } from 'graphql-anywhere'
 import { useActivePostId } from 'hooks/useActivePostId'
 import AddCommentForm from './AddCommentForm'
 import Comments from './Comments'
-import { getItemWithDefault } from 'utils'
 import { sortBy } from 'lodash'
+import { useGetPostOverlayPageDataQuery } from '__generated__/client-types'
+import useLocalStorage from 'hooks/useLocalStorage'
 
 enum CommentSortBy {
   DatePostedNewest = 'datePosted_newest',
@@ -103,44 +103,11 @@ const CommentsTitle = styled(Typography)`
   line-height: 0.9;
 `
 
-const GET_DATA = gql`
-  query GetPostOverlayPageData($input: IdInput!) {
-    post(input: $input) {
-      id
-      name
-      publishedDate
-      body
-      author {
-        id
-        profilePath
-        avatarPath
-        name
-      }
-      comments {
-        ...Comments_comment
-      }
-      ...PostLoveButton_post
-      ...Comments_post
-    }
-    me {
-      ...PostLoveButton_me
-    }
-  }
-  ${PostLoveButton.fragments.post}
-  ${PostLoveButton.fragments.me}
-  ${Comments.fragments.comment}
-  ${Comments.fragments.post}
-`
-
-let storedCommentSortBy = getItemWithDefault<CommentSortBy>(
-  'comments_sortBy',
-  CommentSortBy.DatePostedNewest
-)
-
 export default function PostPage() {
   const { id: postId } = useParams()
-  const [commentSortBy, setSortBy] = React.useState<CommentSortBy>(
-    storedCommentSortBy
+  const [commentSortBy, setSortBy] = useLocalStorage(
+    'comments_sortBy',
+    CommentSortBy.DatePostedNewest
   )
 
   const onChangeSortBy = React.useCallback((sortBy: CommentSortBy) => {
@@ -156,10 +123,7 @@ export default function PostPage() {
     }
   })
 
-  const { data, loading } = useQuery<
-    Types.GetPostOverlayPageData,
-    Types.GetPostOverlayPageDataVariables
-  >(GET_DATA, {
+  const { data, loading } = useGetPostOverlayPageDataQuery({
     variables: {
       input: {
         id: parseInt(postId),
@@ -270,3 +234,32 @@ export default function PostPage() {
 
   return <PopupPage actionRow={actionRow}>{body}</PopupPage>
 }
+
+gql`
+  query GetPostOverlayPageData($input: IdInput!) {
+    post(input: $input) {
+      id
+      name
+      publishedDate
+      body
+      author {
+        id
+        profilePath
+        avatarPath
+        name
+      }
+      comments {
+        ...Comments_comment
+      }
+      ...PostLoveButton_post
+      ...Comments_post
+    }
+    me {
+      ...PostLoveButton_me
+    }
+  }
+  ${PostLoveButton.fragments.post}
+  ${PostLoveButton.fragments.me}
+  ${Comments.fragments.comment}
+  ${Comments.fragments.post}
+`

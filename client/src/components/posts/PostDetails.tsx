@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components/macro'
 import { gql } from '@apollo/client'
-import * as Types from '__generated__/Types'
 
 import { Typography, Collapse } from '@material-ui/core'
 import Markdown from 'components/common/Markdown'
@@ -9,6 +8,7 @@ import Button from 'components/common/mui/Button'
 import UserPostedHeader from './UserPostedHeader'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import Icon from 'components/common/mui/Icon'
+import { PostDetails_PostFragment } from '__generated__/client-types'
 
 const Root = styled.div`
   overflow: hidden;
@@ -81,7 +81,7 @@ const POST_DETAILS_FRAGMENT = gql`
 `
 
 interface Props {
-  post: Types.PostDetails_post
+  post: PostDetails_PostFragment
   forceExpand?: boolean
 }
 export default function PostDetails({ post, forceExpand }: Props) {

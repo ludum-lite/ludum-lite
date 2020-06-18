@@ -1,8 +1,12 @@
 import React from 'react'
 
-import { gql, useMutation } from '@apollo/client'
-import * as Types from '__generated__/Types'
+import { gql } from '@apollo/client'
 import CommentForm from './CommentForm'
+import {
+  useAddCommentMutation,
+  AddCommentForm_PostFragment,
+  AddCommentForm_PostFragmentDoc,
+} from '__generated__/client-types'
 
 interface Props {
   postId: number
@@ -11,41 +15,38 @@ interface Props {
 export default function AddCommentForm({ className, postId }: Props) {
   const [body, setBody] = React.useState('')
 
-  const [addComment] = useMutation<Types.AddComment, Types.AddCommentVariables>(
-    ADD_COMMENT,
-    {
-      variables: {
-        input: {
-          body,
-          postId,
-        },
+  const [addComment] = useAddCommentMutation({
+    variables: {
+      input: {
+        body,
+        postId,
       },
-      onCompleted() {
-        setBody('')
-      },
-      update(store, { data }) {
-        const postCacheKey = `Post:${postId}`
+    },
+    onCompleted() {
+      setBody('')
+    },
+    update(store, { data }) {
+      const postCacheKey = `Post:${postId}`
 
-        if (data?.addComment.__typename === 'AddCommentSuccess') {
-          const comment = data.addComment.comment
+      if (data?.addComment.__typename === 'AddCommentSuccess') {
+        const comment = data.addComment.comment
 
-          const readData = store.readFragment<Types.AddCommentForm_post>({
-            id: postCacheKey,
-            fragment: ADD_COMMENT_POST_FRAGMENT,
-          })
+        const readData = store.readFragment<AddCommentForm_PostFragment>({
+          id: postCacheKey,
+          fragment: AddCommentForm_PostFragmentDoc,
+        })
 
-          store.writeFragment({
-            id: postCacheKey,
-            fragment: ADD_COMMENT_POST_FRAGMENT,
-            data: {
-              id: postId,
-              comments: [...(readData?.comments || []), comment],
-            },
-          })
-        }
-      },
-    }
-  )
+        store.writeFragment({
+          id: postCacheKey,
+          fragment: AddCommentForm_PostFragmentDoc,
+          data: {
+            id: postId,
+            comments: [...(readData?.comments || []), comment],
+          },
+        })
+      }
+    },
+  })
 
   return (
     <CommentForm
@@ -68,7 +69,16 @@ export default function AddCommentForm({ className, postId }: Props) {
   )
 }
 
-const ADD_COMMENT = gql`
+gql`
+  fragment AddCommentForm_post on Post {
+    id
+    comments {
+      id
+    }
+  }
+`
+
+gql`
   mutation AddComment($input: AddCommentInput!) {
     addComment(input: $input) {
       ... on AddCommentSuccess {
@@ -78,15 +88,6 @@ const ADD_COMMENT = gql`
           body
         }
       }
-    }
-  }
-`
-
-const ADD_COMMENT_POST_FRAGMENT = gql`
-  fragment AddCommentForm_post on Post {
-    id
-    comments {
-      id
     }
   }
 `

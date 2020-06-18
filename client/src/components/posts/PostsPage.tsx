@@ -2,13 +2,17 @@ import React from 'react'
 import styled, { css } from 'styled-components/macro'
 import { useSearchParams } from 'react-router-dom'
 
-import { useQuery, gql, NetworkStatus } from '@apollo/client'
-import * as Types from '__generated__/Types'
+import { gql, NetworkStatus } from '@apollo/client'
 
 import Post from './Post'
 import Button from 'components/common/mui/Button'
 import { Typography, LinearProgress } from '@material-ui/core'
 import { ignoreProps } from 'utils'
+import {
+  useGetPostsPageDataQuery,
+  PostType,
+  usePostsPage_GetFavoritedIdsQuery,
+} from '__generated__/client-types'
 
 const Root = styled.div`
   display: flex;
@@ -83,13 +87,13 @@ const NoItemsContainer = () => (
   </NoItemsContainerRoot>
 )
 
-const GET_FAVORITED_IDS = gql`
+gql`
   query PostsPage_GetFavoritedIds {
     favoritedIds @client
   }
 `
 
-const GET_DATA = gql`
+gql`
   query GetPostsPageData(
     $filters: SearchPostsFiltersInput!
     $limit: Int!
@@ -114,26 +118,21 @@ const GET_DATA = gql`
 
 export default function PostsPage() {
   const [searchParams, setSearchParams] = useSearchParams({
-    postType: Types.PostType.all,
+    postType: PostType.All,
   })
 
-  const postType = searchParams.get('postType') as Types.PostType
+  const postType = searchParams.get('postType') as PostType
 
-  const { data: favoritedIdsData } = useQuery<Types.PostsPage_GetFavoritedIds>(
-    GET_FAVORITED_IDS
-  )
+  const { data: favoritedIdsData } = usePostsPage_GetFavoritedIdsQuery()
 
-  const { data, loading, fetchMore, networkStatus } = useQuery<
-    Types.GetPostsPageData,
-    Types.GetPostsPageDataVariables
-  >(GET_DATA, {
+  const { data, loading, fetchMore, networkStatus } = useGetPostsPageDataQuery({
     variables: {
       filters: {
         postType,
         favoritedIds:
-          postType === Types.PostType.favorites
+          postType === PostType.Favorites
             ? favoritedIdsData?.favoritedIds
-            : undefined,
+            : null,
       },
       limit: 3,
       page: 0,
@@ -205,33 +204,31 @@ export default function PostsPage() {
     <Root>
       <SortActions>
         <SortButton
-          onClick={() =>
-            setSearchParams({ postType: Types.PostType.all }, undefined)
-          }
+          onClick={() => setSearchParams({ postType: PostType.All }, undefined)}
           variant="contained"
           background="page"
-          active={postType === Types.PostType.all}
+          active={postType === PostType.All}
           focusRipple
         >
           All
         </SortButton>
         <SortButton
           onClick={() =>
-            setSearchParams({ postType: Types.PostType.news }, undefined)
+            setSearchParams({ postType: PostType.News }, undefined)
           }
           variant="contained"
           background="page"
-          active={postType === Types.PostType.news}
+          active={postType === PostType.News}
         >
           News
         </SortButton>
         <SortButton
           onClick={() =>
-            setSearchParams({ postType: Types.PostType.favorites }, undefined)
+            setSearchParams({ postType: PostType.Favorites }, undefined)
           }
           variant="contained"
           background="page"
-          active={postType === Types.PostType.favorites}
+          active={postType === PostType.Favorites}
         >
           Favorites
         </SortButton>

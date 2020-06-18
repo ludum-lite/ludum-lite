@@ -2,7 +2,6 @@ import React from 'react'
 import styled, { css, keyframes } from 'styled-components/macro'
 import { gql } from '@apollo/client'
 import { filter } from 'graphql-anywhere'
-import * as Types from '__generated__/Types'
 import { useNavigate } from 'react-router-dom'
 
 import PostDetails from './PostDetails'
@@ -15,6 +14,7 @@ import PostBookmarkButton from './post-buttons/PostBookmarkButton'
 import PostCommentButton from './post-buttons/PostCommentButton'
 import { useActivePostId } from 'hooks/useActivePostId'
 import { ignoreProps } from 'utils'
+import { Post_PostFragment, Post_MeFragment } from '__generated__/client-types'
 
 const activeBoxShadowKeyFrames = (color: string) => keyframes`
   0% {
@@ -98,8 +98,8 @@ const ActionRow = styled.div`
 // `
 
 interface Props {
-  post: Types.Post_post
-  me: Types.Post_me
+  post: Post_PostFragment
+  me: Post_MeFragment
 }
 export default function Post({ post, me }: Props) {
   const navigate = useNavigate()

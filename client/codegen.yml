@@ -1,0 +1,34 @@
+overwrite: true
+schema:
+  - http://localhost:4000/graphql
+  - apollo-client.graphql
+documents:
+  - src/**/*.tsx
+  - src/**/*.ts
+generates:
+  src/__generated__/client-types.ts:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
+      - 'fragment-matcher'
+    hooks:
+      afterOneFileWrite:
+        - prettier --write
+    config:
+      withComponent: false
+      withHOC: false
+      withHooks: true
+      apolloReactCommonImportFrom: '@apollo/client'
+      apolloReactHooksImportFrom: '@apollo/client'
+      reactApolloVersion: 3
+      nonOptionalTypename: true
+      maybeValue: T | null | undefined
+      enumValues:
+        EventPhase:
+          ThemeSelection: 1
+          ThemeSlaughter: 2
+          ThemeVoting: 4
+          EventRunning: 5
+          GameVoting: 6
+          Results: 7

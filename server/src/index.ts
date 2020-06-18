@@ -2,6 +2,7 @@ import { ApolloServer, makeExecutableSchema } from 'apollo-server'
 import { Context } from './data-sources/context'
 import PostAPI from './data-sources/post-api'
 import UserAPI from './data-sources/user-api'
+import EventAPI from './data-sources/event-api'
 import { Resolvers } from './__generated__/schema-types'
 import { typeDefs } from './schema'
 import CommentAPI from './data-sources/comment-api'
@@ -19,6 +20,9 @@ const resolvers: Resolvers<Context> = {
     },
     searchPosts(_, args, context) {
       return context.dataSources.postApi.searchPosts(args)
+    },
+    featuredEvent(_, __, context) {
+      return context.dataSources.eventApi.getFeaturedEvent()
     },
   },
   Mutation: {
@@ -43,6 +47,9 @@ const resolvers: Resolvers<Context> = {
     editComment(_, { input }, context) {
       return context.dataSources.commentApi.editComment(input)
     },
+    joinEvent(_, __, context) {
+      return context.dataSources.eventApi.joinEvent()
+    },
   },
   Post: {
     author(post, __, context) {
@@ -58,6 +65,11 @@ const resolvers: Resolvers<Context> = {
   Comment: {
     author(comment, __, context) {
       return context.dataSources.userApi.getUser(comment.authorId)
+    },
+  },
+  Event: {
+    currentUserGameId(_, __, context) {
+      return context.dataSources.eventApi.getCurrentUserGameId()
     },
   },
   Me: {
@@ -108,6 +120,7 @@ new ApolloServer({
     postApi: new PostAPI(),
     commentApi: new CommentAPI(),
     userApi: new UserAPI(),
+    eventApi: new EventAPI(),
   }),
   engine: {
     apiKey: 'service:ldjam:S8IzjK8QYWQyOeLhjtuFvA',

@@ -1,11 +1,14 @@
 import React from 'react'
 
-import { gql, useMutation } from '@apollo/client'
-import * as Types from '__generated__/Types'
+import { gql } from '@apollo/client'
 import CommentForm from './CommentForm'
+import {
+  EditCommentForm_CommentFragment,
+  useEditCommentMutation,
+} from '__generated__/client-types'
 
 interface Props {
-  comment: Types.EditCommentForm_comment
+  comment: EditCommentForm_CommentFragment
   onClose: () => void
   className?: string
 }
@@ -16,10 +19,7 @@ export default function EditCommentForm({
 }: Props) {
   const [body, setBody] = React.useState(comment.body)
 
-  const [editComment] = useMutation<
-    Types.EditComment,
-    Types.EditCommentVariables
-  >(EDIT_COMMENT, {
+  const [editComment] = useEditCommentMutation({
     onCompleted() {
       onClose()
     },
@@ -58,7 +58,7 @@ EditCommentForm.fragments = {
   `,
 }
 
-const EDIT_COMMENT = gql`
+gql`
   mutation EditComment($input: EditCommentInput!) {
     editComment(input: $input) {
       ... on EditCommentSuccess {

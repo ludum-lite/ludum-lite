@@ -85,7 +85,7 @@ export default class PostAPI extends BaseAPI {
   }: QuerySearchPostsArgs) {
     if (postType === PostType.All || postType === PostType.News) {
       const postIdsResponse = await this.get(
-        `vx/node/feed/1/all/post${postType === 'news' ? '/news' : ''}`,
+        `vx/node/feed/1/all/post${postType === 'News' ? '/news' : ''}`,
         {
           offset: page * limit,
           limit,
