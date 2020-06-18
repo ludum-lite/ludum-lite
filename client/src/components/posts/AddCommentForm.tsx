@@ -76,9 +76,7 @@ gql`
       id
     }
   }
-`
 
-gql`
   mutation AddComment($input: AddCommentInput!) {
     addComment(input: $input) {
       ... on AddCommentSuccess {

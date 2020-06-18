@@ -12,6 +12,7 @@ import {
   CommentLoveButton_PostFragment,
   useLoveCommentMutation,
   useUnloveCommentMutation,
+  CommentLoveButton_CommentFragmentDoc,
 } from '__generated__/client-types'
 
 interface Props {
@@ -100,22 +101,17 @@ export default function CommentLoveButton({ comment, post }: Props) {
   )
 }
 
-CommentLoveButton.fragments = {
-  comment: gql`
-    fragment CommentLoveButton_comment on Comment {
-      id
-      numLove
-    }
-  `,
-  post: gql`
-    fragment CommentLoveButton_post on Post {
-      id
-      myCommentLove
-    }
-  `,
-}
-
 gql`
+  fragment CommentLoveButton_comment on Comment {
+    id
+    numLove
+  }
+
+  fragment CommentLoveButton_post on Post {
+    id
+    myCommentLove
+  }
+
   mutation LoveComment($input: IdInput!) {
     loveComment(input: $input) {
       ... on LoveCommentSuccess {
@@ -128,11 +124,7 @@ gql`
       }
     }
   }
-  ${CommentLoveButton.fragments.comment}
-  ${CommentLoveButton.fragments.post}
-`
 
-gql`
   mutation UnloveComment($input: IdInput!) {
     unloveComment(input: $input) {
       ... on UnloveCommentSuccess {
@@ -145,6 +137,4 @@ gql`
       }
     }
   }
-  ${CommentLoveButton.fragments.comment}
-  ${CommentLoveButton.fragments.post}
 `

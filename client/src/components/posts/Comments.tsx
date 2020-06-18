@@ -6,6 +6,8 @@ import { filter } from 'graphql-anywhere'
 import {
   Comments_CommentFragment,
   Comments_PostFragment,
+  Comment_PostFragmentDoc,
+  Comment_CommentFragmentDoc,
 } from '__generated__/client-types'
 
 const Root = styled.div`
@@ -29,25 +31,22 @@ export default function Comments({ comments, post }: Props) {
         <Comment
           key={comment.id}
           comment={comment}
-          post={filter(Comment.fragments.post, post)}
+          post={filter(Comment_PostFragmentDoc, post)}
         />
       ))}
     </Root>
   )
 }
 
-Comments.fragments = {
-  comment: gql`
-    fragment Comments_comment on Comment {
-      ...Comment_comment
-    }
+gql`
+  fragment Comments_comment on Comment {
+    ...Comment_comment
+  }
 
-    ${Comment.fragments.comment}
-  `,
-  post: gql`
-    fragment Comments_post on Post {
-      ...Comment_post
-    }
-    ${Comment.fragments.post}
-  `,
-}
+  fragment Comments_post on Post {
+    ...Comment_post
+  }
+
+  ${Comment_CommentFragmentDoc}
+  ${Comment_PostFragmentDoc}
+`

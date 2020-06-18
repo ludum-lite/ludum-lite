@@ -21,7 +21,13 @@ import { useActivePostId } from 'hooks/useActivePostId'
 import AddCommentForm from './AddCommentForm'
 import Comments from './Comments'
 import { sortBy } from 'lodash'
-import { useGetPostOverlayPageDataQuery } from '__generated__/client-types'
+import {
+  useGetPostOverlayPageDataQuery,
+  Comments_CommentFragmentDoc,
+  Comments_PostFragmentDoc,
+  PostLoveButton_MeFragmentDoc,
+  PostLoveButton_PostFragmentDoc,
+} from '__generated__/client-types'
 import useLocalStorage from 'hooks/useLocalStorage'
 
 enum CommentSortBy {
@@ -202,8 +208,8 @@ export default function PostPage() {
             </CommentsTitleContainer>
             {post && (
               <Comments
-                comments={filter(Comments.fragments.comment, sortedComments)}
-                post={filter(Comments.fragments.post, post)}
+                comments={filter(Comments_CommentFragmentDoc, sortedComments)}
+                post={filter(Comments_PostFragmentDoc, post)}
               />
             )}
           </CommentsContained>
@@ -220,8 +226,8 @@ export default function PostPage() {
         <ActionRow>
           {post && me && (
             <PostLoveButton
-              post={filter(PostLoveButton.fragments.post, post)}
-              me={filter(PostLoveButton.fragments.me, me)}
+              post={filter(PostLoveButton_PostFragmentDoc, post)}
+              me={filter(PostLoveButton_MeFragmentDoc, me)}
             />
           )}
           {post && <PostBookmarkButton postId={post.id} />}
@@ -258,8 +264,8 @@ gql`
       ...PostLoveButton_me
     }
   }
-  ${PostLoveButton.fragments.post}
-  ${PostLoveButton.fragments.me}
-  ${Comments.fragments.comment}
-  ${Comments.fragments.post}
+  ${PostLoveButton_PostFragmentDoc}
+  ${PostLoveButton_MeFragmentDoc}
+  ${Comments_CommentFragmentDoc}
+  ${Comments_PostFragmentDoc}
 `

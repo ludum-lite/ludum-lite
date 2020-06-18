@@ -40,11 +40,6 @@ const Content = styled.div`
   position: relative;
 `
 
-// const RightIcon = styled.div`
-//   margin-right: ${({ theme }) => theme.spacing(1)};
-//   font-size: 1.32rem;
-// `
-
 interface CollapseButtonContainerProps {
   show: boolean
 }
@@ -63,21 +58,6 @@ const CollapseButtonContainer = styled.div<CollapseButtonContainerProps>`
   transition: opacity 250ms;
   transition-delay: 100ms;
   pointer-events: ${({ show }) => (show ? undefined : 'none')};
-`
-
-const POST_DETAILS_FRAGMENT = gql`
-  fragment PostDetails_post on Post {
-    id
-    name
-    body
-    publishedDate
-    author {
-      id
-      profilePath
-      avatarPath
-      name
-    }
-  }
 `
 
 interface Props {
@@ -167,6 +147,17 @@ export default function PostDetails({ post, forceExpand }: Props) {
   )
 }
 
-PostDetails.fragments = {
-  post: POST_DETAILS_FRAGMENT,
-}
+gql`
+  fragment PostDetails_post on Post {
+    id
+    name
+    body
+    publishedDate
+    author {
+      id
+      profilePath
+      avatarPath
+      name
+    }
+  }
+`

@@ -12,6 +12,8 @@ import {
   useGetPostsPageDataQuery,
   PostType,
   usePostsPage_GetFavoritedIdsQuery,
+  Post_PostFragmentDoc,
+  Post_MeFragmentDoc,
 } from '__generated__/client-types'
 
 const Root = styled.div`
@@ -86,35 +88,6 @@ const NoItemsContainer = () => (
     </Typography>
   </NoItemsContainerRoot>
 )
-
-gql`
-  query PostsPage_GetFavoritedIds {
-    favoritedIds @client
-  }
-`
-
-gql`
-  query GetPostsPageData(
-    $filters: SearchPostsFiltersInput!
-    $limit: Int!
-    $page: Int!
-  ) {
-    isLoggedIn @client
-    searchPosts(filters: $filters, limit: $limit, page: $page) {
-      page
-      posts {
-        id
-        publishedDate
-        ...Post_post
-      }
-    }
-    me {
-      ...Post_me
-    }
-  }
-  ${Post.fragments.post}
-  ${Post.fragments.me}
-`
 
 export default function PostsPage() {
   const [searchParams, setSearchParams] = useSearchParams({
@@ -240,3 +213,30 @@ export default function PostsPage() {
     </Root>
   )
 }
+
+gql`
+  query PostsPage_GetFavoritedIds {
+    favoritedIds @client
+  }
+
+  query GetPostsPageData(
+    $filters: SearchPostsFiltersInput!
+    $limit: Int!
+    $page: Int!
+  ) {
+    isLoggedIn @client
+    searchPosts(filters: $filters, limit: $limit, page: $page) {
+      page
+      posts {
+        id
+        publishedDate
+        ...Post_post
+      }
+    }
+    me {
+      ...Post_me
+    }
+  }
+  ${Post_PostFragmentDoc}
+  ${Post_MeFragmentDoc}
+`

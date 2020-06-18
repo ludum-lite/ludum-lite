@@ -103,25 +103,20 @@ export default function PostLoveButton({ me, post }: Props) {
   )
 }
 
-PostLoveButton.fragments = {
-  post: gql`
-    fragment PostLoveButton_post on Post {
-      id
-      numLove
-    }
-  `,
-  me: gql`
-    fragment PostLoveButton_me on MeResponse {
-      ... on Me {
-        __typename
-        id
-        lovedPosts
-      }
-    }
-  `,
-}
-
 gql`
+  fragment PostLoveButton_post on Post {
+    id
+    numLove
+  }
+
+  fragment PostLoveButton_me on MeResponse {
+    ... on Me {
+      __typename
+      id
+      lovedPosts
+    }
+  }
+
   mutation LovePost($input: IdInput!) {
     lovePost(input: $input) {
       ... on LovePostSuccess {
@@ -134,11 +129,7 @@ gql`
       }
     }
   }
-  ${PostLoveButton.fragments.post}
-  ${PostLoveButton.fragments.me}
-`
 
-gql`
   mutation UnlovePost($input: IdInput!) {
     unlovePost(input: $input) {
       ... on UnlovePostSuccess {
@@ -151,6 +142,4 @@ gql`
       }
     }
   }
-  ${PostLoveButton.fragments.post}
-  ${PostLoveButton.fragments.me}
 `

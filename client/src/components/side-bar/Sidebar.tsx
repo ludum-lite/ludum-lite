@@ -148,22 +148,16 @@ export default function Sidebar({}: Props) {
   )
 }
 
-Sidebar.fragments = {
-  event: gql`
-    fragment Sidebar_event on Event {
-      id
-      currentUserGameId
-      eventPhase
-    }
-  `,
-}
-
 gql`
+  fragment Sidebar_event on Event {
+    id
+    currentUserGameId
+    eventPhase
+  }
+
   query SidebarData {
     featuredEvent {
       ...Sidebar_event
     }
-
-    ${Sidebar.fragments.event}
   }
 `

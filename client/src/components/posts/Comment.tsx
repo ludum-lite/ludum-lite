@@ -13,6 +13,9 @@ import EditCommentForm from './EditCommentForm'
 import {
   Comment_CommentFragment,
   Comment_PostFragment,
+  CommentLoveButton_CommentFragmentDoc,
+  EditCommentForm_CommentFragmentDoc,
+  CommentLoveButton_PostFragmentDoc,
 } from '__generated__/client-types'
 
 const Root = styled.div`
@@ -83,8 +86,8 @@ export default function Comment({ comment, post, className }: Props) {
             </Button>
           )}
           <CommentLoveButton
-            comment={filter(CommentLoveButton.fragments.comment, comment)}
-            post={filter(CommentLoveButton.fragments.post, post)}
+            comment={filter(CommentLoveButton_CommentFragmentDoc, comment)}
+            post={filter(CommentLoveButton_PostFragmentDoc, post)}
           />
         </ActionRow>
       </Root>
@@ -93,7 +96,7 @@ export default function Comment({ comment, post, className }: Props) {
     return (
       <EditCommentForm
         className={className}
-        comment={filter(EditCommentForm.fragments.comment, comment)}
+        comment={filter(EditCommentForm_CommentFragmentDoc, comment)}
         onClose={() => {
           setIsEditing(false)
         }}
@@ -102,30 +105,28 @@ export default function Comment({ comment, post, className }: Props) {
   }
 }
 
-Comment.fragments = {
-  comment: gql`
-    fragment Comment_comment on Comment {
+gql`
+  fragment Comment_comment on Comment {
+    id
+    body
+    numLove
+    createdDate
+    author {
       id
-      body
-      numLove
-      createdDate
-      author {
-        id
-        avatarPath
-        profilePath
-        name
-      }
-      ...CommentLoveButton_comment
-      ...EditCommentForm_comment
+      avatarPath
+      profilePath
+      name
     }
-    ${CommentLoveButton.fragments.comment}
-    ${EditCommentForm.fragments.comment}
-  `,
-  post: gql`
-    fragment Comment_post on Post {
-      authorId
-      ...CommentLoveButton_post
-    }
-    ${CommentLoveButton.fragments.post}
-  `,
-}
+    ...CommentLoveButton_comment
+    ...EditCommentForm_comment
+  }
+
+  fragment Comment_post on Post {
+    authorId
+    ...CommentLoveButton_post
+  }
+
+  ${CommentLoveButton_CommentFragmentDoc}
+  ${CommentLoveButton_PostFragmentDoc}
+  ${EditCommentForm_CommentFragmentDoc}
+`

@@ -14,7 +14,14 @@ import PostBookmarkButton from './post-buttons/PostBookmarkButton'
 import PostCommentButton from './post-buttons/PostCommentButton'
 import { useActivePostId } from 'hooks/useActivePostId'
 import { ignoreProps } from 'utils'
-import { Post_PostFragment, Post_MeFragment } from '__generated__/client-types'
+import {
+  Post_PostFragment,
+  Post_MeFragment,
+  PostDetails_PostFragmentDoc,
+  PostLoveButton_MeFragmentDoc,
+  PostLoveButton_PostFragmentDoc,
+  PostCommentButton_PostFragmentDoc,
+} from '__generated__/client-types'
 
 const activeBoxShadowKeyFrames = (color: string) => keyframes`
   0% {
@@ -122,15 +129,15 @@ export default function Post({ post, me }: Props) {
       clickable
       active={activePostId === post.id}
     >
-      <PostDetails post={filter(PostDetails.fragments.post, post)} />
+      <PostDetails post={filter(PostDetails_PostFragmentDoc, post)} />
       <ActionRow>
         <StyledButtonGroup>
           <PostLoveButton
-            post={filter(PostLoveButton.fragments.post, post)}
-            me={filter(PostLoveButton.fragments.me, me)}
+            post={filter(PostLoveButton_PostFragmentDoc, post)}
+            me={filter(PostLoveButton_MeFragmentDoc, me)}
           />
           <PostCommentButton
-            post={filter(PostCommentButton.fragments.post, post)}
+            post={filter(PostCommentButton_PostFragmentDoc, post)}
           />
           <Separator />
           <PostBookmarkButton postId={post.id} />
@@ -140,33 +147,31 @@ export default function Post({ post, me }: Props) {
   )
 }
 
-Post.fragments = {
-  post: gql`
-    fragment Post_post on Post {
+gql`
+  fragment Post_post on Post {
+    id
+    numLove
+    numNotes
+    name
+    body
+    publishedDate
+    author {
       id
-      numLove
-      numNotes
+      profilePath
+      avatarPath
       name
-      body
-      publishedDate
-      author {
-        id
-        profilePath
-        avatarPath
-        name
-      }
-      ...PostDetails_post
-      ...PostLoveButton_post
-      ...PostCommentButton_post
     }
-    ${PostDetails.fragments.post}
-    ${PostLoveButton.fragments.post}
-    ${PostCommentButton.fragments.post}
-  `,
-  me: gql`
-    fragment Post_me on MeResponse {
-      ...PostLoveButton_me
-    }
-    ${PostLoveButton.fragments.me}
-  `,
-}
+    ...PostDetails_post
+    ...PostLoveButton_post
+    ...PostCommentButton_post
+  }
+
+  fragment Post_me on MeResponse {
+    ...PostLoveButton_me
+  }
+
+  ${PostDetails_PostFragmentDoc}
+  ${PostLoveButton_MeFragmentDoc}
+  ${PostLoveButton_PostFragmentDoc}
+  ${PostCommentButton_PostFragmentDoc}
+`

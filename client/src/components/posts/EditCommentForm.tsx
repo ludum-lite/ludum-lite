@@ -48,17 +48,13 @@ export default function EditCommentForm({
   )
 }
 
-EditCommentForm.fragments = {
-  comment: gql`
-    fragment EditCommentForm_comment on Comment {
-      id
-      postId
-      body
-    }
-  `,
-}
-
 gql`
+  fragment EditCommentForm_comment on Comment {
+    id
+    postId
+    body
+  }
+
   mutation EditComment($input: EditCommentInput!) {
     editComment(input: $input) {
       ... on EditCommentSuccess {

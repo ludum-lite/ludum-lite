@@ -25,11 +25,9 @@ export default function PostCommentButon({ post }: Props) {
   )
 }
 
-PostCommentButon.fragments = {
-  post: gql`
-    fragment PostCommentButton_post on Post {
-      id
-      numNotes
-    }
-  `,
-}
+gql`
+  fragment PostCommentButton_post on Post {
+    id
+    numNotes
+  }
+`
