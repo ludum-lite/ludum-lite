@@ -97,6 +97,14 @@ const resolvers: Resolvers<Context> = {
       return context.dataSources.postApi.getPost(response.comment.postId)
     },
   },
+  EventPhase: {
+    ThemeSelection: 1,
+    ThemeSlaughter: 2,
+    ThemeVoting: 4,
+    EventRunning: 5,
+    GameVoting: 6,
+    Results: 7,
+  },
 }
 
 const schema = makeExecutableSchema({

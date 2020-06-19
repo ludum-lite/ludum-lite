@@ -24,11 +24,3 @@ generates:
       reactApolloVersion: 3
       nonOptionalTypename: true
       maybeValue: T | null | undefined
-      enumValues:
-        EventPhase:
-          ThemeSelection: 1
-          ThemeSlaughter: 2
-          ThemeVoting: 4
-          EventRunning: 5
-          GameVoting: 6
-          Results: 7

@@ -283,12 +283,12 @@ export type Event = {
 }
 
 export enum EventPhase {
-  ThemeSelection = 1,
-  ThemeSlaughter = 2,
-  ThemeVoting = 4,
-  EventRunning = 5,
-  GameVoting = 6,
-  Results = 7,
+  ThemeSelection = 'ThemeSelection',
+  ThemeSlaughter = 'ThemeSlaughter',
+  ThemeVoting = 'ThemeVoting',
+  EventRunning = 'EventRunning',
+  GameVoting = 'GameVoting',
+  Results = 'Results',
 }
 
 export type FeaturedEventResponse = Event | UnauthorizedResponse
@@ -579,6 +579,19 @@ export type SidebarDataQuery = { __typename: 'Query' } & {
     | { __typename: 'UnauthorizedResponse' }
 }
 
+export type Topbar_EventFragment = { __typename: 'Event' } & Pick<
+  Event,
+  'id' | 'currentUserGameId' | 'eventPhase'
+>
+
+export type TopbarDataQueryVariables = Exact<{ [key: string]: never }>
+
+export type TopbarDataQuery = { __typename: 'Query' } & {
+  featuredEvent:
+    | ({ __typename: 'Event' } & Topbar_EventFragment)
+    | { __typename: 'UnauthorizedResponse' }
+}
+
 export type GlobalIsLoggedInQueryVariables = Exact<{ [key: string]: never }>
 
 export type GlobalIsLoggedInQuery = { __typename: 'Query' } & Pick<
@@ -733,6 +746,13 @@ export const Post_MeFragmentDoc = gql`
 `
 export const Sidebar_EventFragmentDoc = gql`
   fragment Sidebar_event on Event {
+    id
+    currentUserGameId
+    eventPhase
+  }
+`
+export const Topbar_EventFragmentDoc = gql`
+  fragment Topbar_event on Event {
     id
     currentUserGameId
     eventPhase
@@ -1392,6 +1412,60 @@ export type SidebarDataLazyQueryHookResult = ReturnType<
 export type SidebarDataQueryResult = ApolloReactCommon.QueryResult<
   SidebarDataQuery,
   SidebarDataQueryVariables
+>
+export const TopbarDataDocument = gql`
+  query TopbarData {
+    featuredEvent {
+      ...Topbar_event
+    }
+  }
+  ${Topbar_EventFragmentDoc}
+`
+
+/**
+ * __useTopbarDataQuery__
+ *
+ * To run a query within a React component, call `useTopbarDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTopbarDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTopbarDataQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useTopbarDataQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    TopbarDataQuery,
+    TopbarDataQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<TopbarDataQuery, TopbarDataQueryVariables>(
+    TopbarDataDocument,
+    baseOptions
+  )
+}
+export function useTopbarDataLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    TopbarDataQuery,
+    TopbarDataQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    TopbarDataQuery,
+    TopbarDataQueryVariables
+  >(TopbarDataDocument, baseOptions)
+}
+export type TopbarDataQueryHookResult = ReturnType<typeof useTopbarDataQuery>
+export type TopbarDataLazyQueryHookResult = ReturnType<
+  typeof useTopbarDataLazyQuery
+>
+export type TopbarDataQueryResult = ApolloReactCommon.QueryResult<
+  TopbarDataQuery,
+  TopbarDataQueryVariables
 >
 export const GlobalIsLoggedInDocument = gql`
   query GlobalIsLoggedIn {

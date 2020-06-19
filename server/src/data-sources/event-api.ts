@@ -17,7 +17,7 @@ export type ApiEventDto = {
   slug: string
   created: string
   meta: {
-    'theme-mode': EventPhase
+    'theme-mode': string
   }
 }
 
@@ -28,7 +28,7 @@ function apiEventToEvent(event: ApiEventDto): Event {
     body: event.body,
     slug: event.slug,
     createdDate: event.created,
-    eventPhase: event.meta['theme-mode'],
+    eventPhase: parseInt(event.meta['theme-mode']) as EventPhase,
   }
 }
 
@@ -56,7 +56,11 @@ export default class CommentAPI extends BaseAPI {
       const eventResponse = await this.get(`vx/node2/get/${eventId}`)
       const event = apiEventToEvent(eventResponse.node[0])
 
-      return event
+      console.log('got event', event)
+      return {
+        __typename: 'Event',
+        ...event,
+      }
     } catch (e) {
       console.error(e)
       return unauthorizedResponse

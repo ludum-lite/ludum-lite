@@ -13,8 +13,6 @@ import { ReactComponent as DareLogo } from 'assets/dare.svg'
 import { useSidebarDataQuery, EventPhase } from '__generated__/client-types'
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import GlobalNav from './GlobalNav'
-import CountdownWidget from './CountdownWidget'
-import { events } from 'utils'
 
 const Root = styled.div`
   display: flex;
@@ -74,16 +72,6 @@ const StyledDareLogo = styled(DareLogo)`
   height: 35px;
   margin-top: 10px;
 `
-
-const Separator = styled.div`
-  flex: 1 1 0px;
-`
-
-const StyledCountdownWidget = styled(CountdownWidget)`
-  max-height: 500px;
-  margin-bottom: ${({ theme }) => theme.spacing(2)}px;
-`
-
 const paths = [
   {
     url: 'posts',
@@ -104,12 +92,21 @@ export default function Sidebar({}: Props) {
   const { basePath } = useParams()
   const { data } = useSidebarDataQuery()
 
+  console.log(data)
+
   const JoinButton = React.useMemo(() => {
     if (data?.featuredEvent?.__typename === 'Event') {
       const featuredEvent = data.featuredEvent
 
+      const joinableEventPhases = [
+        EventPhase.ThemeSelection,
+        EventPhase.ThemeSlaughter,
+        EventPhase.ThemeVoting,
+        EventPhase.EventRunning,
+      ]
+
       return (
-        featuredEvent.eventPhase === EventPhase.EventRunning &&
+        joinableEventPhases.includes(featuredEvent.eventPhase) &&
         !featuredEvent.currentUserGameId && (
           <JoinEventListItem button>
             <ListItemText primary="Join Event!" />
@@ -141,8 +138,6 @@ export default function Sidebar({}: Props) {
           ))}
           {JoinButton}
         </List>
-        <Separator />
-        <StyledCountdownWidget events={events} />
       </ContextualNav>
     </Root>
   )

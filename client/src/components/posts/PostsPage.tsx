@@ -28,7 +28,6 @@ const Root = styled.div`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 600px;
 `
 
 const Posts = styled.div`

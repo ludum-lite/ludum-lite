@@ -52,7 +52,7 @@ const Subtitle = styled(Typography)`
 `
 
 const ExpandButton = styled(Button)`
-  margin-top: 8px;
+  margin-top: ${({ theme }) => theme.spacing(2)}px;
 `
 
 const EventList = styled(List)`
