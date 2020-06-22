@@ -33,7 +33,6 @@ interface Props {
 }
 
 export const Card: React.FC<Props & CardProps> = ({
-  classes: _classes = {},
   border,
   clickable,
   ...other

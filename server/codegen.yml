@@ -8,6 +8,8 @@ generates:
       - 'typescript-resolvers'
     config:
       useIndexSignature: true
+      nonOptionalTypename: true
+      maybeValue: T | null | undefined
       enumValues:
         EventPhase:
           ThemeSelection: 1

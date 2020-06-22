@@ -11,6 +11,8 @@ import { useHasNavigatedWithin } from 'hooks/useHasNavigatedWithin'
 import { useMe } from 'hooks/useMe'
 import CountdownWidget from './sidebar/CountdownWidget'
 import { events } from 'utils'
+import TeamWidget from './team-widget/TeamWidget'
+import GameWidget from './game-widget/GameWidget'
 
 interface AppProps {
   showingOverlay: boolean
@@ -39,22 +41,42 @@ const AppContent = styled.div`
 const WidgetsContainer = styled.div`
   display: flex;
   position: relative;
+  min-width: 300px;
+  width: 300px;
 `
 
 const Widgets = styled.div`
   position: fixed;
   display: flex;
   flex-direction: column;
-  width: 300px;
+  width: inherit;
+
+  & > * {
+    border-radius: ${({ theme }) => theme.shape.borderRadius}px;
+
+    &:first-child {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+
+    &:not(:first-child) {
+      margin-top: ${({ theme }) => theme.spacing(2)}px;
+    }
+  }
 `
 
 const StyledCountdownWidget = styled(CountdownWidget)`
   max-height: 600px;
-  background: ${({ theme }) => theme.themeColors.contextualNavBackground};
-  padding: ${({ theme }) => `${theme.spacing(2)}px ${theme.spacing(2)}px`};
-  border-radius: ${({ theme }) =>
-    `0 0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px`};
 `
+
+// const NotificationBar = styled.div`
+//   background: ${({ theme }) => theme.themeColors.globalNavBackground};
+//   display: flex;
+//   align-items: center;
+//   padding: 0 ${({ theme }) => theme.spacing(2)}px;
+//   height: ${({ theme }) => theme.spacing(8)}px;
+//   color: white;
+// `
 
 interface Props {}
 export default function Root({}: Props) {
@@ -70,6 +92,9 @@ export default function Root({}: Props) {
           <Route path="/:basePath*" element={<Sidebar />} />
         </Routes>
         <AppContent>
+          {/* <NotificationBar>
+            <Typography variant="h6">Theme Suggestions are open!</Typography>
+          </NotificationBar> */}
           <RoutesWithFallback>
             <Route path="/posts" element={<PostsPage />} />
             {postOverlayed ? (
@@ -90,6 +115,8 @@ export default function Root({}: Props) {
         <WidgetsContainer>
           <Widgets>
             <StyledCountdownWidget events={events} />
+            <GameWidget />
+            <TeamWidget />
           </Widgets>
         </WidgetsContainer>
         {loginComponent}

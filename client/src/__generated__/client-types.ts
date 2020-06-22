@@ -15,7 +15,7 @@ export type Scalars = {
 export type Query = {
   __typename: 'Query'
   favoritedIds: Array<Scalars['Int']>
-  featuredEvent: FeaturedEventResponse
+  featuredEvent: Event
   isLoggedIn: Scalars['Boolean']
   me: MeResponse
   post: Post
@@ -291,8 +291,6 @@ export enum EventPhase {
   Results = 'Results',
 }
 
-export type FeaturedEventResponse = Event | UnauthorizedResponse
-
 export type JoinEventSuccess = MutationResponse & {
   __typename: 'JoinEventSuccess'
   success: Scalars['Boolean']
@@ -301,6 +299,29 @@ export type JoinEventSuccess = MutationResponse & {
 }
 
 export type JoinEventResponse = JoinEventSuccess | UnauthorizedResponse
+
+export type GameWidget_EventFragment = { __typename: 'Event' } & Pick<
+  Event,
+  'id' | 'currentUserGameId' | 'eventPhase'
+>
+
+export type GameWidgetDataQueryVariables = Exact<{ [key: string]: never }>
+
+export type GameWidgetDataQuery = { __typename: 'Query' } & {
+  featuredEvent: { __typename: 'Event' } & GameWidget_EventFragment
+}
+
+export type JoinEventMutationVariables = Exact<{ [key: string]: never }>
+
+export type JoinEventMutation = { __typename: 'Mutation' } & {
+  joinEvent:
+    | ({ __typename: 'JoinEventSuccess' } & Pick<JoinEventSuccess, 'gameId'> & {
+          featuredEvent?: Maybe<
+            { __typename: 'Event' } & Pick<Event, 'id' | 'currentUserGameId'>
+          >
+        })
+    | { __typename: 'UnauthorizedResponse' }
+}
 
 export type AddCommentForm_PostFragment = { __typename: 'Post' } & Pick<
   Post,
@@ -566,30 +587,15 @@ export type UnlovePostMutation = { __typename: 'Mutation' } & {
     | { __typename: 'UnauthorizedResponse' }
 }
 
-export type Sidebar_EventFragment = { __typename: 'Event' } & Pick<
+export type TeamWidget_EventFragment = { __typename: 'Event' } & Pick<
   Event,
   'id' | 'currentUserGameId' | 'eventPhase'
 >
 
-export type SidebarDataQueryVariables = Exact<{ [key: string]: never }>
+export type TeamWidgetDataQueryVariables = Exact<{ [key: string]: never }>
 
-export type SidebarDataQuery = { __typename: 'Query' } & {
-  featuredEvent:
-    | ({ __typename: 'Event' } & Sidebar_EventFragment)
-    | { __typename: 'UnauthorizedResponse' }
-}
-
-export type Topbar_EventFragment = { __typename: 'Event' } & Pick<
-  Event,
-  'id' | 'currentUserGameId' | 'eventPhase'
->
-
-export type TopbarDataQueryVariables = Exact<{ [key: string]: never }>
-
-export type TopbarDataQuery = { __typename: 'Query' } & {
-  featuredEvent:
-    | ({ __typename: 'Event' } & Topbar_EventFragment)
-    | { __typename: 'UnauthorizedResponse' }
+export type TeamWidgetDataQuery = { __typename: 'Query' } & {
+  featuredEvent: { __typename: 'Event' } & GameWidget_EventFragment
 }
 
 export type GlobalIsLoggedInQueryVariables = Exact<{ [key: string]: never }>
@@ -617,6 +623,13 @@ export type GetMeDataQuery = { __typename: 'Query' } & {
     | { __typename: 'UnauthorizedResponse' }
 }
 
+export const GameWidget_EventFragmentDoc = gql`
+  fragment GameWidget_event on Event {
+    id
+    currentUserGameId
+    eventPhase
+  }
+`
 export const AddCommentForm_PostFragmentDoc = gql`
   fragment AddCommentForm_post on Post {
     id
@@ -744,20 +757,124 @@ export const Post_MeFragmentDoc = gql`
   }
   ${PostLoveButton_MeFragmentDoc}
 `
-export const Sidebar_EventFragmentDoc = gql`
-  fragment Sidebar_event on Event {
+export const TeamWidget_EventFragmentDoc = gql`
+  fragment TeamWidget_event on Event {
     id
     currentUserGameId
     eventPhase
   }
 `
-export const Topbar_EventFragmentDoc = gql`
-  fragment Topbar_event on Event {
-    id
-    currentUserGameId
-    eventPhase
+export const GameWidgetDataDocument = gql`
+  query GameWidgetData {
+    featuredEvent {
+      ...GameWidget_event
+    }
+  }
+  ${GameWidget_EventFragmentDoc}
+`
+
+/**
+ * __useGameWidgetDataQuery__
+ *
+ * To run a query within a React component, call `useGameWidgetDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGameWidgetDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGameWidgetDataQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGameWidgetDataQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GameWidgetDataQuery,
+    GameWidgetDataQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<
+    GameWidgetDataQuery,
+    GameWidgetDataQueryVariables
+  >(GameWidgetDataDocument, baseOptions)
+}
+export function useGameWidgetDataLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GameWidgetDataQuery,
+    GameWidgetDataQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    GameWidgetDataQuery,
+    GameWidgetDataQueryVariables
+  >(GameWidgetDataDocument, baseOptions)
+}
+export type GameWidgetDataQueryHookResult = ReturnType<
+  typeof useGameWidgetDataQuery
+>
+export type GameWidgetDataLazyQueryHookResult = ReturnType<
+  typeof useGameWidgetDataLazyQuery
+>
+export type GameWidgetDataQueryResult = ApolloReactCommon.QueryResult<
+  GameWidgetDataQuery,
+  GameWidgetDataQueryVariables
+>
+export const JoinEventDocument = gql`
+  mutation JoinEvent {
+    joinEvent {
+      ... on JoinEventSuccess {
+        gameId
+        featuredEvent {
+          id
+          currentUserGameId
+        }
+      }
+    }
   }
 `
+export type JoinEventMutationFn = ApolloReactCommon.MutationFunction<
+  JoinEventMutation,
+  JoinEventMutationVariables
+>
+
+/**
+ * __useJoinEventMutation__
+ *
+ * To run a mutation, you first call `useJoinEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useJoinEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [joinEventMutation, { data, loading, error }] = useJoinEventMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useJoinEventMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    JoinEventMutation,
+    JoinEventMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    JoinEventMutation,
+    JoinEventMutationVariables
+  >(JoinEventDocument, baseOptions)
+}
+export type JoinEventMutationHookResult = ReturnType<
+  typeof useJoinEventMutation
+>
+export type JoinEventMutationResult = ApolloReactCommon.MutationResult<
+  JoinEventMutation
+>
+export type JoinEventMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  JoinEventMutation,
+  JoinEventMutationVariables
+>
 export const AddCommentDocument = gql`
   mutation AddComment($input: AddCommentInput!) {
     addComment(input: $input) {
@@ -1359,113 +1476,61 @@ export type UnlovePostMutationOptions = ApolloReactCommon.BaseMutationOptions<
   UnlovePostMutation,
   UnlovePostMutationVariables
 >
-export const SidebarDataDocument = gql`
-  query SidebarData {
+export const TeamWidgetDataDocument = gql`
+  query TeamWidgetData {
     featuredEvent {
-      ...Sidebar_event
+      ...GameWidget_event
     }
   }
-  ${Sidebar_EventFragmentDoc}
+  ${GameWidget_EventFragmentDoc}
 `
 
 /**
- * __useSidebarDataQuery__
+ * __useTeamWidgetDataQuery__
  *
- * To run a query within a React component, call `useSidebarDataQuery` and pass it any options that fit your needs.
- * When your component renders, `useSidebarDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useTeamWidgetDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTeamWidgetDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSidebarDataQuery({
+ * const { data, loading, error } = useTeamWidgetDataQuery({
  *   variables: {
  *   },
  * });
  */
-export function useSidebarDataQuery(
+export function useTeamWidgetDataQuery(
   baseOptions?: ApolloReactHooks.QueryHookOptions<
-    SidebarDataQuery,
-    SidebarDataQueryVariables
+    TeamWidgetDataQuery,
+    TeamWidgetDataQueryVariables
   >
 ) {
-  return ApolloReactHooks.useQuery<SidebarDataQuery, SidebarDataQueryVariables>(
-    SidebarDataDocument,
-    baseOptions
-  )
+  return ApolloReactHooks.useQuery<
+    TeamWidgetDataQuery,
+    TeamWidgetDataQueryVariables
+  >(TeamWidgetDataDocument, baseOptions)
 }
-export function useSidebarDataLazyQuery(
+export function useTeamWidgetDataLazyQuery(
   baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    SidebarDataQuery,
-    SidebarDataQueryVariables
+    TeamWidgetDataQuery,
+    TeamWidgetDataQueryVariables
   >
 ) {
   return ApolloReactHooks.useLazyQuery<
-    SidebarDataQuery,
-    SidebarDataQueryVariables
-  >(SidebarDataDocument, baseOptions)
+    TeamWidgetDataQuery,
+    TeamWidgetDataQueryVariables
+  >(TeamWidgetDataDocument, baseOptions)
 }
-export type SidebarDataQueryHookResult = ReturnType<typeof useSidebarDataQuery>
-export type SidebarDataLazyQueryHookResult = ReturnType<
-  typeof useSidebarDataLazyQuery
+export type TeamWidgetDataQueryHookResult = ReturnType<
+  typeof useTeamWidgetDataQuery
 >
-export type SidebarDataQueryResult = ApolloReactCommon.QueryResult<
-  SidebarDataQuery,
-  SidebarDataQueryVariables
+export type TeamWidgetDataLazyQueryHookResult = ReturnType<
+  typeof useTeamWidgetDataLazyQuery
 >
-export const TopbarDataDocument = gql`
-  query TopbarData {
-    featuredEvent {
-      ...Topbar_event
-    }
-  }
-  ${Topbar_EventFragmentDoc}
-`
-
-/**
- * __useTopbarDataQuery__
- *
- * To run a query within a React component, call `useTopbarDataQuery` and pass it any options that fit your needs.
- * When your component renders, `useTopbarDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useTopbarDataQuery({
- *   variables: {
- *   },
- * });
- */
-export function useTopbarDataQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    TopbarDataQuery,
-    TopbarDataQueryVariables
-  >
-) {
-  return ApolloReactHooks.useQuery<TopbarDataQuery, TopbarDataQueryVariables>(
-    TopbarDataDocument,
-    baseOptions
-  )
-}
-export function useTopbarDataLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    TopbarDataQuery,
-    TopbarDataQueryVariables
-  >
-) {
-  return ApolloReactHooks.useLazyQuery<
-    TopbarDataQuery,
-    TopbarDataQueryVariables
-  >(TopbarDataDocument, baseOptions)
-}
-export type TopbarDataQueryHookResult = ReturnType<typeof useTopbarDataQuery>
-export type TopbarDataLazyQueryHookResult = ReturnType<
-  typeof useTopbarDataLazyQuery
->
-export type TopbarDataQueryResult = ApolloReactCommon.QueryResult<
-  TopbarDataQuery,
-  TopbarDataQueryVariables
+export type TeamWidgetDataQueryResult = ApolloReactCommon.QueryResult<
+  TeamWidgetDataQuery,
+  TeamWidgetDataQueryVariables
 >
 export const GlobalIsLoggedInDocument = gql`
   query GlobalIsLoggedIn {
@@ -1778,18 +1843,6 @@ const result: IntrospectionResultData = {
         possibleTypes: [
           {
             name: 'EditCommentSuccess',
-          },
-          {
-            name: 'UnauthorizedResponse',
-          },
-        ],
-      },
-      {
-        kind: 'UNION',
-        name: 'FeaturedEventResponse',
-        possibleTypes: [
-          {
-            name: 'Event',
           },
           {
             name: 'UnauthorizedResponse',

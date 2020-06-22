@@ -10,7 +10,7 @@ export const typeDefs = gql`
       page: Int!
     ): SearchPostResponse!
     user(input: IdInput!): User!
-    featuredEvent: FeaturedEventResponse!
+    featuredEvent: Event!
   }
 
   type Mutation {
@@ -250,8 +250,6 @@ export const typeDefs = gql`
     GameVoting
     Results
   }
-
-  union FeaturedEventResponse = Event | UnauthorizedResponse
 
   type JoinEventSuccess implements MutationResponse {
     success: Boolean!

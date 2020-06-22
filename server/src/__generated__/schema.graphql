@@ -3,7 +3,7 @@ type Query {
   post(input: IdInput!): Post!
   searchPosts(filters: SearchPostsFiltersInput!, limit: Int!, page: Int!): SearchPostResponse!
   user(input: IdInput!): User!
-  featuredEvent: FeaturedEventResponse!
+  featuredEvent: Event!
 }
 
 type Mutation {
@@ -215,8 +215,6 @@ enum EventPhase {
   GameVoting
   Results
 }
-
-union FeaturedEventResponse = Event | UnauthorizedResponse
 
 type JoinEventSuccess implements MutationResponse {
   success: Boolean!

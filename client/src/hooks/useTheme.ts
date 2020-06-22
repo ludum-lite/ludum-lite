@@ -25,6 +25,8 @@ export type ThemeColors = {
   loaderBarBackground: string
   logoBackground: string
   borderColor: string
+  fadedWhite: string
+  fadedBlack: string
   markdown: {
     codeBackground: string
   }
@@ -41,6 +43,10 @@ export type ThemeColors = {
       page: ButtonThemeColors
       white: ButtonThemeColors
     }
+  }
+  dialog: {
+    titleBackground: string
+    titleColor: string
   }
   postsPage: {
     toggleButtons: {
@@ -111,6 +117,8 @@ const buttonLightBackgroundHoverColor = 'rgba(255,255,255,0.2)'
 const buttonContainedColor = 'rgba(0, 0, 0, 0.87)'
 const cardBoxShadow = '0 0 6px 0px rgba(0,0,0,0.04)'
 const inputBackground = 'rgba(75, 80, 97, 0.17)'
+const fadedWhite = 'rgba(255,255,255,0.9)'
+const fadedBlack = 'rgba(0, 0, 0, 0.38)'
 
 // https://coolors.co/13293d-006494-058ed9-3fa6de-6ab8e2-004567-eaebed-f9f9ff-fdffff
 const styleVariables = {
@@ -136,6 +144,8 @@ const lightTheme: ThemeColors = {
   loaderBackground: 'rgba(0, 0, 0, 0.166)',
   loaderBarBackground: 'rgba(0, 0, 0, 0.166)',
   logoBackground: styleVariables.indigoDye,
+  fadedWhite,
+  fadedBlack,
   borderColor,
   markdown: {
     codeBackground: 'rgba(64, 75, 86, 0.15)',
@@ -175,6 +185,10 @@ const lightTheme: ThemeColors = {
       page: {},
       white: {},
     },
+  },
+  dialog: {
+    titleBackground: styleVariables.greenBlue,
+    titleColor: 'white',
   },
   postsPage: {
     toggleButtons: {
@@ -258,6 +272,8 @@ const darkTheme: ThemeColors = {
   loaderBackground: ldStyleVariables.portlandOrange,
   loaderBarBackground: ldStyleVariables.darkOrange,
   logoBackground: '',
+  fadedWhite,
+  fadedBlack,
   borderColor,
   markdown: {
     codeBackground: 'rgba(64, 75, 86, 0.11)',
@@ -313,6 +329,10 @@ const darkTheme: ThemeColors = {
         },
       },
     },
+  },
+  dialog: {
+    titleBackground: ldStyleVariables.darkOrange,
+    titleColor: 'white',
   },
   postsPage: {
     toggleButtons: {
@@ -458,6 +478,17 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
           textTransform: 'none',
         },
       },
+      MuiDialogTitle: {
+        root: {
+          background: selectedThemeColors.dialog.titleBackground,
+          color: selectedThemeColors.dialog.titleColor,
+        },
+      },
+      MuiDialogContent: {
+        root: {
+          paddingTop: 16,
+        },
+      },
       MuiIconButton: {
         root: {
           transition: 'none',
@@ -488,7 +519,7 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       MuiInputBase: {
         input: {
           '&::placeholder': {
-            color: 'rgba(0, 0, 0, 0.38)',
+            color: fadedBlack,
             opacity: 1,
           },
         },
@@ -499,10 +530,7 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
           overflow: 'hidden',
           borderRadius: 4,
           backgroundColor: '#fcfcfb',
-          transition: defaultTheme.transitions.create([
-            'border-color',
-            'box-shadow',
-          ]),
+          transition: 'none',
           '&:hover': {
             backgroundColor: '#fff',
           },

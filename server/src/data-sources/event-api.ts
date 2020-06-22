@@ -5,7 +5,6 @@ import BaseAPI from './base-api'
 import {
   Event,
   JoinEventResponse,
-  FeaturedEventResponse,
   EventPhase,
 } from '../__generated__/schema-types'
 import { unauthorizedResponse } from './const'
@@ -23,6 +22,7 @@ export type ApiEventDto = {
 
 function apiEventToEvent(event: ApiEventDto): Event {
   return {
+    __typename: 'Event',
     id: event.id,
     name: event.name,
     body: event.body,
@@ -49,22 +49,13 @@ export default class CommentAPI extends BaseAPI {
   //   }
   // }
 
-  async getFeaturedEvent(): Promise<FeaturedEventResponse> {
-    try {
-      const rootNodeResponse = await this.get(`vx/node2/get/1`)
-      const eventId = parseInt(rootNodeResponse.node[0].meta.featured)
-      const eventResponse = await this.get(`vx/node2/get/${eventId}`)
-      const event = apiEventToEvent(eventResponse.node[0])
+  async getFeaturedEvent(): Promise<Event> {
+    const rootNodeResponse = await this.get(`vx/node2/get/1`)
+    const eventId = parseInt(rootNodeResponse.node[0].meta.featured)
+    const eventResponse = await this.get(`vx/node2/get/${eventId}`)
+    const event = apiEventToEvent(eventResponse.node[0])
 
-      console.log('got event', event)
-      return {
-        __typename: 'Event',
-        ...event,
-      }
-    } catch (e) {
-      console.error(e)
-      return unauthorizedResponse
-    }
+    return event
   }
 
   async joinEvent(): Promise<JoinEventResponse> {
@@ -88,19 +79,19 @@ export default class CommentAPI extends BaseAPI {
       }
     }
 
+    console.log(event)
     return unauthorizedResponse
   }
 
-  async getCurrentUserGameId(): Promise<number> {
+  async getCurrentUserGameId(): Promise<Event['currentUserGameId']> {
     const event = await this.getFeaturedEvent()
 
     if (event.__typename === 'Event') {
       const response = await this.get(`vx/node/what/${event.id}`)
 
-      return response.what[0]
+      return response.what[0] || null
     }
 
-    console.error('Unauthorized')
-    return -1
+    return null
   }
 }

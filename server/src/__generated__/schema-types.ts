@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
-export type Maybe<T> = T | null;
+export type Maybe<T> = T | null | undefined;
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
@@ -12,12 +12,12 @@ export type Scalars = {
 };
 
 export type Query = {
-   __typename?: 'Query';
+   __typename: 'Query';
   me: MeResponse;
   post: Post;
   searchPosts: SearchPostResponse;
   user: User;
-  featuredEvent: FeaturedEventResponse;
+  featuredEvent: Event;
 };
 
 
@@ -38,7 +38,7 @@ export type QueryUserArgs = {
 };
 
 export type Mutation = {
-   __typename?: 'Mutation';
+   __typename: 'Mutation';
   login: LoginResponse;
   lovePost: LovePostResponse;
   unlovePost: UnlovePostResponse;
@@ -89,7 +89,7 @@ export type MutationResponse = {
 };
 
 export type UnauthorizedResponse = {
-   __typename?: 'UnauthorizedResponse';
+   __typename: 'UnauthorizedResponse';
   code: Scalars['String'];
 };
 
@@ -110,7 +110,7 @@ export type BaseUser = {
 };
 
 export type User = BaseUser & {
-   __typename?: 'User';
+   __typename: 'User';
   avatarPath?: Maybe<Scalars['String']>;
   createdDate: Scalars['String'];
   id: Scalars['Int'];
@@ -123,7 +123,7 @@ export type User = BaseUser & {
 };
 
 export type Me = BaseUser & {
-   __typename?: 'Me';
+   __typename: 'Me';
   avatarPath?: Maybe<Scalars['String']>;
   createdDate: Scalars['String'];
   id: Scalars['Int'];
@@ -144,13 +144,13 @@ export type LoginInput = {
 };
 
 export type LoginFailure = MutationResponse & {
-   __typename?: 'LoginFailure';
+   __typename: 'LoginFailure';
   success: Scalars['Boolean'];
   message: Scalars['String'];
 };
 
 export type LoginSuccess = MutationResponse & {
-   __typename?: 'LoginSuccess';
+   __typename: 'LoginSuccess';
   success: Scalars['Boolean'];
   token: Scalars['String'];
 };
@@ -164,7 +164,7 @@ export enum PostType {
 }
 
 export type Post = {
-   __typename?: 'Post';
+   __typename: 'Post';
   author?: Maybe<User>;
   authorId: Scalars['Int'];
   body: Scalars['String'];
@@ -190,7 +190,7 @@ export type Post = {
 };
 
 export type LovePostSuccess = MutationResponse & {
-   __typename?: 'LovePostSuccess';
+   __typename: 'LovePostSuccess';
   success: Scalars['Boolean'];
   post: Post;
   me?: Maybe<MeResponse>;
@@ -199,7 +199,7 @@ export type LovePostSuccess = MutationResponse & {
 export type LovePostResponse = LovePostSuccess | UnauthorizedResponse;
 
 export type UnlovePostSuccess = MutationResponse & {
-   __typename?: 'UnlovePostSuccess';
+   __typename: 'UnlovePostSuccess';
   success: Scalars['Boolean'];
   post: Post;
   me?: Maybe<MeResponse>;
@@ -208,7 +208,7 @@ export type UnlovePostSuccess = MutationResponse & {
 export type UnlovePostResponse = UnlovePostSuccess | UnauthorizedResponse;
 
 export type SearchPostResponse = {
-   __typename?: 'SearchPostResponse';
+   __typename: 'SearchPostResponse';
   limit: Scalars['Int'];
   page: Scalars['Int'];
   posts: Array<Post>;
@@ -220,7 +220,7 @@ export type SearchPostsFiltersInput = {
 };
 
 export type Comment = {
-   __typename?: 'Comment';
+   __typename: 'Comment';
   id: Scalars['Int'];
   authorId: Scalars['Int'];
   author?: Maybe<User>;
@@ -234,7 +234,7 @@ export type Comment = {
 };
 
 export type LoveCommentSuccess = MutationResponse & {
-   __typename?: 'LoveCommentSuccess';
+   __typename: 'LoveCommentSuccess';
   success: Scalars['Boolean'];
   comment: Comment;
   post?: Maybe<Post>;
@@ -243,7 +243,7 @@ export type LoveCommentSuccess = MutationResponse & {
 export type LoveCommentResponse = LoveCommentSuccess | UnauthorizedResponse;
 
 export type UnloveCommentSuccess = MutationResponse & {
-   __typename?: 'UnloveCommentSuccess';
+   __typename: 'UnloveCommentSuccess';
   success: Scalars['Boolean'];
   comment: Comment;
   post?: Maybe<Post>;
@@ -257,7 +257,7 @@ export type AddCommentInput = {
 };
 
 export type AddCommentSuccess = MutationResponse & {
-   __typename?: 'AddCommentSuccess';
+   __typename: 'AddCommentSuccess';
   success: Scalars['Boolean'];
   comment: Comment;
 };
@@ -271,7 +271,7 @@ export type EditCommentInput = {
 };
 
 export type EditCommentSuccess = MutationResponse & {
-   __typename?: 'EditCommentSuccess';
+   __typename: 'EditCommentSuccess';
   success: Scalars['Boolean'];
   comment: Comment;
 };
@@ -279,7 +279,7 @@ export type EditCommentSuccess = MutationResponse & {
 export type EditCommentResponse = EditCommentSuccess | UnauthorizedResponse;
 
 export type Event = {
-   __typename?: 'Event';
+   __typename: 'Event';
   id: Scalars['Int'];
   name: Scalars['String'];
   body: Scalars['String'];
@@ -298,10 +298,8 @@ export enum EventPhase {
   Results = 7
 }
 
-export type FeaturedEventResponse = Event | UnauthorizedResponse;
-
 export type JoinEventSuccess = MutationResponse & {
-   __typename?: 'JoinEventSuccess';
+   __typename: 'JoinEventSuccess';
   success: Scalars['Boolean'];
   featuredEvent?: Maybe<Event>;
   gameId: Scalars['Int'];
@@ -420,7 +418,6 @@ export type ResolversTypes = ResolversObject<{
   EditCommentResponse: ResolversTypes['EditCommentSuccess'] | ResolversTypes['UnauthorizedResponse'],
   Event: ResolverTypeWrapper<Event>,
   EventPhase: EventPhase,
-  FeaturedEventResponse: ResolversTypes['Event'] | ResolversTypes['UnauthorizedResponse'],
   JoinEventSuccess: ResolverTypeWrapper<JoinEventSuccess>,
   JoinEventResponse: ResolversTypes['JoinEventSuccess'] | ResolversTypes['UnauthorizedResponse'],
 }>;
@@ -464,7 +461,6 @@ export type ResolversParentTypes = ResolversObject<{
   EditCommentResponse: ResolversParentTypes['EditCommentSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
   Event: Event,
   EventPhase: EventPhase,
-  FeaturedEventResponse: ResolversParentTypes['Event'] | ResolversParentTypes['UnauthorizedResponse'],
   JoinEventSuccess: JoinEventSuccess,
   JoinEventResponse: ResolversParentTypes['JoinEventSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
 }>;
@@ -474,7 +470,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   post?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<QueryPostArgs, 'input'>>,
   searchPosts?: Resolver<ResolversTypes['SearchPostResponse'], ParentType, ContextType, RequireFields<QuerySearchPostsArgs, 'filters' | 'limit' | 'page'>>,
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'input'>>,
-  featuredEvent?: Resolver<ResolversTypes['FeaturedEventResponse'], ParentType, ContextType>,
+  featuredEvent?: Resolver<ResolversTypes['Event'], ParentType, ContextType>,
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
@@ -680,10 +676,6 @@ export type EventResolvers<ContextType = any, ParentType extends ResolversParent
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;
 
-export type FeaturedEventResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeaturedEventResponse'] = ResolversParentTypes['FeaturedEventResponse']> = ResolversObject<{
-  __resolveType: TypeResolveFn<'Event' | 'UnauthorizedResponse', ParentType, ContextType>
-}>;
-
 export type JoinEventSuccessResolvers<ContextType = any, ParentType extends ResolversParentTypes['JoinEventSuccess'] = ResolversParentTypes['JoinEventSuccess']> = ResolversObject<{
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
   featuredEvent?: Resolver<Maybe<ResolversTypes['Event']>, ParentType, ContextType>,
@@ -723,7 +715,6 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   EditCommentSuccess?: EditCommentSuccessResolvers<ContextType>,
   EditCommentResponse?: EditCommentResponseResolvers,
   Event?: EventResolvers<ContextType>,
-  FeaturedEventResponse?: FeaturedEventResponseResolvers,
   JoinEventSuccess?: JoinEventSuccessResolvers<ContextType>,
   JoinEventResponse?: JoinEventResponseResolvers,
 }>;

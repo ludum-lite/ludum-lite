@@ -36,6 +36,8 @@ const Root = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  padding: ${({ theme }) => `${theme.spacing(2)}px ${theme.spacing(2)}px`};
+  background: ${({ theme }) => theme.themeColors.contextualNavBackground};
 `
 
 const TitleButton = styled(Button)`
@@ -134,7 +136,7 @@ export default function CountdownWidget({ events, className }: Props) {
   )
   const [preferredEventType, setPreferredEventType] = useLocalStorage<
     'compo' | 'jam'
-  >('preferredEventType', 'compo')
+  >('countDownPreferredEventType', 'compo')
   const forceShowJam =
     (nextPhase?.eventPhase === EventPhase.CompoEnd ||
       nextPhase?.eventPhase === EventPhase.CompoSubmissionHourEnd) &&

@@ -10,6 +10,7 @@ import {
   LovePostResponse,
   UnlovePostResponse,
   QuerySearchPostsArgs,
+  SearchPostResponse,
 } from '../__generated__/schema-types'
 import { unauthorizedResponse } from './const'
 import { delegateToSchema } from 'apollo-server'
@@ -38,6 +39,7 @@ export type ApiPostDto = {
 
 function apiPostToPost(post: ApiPostDto): Post {
   return {
+    __typename: 'Post',
     id: post.id,
     parentId: post.parent,
     superparentId: post.superparent,
@@ -82,7 +84,7 @@ export default class PostAPI extends BaseAPI {
     page,
     limit,
     filters: { postType, favoritedIds },
-  }: QuerySearchPostsArgs) {
+  }: QuerySearchPostsArgs): Promise<SearchPostResponse> {
     if (postType === PostType.All || postType === PostType.News) {
       const postIdsResponse = await this.get(
         `vx/node/feed/1/all/post${postType === 'News' ? '/news' : ''}`,
@@ -101,6 +103,7 @@ export default class PostAPI extends BaseAPI {
       const posts = sortBy(postsResponse, 'publishedAt')
 
       return {
+        __typename: 'SearchPostResponse',
         page,
         limit,
         posts,
@@ -118,6 +121,7 @@ export default class PostAPI extends BaseAPI {
       )) as Post[]
 
       return {
+        __typename: 'SearchPostResponse',
         page,
         limit,
         posts,
@@ -125,6 +129,7 @@ export default class PostAPI extends BaseAPI {
     }
 
     return {
+      __typename: 'SearchPostResponse',
       page: 0,
       limit: 0,
       posts: [],

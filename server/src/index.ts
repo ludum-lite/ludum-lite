@@ -97,6 +97,11 @@ const resolvers: Resolvers<Context> = {
       return context.dataSources.postApi.getPost(response.comment.postId)
     },
   },
+  JoinEventSuccess: {
+    featuredEvent(_, __, context) {
+      return context.dataSources.eventApi.getFeaturedEvent()
+    },
+  },
   EventPhase: {
     ThemeSelection: 1,
     ThemeSlaughter: 2,
