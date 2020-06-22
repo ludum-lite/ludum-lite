@@ -101,7 +101,7 @@ export default function GameWidget({ className }: Props) {
             <GameDetails>
               <TopRow>
                 <Typography variant="h6">My Game</Typography>
-                <IconButton background="globalNav" size="small">
+                <IconButton background="contextualNav" size="small">
                   <Icon icon={MoreHorizIcon} />
                 </IconButton>
               </TopRow>
@@ -139,7 +139,7 @@ export default function GameWidget({ className }: Props) {
             !featuredEvent.currentUserGameId && (
               <JoinButton
                 fullWidth
-                background="globalNav"
+                background="contextualNav"
                 onClick={() => setShowJoinEventDialog(true)}
               >
                 <Typography variant="h6">Join Event!</Typography>
