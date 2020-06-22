@@ -6,6 +6,7 @@ import {
   useGameWidgetDataQuery,
   EventPhase,
   useJoinEventMutation,
+  useEditGameNameMutation,
 } from '__generated__/client-types'
 import Button from 'components/common/mui/Button'
 import {
@@ -66,13 +67,20 @@ interface Props {
 }
 export default function GameWidget({ className }: Props) {
   const isLoggedIn = useIsLoggedIn()
-  const { data } = useGameWidgetDataQuery()
+  const [gameName, setGameName] = React.useState<string>('')
+  const { data } = useGameWidgetDataQuery({
+    onCompleted(data) {
+      console.log('completed', data?.featuredEvent?.currentUserGame?.name)
+      setGameName(data?.featuredEvent?.currentUserGame?.name || '')
+    },
+  })
   const [preferredEventType, setPreferredEventType] = useLocalStorage<
     'compo' | 'jam' | null
   >('currentEventPreferredEventType', null)
   const [showJoinEventDialog, setShowJoinEventDialog] = React.useState<boolean>(
     false
   )
+  const [editGameNameMutation] = useEditGameNameMutation()
 
   const handleClose = React.useCallback(() => {
     setShowJoinEventDialog(false)
@@ -93,7 +101,7 @@ export default function GameWidget({ className }: Props) {
     [setPreferredEventType, handleClose, joinEventMutation]
   )
 
-  const joinButton = React.useMemo(() => {
+  const content = React.useMemo(() => {
     if (isLoggedIn) {
       if (data?.featuredEvent?.__typename === 'Event') {
         if (data.featuredEvent.currentUserGameId) {
@@ -115,6 +123,22 @@ export default function GameWidget({ className }: Props) {
                       placeholder="Enter a name..."
                       fullWidth
                       flushLeftEdge
+                      onChange={(e) => {
+                        setGameName(e.target.value)
+                      }}
+                      onBlur={() => {
+                        if (data.featuredEvent.currentUserGameId) {
+                          editGameNameMutation({
+                            variables: {
+                              input: {
+                                id: data.featuredEvent.currentUserGameId,
+                                name: gameName,
+                              },
+                            },
+                          })
+                        }
+                      }}
+                      value={gameName}
                     />
                   }
                 />
@@ -149,11 +173,11 @@ export default function GameWidget({ className }: Props) {
         }
       }
     }
-  }, [data, isLoggedIn])
+  }, [data, isLoggedIn, gameName, editGameNameMutation])
 
   return (
     <Root className={className}>
-      {joinButton}
+      {content}
       <Dialog open={showJoinEventDialog} onClose={handleClose}>
         <DialogTitle>Jam or Compo?</DialogTitle>
         <DialogContent>
@@ -178,6 +202,10 @@ gql`
   fragment GameWidget_event on Event {
     id
     currentUserGameId
+    currentUserGame {
+      id
+      name
+    }
     eventPhase
   }
 
@@ -187,13 +215,12 @@ gql`
     }
   }
 
-  mutation JoinEvent {
-    joinEvent {
-      ... on JoinEventSuccess {
-        gameId
-        featuredEvent {
+  mutation EditGameName($input: EditGameNameInput!) {
+    editGameName(input: $input) {
+      ... on EditGameNameResponseSuccess {
+        game {
           id
-          currentUserGameId
+          name
         }
       }
     }

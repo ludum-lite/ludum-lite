@@ -47,6 +47,7 @@ export type Mutation = {
   addComment: AddCommentResponse
   editComment: EditCommentResponse
   joinEvent: JoinEventResponse
+  editGameName: EditGameNameResponse
 }
 
 export type MutationLoginArgs = {
@@ -75,6 +76,10 @@ export type MutationAddCommentArgs = {
 
 export type MutationEditCommentArgs = {
   input: EditCommentInput
+}
+
+export type MutationEditGameNameArgs = {
+  input: EditGameNameInput
 }
 
 export type MutationResponse = {
@@ -279,6 +284,7 @@ export type Event = {
   slug: Scalars['String']
   createdDate: Scalars['String']
   currentUserGameId?: Maybe<Scalars['Int']>
+  currentUserGame?: Maybe<Game>
   eventPhase: EventPhase
 }
 
@@ -300,10 +306,43 @@ export type JoinEventSuccess = MutationResponse & {
 
 export type JoinEventResponse = JoinEventSuccess | UnauthorizedResponse
 
+export type Game = {
+  __typename: 'Game'
+  id: Scalars['Int']
+  name: Scalars['String']
+  body: Scalars['String']
+  authorId: Scalars['Int']
+  author?: Maybe<User>
+  createdDate: Scalars['String']
+  modifiedDate?: Maybe<Scalars['String']>
+  publishedDate?: Maybe<Scalars['String']>
+  numLove: Scalars['Int']
+  numNotes: Scalars['Int']
+  eventId: Scalars['Int']
+  slug?: Maybe<Scalars['String']>
+}
+
+export type EditGameNameInput = {
+  id: Scalars['Int']
+  name: Scalars['String']
+}
+
+export type EditGameNameResponseSuccess = MutationResponse & {
+  __typename: 'EditGameNameResponseSuccess'
+  success: Scalars['Boolean']
+  game?: Maybe<Game>
+}
+
+export type EditGameNameResponse =
+  | EditGameNameResponseSuccess
+  | UnauthorizedResponse
+
 export type GameWidget_EventFragment = { __typename: 'Event' } & Pick<
   Event,
   'id' | 'currentUserGameId' | 'eventPhase'
->
+> & {
+    currentUserGame?: Maybe<{ __typename: 'Game' } & Pick<Game, 'id' | 'name'>>
+  }
 
 export type GameWidgetDataQueryVariables = Exact<{ [key: string]: never }>
 
@@ -311,15 +350,15 @@ export type GameWidgetDataQuery = { __typename: 'Query' } & {
   featuredEvent: { __typename: 'Event' } & GameWidget_EventFragment
 }
 
-export type JoinEventMutationVariables = Exact<{ [key: string]: never }>
+export type EditGameNameMutationVariables = Exact<{
+  input: EditGameNameInput
+}>
 
-export type JoinEventMutation = { __typename: 'Mutation' } & {
-  joinEvent:
-    | ({ __typename: 'JoinEventSuccess' } & Pick<JoinEventSuccess, 'gameId'> & {
-          featuredEvent?: Maybe<
-            { __typename: 'Event' } & Pick<Event, 'id' | 'currentUserGameId'>
-          >
-        })
+export type EditGameNameMutation = { __typename: 'Mutation' } & {
+  editGameName:
+    | ({ __typename: 'EditGameNameResponseSuccess' } & {
+        game?: Maybe<{ __typename: 'Game' } & Pick<Game, 'id' | 'name'>>
+      })
     | { __typename: 'UnauthorizedResponse' }
 }
 
@@ -595,7 +634,19 @@ export type TeamWidget_EventFragment = { __typename: 'Event' } & Pick<
 export type TeamWidgetDataQueryVariables = Exact<{ [key: string]: never }>
 
 export type TeamWidgetDataQuery = { __typename: 'Query' } & {
-  featuredEvent: { __typename: 'Event' } & GameWidget_EventFragment
+  featuredEvent: { __typename: 'Event' } & TeamWidget_EventFragment
+}
+
+export type JoinEventMutationVariables = Exact<{ [key: string]: never }>
+
+export type JoinEventMutation = { __typename: 'Mutation' } & {
+  joinEvent:
+    | ({ __typename: 'JoinEventSuccess' } & Pick<JoinEventSuccess, 'gameId'> & {
+          featuredEvent?: Maybe<
+            { __typename: 'Event' } & Pick<Event, 'id' | 'currentUserGameId'>
+          >
+        })
+    | { __typename: 'UnauthorizedResponse' }
 }
 
 export type GlobalIsLoggedInQueryVariables = Exact<{ [key: string]: never }>
@@ -627,6 +678,10 @@ export const GameWidget_EventFragmentDoc = gql`
   fragment GameWidget_event on Event {
     id
     currentUserGameId
+    currentUserGame {
+      id
+      name
+    }
     eventPhase
   }
 `
@@ -820,60 +875,60 @@ export type GameWidgetDataQueryResult = ApolloReactCommon.QueryResult<
   GameWidgetDataQuery,
   GameWidgetDataQueryVariables
 >
-export const JoinEventDocument = gql`
-  mutation JoinEvent {
-    joinEvent {
-      ... on JoinEventSuccess {
-        gameId
-        featuredEvent {
+export const EditGameNameDocument = gql`
+  mutation EditGameName($input: EditGameNameInput!) {
+    editGameName(input: $input) {
+      ... on EditGameNameResponseSuccess {
+        game {
           id
-          currentUserGameId
+          name
         }
       }
     }
   }
 `
-export type JoinEventMutationFn = ApolloReactCommon.MutationFunction<
-  JoinEventMutation,
-  JoinEventMutationVariables
+export type EditGameNameMutationFn = ApolloReactCommon.MutationFunction<
+  EditGameNameMutation,
+  EditGameNameMutationVariables
 >
 
 /**
- * __useJoinEventMutation__
+ * __useEditGameNameMutation__
  *
- * To run a mutation, you first call `useJoinEventMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useJoinEventMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useEditGameNameMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditGameNameMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [joinEventMutation, { data, loading, error }] = useJoinEventMutation({
+ * const [editGameNameMutation, { data, loading, error }] = useEditGameNameMutation({
  *   variables: {
+ *      input: // value for 'input'
  *   },
  * });
  */
-export function useJoinEventMutation(
+export function useEditGameNameMutation(
   baseOptions?: ApolloReactHooks.MutationHookOptions<
-    JoinEventMutation,
-    JoinEventMutationVariables
+    EditGameNameMutation,
+    EditGameNameMutationVariables
   >
 ) {
   return ApolloReactHooks.useMutation<
-    JoinEventMutation,
-    JoinEventMutationVariables
-  >(JoinEventDocument, baseOptions)
+    EditGameNameMutation,
+    EditGameNameMutationVariables
+  >(EditGameNameDocument, baseOptions)
 }
-export type JoinEventMutationHookResult = ReturnType<
-  typeof useJoinEventMutation
+export type EditGameNameMutationHookResult = ReturnType<
+  typeof useEditGameNameMutation
 >
-export type JoinEventMutationResult = ApolloReactCommon.MutationResult<
-  JoinEventMutation
+export type EditGameNameMutationResult = ApolloReactCommon.MutationResult<
+  EditGameNameMutation
 >
-export type JoinEventMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  JoinEventMutation,
-  JoinEventMutationVariables
+export type EditGameNameMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  EditGameNameMutation,
+  EditGameNameMutationVariables
 >
 export const AddCommentDocument = gql`
   mutation AddComment($input: AddCommentInput!) {
@@ -1479,10 +1534,10 @@ export type UnlovePostMutationOptions = ApolloReactCommon.BaseMutationOptions<
 export const TeamWidgetDataDocument = gql`
   query TeamWidgetData {
     featuredEvent {
-      ...GameWidget_event
+      ...TeamWidget_event
     }
   }
-  ${GameWidget_EventFragmentDoc}
+  ${TeamWidget_EventFragmentDoc}
 `
 
 /**
@@ -1531,6 +1586,61 @@ export type TeamWidgetDataLazyQueryHookResult = ReturnType<
 export type TeamWidgetDataQueryResult = ApolloReactCommon.QueryResult<
   TeamWidgetDataQuery,
   TeamWidgetDataQueryVariables
+>
+export const JoinEventDocument = gql`
+  mutation JoinEvent {
+    joinEvent {
+      ... on JoinEventSuccess {
+        gameId
+        featuredEvent {
+          id
+          currentUserGameId
+        }
+      }
+    }
+  }
+`
+export type JoinEventMutationFn = ApolloReactCommon.MutationFunction<
+  JoinEventMutation,
+  JoinEventMutationVariables
+>
+
+/**
+ * __useJoinEventMutation__
+ *
+ * To run a mutation, you first call `useJoinEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useJoinEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [joinEventMutation, { data, loading, error }] = useJoinEventMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useJoinEventMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    JoinEventMutation,
+    JoinEventMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    JoinEventMutation,
+    JoinEventMutationVariables
+  >(JoinEventDocument, baseOptions)
+}
+export type JoinEventMutationHookResult = ReturnType<
+  typeof useJoinEventMutation
+>
+export type JoinEventMutationResult = ApolloReactCommon.MutationResult<
+  JoinEventMutation
+>
+export type JoinEventMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  JoinEventMutation,
+  JoinEventMutationVariables
 >
 export const GlobalIsLoggedInDocument = gql`
   query GlobalIsLoggedIn {
@@ -1739,6 +1849,9 @@ const result: IntrospectionResultData = {
           {
             name: 'JoinEventSuccess',
           },
+          {
+            name: 'EditGameNameResponseSuccess',
+          },
         ],
       },
       {
@@ -1855,6 +1968,18 @@ const result: IntrospectionResultData = {
         possibleTypes: [
           {
             name: 'JoinEventSuccess',
+          },
+          {
+            name: 'UnauthorizedResponse',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'EditGameNameResponse',
+        possibleTypes: [
+          {
+            name: 'EditGameNameResponseSuccess',
           },
           {
             name: 'UnauthorizedResponse',

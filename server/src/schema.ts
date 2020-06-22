@@ -22,6 +22,7 @@ export const typeDefs = gql`
     addComment(input: AddCommentInput!): AddCommentResponse!
     editComment(input: EditCommentInput!): EditCommentResponse!
     joinEvent: JoinEventResponse!
+    editGameName(input: EditGameNameInput!): EditGameNameResponse!
   }
 
   #########
@@ -239,6 +240,7 @@ export const typeDefs = gql`
     slug: String!
     createdDate: String!
     currentUserGameId: Int
+    currentUserGame: Game
     eventPhase: EventPhase!
   }
 
@@ -258,4 +260,37 @@ export const typeDefs = gql`
   }
 
   union JoinEventResponse = JoinEventSuccess | UnauthorizedResponse
+
+  #########
+  # Game
+  #########
+
+  type Game {
+    id: Int!
+    name: String!
+    body: String!
+    authorId: Int!
+    author: User
+    createdDate: String!
+    modifiedDate: String
+    publishedDate: String
+    numLove: Int!
+    numNotes: Int!
+    eventId: Int!
+    slug: String
+  }
+
+  input EditGameNameInput {
+    id: Int!
+    name: String!
+  }
+
+  type EditGameNameResponseSuccess implements MutationResponse {
+    success: Boolean!
+    game: Game
+  }
+
+  union EditGameNameResponse =
+      EditGameNameResponseSuccess
+    | UnauthorizedResponse
 `

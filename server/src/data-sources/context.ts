@@ -3,7 +3,8 @@ import PostAPI from './post-api'
 import CommentAPI from './comment-api'
 import UserAPI from './user-api'
 import EventAPI from './event-api'
-import { Post, User, Comment, Event } from '../__generated__/schema-types'
+import GameAPI from './game-api'
+import { Post, User, Comment, Event, Game } from '../__generated__/schema-types'
 
 export type Context = {
   authToken: string | undefined
@@ -12,11 +13,13 @@ export type Context = {
     commentApi: CommentAPI
     userApi: UserAPI
     eventApi: EventAPI
+    gameApi: GameAPI
   }
   loaders: {
     postLoader: DataLoader<number, Post>
     commentLoader: DataLoader<number, Comment>
     userLoader: DataLoader<number, User>
     eventLoader: DataLoader<number, Event>
+    gameLoader: DataLoader<number, Game>
   }
 }

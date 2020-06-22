@@ -1,7 +1,4 @@
-// import DataLoader from 'dataloader'
-// import { DataSourceConfig } from 'apollo-datasource'
 import BaseAPI from './base-api'
-// import { Context } from './context'
 import {
   Event,
   JoinEventResponse,
@@ -32,22 +29,10 @@ function apiEventToEvent(event: ApiEventDto): Event {
   }
 }
 
-export default class CommentAPI extends BaseAPI {
+export default class EventAPI extends BaseAPI {
   constructor() {
     super()
   }
-
-  // initialize(config: DataSourceConfig<Context>) {
-  //   super.initialize(config)
-
-  //   if (!config.context.loaders.eventLoader) {
-  //     config.context.loaders.eventLoader = new DataLoader(async (keys) => {
-  //       const results = await this.get(`vx/comment/get/${keys.join('+')}`)
-
-  //       return sort(keys, results.comment.map(apiEventToEvent))
-  //     })
-  //   }
-  // }
 
   async getFeaturedEvent(): Promise<Event> {
     const rootNodeResponse = await this.get(`vx/node2/get/1`)

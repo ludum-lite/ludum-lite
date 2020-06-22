@@ -81,7 +81,7 @@ gql`
 
   query TeamWidgetData {
     featuredEvent {
-      ...GameWidget_event
+      ...TeamWidget_event
     }
   }
 

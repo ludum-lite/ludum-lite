@@ -27,6 +27,7 @@ export type ApiCommentDto = {
 
 function apiCommentToComment(comment: ApiCommentDto): Comment {
   return {
+    __typename: 'Comment',
     id: comment.id,
     authorId: comment.author,
     createdDate: comment.created,

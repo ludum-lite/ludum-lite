@@ -1,11 +1,12 @@
 import { ApolloServer, makeExecutableSchema } from 'apollo-server'
 import { Context } from './data-sources/context'
+import CommentAPI from './data-sources/comment-api'
+import EventAPI from './data-sources/event-api'
+import GameAPI from './data-sources/game-api'
 import PostAPI from './data-sources/post-api'
 import UserAPI from './data-sources/user-api'
-import EventAPI from './data-sources/event-api'
-import { Resolvers } from './__generated__/schema-types'
 import { typeDefs } from './schema'
-import CommentAPI from './data-sources/comment-api'
+import { Resolvers } from './__generated__/schema-types'
 
 const resolvers: Resolvers<Context> = {
   Query: {
@@ -50,6 +51,9 @@ const resolvers: Resolvers<Context> = {
     joinEvent(_, __, context) {
       return context.dataSources.eventApi.joinEvent()
     },
+    editGameName(_, { input }, context) {
+      return context.dataSources.gameApi.editGameName(input)
+    },
   },
   Post: {
     author(post, __, context) {
@@ -70,6 +74,17 @@ const resolvers: Resolvers<Context> = {
   Event: {
     currentUserGameId(_, __, context) {
       return context.dataSources.eventApi.getCurrentUserGameId()
+    },
+    async currentUserGame(event, __, context) {
+      const gameId =
+        event.currentUserGameId ||
+        (await context.dataSources.eventApi.getCurrentUserGameId())
+
+      if (gameId) {
+        return context.dataSources.gameApi.getGame(gameId)
+      }
+
+      return null
     },
   },
   Me: {
@@ -134,6 +149,7 @@ new ApolloServer({
     commentApi: new CommentAPI(),
     userApi: new UserAPI(),
     eventApi: new EventAPI(),
+    gameApi: new GameAPI(),
   }),
   engine: {
     apiKey: 'service:ldjam:S8IzjK8QYWQyOeLhjtuFvA',
