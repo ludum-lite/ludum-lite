@@ -18,11 +18,12 @@ const StyledIconButton = styled(IconButton)`
 
 interface Props {
   className?: string
+  onClick: () => void
 }
-export default function AddTeamMemberButton({ className }: Props) {
+export default function AddTeamMemberButton({ className, onClick }: Props) {
   return (
     <Root className={className}>
-      <StyledIconButton background="contextualNav">
+      <StyledIconButton background="contextualNav" onClick={onClick}>
         <Icon icon={AddIcon} />
       </StyledIconButton>
     </Root>

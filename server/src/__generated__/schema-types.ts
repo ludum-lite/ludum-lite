@@ -48,6 +48,8 @@ export type Mutation = {
   editComment: EditCommentResponse;
   joinEvent: JoinEventResponse;
   editGameName: EditGameNameResponse;
+  addUserToGame: AddUserToGameResponse;
+  removeUserFromGame: RemoveUserFromGameResponse;
 };
 
 
@@ -88,6 +90,16 @@ export type MutationEditCommentArgs = {
 
 export type MutationEditGameNameArgs = {
   input: EditGameNameInput;
+};
+
+
+export type MutationAddUserToGameArgs = {
+  input: AddUserToGameInput;
+};
+
+
+export type MutationRemoveUserFromGameArgs = {
+  input: RemoveUserFromGameInput;
 };
 
 export type MutationResponse = {
@@ -140,6 +152,10 @@ export type Me = BaseUser & {
   profilePath: Scalars['String'];
   type: Scalars['String'];
   lovedPosts: Array<Scalars['Int']>;
+  userIdsImFollowing: Array<Scalars['Int']>;
+  usersImFollowing: Array<User>;
+  userIdsFollowingMe: Array<Scalars['Int']>;
+  usersFollowingMe: Array<User>;
 };
 
 export type MeResponse = Me | UnauthorizedResponse;
@@ -321,6 +337,8 @@ export type Game = {
   body: Scalars['String'];
   authorId: Scalars['Int'];
   author?: Maybe<User>;
+  teamUserIds: Array<Scalars['Int']>;
+  teamUsers?: Maybe<Array<User>>;
   createdDate: Scalars['String'];
   modifiedDate?: Maybe<Scalars['String']>;
   publishedDate?: Maybe<Scalars['String']>;
@@ -342,6 +360,36 @@ export type EditGameNameResponseSuccess = MutationResponse & {
 };
 
 export type EditGameNameResponse = EditGameNameResponseSuccess | UnauthorizedResponse;
+
+export type AddUserToGameInput = {
+  gameId: Scalars['Int'];
+  userId: Scalars['Int'];
+};
+
+export type AddUserToGameResponseSuccess = MutationResponse & {
+   __typename: 'AddUserToGameResponseSuccess';
+  success: Scalars['Boolean'];
+  gameId: Scalars['Int'];
+  game?: Maybe<Game>;
+  userId: Scalars['Int'];
+  user?: Maybe<User>;
+};
+
+export type AddUserToGameResponse = AddUserToGameResponseSuccess | UnauthorizedResponse;
+
+export type RemoveUserFromGameInput = {
+  gameId: Scalars['Int'];
+  userId: Scalars['Int'];
+};
+
+export type RemoveUserFromGameResponseSuccess = MutationResponse & {
+   __typename: 'RemoveUserFromGameResponseSuccess';
+  success: Scalars['Boolean'];
+  game?: Maybe<Game>;
+  user?: Maybe<User>;
+};
+
+export type RemoveUserFromGameResponse = RemoveUserFromGameResponseSuccess | UnauthorizedResponse;
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
@@ -422,7 +470,7 @@ export type ResolversTypes = ResolversObject<{
   Query: ResolverTypeWrapper<{}>,
   Int: ResolverTypeWrapper<Scalars['Int']>,
   Mutation: ResolverTypeWrapper<{}>,
-  MutationResponse: ResolversTypes['LoginFailure'] | ResolversTypes['LoginSuccess'] | ResolversTypes['LovePostSuccess'] | ResolversTypes['UnlovePostSuccess'] | ResolversTypes['LoveCommentSuccess'] | ResolversTypes['UnloveCommentSuccess'] | ResolversTypes['AddCommentSuccess'] | ResolversTypes['EditCommentSuccess'] | ResolversTypes['JoinEventSuccess'] | ResolversTypes['EditGameNameResponseSuccess'],
+  MutationResponse: ResolversTypes['LoginFailure'] | ResolversTypes['LoginSuccess'] | ResolversTypes['LovePostSuccess'] | ResolversTypes['UnlovePostSuccess'] | ResolversTypes['LoveCommentSuccess'] | ResolversTypes['UnloveCommentSuccess'] | ResolversTypes['AddCommentSuccess'] | ResolversTypes['EditCommentSuccess'] | ResolversTypes['JoinEventSuccess'] | ResolversTypes['EditGameNameResponseSuccess'] | ResolversTypes['AddUserToGameResponseSuccess'] | ResolversTypes['RemoveUserFromGameResponseSuccess'],
   UnauthorizedResponse: ResolverTypeWrapper<UnauthorizedResponse>,
   IdInput: IdInput,
   BaseUser: ResolversTypes['User'] | ResolversTypes['Me'],
@@ -460,6 +508,12 @@ export type ResolversTypes = ResolversObject<{
   EditGameNameInput: EditGameNameInput,
   EditGameNameResponseSuccess: ResolverTypeWrapper<EditGameNameResponseSuccess>,
   EditGameNameResponse: ResolversTypes['EditGameNameResponseSuccess'] | ResolversTypes['UnauthorizedResponse'],
+  AddUserToGameInput: AddUserToGameInput,
+  AddUserToGameResponseSuccess: ResolverTypeWrapper<AddUserToGameResponseSuccess>,
+  AddUserToGameResponse: ResolversTypes['AddUserToGameResponseSuccess'] | ResolversTypes['UnauthorizedResponse'],
+  RemoveUserFromGameInput: RemoveUserFromGameInput,
+  RemoveUserFromGameResponseSuccess: ResolverTypeWrapper<RemoveUserFromGameResponseSuccess>,
+  RemoveUserFromGameResponse: ResolversTypes['RemoveUserFromGameResponseSuccess'] | ResolversTypes['UnauthorizedResponse'],
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -469,7 +523,7 @@ export type ResolversParentTypes = ResolversObject<{
   Query: {},
   Int: Scalars['Int'],
   Mutation: {},
-  MutationResponse: ResolversParentTypes['LoginFailure'] | ResolversParentTypes['LoginSuccess'] | ResolversParentTypes['LovePostSuccess'] | ResolversParentTypes['UnlovePostSuccess'] | ResolversParentTypes['LoveCommentSuccess'] | ResolversParentTypes['UnloveCommentSuccess'] | ResolversParentTypes['AddCommentSuccess'] | ResolversParentTypes['EditCommentSuccess'] | ResolversParentTypes['JoinEventSuccess'] | ResolversParentTypes['EditGameNameResponseSuccess'],
+  MutationResponse: ResolversParentTypes['LoginFailure'] | ResolversParentTypes['LoginSuccess'] | ResolversParentTypes['LovePostSuccess'] | ResolversParentTypes['UnlovePostSuccess'] | ResolversParentTypes['LoveCommentSuccess'] | ResolversParentTypes['UnloveCommentSuccess'] | ResolversParentTypes['AddCommentSuccess'] | ResolversParentTypes['EditCommentSuccess'] | ResolversParentTypes['JoinEventSuccess'] | ResolversParentTypes['EditGameNameResponseSuccess'] | ResolversParentTypes['AddUserToGameResponseSuccess'] | ResolversParentTypes['RemoveUserFromGameResponseSuccess'],
   UnauthorizedResponse: UnauthorizedResponse,
   IdInput: IdInput,
   BaseUser: ResolversParentTypes['User'] | ResolversParentTypes['Me'],
@@ -507,6 +561,12 @@ export type ResolversParentTypes = ResolversObject<{
   EditGameNameInput: EditGameNameInput,
   EditGameNameResponseSuccess: EditGameNameResponseSuccess,
   EditGameNameResponse: ResolversParentTypes['EditGameNameResponseSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
+  AddUserToGameInput: AddUserToGameInput,
+  AddUserToGameResponseSuccess: AddUserToGameResponseSuccess,
+  AddUserToGameResponse: ResolversParentTypes['AddUserToGameResponseSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
+  RemoveUserFromGameInput: RemoveUserFromGameInput,
+  RemoveUserFromGameResponseSuccess: RemoveUserFromGameResponseSuccess,
+  RemoveUserFromGameResponse: ResolversParentTypes['RemoveUserFromGameResponseSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
@@ -527,10 +587,12 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   editComment?: Resolver<ResolversTypes['EditCommentResponse'], ParentType, ContextType, RequireFields<MutationEditCommentArgs, 'input'>>,
   joinEvent?: Resolver<ResolversTypes['JoinEventResponse'], ParentType, ContextType>,
   editGameName?: Resolver<ResolversTypes['EditGameNameResponse'], ParentType, ContextType, RequireFields<MutationEditGameNameArgs, 'input'>>,
+  addUserToGame?: Resolver<ResolversTypes['AddUserToGameResponse'], ParentType, ContextType, RequireFields<MutationAddUserToGameArgs, 'input'>>,
+  removeUserFromGame?: Resolver<ResolversTypes['RemoveUserFromGameResponse'], ParentType, ContextType, RequireFields<MutationRemoveUserFromGameArgs, 'input'>>,
 }>;
 
 export type MutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{
-  __resolveType: TypeResolveFn<'LoginFailure' | 'LoginSuccess' | 'LovePostSuccess' | 'UnlovePostSuccess' | 'LoveCommentSuccess' | 'UnloveCommentSuccess' | 'AddCommentSuccess' | 'EditCommentSuccess' | 'JoinEventSuccess' | 'EditGameNameResponseSuccess', ParentType, ContextType>,
+  __resolveType: TypeResolveFn<'LoginFailure' | 'LoginSuccess' | 'LovePostSuccess' | 'UnlovePostSuccess' | 'LoveCommentSuccess' | 'UnloveCommentSuccess' | 'AddCommentSuccess' | 'EditCommentSuccess' | 'JoinEventSuccess' | 'EditGameNameResponseSuccess' | 'AddUserToGameResponseSuccess' | 'RemoveUserFromGameResponseSuccess', ParentType, ContextType>,
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
 }>;
 
@@ -576,6 +638,10 @@ export type MeResolvers<ContextType = any, ParentType extends ResolversParentTyp
   profilePath?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   lovedPosts?: Resolver<Array<ResolversTypes['Int']>, ParentType, ContextType>,
+  userIdsImFollowing?: Resolver<Array<ResolversTypes['Int']>, ParentType, ContextType>,
+  usersImFollowing?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>,
+  userIdsFollowingMe?: Resolver<Array<ResolversTypes['Int']>, ParentType, ContextType>,
+  usersFollowingMe?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;
 
@@ -739,6 +805,8 @@ export type GameResolvers<ContextType = any, ParentType extends ResolversParentT
   body?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   authorId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   author?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
+  teamUserIds?: Resolver<Array<ResolversTypes['Int']>, ParentType, ContextType>,
+  teamUsers?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType>,
   createdDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   modifiedDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   publishedDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
@@ -757,6 +825,30 @@ export type EditGameNameResponseSuccessResolvers<ContextType = any, ParentType e
 
 export type EditGameNameResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['EditGameNameResponse'] = ResolversParentTypes['EditGameNameResponse']> = ResolversObject<{
   __resolveType: TypeResolveFn<'EditGameNameResponseSuccess' | 'UnauthorizedResponse', ParentType, ContextType>
+}>;
+
+export type AddUserToGameResponseSuccessResolvers<ContextType = any, ParentType extends ResolversParentTypes['AddUserToGameResponseSuccess'] = ResolversParentTypes['AddUserToGameResponseSuccess']> = ResolversObject<{
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  gameId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
+  game?: Resolver<Maybe<ResolversTypes['Game']>, ParentType, ContextType>,
+  userId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
+export type AddUserToGameResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AddUserToGameResponse'] = ResolversParentTypes['AddUserToGameResponse']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'AddUserToGameResponseSuccess' | 'UnauthorizedResponse', ParentType, ContextType>
+}>;
+
+export type RemoveUserFromGameResponseSuccessResolvers<ContextType = any, ParentType extends ResolversParentTypes['RemoveUserFromGameResponseSuccess'] = ResolversParentTypes['RemoveUserFromGameResponseSuccess']> = ResolversObject<{
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  game?: Resolver<Maybe<ResolversTypes['Game']>, ParentType, ContextType>,
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
+export type RemoveUserFromGameResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['RemoveUserFromGameResponse'] = ResolversParentTypes['RemoveUserFromGameResponse']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'RemoveUserFromGameResponseSuccess' | 'UnauthorizedResponse', ParentType, ContextType>
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
@@ -792,6 +884,10 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   Game?: GameResolvers<ContextType>,
   EditGameNameResponseSuccess?: EditGameNameResponseSuccessResolvers<ContextType>,
   EditGameNameResponse?: EditGameNameResponseResolvers,
+  AddUserToGameResponseSuccess?: AddUserToGameResponseSuccessResolvers<ContextType>,
+  AddUserToGameResponse?: AddUserToGameResponseResolvers,
+  RemoveUserFromGameResponseSuccess?: RemoveUserFromGameResponseSuccessResolvers<ContextType>,
+  RemoveUserFromGameResponse?: RemoveUserFromGameResponseResolvers,
 }>;
 
 

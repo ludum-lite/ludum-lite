@@ -54,6 +54,12 @@ const resolvers: Resolvers<Context> = {
     editGameName(_, { input }, context) {
       return context.dataSources.gameApi.editGameName(input)
     },
+    addUserToGame(_, { input }, context) {
+      return context.dataSources.gameApi.addUserToGame(input)
+    },
+    removeUserFromGame(_, { input }, context) {
+      return context.dataSources.gameApi.removeUserFromGame(input)
+    },
   },
   Post: {
     author(post, __, context) {
@@ -76,9 +82,7 @@ const resolvers: Resolvers<Context> = {
       return context.dataSources.eventApi.getCurrentUserGameId()
     },
     async currentUserGame(event, __, context) {
-      const gameId =
-        event.currentUserGameId ||
-        (await context.dataSources.eventApi.getCurrentUserGameId())
+      const gameId = await context.dataSources.eventApi.getCurrentUserGameId()
 
       if (gameId) {
         return context.dataSources.gameApi.getGame(gameId)
@@ -90,6 +94,30 @@ const resolvers: Resolvers<Context> = {
   Me: {
     lovedPosts(_, __, context) {
       return context.dataSources.userApi.getMyLovedPosts()
+    },
+    userIdsImFollowing(_, __, context) {
+      return context.dataSources.userApi.getUserIdsImFollowing()
+    },
+    async usersImFollowing(_, __, context) {
+      return context.dataSources.userApi.getUsers(
+        await context.dataSources.userApi.getUserIdsImFollowing()
+      )
+    },
+    userIdsFollowingMe(_, __, context) {
+      return context.dataSources.userApi.getUserIdsFollowingMe()
+    },
+    async usersFollowingMe(_, __, context) {
+      return context.dataSources.userApi.getUsers(
+        await context.dataSources.userApi.getUserIdsFollowingMe()
+      )
+    },
+  },
+  Game: {
+    author(game, __, context) {
+      return context.dataSources.userApi.getUser(game.authorId)
+    },
+    teamUsers(game, __, context) {
+      return context.dataSources.gameApi.getTeamUsers(game.id)
     },
   },
   LovePostSuccess: {
@@ -124,6 +152,14 @@ const resolvers: Resolvers<Context> = {
     EventRunning: 5,
     GameVoting: 6,
     Results: 7,
+  },
+  AddUserToGameResponseSuccess: {
+    game(response, __, context) {
+      return context.dataSources.gameApi.getGame(response.gameId)
+    },
+    user(response, __, context) {
+      return context.dataSources.userApi.getUser(response.userId)
+    },
   },
 }
 

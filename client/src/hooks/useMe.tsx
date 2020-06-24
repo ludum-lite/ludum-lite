@@ -2,6 +2,7 @@ import { singletonHook } from 'react-singleton-hook'
 import { gql } from '@apollo/client'
 import { isLoggedInVar } from 'resolvers'
 import { useGetMeDataQuery, Me } from '__generated__/client-types'
+import { useEffect } from 'react'
 
 type UseMeReturnType = {
   me: Me | null
@@ -23,6 +24,12 @@ export const useMe = singletonHook(init, () => {
     },
   })
 
+  useEffect(() => {
+    if (data?.me.__typename === 'Me') {
+      console.log(`Welcome - ${data.me.name}`)
+    }
+  }, [data])
+
   return {
     me: data?.me.__typename === 'Me' ? data.me : null,
     hasLoaded: !loading,
@@ -34,6 +41,7 @@ gql`
     me {
       ... on Me {
         id
+        name
       }
     }
   }

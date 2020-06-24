@@ -23,6 +23,10 @@ export const typeDefs = gql`
     editComment(input: EditCommentInput!): EditCommentResponse!
     joinEvent: JoinEventResponse!
     editGameName(input: EditGameNameInput!): EditGameNameResponse!
+    addUserToGame(input: AddUserToGameInput!): AddUserToGameResponse!
+    removeUserFromGame(
+      input: RemoveUserFromGameInput!
+    ): RemoveUserFromGameResponse!
   }
 
   #########
@@ -80,6 +84,10 @@ export const typeDefs = gql`
     profilePath: String!
     type: String!
     lovedPosts: [Int!]!
+    userIdsImFollowing: [Int!]!
+    usersImFollowing: [User!]!
+    userIdsFollowingMe: [Int!]!
+    usersFollowingMe: [User!]!
   }
 
   union MeResponse = Me | UnauthorizedResponse
@@ -271,6 +279,8 @@ export const typeDefs = gql`
     body: String!
     authorId: Int!
     author: User
+    teamUserIds: [Int!]!
+    teamUsers: [User!]
     createdDate: String!
     modifiedDate: String
     publishedDate: String
@@ -292,5 +302,37 @@ export const typeDefs = gql`
 
   union EditGameNameResponse =
       EditGameNameResponseSuccess
+    | UnauthorizedResponse
+
+  input AddUserToGameInput {
+    gameId: Int!
+    userId: Int!
+  }
+
+  type AddUserToGameResponseSuccess implements MutationResponse {
+    success: Boolean!
+    gameId: Int!
+    game: Game
+    userId: Int!
+    user: User
+  }
+
+  union AddUserToGameResponse =
+      AddUserToGameResponseSuccess
+    | UnauthorizedResponse
+
+  input RemoveUserFromGameInput {
+    gameId: Int!
+    userId: Int!
+  }
+
+  type RemoveUserFromGameResponseSuccess implements MutationResponse {
+    success: Boolean!
+    game: Game
+    user: User
+  }
+
+  union RemoveUserFromGameResponse =
+      RemoveUserFromGameResponseSuccess
     | UnauthorizedResponse
 `

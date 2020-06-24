@@ -6,9 +6,15 @@ import {
   Game,
   EditGameNameResponse,
   EditGameNameInput,
+  AddUserToGameInput,
+  AddUserToGameResponse,
+  RemoveUserFromGameInput,
+  RemoveUserFromGameResponse,
+  User,
 } from '../__generated__/schema-types'
 import { unauthorizedResponse } from './const'
 import { Context } from './context'
+import { filterOutErrorsFromResponses } from './utils'
 
 export type ApiGameDto = {
   id: number
@@ -29,6 +35,9 @@ export type ApiGameDto = {
   superparent: number
   type: 'item'
   version: number
+  meta: {
+    author: number[]
+  }
 }
 
 function apiGameToGame(game: ApiGameDto): Game {
@@ -38,6 +47,7 @@ function apiGameToGame(game: ApiGameDto): Game {
     name: game.name,
     body: game.body,
     authorId: game.author,
+    teamUserIds: game.meta.author,
     createdDate: game.created,
     modifiedDate: game.modified,
     publishedDate: game.published,
@@ -69,6 +79,15 @@ export default class GameAPI extends BaseAPI {
     return this.context.loaders.gameLoader.load(id)
   }
 
+  async getTeamUsers(id: number): Promise<Game['teamUsers']> {
+    const game = await this.context.loaders.gameLoader.load(id)
+    const userResponses = await this.context.loaders.userLoader.loadMany(
+      game.teamUserIds
+    )
+    const users = filterOutErrorsFromResponses<User>(userResponses)
+    return users
+  }
+
   async editGameName({
     id,
     name,
@@ -79,6 +98,44 @@ export default class GameAPI extends BaseAPI {
       })
       return {
         __typename: 'EditGameNameResponseSuccess',
+        success: true,
+      }
+    } catch (e) {
+      console.error(e)
+      return unauthorizedResponse
+    }
+  }
+
+  async addUserToGame({
+    gameId,
+    userId,
+  }: AddUserToGameInput): Promise<AddUserToGameResponse> {
+    try {
+      await this.post(`vx/node/link/add/${gameId}/${userId}`, {
+        author: null,
+      })
+
+      return {
+        __typename: 'AddUserToGameResponseSuccess',
+        success: true,
+        gameId,
+        userId,
+      }
+    } catch (e) {
+      console.error(e)
+      return unauthorizedResponse
+    }
+  }
+
+  async removeUserFromGame({
+    gameId,
+    userId,
+  }: RemoveUserFromGameInput): Promise<RemoveUserFromGameResponse> {
+    try {
+      await this.post(`vx/node/link/add/${gameId}/${userId}`)
+
+      return {
+        __typename: 'RemoveUserFromGameResponseSuccess',
         success: true,
       }
     } catch (e) {

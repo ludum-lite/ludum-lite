@@ -70,10 +70,10 @@ export default function GameWidget({ className }: Props) {
   const [gameName, setGameName] = React.useState<string>('')
   const { data } = useGameWidgetDataQuery({
     onCompleted(data) {
-      console.log('completed', data?.featuredEvent?.currentUserGame?.name)
       setGameName(data?.featuredEvent?.currentUserGame?.name || '')
     },
   })
+
   const [preferredEventType, setPreferredEventType] = useLocalStorage<
     'compo' | 'jam' | null
   >('currentEventPreferredEventType', null)
@@ -199,19 +199,15 @@ export default function GameWidget({ className }: Props) {
 }
 
 gql`
-  fragment GameWidget_event on Event {
-    id
-    currentUserGameId
-    currentUserGame {
-      id
-      name
-    }
-    eventPhase
-  }
-
   query GameWidgetData {
     featuredEvent {
-      ...GameWidget_event
+      id
+      currentUserGameId
+      currentUserGame {
+        id
+        name
+      }
+      eventPhase
     }
   }
 

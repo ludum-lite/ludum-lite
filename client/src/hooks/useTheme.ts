@@ -502,6 +502,9 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       MuiListItem: {
         button: {
           transition: 'none',
+          '&:hover': {
+            backgroundColor: buttonOutlinedBackgroundColor,
+          },
         },
       },
       MuiLinearProgress: {

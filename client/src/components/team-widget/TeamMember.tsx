@@ -1,31 +1,31 @@
 import React from 'react'
 import styled from 'styled-components/macro'
+import Avatar from 'components/posts/Avatar'
 
 const Root = styled.div`
   display: flex;
-`
-const AvatarImg = styled.img`
   position: relative;
-  border-radius: 50%;
-  background: white;
-  border: 2px solid white;
 `
 
 interface Props {
-  avatarPath: string
+  avatarPath?: string | null
   leader?: boolean
   className?: string
 }
-export default function TeamMember({ avatarPath, leader, className }: Props) {
-  const size = leader ? 50 : 40
+export default React.forwardRef<HTMLDivElement, Props>(
+  ({ avatarPath, leader, className, ...others }, ref) => {
+    const size = leader ? 50 : 40
 
-  return (
-    <Root className={className}>
-      <AvatarImg
-        src={avatarPath}
-        alt=""
-        style={{ height: size, width: size }}
-      />
-    </Root>
-  )
-}
+    return (
+      <Root className={className} {...others} ref={ref}>
+        <Avatar
+          avatarPath={avatarPath}
+          size={size}
+          defaultToProfileImage
+          circle
+          border
+        />
+      </Root>
+    )
+  }
+)

@@ -48,6 +48,8 @@ export type Mutation = {
   editComment: EditCommentResponse
   joinEvent: JoinEventResponse
   editGameName: EditGameNameResponse
+  addUserToGame: AddUserToGameResponse
+  removeUserFromGame: RemoveUserFromGameResponse
 }
 
 export type MutationLoginArgs = {
@@ -80,6 +82,14 @@ export type MutationEditCommentArgs = {
 
 export type MutationEditGameNameArgs = {
   input: EditGameNameInput
+}
+
+export type MutationAddUserToGameArgs = {
+  input: AddUserToGameInput
+}
+
+export type MutationRemoveUserFromGameArgs = {
+  input: RemoveUserFromGameInput
 }
 
 export type MutationResponse = {
@@ -132,6 +142,10 @@ export type Me = BaseUser & {
   profilePath: Scalars['String']
   type: Scalars['String']
   lovedPosts: Array<Scalars['Int']>
+  userIdsImFollowing: Array<Scalars['Int']>
+  usersImFollowing: Array<User>
+  userIdsFollowingMe: Array<Scalars['Int']>
+  usersFollowingMe: Array<User>
 }
 
 export type MeResponse = Me | UnauthorizedResponse
@@ -313,6 +327,8 @@ export type Game = {
   body: Scalars['String']
   authorId: Scalars['Int']
   author?: Maybe<User>
+  teamUserIds: Array<Scalars['Int']>
+  teamUsers?: Maybe<Array<User>>
   createdDate: Scalars['String']
   modifiedDate?: Maybe<Scalars['String']>
   publishedDate?: Maybe<Scalars['String']>
@@ -337,17 +353,51 @@ export type EditGameNameResponse =
   | EditGameNameResponseSuccess
   | UnauthorizedResponse
 
-export type GameWidget_EventFragment = { __typename: 'Event' } & Pick<
-  Event,
-  'id' | 'currentUserGameId' | 'eventPhase'
-> & {
-    currentUserGame?: Maybe<{ __typename: 'Game' } & Pick<Game, 'id' | 'name'>>
-  }
+export type AddUserToGameInput = {
+  gameId: Scalars['Int']
+  userId: Scalars['Int']
+}
+
+export type AddUserToGameResponseSuccess = MutationResponse & {
+  __typename: 'AddUserToGameResponseSuccess'
+  success: Scalars['Boolean']
+  gameId: Scalars['Int']
+  game?: Maybe<Game>
+  userId: Scalars['Int']
+  user?: Maybe<User>
+}
+
+export type AddUserToGameResponse =
+  | AddUserToGameResponseSuccess
+  | UnauthorizedResponse
+
+export type RemoveUserFromGameInput = {
+  gameId: Scalars['Int']
+  userId: Scalars['Int']
+}
+
+export type RemoveUserFromGameResponseSuccess = MutationResponse & {
+  __typename: 'RemoveUserFromGameResponseSuccess'
+  success: Scalars['Boolean']
+  game?: Maybe<Game>
+  user?: Maybe<User>
+}
+
+export type RemoveUserFromGameResponse =
+  | RemoveUserFromGameResponseSuccess
+  | UnauthorizedResponse
 
 export type GameWidgetDataQueryVariables = Exact<{ [key: string]: never }>
 
 export type GameWidgetDataQuery = { __typename: 'Query' } & {
-  featuredEvent: { __typename: 'Event' } & GameWidget_EventFragment
+  featuredEvent: { __typename: 'Event' } & Pick<
+    Event,
+    'id' | 'currentUserGameId' | 'eventPhase'
+  > & {
+      currentUserGame?: Maybe<
+        { __typename: 'Game' } & Pick<Game, 'id' | 'name'>
+      >
+    }
 }
 
 export type EditGameNameMutationVariables = Exact<{
@@ -626,15 +676,34 @@ export type UnlovePostMutation = { __typename: 'Mutation' } & {
     | { __typename: 'UnauthorizedResponse' }
 }
 
-export type TeamWidget_EventFragment = { __typename: 'Event' } & Pick<
-  Event,
-  'id' | 'currentUserGameId' | 'eventPhase'
+export type TeamWidget_TeamUserFragment = { __typename: 'User' } & Pick<
+  User,
+  'id' | 'name' | 'avatarPath'
 >
 
 export type TeamWidgetDataQueryVariables = Exact<{ [key: string]: never }>
 
 export type TeamWidgetDataQuery = { __typename: 'Query' } & {
-  featuredEvent: { __typename: 'Event' } & TeamWidget_EventFragment
+  featuredEvent: { __typename: 'Event' } & Pick<
+    Event,
+    'id' | 'currentUserGameId' | 'eventPhase'
+  > & {
+      currentUserGame?: Maybe<
+        { __typename: 'Game' } & Pick<Game, 'id'> & {
+            teamUsers?: Maybe<
+              Array<{ __typename: 'User' } & TeamWidget_TeamUserFragment>
+            >
+            author?: Maybe<{ __typename: 'User' } & TeamWidget_TeamUserFragment>
+          }
+      >
+    }
+  me:
+    | ({ __typename: 'Me' } & Pick<Me, 'id' | 'userIdsFollowingMe'> & {
+          usersImFollowing: Array<
+            { __typename: 'User' } & Pick<User, 'id' | 'name' | 'avatarPath'>
+          >
+        })
+    | { __typename: 'UnauthorizedResponse' }
 }
 
 export type JoinEventMutationVariables = Exact<{ [key: string]: never }>
@@ -644,6 +713,27 @@ export type JoinEventMutation = { __typename: 'Mutation' } & {
     | ({ __typename: 'JoinEventSuccess' } & Pick<JoinEventSuccess, 'gameId'> & {
           featuredEvent?: Maybe<
             { __typename: 'Event' } & Pick<Event, 'id' | 'currentUserGameId'>
+          >
+        })
+    | { __typename: 'UnauthorizedResponse' }
+}
+
+export type AddUserToGameMutationVariables = Exact<{
+  input: AddUserToGameInput
+}>
+
+export type AddUserToGameMutation = { __typename: 'Mutation' } & {
+  addUserToGame:
+    | ({ __typename: 'AddUserToGameResponseSuccess' } & Pick<
+        AddUserToGameResponseSuccess,
+        'success'
+      > & {
+          game?: Maybe<
+            { __typename: 'Game' } & Pick<Game, 'id'> & {
+                teamUsers?: Maybe<
+                  Array<{ __typename: 'User' } & TeamWidget_TeamUserFragment>
+                >
+              }
           >
         })
     | { __typename: 'UnauthorizedResponse' }
@@ -670,21 +760,10 @@ export type GetMeDataQueryVariables = Exact<{ [key: string]: never }>
 
 export type GetMeDataQuery = { __typename: 'Query' } & {
   me:
-    | ({ __typename: 'Me' } & Pick<Me, 'id'>)
+    | ({ __typename: 'Me' } & Pick<Me, 'id' | 'name'>)
     | { __typename: 'UnauthorizedResponse' }
 }
 
-export const GameWidget_EventFragmentDoc = gql`
-  fragment GameWidget_event on Event {
-    id
-    currentUserGameId
-    currentUserGame {
-      id
-      name
-    }
-    eventPhase
-  }
-`
 export const AddCommentForm_PostFragmentDoc = gql`
   fragment AddCommentForm_post on Post {
     id
@@ -812,20 +891,25 @@ export const Post_MeFragmentDoc = gql`
   }
   ${PostLoveButton_MeFragmentDoc}
 `
-export const TeamWidget_EventFragmentDoc = gql`
-  fragment TeamWidget_event on Event {
+export const TeamWidget_TeamUserFragmentDoc = gql`
+  fragment TeamWidget_teamUser on User {
     id
-    currentUserGameId
-    eventPhase
+    name
+    avatarPath
   }
 `
 export const GameWidgetDataDocument = gql`
   query GameWidgetData {
     featuredEvent {
-      ...GameWidget_event
+      id
+      currentUserGameId
+      currentUserGame {
+        id
+        name
+      }
+      eventPhase
     }
   }
-  ${GameWidget_EventFragmentDoc}
 `
 
 /**
@@ -1534,10 +1618,32 @@ export type UnlovePostMutationOptions = ApolloReactCommon.BaseMutationOptions<
 export const TeamWidgetDataDocument = gql`
   query TeamWidgetData {
     featuredEvent {
-      ...TeamWidget_event
+      id
+      currentUserGameId
+      currentUserGame {
+        id
+        teamUsers {
+          ...TeamWidget_teamUser
+        }
+        author {
+          ...TeamWidget_teamUser
+        }
+      }
+      eventPhase
+    }
+    me {
+      ... on Me {
+        id
+        userIdsFollowingMe
+        usersImFollowing {
+          id
+          name
+          avatarPath
+        }
+      }
     }
   }
-  ${TeamWidget_EventFragmentDoc}
+  ${TeamWidget_TeamUserFragmentDoc}
 `
 
 /**
@@ -1641,6 +1747,65 @@ export type JoinEventMutationResult = ApolloReactCommon.MutationResult<
 export type JoinEventMutationOptions = ApolloReactCommon.BaseMutationOptions<
   JoinEventMutation,
   JoinEventMutationVariables
+>
+export const AddUserToGameDocument = gql`
+  mutation AddUserToGame($input: AddUserToGameInput!) {
+    addUserToGame(input: $input) {
+      ... on AddUserToGameResponseSuccess {
+        success
+        game {
+          id
+          teamUsers {
+            ...TeamWidget_teamUser
+          }
+        }
+      }
+    }
+  }
+  ${TeamWidget_TeamUserFragmentDoc}
+`
+export type AddUserToGameMutationFn = ApolloReactCommon.MutationFunction<
+  AddUserToGameMutation,
+  AddUserToGameMutationVariables
+>
+
+/**
+ * __useAddUserToGameMutation__
+ *
+ * To run a mutation, you first call `useAddUserToGameMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddUserToGameMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addUserToGameMutation, { data, loading, error }] = useAddUserToGameMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddUserToGameMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    AddUserToGameMutation,
+    AddUserToGameMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    AddUserToGameMutation,
+    AddUserToGameMutationVariables
+  >(AddUserToGameDocument, baseOptions)
+}
+export type AddUserToGameMutationHookResult = ReturnType<
+  typeof useAddUserToGameMutation
+>
+export type AddUserToGameMutationResult = ApolloReactCommon.MutationResult<
+  AddUserToGameMutation
+>
+export type AddUserToGameMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  AddUserToGameMutation,
+  AddUserToGameMutationVariables
 >
 export const GlobalIsLoggedInDocument = gql`
   query GlobalIsLoggedIn {
@@ -1753,6 +1918,7 @@ export const GetMeDataDocument = gql`
     me {
       ... on Me {
         id
+        name
       }
     }
   }
@@ -1851,6 +2017,12 @@ const result: IntrospectionResultData = {
           },
           {
             name: 'EditGameNameResponseSuccess',
+          },
+          {
+            name: 'AddUserToGameResponseSuccess',
+          },
+          {
+            name: 'RemoveUserFromGameResponseSuccess',
           },
         ],
       },
@@ -1980,6 +2152,30 @@ const result: IntrospectionResultData = {
         possibleTypes: [
           {
             name: 'EditGameNameResponseSuccess',
+          },
+          {
+            name: 'UnauthorizedResponse',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'AddUserToGameResponse',
+        possibleTypes: [
+          {
+            name: 'AddUserToGameResponseSuccess',
+          },
+          {
+            name: 'UnauthorizedResponse',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'RemoveUserFromGameResponse',
+        possibleTypes: [
+          {
+            name: 'RemoveUserFromGameResponseSuccess',
           },
           {
             name: 'UnauthorizedResponse',

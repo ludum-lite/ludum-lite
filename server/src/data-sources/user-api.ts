@@ -4,7 +4,13 @@ import sort from 'dataloader-sort'
 import BaseAPI from './base-api'
 import { Context } from './context'
 import { unauthorizedResponse } from './const'
-import { User, LoginResponse, Me } from '../__generated__/schema-types'
+import {
+  User,
+  LoginResponse,
+  Me,
+  MeResponse,
+} from '../__generated__/schema-types'
+import { filterOutErrorsFromResponses } from './utils'
 
 export type ApiUserDto = {
   id: number
@@ -94,7 +100,7 @@ export default class UserAPI extends BaseAPI {
     }
   }
 
-  async me() {
+  async me(): Promise<MeResponse> {
     try {
       return {
         ...apiUserToUser((await this.get('vx/user/get')).node),
@@ -105,7 +111,29 @@ export default class UserAPI extends BaseAPI {
     }
   }
 
-  async getMyLovedPosts() {
+  async getUserIdsImFollowing(): Promise<Me['userIdsImFollowing']> {
+    try {
+      const response = await this.get('vx/node/getmy')
+
+      return response.meta.star
+    } catch (e) {
+      console.error(e)
+      return []
+    }
+  }
+
+  async getUserIdsFollowingMe(): Promise<Me['userIdsFollowingMe']> {
+    try {
+      const response = await this.get('vx/node/getmy')
+
+      return response.refs.star
+    } catch (e) {
+      console.error(e)
+      return []
+    }
+  }
+
+  async getMyLovedPosts(): Promise<Me['lovedPosts']> {
     const response = await this.get('vx/node/love/getmy')
     const lovedPosts = response['my-love']
 
@@ -114,5 +142,10 @@ export default class UserAPI extends BaseAPI {
 
   async getUser(id: number) {
     return await this.context.loaders.userLoader.load(id)
+  }
+
+  async getUsers(ids: number[]): Promise<User[]> {
+    const userResponses = await this.context.loaders.userLoader.loadMany(ids)
+    return filterOutErrorsFromResponses<User>(userResponses)
   }
 }
