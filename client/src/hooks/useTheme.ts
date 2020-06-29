@@ -3,6 +3,7 @@ import { singletonHook } from 'react-singleton-hook'
 import { ThemeMode } from 'utils/types'
 import { createGlobalStyle, css } from 'styled-components/macro'
 import { createMuiTheme, Theme, fade } from '@material-ui/core'
+import useLocalStorage from './useLocalStorage'
 
 type ButtonThemeColors = Partial<{
   color: string
@@ -21,6 +22,7 @@ export type ThemeColors = {
   background: string
   globalNavBackground: string
   contextualNavBackground: string
+  whiteBackground: string
   loaderBackground: string
   loaderBarBackground: string
   logoBackground: string
@@ -141,6 +143,7 @@ const lightTheme: ThemeColors = {
   background: styleVariables.cultured,
   globalNavBackground: styleVariables.sapphireBlue,
   contextualNavBackground: styleVariables.greenBlue,
+  whiteBackground: styleVariables.white,
   loaderBackground: 'rgba(0, 0, 0, 0.166)',
   loaderBarBackground: 'rgba(0, 0, 0, 0.166)',
   logoBackground: styleVariables.indigoDye,
@@ -269,6 +272,7 @@ const darkTheme: ThemeColors = {
   background: ldStyleVariables.slateGray,
   globalNavBackground: ldStyleVariables.portlandOrange,
   contextualNavBackground: ldStyleVariables.raisinBlack,
+  whiteBackground: ldStyleVariables.white,
   loaderBackground: ldStyleVariables.portlandOrange,
   loaderBarBackground: ldStyleVariables.darkOrange,
   logoBackground: '',
@@ -725,15 +729,15 @@ const init: UseThemeReturnType = {
 }
 
 export const useTheme = singletonHook(init, () => {
-  const [themeMode, setThemeMode] = React.useState<ThemeMode>(
-    (localStorage.getItem('themeMode') as ThemeMode) || 'light'
+  const [themeMode, setThemeMode] = useLocalStorage<ThemeMode>(
+    'themeMode',
+    'dark'
   )
 
   const toggleTheme = React.useCallback(() => {
     const newMode = themeMode === 'light' ? 'dark' : 'light'
     setThemeMode(newMode)
-    localStorage.setItem('themeMode', newMode)
-  }, [themeMode])
+  }, [themeMode, setThemeMode])
 
   const selectedMuiTheme = React.useMemo(
     () => muiThemeGenerator({ themeMode }),

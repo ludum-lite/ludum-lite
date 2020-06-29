@@ -8,7 +8,6 @@ import MuiDarkBrightnessIcon from '@material-ui/icons/Brightness4Outlined'
 import IconButton from 'components/common/mui/IconButton'
 import { ReactComponent as UserIcon } from 'assets/user.svg'
 import { useLogin } from 'hooks/useLogin'
-import { useIsLoggedIn } from 'hooks/useIsLoggedIn'
 import { useTheme } from 'hooks/useTheme'
 
 const Root = styled.div`
@@ -95,9 +94,8 @@ const Footer = styled.div`
 
 interface Props {}
 export default function GlobalNav({}: Props) {
-  const isLoggedIn = useIsLoggedIn()
   const { themeMode, toggleTheme } = useTheme()
-  const { promptLogin } = useLogin()
+  const { promptLogin, isLoggedIn } = useLogin()
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 

@@ -13,6 +13,7 @@ import CountdownWidget from './sidebar/CountdownWidget'
 import { events } from 'utils'
 import TeamWidget from './team-widget/TeamWidget'
 import GameWidget from './game-widget/GameWidget'
+import InvitePage from './team-widget/InvitePage'
 
 interface AppProps {
   showingOverlay: boolean
@@ -41,8 +42,8 @@ const AppContent = styled.div`
 const WidgetsContainer = styled.div`
   display: flex;
   position: relative;
-  min-width: 300px;
-  width: 300px;
+  min-width: 277px;
+  width: 277px;
 `
 
 const Widgets = styled.div`
@@ -110,6 +111,7 @@ export default function Root({}: Props) {
             ) : (
               <Route path="/posts/:id" element={<PostPage />} />
             )}
+            <Route path="/invite/:userId" element={<InvitePage />} />
           </RoutesWithFallback>
         </AppContent>
         <WidgetsContainer>

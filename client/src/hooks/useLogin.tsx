@@ -4,7 +4,10 @@ import { gql } from '@apollo/client'
 import { isLoggedInVar } from 'resolvers'
 import { Drawer } from '@material-ui/core'
 import LoginForm from 'components/login/LoginForm'
-import { useLoginMutation } from '__generated__/client-types'
+import {
+  useLoginMutation,
+  useGlobalIsLoggedInQuery,
+} from '__generated__/client-types'
 
 type UseLoginReturnType = {
   login: ({
@@ -17,6 +20,7 @@ type UseLoginReturnType = {
   promptLogin: () => void
   isPromptingLogin: boolean
   loginComponent: React.ReactNode
+  isLoggedIn: boolean
 }
 
 const init: UseLoginReturnType = {
@@ -24,19 +28,20 @@ const init: UseLoginReturnType = {
   promptLogin: () => {},
   isPromptingLogin: false,
   loginComponent: null,
+  isLoggedIn: false,
 }
 
 export const useLogin = singletonHook(init, () => {
+  const { data } = useGlobalIsLoggedInQuery()
   const [isPromptingLogin, setIsPromptingLogin] = React.useState(false)
   const [error, setError] = React.useState('')
   const [loginMutation] = useLoginMutation({
     onCompleted: ({ login }) => {
       if (login.__typename === 'LoginSuccess') {
-        console.log(login)
         const { token } = login
         localStorage.setItem('token', token)
-        setIsPromptingLogin(false)
-        isLoggedInVar(true)
+        // setIsPromptingLogin(false)
+        // isLoggedInVar(true)
         window.location.reload()
       } else if (login.__typename === 'LoginFailure') {
         setError(login.message)
@@ -82,10 +87,15 @@ export const useLogin = singletonHook(init, () => {
     promptLogin,
     isPromptingLogin,
     loginComponent,
+    isLoggedIn: data?.isLoggedIn || false,
   }
 })
 
 gql`
+  query GlobalIsLoggedIn {
+    isLoggedIn @client
+  }
+
   mutation Login($input: LoginInput!) {
     login(input: $input) {
       ... on LoginSuccess {

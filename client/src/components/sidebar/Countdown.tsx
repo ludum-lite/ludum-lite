@@ -11,6 +11,10 @@ interface CountdownParts {
   seconds: number | null
 }
 
+const DIGIT_MIN_WIDTH = 28
+const DIGIT_MAX_WIDTH = 34
+const DIGIT_INNER_PADDING = 4
+
 function getCountdownParts(duration: Duration): CountdownParts {
   if (duration.asSeconds() < 0) {
     return {
@@ -33,6 +37,7 @@ function getCountdownParts(duration: Duration): CountdownParts {
 
 const Root = styled.div`
   display: flex;
+  justify-content: center;
 `
 
 const ClockIndexRoot = styled.div`
@@ -57,14 +62,14 @@ const ClockIndexDigits = styled.div`
 const ClockDigitRoot = styled.div`
   position: relative;
   height: 45px;
-  max-width: 34px;
-  min-width: 28px;
+  min-width: ${DIGIT_MIN_WIDTH}px;
+  max-width: ${DIGIT_MAX_WIDTH}px;
   flex: 1 1 0px;
   color: #000000b5;
   font-size: 25px;
   box-shadow: 0 1px 5px -2px #0000009c;
   &:not(:first-child) {
-    margin-left: 4px;
+    margin-left: ${DIGIT_INNER_PADDING}px;
   }
 `
 
@@ -170,7 +175,14 @@ function ClockIndex({ label, value }: ClockIndexProps) {
     })
 
   return (
-    <ClockIndexRoot style={{ flex: `${digits.length} 0 0px` }}>
+    <ClockIndexRoot
+      style={{
+        flex: `${digits.length} 0 0px`,
+        maxWidth:
+          digits.length * DIGIT_MAX_WIDTH +
+          (digits.length - 1) * DIGIT_INNER_PADDING,
+      }}
+    >
       <ClockLabel>{label}</ClockLabel>
       <ClockIndexDigits>{digits}</ClockIndexDigits>
     </ClockIndexRoot>
@@ -180,8 +192,13 @@ function ClockIndex({ label, value }: ClockIndexProps) {
 interface Props {
   targetDate: Moment
   onReachedTargetDate?: () => void
+  className?: string
 }
-export default function Countdown({ targetDate, onReachedTargetDate }: Props) {
+export default function Countdown({
+  targetDate,
+  onReachedTargetDate,
+  className,
+}: Props) {
   const [time, setTime] = React.useState(moment.utc())
 
   React.useEffect(() => {
@@ -203,7 +220,7 @@ export default function Countdown({ targetDate, onReachedTargetDate }: Props) {
   const countdownParts = getCountdownParts(duration)
 
   return (
-    <Root>
+    <Root className={className}>
       {countdownParts.days !== null && (
         <ClockIndex label="Days" value={countdownParts.days} />
       )}

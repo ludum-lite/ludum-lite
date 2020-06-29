@@ -6,13 +6,11 @@ import FavoriteIcon from '@material-ui/icons/FavoriteRounded'
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorderRounded'
 import { useLogin } from 'hooks/useLogin'
 import ToggleButton from 'components/common/ToggleButton'
-import { useIsLoggedIn } from 'hooks/useIsLoggedIn'
 import {
   CommentLoveButton_CommentFragment,
   CommentLoveButton_PostFragment,
   useLoveCommentMutation,
   useUnloveCommentMutation,
-  CommentLoveButton_CommentFragmentDoc,
 } from '__generated__/client-types'
 
 interface Props {
@@ -20,8 +18,7 @@ interface Props {
   post: CommentLoveButton_PostFragment
 }
 export default function CommentLoveButton({ comment, post }: Props) {
-  const { promptLogin } = useLogin()
-  const isLoggedIn = useIsLoggedIn()
+  const { promptLogin, isLoggedIn } = useLogin()
   const theme = useTheme()
 
   const [loveComment] = useLoveCommentMutation({

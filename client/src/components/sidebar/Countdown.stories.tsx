@@ -56,3 +56,20 @@ export const Basic = () => {
     </BasicRoot>
   )
 }
+
+const WideContainerRoot = styled.div`
+  background: ${({ theme }) => theme.themeColors.contextualNavBackground};
+  padding: ${({ theme }) => theme.spacing(2)}px;
+  width: 400px;
+`
+
+export const WideContainer = () => {
+  const [targetDate, setTargetDate] = React.useState<Moment>(
+    moment.utc().add(20, 'days')
+  )
+  return (
+    <WideContainerRoot>
+      <Countdown targetDate={targetDate} />
+    </WideContainerRoot>
+  )
+}

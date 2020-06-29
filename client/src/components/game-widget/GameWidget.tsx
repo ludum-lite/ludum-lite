@@ -18,7 +18,7 @@ import {
   DialogActions,
 } from '@material-ui/core'
 import useLocalStorage from 'hooks/useLocalStorage'
-import { useIsLoggedIn } from 'hooks/useIsLoggedIn'
+import { useLogin } from 'hooks/useLogin'
 import IconButton from 'components/common/mui/IconButton'
 import Icon from 'components/common/mui/Icon'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
@@ -66,7 +66,7 @@ interface Props {
   className?: string
 }
 export default function GameWidget({ className }: Props) {
-  const isLoggedIn = useIsLoggedIn()
+  const { isLoggedIn } = useLogin()
   const [gameName, setGameName] = React.useState<string>('')
   const { data } = useGameWidgetDataQuery({
     onCompleted(data) {
@@ -213,7 +213,7 @@ gql`
 
   mutation EditGameName($input: EditGameNameInput!) {
     editGameName(input: $input) {
-      ... on EditGameNameResponseSuccess {
+      ... on EditGameNameSuccess {
         game {
           id
           name

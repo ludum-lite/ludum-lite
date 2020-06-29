@@ -6,7 +6,6 @@ import Button from 'components/common/mui/Button'
 import Markdown from 'components/common/Markdown'
 import Fade from '@material-ui/core/Fade'
 import { ignoreProps } from 'utils'
-import { useIsLoggedIn } from 'hooks/useIsLoggedIn'
 import { useLogin } from 'hooks/useLogin'
 
 const FADE_TIMEOUT = 150
@@ -111,8 +110,7 @@ export default function CommentForm({
   onCancel,
   onSubmit,
 }: Props) {
-  const isLoggedIn = useIsLoggedIn()
-  const { promptLogin } = useLogin()
+  const { promptLogin, isLoggedIn } = useLogin()
   const [selectedTab, setSelectedTab] = React.useState<'write' | 'preview'>(
     'write'
   )

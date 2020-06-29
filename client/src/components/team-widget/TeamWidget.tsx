@@ -16,7 +16,7 @@ import {
   ListItemAvatar,
   ListItemText,
 } from '@material-ui/core'
-import { useIsLoggedIn } from 'hooks/useIsLoggedIn'
+import { useLogin } from 'hooks/useLogin'
 import IconButton from 'components/common/mui/IconButton'
 import Icon from 'components/common/mui/Icon'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
@@ -75,7 +75,7 @@ interface Props {
   className?: string
 }
 export default function GameWidget({ className }: Props) {
-  const isLoggedIn = useIsLoggedIn()
+  const { isLoggedIn } = useLogin()
   const { me } = useMe()
   const [hasCopied, setHasCopied] = React.useState<boolean>(false)
   const [
@@ -278,7 +278,7 @@ gql`
 
   mutation AddUserToGame($input: AddUserToGameInput!) {
     addUserToGame(input: $input) {
-      ... on AddUserToGameResponseSuccess {
+      ... on AddUserToGameSuccess {
         success
         game {
           id

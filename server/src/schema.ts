@@ -15,6 +15,8 @@ export const typeDefs = gql`
 
   type Mutation {
     login(input: LoginInput!): LoginResponse!
+    addFriend(input: IdInput!): AddFriendResponse!
+    addFriendAndAddToTeam(input: IdInput!): AddFriendAndAddToTeamResponse!
     lovePost(input: IdInput!): LovePostResponse!
     unlovePost(input: IdInput!): UnlovePostResponse!
     loveComment(input: IdInput!): LoveCommentResponse!
@@ -97,10 +99,6 @@ export const typeDefs = gql`
     password: String!
   }
 
-  #######
-  # Login
-  #######
-
   type LoginFailure implements MutationResponse {
     success: Boolean!
     message: String!
@@ -112,6 +110,26 @@ export const typeDefs = gql`
   }
 
   union LoginResponse = LoginFailure | LoginSuccess
+
+  type AddFriendSuccess implements MutationResponse {
+    success: Boolean!
+    userId: Int!
+    user: User
+  }
+
+  union AddFriendResponse = AddFriendSuccess | UnauthorizedResponse
+
+  type AddFriendAndAddToTeamSuccess implements MutationResponse {
+    success: Boolean!
+    userId: Int!
+    user: User
+    gameId: Int!
+    game: Game
+  }
+
+  union AddFriendAndAddToTeamResponse =
+      AddFriendAndAddToTeamSuccess
+    | UnauthorizedResponse
 
   ######
   # Post
@@ -295,21 +313,19 @@ export const typeDefs = gql`
     name: String!
   }
 
-  type EditGameNameResponseSuccess implements MutationResponse {
+  type EditGameNameSuccess implements MutationResponse {
     success: Boolean!
     game: Game
   }
 
-  union EditGameNameResponse =
-      EditGameNameResponseSuccess
-    | UnauthorizedResponse
+  union EditGameNameResponse = EditGameNameSuccess | UnauthorizedResponse
 
   input AddUserToGameInput {
     gameId: Int!
     userId: Int!
   }
 
-  type AddUserToGameResponseSuccess implements MutationResponse {
+  type AddUserToGameSuccess implements MutationResponse {
     success: Boolean!
     gameId: Int!
     game: Game
@@ -317,22 +333,20 @@ export const typeDefs = gql`
     user: User
   }
 
-  union AddUserToGameResponse =
-      AddUserToGameResponseSuccess
-    | UnauthorizedResponse
+  union AddUserToGameResponse = AddUserToGameSuccess | UnauthorizedResponse
 
   input RemoveUserFromGameInput {
     gameId: Int!
     userId: Int!
   }
 
-  type RemoveUserFromGameResponseSuccess implements MutationResponse {
+  type RemoveUserFromGameSuccess implements MutationResponse {
     success: Boolean!
     game: Game
     user: User
   }
 
   union RemoveUserFromGameResponse =
-      RemoveUserFromGameResponseSuccess
+      RemoveUserFromGameSuccess
     | UnauthorizedResponse
 `

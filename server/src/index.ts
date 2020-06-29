@@ -30,6 +30,12 @@ const resolvers: Resolvers<Context> = {
     login(_, { input: { email, password } }, context) {
       return context.dataSources.userApi.login(email, password)
     },
+    addFriend(_, { input }, context) {
+      return context.dataSources.userApi.addFriend(input.id)
+    },
+    addFriendAndAddToTeam(_, { input }, context) {
+      return context.dataSources.userApi.addFriendAndAddToTeam(input.id)
+    },
     lovePost(_, { input: { id } }, context) {
       return context.dataSources.postApi.lovePost(id)
     },
@@ -61,6 +67,19 @@ const resolvers: Resolvers<Context> = {
       return context.dataSources.gameApi.removeUserFromGame(input)
     },
   },
+  AddFriendSuccess: {
+    user(response, __, context) {
+      return context.dataSources.userApi.getUser(response.userId)
+    },
+  },
+  AddFriendAndAddToTeamSuccess: {
+    game(response, __, context) {
+      return context.dataSources.gameApi.getGame(response.gameId)
+    },
+    user(response, __, context) {
+      return context.dataSources.userApi.getUser(response.userId)
+    },
+  },
   Post: {
     author(post, __, context) {
       return context.dataSources.userApi.getUser(post.authorId)
@@ -81,8 +100,9 @@ const resolvers: Resolvers<Context> = {
     currentUserGameId(_, __, context) {
       return context.dataSources.eventApi.getCurrentUserGameId()
     },
-    async currentUserGame(event, __, context) {
+    async currentUserGame(_, __, context) {
       const gameId = await context.dataSources.eventApi.getCurrentUserGameId()
+      console.log(gameId)
 
       if (gameId) {
         return context.dataSources.gameApi.getGame(gameId)
@@ -153,7 +173,7 @@ const resolvers: Resolvers<Context> = {
     GameVoting: 6,
     Results: 7,
   },
-  AddUserToGameResponseSuccess: {
+  AddUserToGameSuccess: {
     game(response, __, context) {
       return context.dataSources.gameApi.getGame(response.gameId)
     },

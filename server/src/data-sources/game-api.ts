@@ -97,7 +97,7 @@ export default class GameAPI extends BaseAPI {
         name,
       })
       return {
-        __typename: 'EditGameNameResponseSuccess',
+        __typename: 'EditGameNameSuccess',
         success: true,
       }
     } catch (e) {
@@ -116,7 +116,7 @@ export default class GameAPI extends BaseAPI {
       })
 
       return {
-        __typename: 'AddUserToGameResponseSuccess',
+        __typename: 'AddUserToGameSuccess',
         success: true,
         gameId,
         userId,
@@ -135,7 +135,7 @@ export default class GameAPI extends BaseAPI {
       await this.post(`vx/node/link/add/${gameId}/${userId}`)
 
       return {
-        __typename: 'RemoveUserFromGameResponseSuccess',
+        __typename: 'RemoveUserFromGameSuccess',
         success: true,
       }
     } catch (e) {

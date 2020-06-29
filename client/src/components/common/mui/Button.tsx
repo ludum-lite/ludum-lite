@@ -1,5 +1,9 @@
 import React from 'react'
-import { Button as MuiButton, ButtonProps } from '@material-ui/core'
+import {
+  Button as MuiButton,
+  ButtonProps,
+  CircularProgress,
+} from '@material-ui/core'
 import styled, { css } from 'styled-components/macro'
 
 export type Background = 'globalNav' | 'contextualNav' | 'page' | 'white'
@@ -36,11 +40,16 @@ export interface Props {
   background?: Background
   color?: ButtonProps['color']
   variant?: ButtonProps['variant']
+  loading?: Boolean
 }
 export default function Button({
   background = 'white',
   color = 'default',
   variant = 'text',
+  loading,
+  disabled,
+  children,
+  onClick,
   ...others
 }: Props & Omit<ButtonProps, keyof Props>) {
   return (
@@ -48,6 +57,9 @@ export default function Button({
       background={background}
       color={color}
       variant={variant}
+      endIcon={loading && <CircularProgress />}
+      children={loading ? 'Loading' : children}
+      onClick={loading ? undefined : onClick}
       {...others}
     />
   )

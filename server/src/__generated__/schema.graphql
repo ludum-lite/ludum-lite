@@ -8,6 +8,8 @@ type Query {
 
 type Mutation {
   login(input: LoginInput!): LoginResponse!
+  addFriend(input: IdInput!): AddFriendResponse!
+  addFriendAndAddToTeam(input: IdInput!): AddFriendAndAddToTeamResponse!
   lovePost(input: IdInput!): LovePostResponse!
   unlovePost(input: IdInput!): UnlovePostResponse!
   loveComment(input: IdInput!): LoveCommentResponse!
@@ -91,6 +93,24 @@ type LoginSuccess implements MutationResponse {
 }
 
 union LoginResponse = LoginFailure | LoginSuccess
+
+type AddFriendSuccess implements MutationResponse {
+  success: Boolean!
+  userId: Int!
+  user: User
+}
+
+union AddFriendResponse = AddFriendSuccess | UnauthorizedResponse
+
+type AddFriendAndAddToTeamSuccess implements MutationResponse {
+  success: Boolean!
+  userId: Int!
+  user: User
+  gameId: Int!
+  game: Game
+}
+
+union AddFriendAndAddToTeamResponse = AddFriendAndAddToTeamSuccess | UnauthorizedResponse
 
 enum PostType {
   All
@@ -254,19 +274,19 @@ input EditGameNameInput {
   name: String!
 }
 
-type EditGameNameResponseSuccess implements MutationResponse {
+type EditGameNameSuccess implements MutationResponse {
   success: Boolean!
   game: Game
 }
 
-union EditGameNameResponse = EditGameNameResponseSuccess | UnauthorizedResponse
+union EditGameNameResponse = EditGameNameSuccess | UnauthorizedResponse
 
 input AddUserToGameInput {
   gameId: Int!
   userId: Int!
 }
 
-type AddUserToGameResponseSuccess implements MutationResponse {
+type AddUserToGameSuccess implements MutationResponse {
   success: Boolean!
   gameId: Int!
   game: Game
@@ -274,17 +294,17 @@ type AddUserToGameResponseSuccess implements MutationResponse {
   user: User
 }
 
-union AddUserToGameResponse = AddUserToGameResponseSuccess | UnauthorizedResponse
+union AddUserToGameResponse = AddUserToGameSuccess | UnauthorizedResponse
 
 input RemoveUserFromGameInput {
   gameId: Int!
   userId: Int!
 }
 
-type RemoveUserFromGameResponseSuccess implements MutationResponse {
+type RemoveUserFromGameSuccess implements MutationResponse {
   success: Boolean!
   game: Game
   user: User
 }
 
-union RemoveUserFromGameResponse = RemoveUserFromGameResponseSuccess | UnauthorizedResponse
+union RemoveUserFromGameResponse = RemoveUserFromGameSuccess | UnauthorizedResponse

@@ -9,6 +9,9 @@ import {
   LoginResponse,
   Me,
   MeResponse,
+  IdInput,
+  AddFriendResponse,
+  AddFriendAndAddToTeamResponse,
 } from '../__generated__/schema-types'
 import { filterOutErrorsFromResponses } from './utils'
 
@@ -147,5 +150,49 @@ export default class UserAPI extends BaseAPI {
   async getUsers(ids: number[]): Promise<User[]> {
     const userResponses = await this.context.loaders.userLoader.loadMany(ids)
     return filterOutErrorsFromResponses<User>(userResponses)
+  }
+
+  async addFriend(id: number): Promise<AddFriendResponse> {
+    try {
+      await this.get(`vx/node/star/add/${id}`)
+
+      return {
+        __typename: 'AddFriendSuccess',
+        success: true,
+        userId: id,
+      }
+    } catch (e) {
+      console.error(e)
+      return unauthorizedResponse
+    }
+  }
+
+  async addFriendAndAddToTeam(
+    id: number
+  ): Promise<AddFriendAndAddToTeamResponse> {
+    try {
+      await this.get(`vx/node/star/add/${id}`)
+      const gameId = await this.context.dataSources.eventApi.getCurrentUserGameId()
+
+      if (!gameId) {
+        console.error('Couldnt find game for user', id)
+        return unauthorizedResponse
+      }
+
+      await this.context.dataSources.gameApi.addUserToGame({
+        gameId,
+        userId: id,
+      })
+
+      return {
+        __typename: 'AddFriendAndAddToTeamSuccess',
+        success: true,
+        userId: id,
+        gameId,
+      }
+    } catch (e) {
+      console.error(e)
+      return unauthorizedResponse
+    }
   }
 }

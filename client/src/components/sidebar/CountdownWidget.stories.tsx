@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components/macro'
 import CountdownWidget from './CountdownWidget'
 import moment from 'moment'
-import { Timeline, EventPhase, generateTimeline, Event } from 'utils/timeline'
+import { EventPhase, generateTimeline, Event } from 'utils/timeline'
 
 export default {
   title: 'CountdownWidget',
@@ -13,14 +13,11 @@ const BasicRoot = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  max-height: 500px;
 
   & > * {
     margin-bottom: ${({ theme }) => theme.spacing(2)}px;
   }
-`
-const CountdownBackground = styled.div`
-  padding: ${({ theme }) => theme.spacing(2)}px;
-  background: ${({ theme }) => theme.themeColors.contextualNavBackground};
 `
 
 export const Basic = () => {
@@ -46,9 +43,7 @@ export const Basic = () => {
 
   return (
     <BasicRoot>
-      <CountdownBackground>
-        <CountdownWidget events={[event]} />
-      </CountdownBackground>
+      <CountdownWidget events={[event]} />
     </BasicRoot>
   )
 }
@@ -76,9 +71,7 @@ export const ThemeRevealNext = () => {
 
   return (
     <BasicRoot>
-      <CountdownBackground>
-        <CountdownWidget events={[event]} />
-      </CountdownBackground>
+      <CountdownWidget events={[event]} />
     </BasicRoot>
   )
 }
@@ -106,9 +99,7 @@ export const EventRunning = () => {
 
   return (
     <BasicRoot>
-      <CountdownBackground>
-        <CountdownWidget events={[event]} />
-      </CountdownBackground>
+      <CountdownWidget events={[event]} />
     </BasicRoot>
   )
 }

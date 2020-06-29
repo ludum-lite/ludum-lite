@@ -36,13 +36,14 @@ const Root = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  padding: ${({ theme }) => `${theme.spacing(2)}px ${theme.spacing(2)}px`};
   background: ${({ theme }) => theme.themeColors.contextualNavBackground};
+  overflow: hidden;
 `
 
 const TitleButton = styled(Button)`
-  margin-bottom: ${({ theme }) => theme.spacing(1)}px;
   color: ${({ theme }) => theme.themeColors.countdown.titleColor};
+  margin: ${({ theme }) =>
+    `${theme.spacing(2)}px ${theme.spacing(2)}px ${theme.spacing(1)}px`};
 `
 
 const Title = styled(Typography)`
@@ -53,13 +54,18 @@ const Subtitle = styled(Typography)`
   color: ${({ theme }) => theme.themeColors.countdown.fadedTextColor};
 `
 
+const StyledCountdown = styled(Countdown)`
+  margin: ${({ theme }) => `0 ${theme.spacing(2)}px`};
+`
+
 const ExpandButton = styled(Button)`
-  margin-top: ${({ theme }) => theme.spacing(2)}px;
+  margin: ${({ theme }) => theme.spacing(2)}px;
 `
 
 const EventList = styled(List)`
   color: white;
   overflow: auto;
+  padding: ${({ theme }) => `0 ${theme.spacing(2)}px`};
 `
 
 const NextTitle = styled.div`
@@ -75,6 +81,7 @@ const NextTitle = styled.div`
 const EventToggleButtons = styled.div`
   display: flex;
   margin-bottom: 8px;
+  padding: ${({ theme }) => `0 ${theme.spacing(2)}px`};
 
   & > *:not(:last-child) {
     margin-right: ${({ theme }) => theme.spacing(1)}px;
@@ -208,7 +215,6 @@ export default function CountdownWidget({ events, className }: Props) {
             </EventList>
             {!isSelectedEventOver && (
               <ExpandButton
-                fullWidth
                 onClick={() => {
                   setCountdownWidgetExpanded(false)
                 }}
@@ -224,10 +230,9 @@ export default function CountdownWidget({ events, className }: Props) {
         return (
           <Fragment>
             {nextPhaseForCountdown.date && (
-              <Countdown targetDate={nextPhaseForCountdown.date} />
+              <StyledCountdown targetDate={nextPhaseForCountdown.date} />
             )}
             <ExpandButton
-              fullWidth
               onClick={() => {
                 setCountdownWidgetExpanded(true)
               }}
@@ -255,7 +260,6 @@ export default function CountdownWidget({ events, className }: Props) {
   return (
     <Root className={className}>
       <TitleButton
-        fullWidth
         endIcon={<Icon icon={ExpandMore} />}
         background="contextualNav"
         onClick={handleClick}
@@ -268,9 +272,9 @@ export default function CountdownWidget({ events, className }: Props) {
           <EventToggleButtons>
             <Button
               background="contextualNav"
+              fullWidth
               variant={preferredEventType === 'compo' ? 'contained' : 'text'}
               color={preferredEventType === 'compo' ? 'secondary' : 'default'}
-              fullWidth
               onClick={() => {
                 setPreferredEventType('compo')
               }}
@@ -279,9 +283,9 @@ export default function CountdownWidget({ events, className }: Props) {
             </Button>
             <Button
               background="contextualNav"
+              fullWidth
               variant={preferredEventType === 'jam' ? 'contained' : 'text'}
               color={preferredEventType === 'jam' ? 'secondary' : 'default'}
-              fullWidth
               onClick={() => {
                 setPreferredEventType('jam')
               }}

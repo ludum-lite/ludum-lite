@@ -40,6 +40,8 @@ export type QueryUserArgs = {
 export type Mutation = {
   __typename: 'Mutation'
   login: LoginResponse
+  addFriend: AddFriendResponse
+  addFriendAndAddToTeam: AddFriendAndAddToTeamResponse
   lovePost: LovePostResponse
   unlovePost: UnlovePostResponse
   loveComment: LoveCommentResponse
@@ -54,6 +56,14 @@ export type Mutation = {
 
 export type MutationLoginArgs = {
   input: LoginInput
+}
+
+export type MutationAddFriendArgs = {
+  input: IdInput
+}
+
+export type MutationAddFriendAndAddToTeamArgs = {
+  input: IdInput
 }
 
 export type MutationLovePostArgs = {
@@ -168,6 +178,28 @@ export type LoginSuccess = MutationResponse & {
 }
 
 export type LoginResponse = LoginFailure | LoginSuccess
+
+export type AddFriendSuccess = MutationResponse & {
+  __typename: 'AddFriendSuccess'
+  success: Scalars['Boolean']
+  userId: Scalars['Int']
+  user?: Maybe<User>
+}
+
+export type AddFriendResponse = AddFriendSuccess | UnauthorizedResponse
+
+export type AddFriendAndAddToTeamSuccess = MutationResponse & {
+  __typename: 'AddFriendAndAddToTeamSuccess'
+  success: Scalars['Boolean']
+  userId: Scalars['Int']
+  user?: Maybe<User>
+  gameId: Scalars['Int']
+  game?: Maybe<Game>
+}
+
+export type AddFriendAndAddToTeamResponse =
+  | AddFriendAndAddToTeamSuccess
+  | UnauthorizedResponse
 
 export enum PostType {
   All = 'All',
@@ -343,23 +375,21 @@ export type EditGameNameInput = {
   name: Scalars['String']
 }
 
-export type EditGameNameResponseSuccess = MutationResponse & {
-  __typename: 'EditGameNameResponseSuccess'
+export type EditGameNameSuccess = MutationResponse & {
+  __typename: 'EditGameNameSuccess'
   success: Scalars['Boolean']
   game?: Maybe<Game>
 }
 
-export type EditGameNameResponse =
-  | EditGameNameResponseSuccess
-  | UnauthorizedResponse
+export type EditGameNameResponse = EditGameNameSuccess | UnauthorizedResponse
 
 export type AddUserToGameInput = {
   gameId: Scalars['Int']
   userId: Scalars['Int']
 }
 
-export type AddUserToGameResponseSuccess = MutationResponse & {
-  __typename: 'AddUserToGameResponseSuccess'
+export type AddUserToGameSuccess = MutationResponse & {
+  __typename: 'AddUserToGameSuccess'
   success: Scalars['Boolean']
   gameId: Scalars['Int']
   game?: Maybe<Game>
@@ -367,24 +397,22 @@ export type AddUserToGameResponseSuccess = MutationResponse & {
   user?: Maybe<User>
 }
 
-export type AddUserToGameResponse =
-  | AddUserToGameResponseSuccess
-  | UnauthorizedResponse
+export type AddUserToGameResponse = AddUserToGameSuccess | UnauthorizedResponse
 
 export type RemoveUserFromGameInput = {
   gameId: Scalars['Int']
   userId: Scalars['Int']
 }
 
-export type RemoveUserFromGameResponseSuccess = MutationResponse & {
-  __typename: 'RemoveUserFromGameResponseSuccess'
+export type RemoveUserFromGameSuccess = MutationResponse & {
+  __typename: 'RemoveUserFromGameSuccess'
   success: Scalars['Boolean']
   game?: Maybe<Game>
   user?: Maybe<User>
 }
 
 export type RemoveUserFromGameResponse =
-  | RemoveUserFromGameResponseSuccess
+  | RemoveUserFromGameSuccess
   | UnauthorizedResponse
 
 export type GameWidgetDataQueryVariables = Exact<{ [key: string]: never }>
@@ -406,7 +434,7 @@ export type EditGameNameMutationVariables = Exact<{
 
 export type EditGameNameMutation = { __typename: 'Mutation' } & {
   editGameName:
-    | ({ __typename: 'EditGameNameResponseSuccess' } & {
+    | ({ __typename: 'EditGameNameSuccess' } & {
         game?: Maybe<{ __typename: 'Game' } & Pick<Game, 'id' | 'name'>>
       })
     | { __typename: 'UnauthorizedResponse' }
@@ -676,6 +704,24 @@ export type UnlovePostMutation = { __typename: 'Mutation' } & {
     | { __typename: 'UnauthorizedResponse' }
 }
 
+export type InvitePageQueryVariables = Exact<{
+  input: IdInput
+}>
+
+export type InvitePageQuery = { __typename: 'Query' } & {
+  user: { __typename: 'User' } & Pick<User, 'id' | 'name' | 'avatarPath'>
+}
+
+export type AddFriendMutationVariables = Exact<{
+  input: IdInput
+}>
+
+export type AddFriendMutation = { __typename: 'Mutation' } & {
+  addFriend:
+    | ({ __typename: 'AddFriendSuccess' } & Pick<AddFriendSuccess, 'success'>)
+    | { __typename: 'UnauthorizedResponse' }
+}
+
 export type TeamWidget_TeamUserFragment = { __typename: 'User' } & Pick<
   User,
   'id' | 'name' | 'avatarPath'
@@ -724,8 +770,8 @@ export type AddUserToGameMutationVariables = Exact<{
 
 export type AddUserToGameMutation = { __typename: 'Mutation' } & {
   addUserToGame:
-    | ({ __typename: 'AddUserToGameResponseSuccess' } & Pick<
-        AddUserToGameResponseSuccess,
+    | ({ __typename: 'AddUserToGameSuccess' } & Pick<
+        AddUserToGameSuccess,
         'success'
       > & {
           game?: Maybe<
@@ -962,7 +1008,7 @@ export type GameWidgetDataQueryResult = ApolloReactCommon.QueryResult<
 export const EditGameNameDocument = gql`
   mutation EditGameName($input: EditGameNameInput!) {
     editGameName(input: $input) {
-      ... on EditGameNameResponseSuccess {
+      ... on EditGameNameSuccess {
         game {
           id
           name
@@ -1615,6 +1661,114 @@ export type UnlovePostMutationOptions = ApolloReactCommon.BaseMutationOptions<
   UnlovePostMutation,
   UnlovePostMutationVariables
 >
+export const InvitePageDocument = gql`
+  query InvitePage($input: IdInput!) {
+    user(input: $input) {
+      id
+      name
+      avatarPath
+    }
+  }
+`
+
+/**
+ * __useInvitePageQuery__
+ *
+ * To run a query within a React component, call `useInvitePageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInvitePageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInvitePageQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useInvitePageQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    InvitePageQuery,
+    InvitePageQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<InvitePageQuery, InvitePageQueryVariables>(
+    InvitePageDocument,
+    baseOptions
+  )
+}
+export function useInvitePageLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    InvitePageQuery,
+    InvitePageQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    InvitePageQuery,
+    InvitePageQueryVariables
+  >(InvitePageDocument, baseOptions)
+}
+export type InvitePageQueryHookResult = ReturnType<typeof useInvitePageQuery>
+export type InvitePageLazyQueryHookResult = ReturnType<
+  typeof useInvitePageLazyQuery
+>
+export type InvitePageQueryResult = ApolloReactCommon.QueryResult<
+  InvitePageQuery,
+  InvitePageQueryVariables
+>
+export const AddFriendDocument = gql`
+  mutation AddFriend($input: IdInput!) {
+    addFriend(input: $input) {
+      ... on AddFriendSuccess {
+        success
+      }
+    }
+  }
+`
+export type AddFriendMutationFn = ApolloReactCommon.MutationFunction<
+  AddFriendMutation,
+  AddFriendMutationVariables
+>
+
+/**
+ * __useAddFriendMutation__
+ *
+ * To run a mutation, you first call `useAddFriendMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddFriendMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addFriendMutation, { data, loading, error }] = useAddFriendMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddFriendMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    AddFriendMutation,
+    AddFriendMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    AddFriendMutation,
+    AddFriendMutationVariables
+  >(AddFriendDocument, baseOptions)
+}
+export type AddFriendMutationHookResult = ReturnType<
+  typeof useAddFriendMutation
+>
+export type AddFriendMutationResult = ApolloReactCommon.MutationResult<
+  AddFriendMutation
+>
+export type AddFriendMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  AddFriendMutation,
+  AddFriendMutationVariables
+>
 export const TeamWidgetDataDocument = gql`
   query TeamWidgetData {
     featuredEvent {
@@ -1751,7 +1905,7 @@ export type JoinEventMutationOptions = ApolloReactCommon.BaseMutationOptions<
 export const AddUserToGameDocument = gql`
   mutation AddUserToGame($input: AddUserToGameInput!) {
     addUserToGame(input: $input) {
-      ... on AddUserToGameResponseSuccess {
+      ... on AddUserToGameSuccess {
         success
         game {
           id
@@ -1995,6 +2149,12 @@ const result: IntrospectionResultData = {
             name: 'LoginSuccess',
           },
           {
+            name: 'AddFriendSuccess',
+          },
+          {
+            name: 'AddFriendAndAddToTeamSuccess',
+          },
+          {
             name: 'LovePostSuccess',
           },
           {
@@ -2016,13 +2176,13 @@ const result: IntrospectionResultData = {
             name: 'JoinEventSuccess',
           },
           {
-            name: 'EditGameNameResponseSuccess',
+            name: 'EditGameNameSuccess',
           },
           {
-            name: 'AddUserToGameResponseSuccess',
+            name: 'AddUserToGameSuccess',
           },
           {
-            name: 'RemoveUserFromGameResponseSuccess',
+            name: 'RemoveUserFromGameSuccess',
           },
         ],
       },
@@ -2059,6 +2219,30 @@ const result: IntrospectionResultData = {
           },
           {
             name: 'LoginSuccess',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'AddFriendResponse',
+        possibleTypes: [
+          {
+            name: 'AddFriendSuccess',
+          },
+          {
+            name: 'UnauthorizedResponse',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'AddFriendAndAddToTeamResponse',
+        possibleTypes: [
+          {
+            name: 'AddFriendAndAddToTeamSuccess',
+          },
+          {
+            name: 'UnauthorizedResponse',
           },
         ],
       },
@@ -2151,7 +2335,7 @@ const result: IntrospectionResultData = {
         name: 'EditGameNameResponse',
         possibleTypes: [
           {
-            name: 'EditGameNameResponseSuccess',
+            name: 'EditGameNameSuccess',
           },
           {
             name: 'UnauthorizedResponse',
@@ -2163,7 +2347,7 @@ const result: IntrospectionResultData = {
         name: 'AddUserToGameResponse',
         possibleTypes: [
           {
-            name: 'AddUserToGameResponseSuccess',
+            name: 'AddUserToGameSuccess',
           },
           {
             name: 'UnauthorizedResponse',
@@ -2175,7 +2359,7 @@ const result: IntrospectionResultData = {
         name: 'RemoveUserFromGameResponse',
         possibleTypes: [
           {
-            name: 'RemoveUserFromGameResponseSuccess',
+            name: 'RemoveUserFromGameSuccess',
           },
           {
             name: 'UnauthorizedResponse',
