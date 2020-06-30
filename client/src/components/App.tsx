@@ -14,6 +14,8 @@ import { events } from 'utils'
 import TeamWidget from './team-widget/TeamWidget'
 import GameWidget from './game-widget/GameWidget'
 import InvitePage from './team-widget/InvitePage'
+import AcceptedInvitePage from './team-widget/AcceptedInvitePage'
+import ConfirmInviteAndAddToTeamPage from './team-widget/ConfirmInviteAndAddToTeamPage'
 
 interface AppProps {
   showingOverlay: boolean
@@ -112,6 +114,14 @@ export default function Root({}: Props) {
               <Route path="/posts/:id" element={<PostPage />} />
             )}
             <Route path="/invite/:userId" element={<InvitePage />} />
+            <Route
+              path="/accepted-invite/:userId"
+              element={<AcceptedInvitePage />}
+            />
+            <Route
+              path="/confirm-invite/:userId"
+              element={<ConfirmInviteAndAddToTeamPage />}
+            />
           </RoutesWithFallback>
         </AppContent>
         <WidgetsContainer>

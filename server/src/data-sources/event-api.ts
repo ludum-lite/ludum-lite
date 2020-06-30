@@ -73,6 +73,7 @@ export default class EventAPI extends BaseAPI {
 
     if (event.__typename === 'Event') {
       const response = await this.get(`vx/node/what/${event.id}`)
+      console.log(response)
 
       return response.what[0] || null
     }

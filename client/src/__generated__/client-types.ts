@@ -704,6 +704,43 @@ export type UnlovePostMutation = { __typename: 'Mutation' } & {
     | { __typename: 'UnauthorizedResponse' }
 }
 
+export type AcceptedInvitePageQueryVariables = Exact<{
+  input: IdInput
+}>
+
+export type AcceptedInvitePageQuery = { __typename: 'Query' } & {
+  user: { __typename: 'User' } & Pick<User, 'id' | 'name' | 'avatarPath'>
+}
+
+export type ConfirmInviteAndAddToTeamPageQueryVariables = Exact<{
+  input: IdInput
+}>
+
+export type ConfirmInviteAndAddToTeamPageQuery = { __typename: 'Query' } & {
+  user: { __typename: 'User' } & Pick<User, 'id' | 'name' | 'avatarPath'>
+}
+
+export type AddFriendAndAddToTeamMutationVariables = Exact<{
+  input: IdInput
+}>
+
+export type AddFriendAndAddToTeamMutation = { __typename: 'Mutation' } & {
+  addFriendAndAddToTeam:
+    | ({ __typename: 'AddFriendAndAddToTeamSuccess' } & Pick<
+        AddFriendAndAddToTeamSuccess,
+        'success'
+      > & {
+          game?: Maybe<
+            { __typename: 'Game' } & Pick<Game, 'id'> & {
+                teamUsers?: Maybe<
+                  Array<{ __typename: 'User' } & TeamWidget_TeamUserFragment>
+                >
+              }
+          >
+        })
+    | { __typename: 'UnauthorizedResponse' }
+}
+
 export type InvitePageQueryVariables = Exact<{
   input: IdInput
 }>
@@ -1660,6 +1697,181 @@ export type UnlovePostMutationResult = ApolloReactCommon.MutationResult<
 export type UnlovePostMutationOptions = ApolloReactCommon.BaseMutationOptions<
   UnlovePostMutation,
   UnlovePostMutationVariables
+>
+export const AcceptedInvitePageDocument = gql`
+  query AcceptedInvitePage($input: IdInput!) {
+    user(input: $input) {
+      id
+      name
+      avatarPath
+    }
+  }
+`
+
+/**
+ * __useAcceptedInvitePageQuery__
+ *
+ * To run a query within a React component, call `useAcceptedInvitePageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAcceptedInvitePageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAcceptedInvitePageQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAcceptedInvitePageQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    AcceptedInvitePageQuery,
+    AcceptedInvitePageQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<
+    AcceptedInvitePageQuery,
+    AcceptedInvitePageQueryVariables
+  >(AcceptedInvitePageDocument, baseOptions)
+}
+export function useAcceptedInvitePageLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    AcceptedInvitePageQuery,
+    AcceptedInvitePageQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    AcceptedInvitePageQuery,
+    AcceptedInvitePageQueryVariables
+  >(AcceptedInvitePageDocument, baseOptions)
+}
+export type AcceptedInvitePageQueryHookResult = ReturnType<
+  typeof useAcceptedInvitePageQuery
+>
+export type AcceptedInvitePageLazyQueryHookResult = ReturnType<
+  typeof useAcceptedInvitePageLazyQuery
+>
+export type AcceptedInvitePageQueryResult = ApolloReactCommon.QueryResult<
+  AcceptedInvitePageQuery,
+  AcceptedInvitePageQueryVariables
+>
+export const ConfirmInviteAndAddToTeamPageDocument = gql`
+  query ConfirmInviteAndAddToTeamPage($input: IdInput!) {
+    user(input: $input) {
+      id
+      name
+      avatarPath
+    }
+  }
+`
+
+/**
+ * __useConfirmInviteAndAddToTeamPageQuery__
+ *
+ * To run a query within a React component, call `useConfirmInviteAndAddToTeamPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useConfirmInviteAndAddToTeamPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useConfirmInviteAndAddToTeamPageQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useConfirmInviteAndAddToTeamPageQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    ConfirmInviteAndAddToTeamPageQuery,
+    ConfirmInviteAndAddToTeamPageQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<
+    ConfirmInviteAndAddToTeamPageQuery,
+    ConfirmInviteAndAddToTeamPageQueryVariables
+  >(ConfirmInviteAndAddToTeamPageDocument, baseOptions)
+}
+export function useConfirmInviteAndAddToTeamPageLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    ConfirmInviteAndAddToTeamPageQuery,
+    ConfirmInviteAndAddToTeamPageQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    ConfirmInviteAndAddToTeamPageQuery,
+    ConfirmInviteAndAddToTeamPageQueryVariables
+  >(ConfirmInviteAndAddToTeamPageDocument, baseOptions)
+}
+export type ConfirmInviteAndAddToTeamPageQueryHookResult = ReturnType<
+  typeof useConfirmInviteAndAddToTeamPageQuery
+>
+export type ConfirmInviteAndAddToTeamPageLazyQueryHookResult = ReturnType<
+  typeof useConfirmInviteAndAddToTeamPageLazyQuery
+>
+export type ConfirmInviteAndAddToTeamPageQueryResult = ApolloReactCommon.QueryResult<
+  ConfirmInviteAndAddToTeamPageQuery,
+  ConfirmInviteAndAddToTeamPageQueryVariables
+>
+export const AddFriendAndAddToTeamDocument = gql`
+  mutation AddFriendAndAddToTeam($input: IdInput!) {
+    addFriendAndAddToTeam(input: $input) {
+      ... on AddFriendAndAddToTeamSuccess {
+        success
+        game {
+          id
+          teamUsers {
+            ...TeamWidget_teamUser
+          }
+        }
+      }
+    }
+  }
+  ${TeamWidget_TeamUserFragmentDoc}
+`
+export type AddFriendAndAddToTeamMutationFn = ApolloReactCommon.MutationFunction<
+  AddFriendAndAddToTeamMutation,
+  AddFriendAndAddToTeamMutationVariables
+>
+
+/**
+ * __useAddFriendAndAddToTeamMutation__
+ *
+ * To run a mutation, you first call `useAddFriendAndAddToTeamMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddFriendAndAddToTeamMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addFriendAndAddToTeamMutation, { data, loading, error }] = useAddFriendAndAddToTeamMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddFriendAndAddToTeamMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    AddFriendAndAddToTeamMutation,
+    AddFriendAndAddToTeamMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    AddFriendAndAddToTeamMutation,
+    AddFriendAndAddToTeamMutationVariables
+  >(AddFriendAndAddToTeamDocument, baseOptions)
+}
+export type AddFriendAndAddToTeamMutationHookResult = ReturnType<
+  typeof useAddFriendAndAddToTeamMutation
+>
+export type AddFriendAndAddToTeamMutationResult = ApolloReactCommon.MutationResult<
+  AddFriendAndAddToTeamMutation
+>
+export type AddFriendAndAddToTeamMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  AddFriendAndAddToTeamMutation,
+  AddFriendAndAddToTeamMutationVariables
 >
 export const InvitePageDocument = gql`
   query InvitePage($input: IdInput!) {

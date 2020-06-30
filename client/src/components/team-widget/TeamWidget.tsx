@@ -26,6 +26,7 @@ import { useMe } from 'hooks/useMe'
 import Button from 'components/common/mui/Button'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import Avatar from 'components/posts/Avatar'
+import ClickToCopyButton from 'components/common/ClickToCopyButton'
 
 const Root = styled.div`
   display: flex;
@@ -62,7 +63,7 @@ const InviteLinkContainer = styled.div`
   border-top: 1px solid ${({ theme }) => theme.palette.divider};
 `
 
-const InviteButton = styled(Button)`
+const InviteButton = styled(ClickToCopyButton)`
   font-family: 'Oxygen Mono';
 `
 
@@ -77,15 +78,12 @@ interface Props {
 export default function GameWidget({ className }: Props) {
   const { isLoggedIn } = useLogin()
   const { me } = useMe()
-  const [hasCopied, setHasCopied] = React.useState<boolean>(false)
   const [
     showTeamMemberSelectDialog,
     setShowTeamMemberSelectDialog,
   ] = React.useState<boolean>(false)
 
   const { data } = useTeamWidgetDataQuery()
-
-  console.log(data)
 
   const handleClose = () => {
     setShowTeamMemberSelectDialog(false)
@@ -193,26 +191,15 @@ export default function GameWidget({ className }: Props) {
                     </ListItem>
                   ))}
               </List>
-              <InviteLinkContainer onMouseLeave={() => setHasCopied(false)}>
-                <Tooltip
-                  title={hasCopied ? 'Copied!' : 'Copy'}
-                  arrow
-                  placement="top"
-                  enterDelay={0}
+              <InviteLinkContainer>
+                <InviteButton
+                  text={inviteLink}
+                  fullWidth
+                  background="white"
+                  variant="contained"
                 >
-                  <CopyToClipboard
-                    text={inviteLink}
-                    onCopy={() => setHasCopied(true)}
-                  >
-                    <InviteButton
-                      fullWidth
-                      background="white"
-                      variant="contained"
-                    >
-                      {inviteLink}
-                    </InviteButton>
-                  </CopyToClipboard>
-                </Tooltip>
+                  {inviteLink}
+                </InviteButton>
                 <InviteText variant="caption" color="primary">
                   {`Don't see your friend listed? Send this link to your friend!
 They'll get a confirmation link to send back to you.`}

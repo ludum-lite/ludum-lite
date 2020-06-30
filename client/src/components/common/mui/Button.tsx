@@ -1,7 +1,7 @@
 import React from 'react'
 import {
   Button as MuiButton,
-  ButtonProps,
+  ButtonProps as MuiButtonProps,
   CircularProgress,
 } from '@material-ui/core'
 import styled, { css } from 'styled-components/macro'
@@ -36,31 +36,40 @@ const StyledButton = styled(MuiButton).withConfig({
   }}
 `
 
-export interface Props {
+interface Props {
   background?: Background
-  color?: ButtonProps['color']
-  variant?: ButtonProps['variant']
+  color?: MuiButtonProps['color']
+  variant?: MuiButtonProps['variant']
   loading?: Boolean
 }
-export default function Button({
-  background = 'white',
-  color = 'default',
-  variant = 'text',
-  loading,
-  disabled,
-  children,
-  onClick,
-  ...others
-}: Props & Omit<ButtonProps, keyof Props>) {
-  return (
-    <StyledButton
-      background={background}
-      color={color}
-      variant={variant}
-      endIcon={loading && <CircularProgress />}
-      children={loading ? 'Loading' : children}
-      onClick={loading ? undefined : onClick}
-      {...others}
-    />
-  )
-}
+export type ButtonProps = Props & Omit<MuiButtonProps, keyof Props>
+const Button = React.forwardRef(
+  (
+    {
+      background = 'white',
+      color = 'default',
+      variant = 'text',
+      loading,
+      disabled,
+      children,
+      onClick,
+      ...others
+    }: ButtonProps,
+    ref
+  ) => {
+    return (
+      <StyledButton
+        innerRef={ref}
+        background={background}
+        color={color}
+        variant={variant}
+        endIcon={loading && <CircularProgress size={20} color="inherit" />}
+        children={children}
+        onClick={loading ? undefined : onClick}
+        {...others}
+      />
+    )
+  }
+)
+
+export default Button

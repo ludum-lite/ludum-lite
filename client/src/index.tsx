@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
+import { SnackbarProvider } from 'notistack'
 
 // import { BatchHttpLink } from '@apollo/link-batch-http'
 // import { onError } from '@apollo/link-error'
@@ -86,9 +87,16 @@ const Root = () => {
     <ApolloProvider client={client}>
       <SingletonHooksContainer />
       <StylesProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <SnackbarProvider
+          anchorOrigin={{
+            horizontal: 'right',
+            vertical: 'bottom',
+          }}
+        >
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </SnackbarProvider>
       </StylesProvider>
     </ApolloProvider>
   )

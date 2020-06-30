@@ -3,17 +3,16 @@ import styled from 'styled-components/macro'
 import { gql } from '@apollo/client'
 import Avatar from 'components/posts/Avatar'
 import {
-  useInvitePageQuery,
-  useAddFriendMutation,
+  useAcceptedInvitePageQuery,
+  useAddFriendAndAddToTeamMutation,
 } from '__generated__/client-types'
 import { getCurrentEvent, events } from 'utils'
-import ButtonGroup from 'components/common/mui/ButtonGroup'
 import Button from 'components/common/mui/Button'
 import { useParams, useNavigate } from 'react-router'
 import Typography from 'components/common/mui/Typography'
-import { useLogin } from 'hooks/useLogin'
 import { useMinLoadingTime } from 'hooks/useMinLoadingTime'
 import { useSnackbar } from 'notistack'
+import { useLogin } from 'hooks/useLogin'
 
 const Root = styled.div`
   display: flex;
@@ -34,19 +33,20 @@ const UserTitle = styled(Typography)`
 
 const SubTitle = styled(Typography)`
   margin-top: ${({ theme }) => theme.spacing(1)}px;
+  max-width: 330px;
 `
 
-const StyledButtonGroup = styled(ButtonGroup)`
+const StyledButton = styled(Button)`
   margin-top: ${({ theme }) => theme.spacing(3)}px;
 `
 
 interface Props {}
-export default function InvitePage({}: Props) {
-  const { promptLogin, isLoggedIn } = useLogin()
+export default function ConfirmInviteAndAddToTeamPage({}: Props) {
+  const { isLoggedIn, promptLogin } = useLogin()
   const { enqueueSnackbar } = useSnackbar()
   const navigate = useNavigate()
   const { userId } = useParams()
-  const { data } = useInvitePageQuery({
+  const { data } = useAcceptedInvitePageQuery({
     variables: {
       input: {
         id: parseInt(userId),
@@ -54,7 +54,7 @@ export default function InvitePage({}: Props) {
     },
   })
   const event = getCurrentEvent(events)
-  const [addFriendMutation] = useAddFriendMutation({
+  const [addFriendAndAddToTeamMutation, ,] = useAddFriendAndAddToTeamMutation({
     variables: {
       input: {
         id: parseInt(userId),
@@ -62,7 +62,38 @@ export default function InvitePage({}: Props) {
     },
   })
 
-  const { fn: addFriend, isLoading } = useMinLoadingTime(addFriendMutation)
+  const { fn: addFriendAndAddToTeam, isLoading } = useMinLoadingTime(
+    addFriendAndAddToTeamMutation,
+    {
+      timeBeforeLoaderShown: 0,
+      showLoaderMinDuration: 1000,
+    }
+  )
+
+  React.useEffect(() => {
+    async function runMutation() {
+      const { data } = await addFriendAndAddToTeam()
+      if (data?.addFriendAndAddToTeam.__typename === 'UnauthorizedResponse') {
+        enqueueSnackbar('Something went wrong.', {
+          variant: 'error',
+        })
+      } else {
+        enqueueSnackbar('Successfully added!', {
+          variant: 'success',
+        })
+      }
+    }
+
+    if (isLoggedIn) {
+      runMutation()
+    } else {
+      enqueueSnackbar('Please login.', {
+        variant: 'error',
+      })
+
+      promptLogin()
+    }
+  }, [addFriendAndAddToTeam, enqueueSnackbar, isLoggedIn, promptLogin])
 
   if (!data) return null
 
@@ -76,58 +107,28 @@ export default function InvitePage({}: Props) {
       />
       <UserTitle variant="h5">{data.user.name}</UserTitle>
       <SubTitle color="textSecondary" variant="body1">
-        has invited you to their team for Ludum Dare {event?.eventNumber}!
+        has accepted your invitation to join your team for Ludum Dare{' '}
+        {event?.eventNumber}!
       </SubTitle>
-      <StyledButtonGroup>
-        <Button
-          fullWidth
-          background="white"
-          variant="contained"
-          color="secondary"
-          disabled
-          loading={isLoading}
-          onClick={async () => {
-            if (isLoggedIn) {
-              try {
-                await addFriend()
-                enqueueSnackbar('Successfully added!', {
-                  variant: 'success',
-                })
-                navigate(`/accepted-invite/${userId}`)
-              } catch (e) {
-                console.error(e)
-                enqueueSnackbar('Error. Try again?', {
-                  variant: 'error',
-                })
-              }
-            } else {
-              promptLogin()
-            }
-          }}
-        >
-          Accept
-        </Button>
-        <Button
-          fullWidth
-          background="white"
-          variant="contained"
-          color="default"
-          onClick={() => {
-            if (isLoggedIn) {
-            } else {
-              promptLogin()
-            }
-          }}
-        >
-          Decline
-        </Button>
-      </StyledButtonGroup>
+      <StyledButton
+        fullWidth
+        background="white"
+        variant="contained"
+        color="secondary"
+        disabled
+        loading={isLoading}
+        onClick={() => {
+          navigate('/')
+        }}
+      >
+        Go Home
+      </StyledButton>
     </Root>
   )
 }
 
 gql`
-  query InvitePage($input: IdInput!) {
+  query ConfirmInviteAndAddToTeamPage($input: IdInput!) {
     user(input: $input) {
       id
       name
@@ -135,10 +136,16 @@ gql`
     }
   }
 
-  mutation AddFriend($input: IdInput!) {
-    addFriend(input: $input) {
-      ... on AddFriendSuccess {
+  mutation AddFriendAndAddToTeam($input: IdInput!) {
+    addFriendAndAddToTeam(input: $input) {
+      ... on AddFriendAndAddToTeamSuccess {
         success
+        game {
+          id
+          teamUsers {
+            ...TeamWidget_teamUser
+          }
+        }
       }
     }
   }

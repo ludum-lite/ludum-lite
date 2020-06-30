@@ -53,9 +53,7 @@ const WhiteBackground = styled(ButtonContainer)`
   background: ${({ theme }) => theme.themeColors.post.backgroundColor};
 `
 
-const Options = styled(Panel)`
-  flex-direction: column;
-`
+const Options = styled(Panel)``
 
 const VARIANTS = ['text', 'outlined', 'contained'] as const
 const COLORS = ['default', 'primary', 'secondary'] as const
@@ -111,7 +109,11 @@ const INVALID_COMBINATIONS: PropCombination = {
   },
 }
 
-function renderButtons(background: Background, size: ButtonProps['size']) {
+function renderButtons(
+  background: Background,
+  size: ButtonProps['size'],
+  isLoading: boolean
+) {
   return VARIANTS.map((variant) =>
     COLORS.map((color) => (
       <Button
@@ -120,6 +122,7 @@ function renderButtons(background: Background, size: ButtonProps['size']) {
         color={color}
         background={background}
         size={size}
+        loading={isLoading}
         style={{
           visibility:
             INVALID_COMBINATIONS[background]?.[variant]?.[color] === true
@@ -135,46 +138,64 @@ function renderButtons(background: Background, size: ButtonProps['size']) {
 
 export const Basic = () => {
   const [size, setSize] = React.useState<ButtonProps['size']>('medium')
+  const [isLoading, setIsLoading] = React.useState(false)
 
   return (
     <BasicRoot>
-      <Options layout="column">
-        <Typography>Padding</Typography>
-        <ToggleButtonGroup
-          value={size}
-          exclusive
-          onChange={(e, newPadding) => {
-            if (newPadding) {
-              setSize(newPadding)
-            }
-          }}
-          aria-label="text alignment"
-        >
-          <ToggleButton value="small" aria-label="left aligned" padding="text">
-            Small
-          </ToggleButton>
-          <ToggleButton value="medium" aria-label="centered" padding="text">
-            Medium
-          </ToggleButton>
-          <ToggleButton
-            value="large"
-            aria-label="right aligned"
-            padding="text"
-            disabled
+      <Options layout="row">
+        <div>
+          <Typography>Padding</Typography>
+          <ToggleButtonGroup
+            value={size}
+            exclusive
+            onChange={(e, newPadding) => {
+              if (newPadding) {
+                setSize(newPadding)
+              }
+            }}
           >
-            Large
-          </ToggleButton>
-        </ToggleButtonGroup>
+            <ToggleButton value="small" padding="text">
+              Small
+            </ToggleButton>
+            <ToggleButton value="medium" padding="text">
+              Medium
+            </ToggleButton>
+            <ToggleButton value="large" padding="text" disabled>
+              Large
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </div>
+        <div>
+          <Typography>Loading</Typography>
+          <ToggleButtonGroup
+            value={isLoading}
+            exclusive
+            onChange={(e, newPadding) => {
+              setIsLoading(!isLoading)
+            }}
+          >
+            <ToggleButton value={false} padding="text">
+              Not Loading
+            </ToggleButton>
+            <ToggleButton value={true} padding="text">
+              Loading
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </div>
       </Options>
       <Backgrounds>
         <GlobalNavBackground>
-          {renderButtons('globalNav', size)}
+          {renderButtons('globalNav', size, isLoading)}
         </GlobalNavBackground>
         <ContexualNavBackground>
-          {renderButtons('contextualNav', size)}
+          {renderButtons('contextualNav', size, isLoading)}
         </ContexualNavBackground>
-        <PageBackground>{renderButtons('page', size)}</PageBackground>
-        <WhiteBackground>{renderButtons('white', size)}</WhiteBackground>
+        <PageBackground>
+          {renderButtons('page', size, isLoading)}
+        </PageBackground>
+        <WhiteBackground>
+          {renderButtons('white', size, isLoading)}
+        </WhiteBackground>
       </Backgrounds>
     </BasicRoot>
   )
