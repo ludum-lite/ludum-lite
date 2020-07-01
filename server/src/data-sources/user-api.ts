@@ -171,9 +171,9 @@ export default class UserAPI extends BaseAPI {
     id: number
   ): Promise<AddFriendAndAddToTeamResponse> {
     try {
-      await this.get(`vx/node/star/add/${id}`)
-      const gameId = await this.context.dataSources.eventApi.getCurrentUserGameId()
+      await this.addFriend(id)
 
+      const gameId = await this.context.dataSources.eventApi.getCurrentUserGameId()
       if (!gameId) {
         console.error('Couldnt find game for user', id)
         return unauthorizedResponse
