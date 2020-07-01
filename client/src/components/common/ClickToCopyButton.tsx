@@ -13,8 +13,6 @@ export default function ClickToCopyButton({
 }: Props & ButtonProps) {
   const [hasCopied, setHasCopied] = React.useState<boolean>(false)
 
-  console.log('hi')
-
   return (
     <CopyToClipboard text={text} onCopy={() => setHasCopied(true)}>
       <Tooltip
