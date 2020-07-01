@@ -11,7 +11,7 @@ import {
   MeResponse,
   IdInput,
   AddFriendResponse,
-  AddFriendAndAddToTeamResponse,
+  AddFriendAndAddToGameResponse,
 } from '../__generated__/schema-types'
 import { filterOutErrorsFromResponses } from './utils'
 
@@ -169,7 +169,7 @@ export default class UserAPI extends BaseAPI {
 
   async addFriendAndAddToTeam(
     id: number
-  ): Promise<AddFriendAndAddToTeamResponse> {
+  ): Promise<AddFriendAndAddToGameResponse> {
     try {
       await this.addFriend(id)
 
@@ -185,7 +185,7 @@ export default class UserAPI extends BaseAPI {
       })
 
       return {
-        __typename: 'AddFriendAndAddToTeamSuccess',
+        __typename: 'AddFriendAndAddToGameSuccess',
         success: true,
         userId: id,
         gameId,
