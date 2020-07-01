@@ -172,7 +172,7 @@ export default function GameWidget({ className }: Props) {
               <DialogTitle>Add friend to team</DialogTitle>
               <List>
                 {data.me.usersImFollowing
-                  .filter((user) => userIdsFollowingMe.includes(user.id))
+                  ?.filter((user) => userIdsFollowingMe?.includes(user.id))
                   .map((user) => (
                     <ListItem
                       key={user.id}
@@ -246,18 +246,6 @@ gql`
           id
           name
           avatarPath
-        }
-      }
-    }
-  }
-
-  mutation JoinEvent {
-    joinEvent {
-      ... on JoinEventSuccess {
-        gameId
-        featuredEvent {
-          id
-          currentUserGameId
         }
       }
     }

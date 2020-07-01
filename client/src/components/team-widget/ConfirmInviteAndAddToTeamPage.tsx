@@ -4,7 +4,7 @@ import { gql } from '@apollo/client'
 import Avatar from 'components/posts/Avatar'
 import {
   useAcceptedInvitePageQuery,
-  useAddFriendAndAddToTeamMutation,
+  useAddFriendAndAddToGameMutation,
 } from '__generated__/client-types'
 import { getCurrentEvent, events } from 'utils'
 import Button from 'components/common/mui/Button'
@@ -54,7 +54,7 @@ export default function ConfirmInviteAndAddToTeamPage({}: Props) {
     },
   })
   const event = getCurrentEvent(events)
-  const [addFriendAndAddToTeamMutation, ,] = useAddFriendAndAddToTeamMutation({
+  const [addFriendAndAddToGameMutation, ,] = useAddFriendAndAddToGameMutation({
     variables: {
       input: {
         id: parseInt(userId),
@@ -62,8 +62,8 @@ export default function ConfirmInviteAndAddToTeamPage({}: Props) {
     },
   })
 
-  const { fn: addFriendAndAddToTeam, isLoading } = useMinLoadingTime(
-    addFriendAndAddToTeamMutation,
+  const { fn: addFriendAndAddToGame, isLoading } = useMinLoadingTime(
+    addFriendAndAddToGameMutation,
     {
       timeBeforeLoaderShown: 0,
       showLoaderMinDuration: 1000,
@@ -72,8 +72,8 @@ export default function ConfirmInviteAndAddToTeamPage({}: Props) {
 
   React.useEffect(() => {
     async function runMutation() {
-      const { data } = await addFriendAndAddToTeam()
-      if (data?.addFriendAndAddToTeam.__typename === 'UnauthorizedResponse') {
+      const { data } = await addFriendAndAddToGame()
+      if (data?.addFriendAndAddToGame.__typename === 'UnauthorizedResponse') {
         enqueueSnackbar('Something went wrong.', {
           variant: 'error',
         })
@@ -93,7 +93,7 @@ export default function ConfirmInviteAndAddToTeamPage({}: Props) {
 
       promptLogin()
     }
-  }, [addFriendAndAddToTeam, enqueueSnackbar, isLoggedIn, promptLogin])
+  }, [addFriendAndAddToGame, enqueueSnackbar, isLoggedIn, promptLogin])
 
   if (!data) return null
 
@@ -136,9 +136,9 @@ gql`
     }
   }
 
-  mutation AddFriendAndAddToTeam($input: IdInput!) {
-    addFriendAndAddToTeam(input: $input) {
-      ... on AddFriendAndAddToTeamSuccess {
+  mutation AddFriendAndAddToGame($input: IdInput!) {
+    addFriendAndAddToGame(input: $input) {
+      ... on AddFriendAndAddToGameSuccess {
         success
         game {
           id

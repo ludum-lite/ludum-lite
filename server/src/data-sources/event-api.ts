@@ -1,10 +1,12 @@
 import BaseAPI from './base-api'
+import { maxBy } from 'lodash'
 import {
   Event,
   JoinEventResponse,
   EventPhase,
 } from '../__generated__/schema-types'
 import { unauthorizedResponse } from './const'
+import { filterOutErrorsFromResponses } from './utils'
 
 export type ApiEventDto = {
   id: number
@@ -64,7 +66,6 @@ export default class EventAPI extends BaseAPI {
       }
     }
 
-    console.log(event)
     return unauthorizedResponse
   }
 
@@ -73,9 +74,21 @@ export default class EventAPI extends BaseAPI {
 
     if (event.__typename === 'Event') {
       const response = await this.get(`vx/node/what/${event.id}`)
-      console.log(response)
 
-      return response.what[0] || null
+      if (response.what.length === 1) {
+        return response.what[0] || null
+      } else {
+        const games = await this.context.loaders.gameLoader.loadMany(
+          response.what
+        )
+        console.log(games)
+        const lastGameModified = maxBy(
+          filterOutErrorsFromResponses(games),
+          'modifiedDate'
+        )
+
+        return lastGameModified?.id || null
+      }
     }
 
     return null

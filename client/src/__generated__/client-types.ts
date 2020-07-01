@@ -40,8 +40,6 @@ export type QueryUserArgs = {
 export type Mutation = {
   __typename: 'Mutation'
   login: LoginResponse
-  addFriend: AddFriendResponse
-  addFriendAndAddToTeam: AddFriendAndAddToTeamResponse
   lovePost: LovePostResponse
   unlovePost: UnlovePostResponse
   loveComment: LoveCommentResponse
@@ -49,21 +47,15 @@ export type Mutation = {
   addComment: AddCommentResponse
   editComment: EditCommentResponse
   joinEvent: JoinEventResponse
-  editGameName: EditGameNameResponse
+  editGame: EditGameResponse
+  addFriend: AddFriendResponse
+  addFriendAndAddToGame: AddFriendAndAddToGameResponse
   addUserToGame: AddUserToGameResponse
   removeUserFromGame: RemoveUserFromGameResponse
 }
 
 export type MutationLoginArgs = {
   input: LoginInput
-}
-
-export type MutationAddFriendArgs = {
-  input: IdInput
-}
-
-export type MutationAddFriendAndAddToTeamArgs = {
-  input: IdInput
 }
 
 export type MutationLovePostArgs = {
@@ -90,8 +82,16 @@ export type MutationEditCommentArgs = {
   input: EditCommentInput
 }
 
-export type MutationEditGameNameArgs = {
-  input: EditGameNameInput
+export type MutationEditGameArgs = {
+  input: EditGameInput
+}
+
+export type MutationAddFriendArgs = {
+  input: IdInput
+}
+
+export type MutationAddFriendAndAddToGameArgs = {
+  input: IdInput
 }
 
 export type MutationAddUserToGameArgs = {
@@ -151,11 +151,11 @@ export type Me = BaseUser & {
   numPosts: Scalars['Int']
   profilePath: Scalars['String']
   type: Scalars['String']
-  lovedPosts: Array<Scalars['Int']>
-  userIdsImFollowing: Array<Scalars['Int']>
-  usersImFollowing: Array<User>
-  userIdsFollowingMe: Array<Scalars['Int']>
-  usersFollowingMe: Array<User>
+  lovedPosts?: Maybe<Array<Scalars['Int']>>
+  userIdsImFollowing?: Maybe<Array<Scalars['Int']>>
+  usersImFollowing?: Maybe<Array<User>>
+  userIdsFollowingMe?: Maybe<Array<Scalars['Int']>>
+  usersFollowingMe?: Maybe<Array<User>>
 }
 
 export type MeResponse = Me | UnauthorizedResponse
@@ -188,8 +188,8 @@ export type AddFriendSuccess = MutationResponse & {
 
 export type AddFriendResponse = AddFriendSuccess | UnauthorizedResponse
 
-export type AddFriendAndAddToTeamSuccess = MutationResponse & {
-  __typename: 'AddFriendAndAddToTeamSuccess'
+export type AddFriendAndAddToGameSuccess = MutationResponse & {
+  __typename: 'AddFriendAndAddToGameSuccess'
   success: Scalars['Boolean']
   userId: Scalars['Int']
   user?: Maybe<User>
@@ -197,8 +197,8 @@ export type AddFriendAndAddToTeamSuccess = MutationResponse & {
   game?: Maybe<Game>
 }
 
-export type AddFriendAndAddToTeamResponse =
-  | AddFriendAndAddToTeamSuccess
+export type AddFriendAndAddToGameResponse =
+  | AddFriendAndAddToGameSuccess
   | UnauthorizedResponse
 
 export enum PostType {
@@ -370,18 +370,20 @@ export type Game = {
   slug?: Maybe<Scalars['String']>
 }
 
-export type EditGameNameInput = {
+export type EditGameInput = {
   id: Scalars['Int']
-  name: Scalars['String']
+  name?: Maybe<Scalars['String']>
+  body?: Maybe<Scalars['String']>
 }
 
-export type EditGameNameSuccess = MutationResponse & {
-  __typename: 'EditGameNameSuccess'
+export type EditGameSuccess = MutationResponse & {
+  __typename: 'EditGameSuccess'
   success: Scalars['Boolean']
+  gameId: Scalars['Int']
   game?: Maybe<Game>
 }
 
-export type EditGameNameResponse = EditGameNameSuccess | UnauthorizedResponse
+export type EditGameResponse = EditGameSuccess | UnauthorizedResponse
 
 export type AddUserToGameInput = {
   gameId: Scalars['Int']
@@ -428,13 +430,38 @@ export type GameWidgetDataQuery = { __typename: 'Query' } & {
     }
 }
 
-export type EditGameNameMutationVariables = Exact<{
-  input: EditGameNameInput
+export type JoinEventMutationVariables = Exact<{ [key: string]: never }>
+
+export type JoinEventMutation = { __typename: 'Mutation' } & {
+  joinEvent:
+    | ({ __typename: 'JoinEventSuccess' } & Pick<JoinEventSuccess, 'gameId'> & {
+          featuredEvent?: Maybe<
+            { __typename: 'Event' } & Pick<
+              Event,
+              'id' | 'currentUserGameId'
+            > & {
+                currentUserGame?: Maybe<
+                  { __typename: 'Game' } & Pick<Game, 'id'> & {
+                      teamUsers?: Maybe<
+                        Array<
+                          { __typename: 'User' } & TeamWidget_TeamUserFragment
+                        >
+                      >
+                    }
+                >
+              }
+          >
+        })
+    | { __typename: 'UnauthorizedResponse' }
+}
+
+export type GameWidget_EditGameMutationVariables = Exact<{
+  input: EditGameInput
 }>
 
-export type EditGameNameMutation = { __typename: 'Mutation' } & {
-  editGameName:
-    | ({ __typename: 'EditGameNameSuccess' } & {
+export type GameWidget_EditGameMutation = { __typename: 'Mutation' } & {
+  editGame:
+    | ({ __typename: 'EditGameSuccess' } & {
         game?: Maybe<{ __typename: 'Game' } & Pick<Game, 'id' | 'name'>>
       })
     | { __typename: 'UnauthorizedResponse' }
@@ -720,14 +747,14 @@ export type ConfirmInviteAndAddToTeamPageQuery = { __typename: 'Query' } & {
   user: { __typename: 'User' } & Pick<User, 'id' | 'name' | 'avatarPath'>
 }
 
-export type AddFriendAndAddToTeamMutationVariables = Exact<{
+export type AddFriendAndAddToGameMutationVariables = Exact<{
   input: IdInput
 }>
 
-export type AddFriendAndAddToTeamMutation = { __typename: 'Mutation' } & {
-  addFriendAndAddToTeam:
-    | ({ __typename: 'AddFriendAndAddToTeamSuccess' } & Pick<
-        AddFriendAndAddToTeamSuccess,
+export type AddFriendAndAddToGameMutation = { __typename: 'Mutation' } & {
+  addFriendAndAddToGame:
+    | ({ __typename: 'AddFriendAndAddToGameSuccess' } & Pick<
+        AddFriendAndAddToGameSuccess,
         'success'
       > & {
           game?: Maybe<
@@ -782,20 +809,10 @@ export type TeamWidgetDataQuery = { __typename: 'Query' } & {
     }
   me:
     | ({ __typename: 'Me' } & Pick<Me, 'id' | 'userIdsFollowingMe'> & {
-          usersImFollowing: Array<
-            { __typename: 'User' } & Pick<User, 'id' | 'name' | 'avatarPath'>
-          >
-        })
-    | { __typename: 'UnauthorizedResponse' }
-}
-
-export type JoinEventMutationVariables = Exact<{ [key: string]: never }>
-
-export type JoinEventMutation = { __typename: 'Mutation' } & {
-  joinEvent:
-    | ({ __typename: 'JoinEventSuccess' } & Pick<JoinEventSuccess, 'gameId'> & {
-          featuredEvent?: Maybe<
-            { __typename: 'Event' } & Pick<Event, 'id' | 'currentUserGameId'>
+          usersImFollowing?: Maybe<
+            Array<
+              { __typename: 'User' } & Pick<User, 'id' | 'name' | 'avatarPath'>
+            >
           >
         })
     | { __typename: 'UnauthorizedResponse' }
@@ -1042,10 +1059,72 @@ export type GameWidgetDataQueryResult = ApolloReactCommon.QueryResult<
   GameWidgetDataQuery,
   GameWidgetDataQueryVariables
 >
-export const EditGameNameDocument = gql`
-  mutation EditGameName($input: EditGameNameInput!) {
-    editGameName(input: $input) {
-      ... on EditGameNameSuccess {
+export const JoinEventDocument = gql`
+  mutation JoinEvent {
+    joinEvent {
+      ... on JoinEventSuccess {
+        gameId
+        featuredEvent {
+          id
+          currentUserGameId
+          currentUserGame {
+            id
+            teamUsers {
+              ...TeamWidget_teamUser
+            }
+          }
+        }
+      }
+    }
+  }
+  ${TeamWidget_TeamUserFragmentDoc}
+`
+export type JoinEventMutationFn = ApolloReactCommon.MutationFunction<
+  JoinEventMutation,
+  JoinEventMutationVariables
+>
+
+/**
+ * __useJoinEventMutation__
+ *
+ * To run a mutation, you first call `useJoinEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useJoinEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [joinEventMutation, { data, loading, error }] = useJoinEventMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useJoinEventMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    JoinEventMutation,
+    JoinEventMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    JoinEventMutation,
+    JoinEventMutationVariables
+  >(JoinEventDocument, baseOptions)
+}
+export type JoinEventMutationHookResult = ReturnType<
+  typeof useJoinEventMutation
+>
+export type JoinEventMutationResult = ApolloReactCommon.MutationResult<
+  JoinEventMutation
+>
+export type JoinEventMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  JoinEventMutation,
+  JoinEventMutationVariables
+>
+export const GameWidget_EditGameDocument = gql`
+  mutation GameWidget_EditGame($input: EditGameInput!) {
+    editGame(input: $input) {
+      ... on EditGameSuccess {
         game {
           id
           name
@@ -1054,48 +1133,48 @@ export const EditGameNameDocument = gql`
     }
   }
 `
-export type EditGameNameMutationFn = ApolloReactCommon.MutationFunction<
-  EditGameNameMutation,
-  EditGameNameMutationVariables
+export type GameWidget_EditGameMutationFn = ApolloReactCommon.MutationFunction<
+  GameWidget_EditGameMutation,
+  GameWidget_EditGameMutationVariables
 >
 
 /**
- * __useEditGameNameMutation__
+ * __useGameWidget_EditGameMutation__
  *
- * To run a mutation, you first call `useEditGameNameMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useEditGameNameMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useGameWidget_EditGameMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGameWidget_EditGameMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [editGameNameMutation, { data, loading, error }] = useEditGameNameMutation({
+ * const [gameWidgetEditGameMutation, { data, loading, error }] = useGameWidget_EditGameMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useEditGameNameMutation(
+export function useGameWidget_EditGameMutation(
   baseOptions?: ApolloReactHooks.MutationHookOptions<
-    EditGameNameMutation,
-    EditGameNameMutationVariables
+    GameWidget_EditGameMutation,
+    GameWidget_EditGameMutationVariables
   >
 ) {
   return ApolloReactHooks.useMutation<
-    EditGameNameMutation,
-    EditGameNameMutationVariables
-  >(EditGameNameDocument, baseOptions)
+    GameWidget_EditGameMutation,
+    GameWidget_EditGameMutationVariables
+  >(GameWidget_EditGameDocument, baseOptions)
 }
-export type EditGameNameMutationHookResult = ReturnType<
-  typeof useEditGameNameMutation
+export type GameWidget_EditGameMutationHookResult = ReturnType<
+  typeof useGameWidget_EditGameMutation
 >
-export type EditGameNameMutationResult = ApolloReactCommon.MutationResult<
-  EditGameNameMutation
+export type GameWidget_EditGameMutationResult = ApolloReactCommon.MutationResult<
+  GameWidget_EditGameMutation
 >
-export type EditGameNameMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  EditGameNameMutation,
-  EditGameNameMutationVariables
+export type GameWidget_EditGameMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  GameWidget_EditGameMutation,
+  GameWidget_EditGameMutationVariables
 >
 export const AddCommentDocument = gql`
   mutation AddComment($input: AddCommentInput!) {
@@ -1814,10 +1893,10 @@ export type ConfirmInviteAndAddToTeamPageQueryResult = ApolloReactCommon.QueryRe
   ConfirmInviteAndAddToTeamPageQuery,
   ConfirmInviteAndAddToTeamPageQueryVariables
 >
-export const AddFriendAndAddToTeamDocument = gql`
-  mutation AddFriendAndAddToTeam($input: IdInput!) {
-    addFriendAndAddToTeam(input: $input) {
-      ... on AddFriendAndAddToTeamSuccess {
+export const AddFriendAndAddToGameDocument = gql`
+  mutation AddFriendAndAddToGame($input: IdInput!) {
+    addFriendAndAddToGame(input: $input) {
+      ... on AddFriendAndAddToGameSuccess {
         success
         game {
           id
@@ -1830,48 +1909,48 @@ export const AddFriendAndAddToTeamDocument = gql`
   }
   ${TeamWidget_TeamUserFragmentDoc}
 `
-export type AddFriendAndAddToTeamMutationFn = ApolloReactCommon.MutationFunction<
-  AddFriendAndAddToTeamMutation,
-  AddFriendAndAddToTeamMutationVariables
+export type AddFriendAndAddToGameMutationFn = ApolloReactCommon.MutationFunction<
+  AddFriendAndAddToGameMutation,
+  AddFriendAndAddToGameMutationVariables
 >
 
 /**
- * __useAddFriendAndAddToTeamMutation__
+ * __useAddFriendAndAddToGameMutation__
  *
- * To run a mutation, you first call `useAddFriendAndAddToTeamMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddFriendAndAddToTeamMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useAddFriendAndAddToGameMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddFriendAndAddToGameMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [addFriendAndAddToTeamMutation, { data, loading, error }] = useAddFriendAndAddToTeamMutation({
+ * const [addFriendAndAddToGameMutation, { data, loading, error }] = useAddFriendAndAddToGameMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useAddFriendAndAddToTeamMutation(
+export function useAddFriendAndAddToGameMutation(
   baseOptions?: ApolloReactHooks.MutationHookOptions<
-    AddFriendAndAddToTeamMutation,
-    AddFriendAndAddToTeamMutationVariables
+    AddFriendAndAddToGameMutation,
+    AddFriendAndAddToGameMutationVariables
   >
 ) {
   return ApolloReactHooks.useMutation<
-    AddFriendAndAddToTeamMutation,
-    AddFriendAndAddToTeamMutationVariables
-  >(AddFriendAndAddToTeamDocument, baseOptions)
+    AddFriendAndAddToGameMutation,
+    AddFriendAndAddToGameMutationVariables
+  >(AddFriendAndAddToGameDocument, baseOptions)
 }
-export type AddFriendAndAddToTeamMutationHookResult = ReturnType<
-  typeof useAddFriendAndAddToTeamMutation
+export type AddFriendAndAddToGameMutationHookResult = ReturnType<
+  typeof useAddFriendAndAddToGameMutation
 >
-export type AddFriendAndAddToTeamMutationResult = ApolloReactCommon.MutationResult<
-  AddFriendAndAddToTeamMutation
+export type AddFriendAndAddToGameMutationResult = ApolloReactCommon.MutationResult<
+  AddFriendAndAddToGameMutation
 >
-export type AddFriendAndAddToTeamMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  AddFriendAndAddToTeamMutation,
-  AddFriendAndAddToTeamMutationVariables
+export type AddFriendAndAddToGameMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  AddFriendAndAddToGameMutation,
+  AddFriendAndAddToGameMutationVariables
 >
 export const InvitePageDocument = gql`
   query InvitePage($input: IdInput!) {
@@ -2058,61 +2137,6 @@ export type TeamWidgetDataLazyQueryHookResult = ReturnType<
 export type TeamWidgetDataQueryResult = ApolloReactCommon.QueryResult<
   TeamWidgetDataQuery,
   TeamWidgetDataQueryVariables
->
-export const JoinEventDocument = gql`
-  mutation JoinEvent {
-    joinEvent {
-      ... on JoinEventSuccess {
-        gameId
-        featuredEvent {
-          id
-          currentUserGameId
-        }
-      }
-    }
-  }
-`
-export type JoinEventMutationFn = ApolloReactCommon.MutationFunction<
-  JoinEventMutation,
-  JoinEventMutationVariables
->
-
-/**
- * __useJoinEventMutation__
- *
- * To run a mutation, you first call `useJoinEventMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useJoinEventMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [joinEventMutation, { data, loading, error }] = useJoinEventMutation({
- *   variables: {
- *   },
- * });
- */
-export function useJoinEventMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
-    JoinEventMutation,
-    JoinEventMutationVariables
-  >
-) {
-  return ApolloReactHooks.useMutation<
-    JoinEventMutation,
-    JoinEventMutationVariables
-  >(JoinEventDocument, baseOptions)
-}
-export type JoinEventMutationHookResult = ReturnType<
-  typeof useJoinEventMutation
->
-export type JoinEventMutationResult = ApolloReactCommon.MutationResult<
-  JoinEventMutation
->
-export type JoinEventMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  JoinEventMutation,
-  JoinEventMutationVariables
 >
 export const AddUserToGameDocument = gql`
   mutation AddUserToGame($input: AddUserToGameInput!) {
@@ -2364,7 +2388,7 @@ const result: IntrospectionResultData = {
             name: 'AddFriendSuccess',
           },
           {
-            name: 'AddFriendAndAddToTeamSuccess',
+            name: 'AddFriendAndAddToGameSuccess',
           },
           {
             name: 'LovePostSuccess',
@@ -2388,7 +2412,7 @@ const result: IntrospectionResultData = {
             name: 'JoinEventSuccess',
           },
           {
-            name: 'EditGameNameSuccess',
+            name: 'EditGameSuccess',
           },
           {
             name: 'AddUserToGameSuccess',
@@ -2448,10 +2472,10 @@ const result: IntrospectionResultData = {
       },
       {
         kind: 'UNION',
-        name: 'AddFriendAndAddToTeamResponse',
+        name: 'AddFriendAndAddToGameResponse',
         possibleTypes: [
           {
-            name: 'AddFriendAndAddToTeamSuccess',
+            name: 'AddFriendAndAddToGameSuccess',
           },
           {
             name: 'UnauthorizedResponse',
@@ -2544,10 +2568,10 @@ const result: IntrospectionResultData = {
       },
       {
         kind: 'UNION',
-        name: 'EditGameNameResponse',
+        name: 'EditGameResponse',
         possibleTypes: [
           {
-            name: 'EditGameNameSuccess',
+            name: 'EditGameSuccess',
           },
           {
             name: 'UnauthorizedResponse',

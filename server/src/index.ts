@@ -30,12 +30,6 @@ const resolvers: Resolvers<Context> = {
     login(_, { input: { email, password } }, context) {
       return context.dataSources.userApi.login(email, password)
     },
-    addFriend(_, { input }, context) {
-      return context.dataSources.userApi.addFriend(input.id)
-    },
-    addFriendAndAddToTeam(_, { input }, context) {
-      return context.dataSources.userApi.addFriendAndAddToTeam(input.id)
-    },
     lovePost(_, { input: { id } }, context) {
       return context.dataSources.postApi.lovePost(id)
     },
@@ -57,8 +51,14 @@ const resolvers: Resolvers<Context> = {
     joinEvent(_, __, context) {
       return context.dataSources.eventApi.joinEvent()
     },
-    editGameName(_, { input }, context) {
-      return context.dataSources.gameApi.editGameName(input)
+    editGame(_, { input }, context) {
+      return context.dataSources.gameApi.editGame(input)
+    },
+    addFriend(_, { input }, context) {
+      return context.dataSources.userApi.addFriend(input.id)
+    },
+    addFriendAndAddToGame(_, { input }, context) {
+      return context.dataSources.userApi.addFriendAndAddToTeam(input.id)
     },
     addUserToGame(_, { input }, context) {
       return context.dataSources.gameApi.addUserToGame(input)
@@ -72,7 +72,7 @@ const resolvers: Resolvers<Context> = {
       return context.dataSources.userApi.getUser(response.userId)
     },
   },
-  AddFriendAndAddToTeamSuccess: {
+  AddFriendAndAddToGameSuccess: {
     game(response, __, context) {
       return context.dataSources.gameApi.getGame(response.gameId)
     },
@@ -119,17 +119,15 @@ const resolvers: Resolvers<Context> = {
       return context.dataSources.userApi.getUserIdsImFollowing()
     },
     async usersImFollowing(_, __, context) {
-      return context.dataSources.userApi.getUsers(
-        await context.dataSources.userApi.getUserIdsImFollowing()
-      )
+      const userIdsImFollowing = await context.dataSources.userApi.getUserIdsImFollowing()
+      return context.dataSources.userApi.getUsers(userIdsImFollowing || [])
     },
     userIdsFollowingMe(_, __, context) {
       return context.dataSources.userApi.getUserIdsFollowingMe()
     },
     async usersFollowingMe(_, __, context) {
-      return context.dataSources.userApi.getUsers(
-        await context.dataSources.userApi.getUserIdsFollowingMe()
-      )
+      const userIdsFollowingMe = await context.dataSources.userApi.getUserIdsFollowingMe()
+      return context.dataSources.userApi.getUsers(userIdsFollowingMe || [])
     },
   },
   Game: {
@@ -138,6 +136,11 @@ const resolvers: Resolvers<Context> = {
     },
     teamUsers(game, __, context) {
       return context.dataSources.gameApi.getTeamUsers(game.id)
+    },
+  },
+  EditGameSuccess: {
+    game(response, __, context) {
+      return context.dataSources.gameApi.getGame(response.gameId)
     },
   },
   LovePostSuccess: {

@@ -59,7 +59,7 @@ export default function PostLoveButton({ me, post }: Props) {
                   me: {
                     __typename: 'Me' as const,
                     id: me.id,
-                    lovedPosts: me.lovedPosts.filter(
+                    lovedPosts: me.lovedPosts?.filter(
                       (postId) => postId !== post.id
                     ),
                   },
@@ -80,7 +80,7 @@ export default function PostLoveButton({ me, post }: Props) {
                   me: {
                     __typename: 'Me' as const,
                     id: me.id,
-                    lovedPosts: [...me.lovedPosts, post.id],
+                    lovedPosts: [...(me.lovedPosts || []), post.id],
                   },
                   post: {
                     __typename: 'Post' as const,

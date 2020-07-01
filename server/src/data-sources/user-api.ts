@@ -108,7 +108,7 @@ export default class UserAPI extends BaseAPI {
       return {
         ...apiUserToUser((await this.get('vx/user/get')).node),
         __typename: 'Me',
-      } as Me
+      }
     } catch (e) {
       return unauthorizedResponse
     }

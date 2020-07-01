@@ -15,8 +15,6 @@ export const typeDefs = gql`
 
   type Mutation {
     login(input: LoginInput!): LoginResponse!
-    addFriend(input: IdInput!): AddFriendResponse!
-    addFriendAndAddToTeam(input: IdInput!): AddFriendAndAddToTeamResponse!
     lovePost(input: IdInput!): LovePostResponse!
     unlovePost(input: IdInput!): UnlovePostResponse!
     loveComment(input: IdInput!): LoveCommentResponse!
@@ -24,7 +22,9 @@ export const typeDefs = gql`
     addComment(input: AddCommentInput!): AddCommentResponse!
     editComment(input: EditCommentInput!): EditCommentResponse!
     joinEvent: JoinEventResponse!
-    editGameName(input: EditGameNameInput!): EditGameNameResponse!
+    editGame(input: EditGameInput!): EditGameResponse!
+    addFriend(input: IdInput!): AddFriendResponse!
+    addFriendAndAddToGame(input: IdInput!): AddFriendAndAddToGameResponse!
     addUserToGame(input: AddUserToGameInput!): AddUserToGameResponse!
     removeUserFromGame(
       input: RemoveUserFromGameInput!
@@ -85,11 +85,11 @@ export const typeDefs = gql`
     numPosts: Int!
     profilePath: String!
     type: String!
-    lovedPosts: [Int!]!
-    userIdsImFollowing: [Int!]!
-    usersImFollowing: [User!]!
-    userIdsFollowingMe: [Int!]!
-    usersFollowingMe: [User!]!
+    lovedPosts: [Int!]
+    userIdsImFollowing: [Int!]
+    usersImFollowing: [User!]
+    userIdsFollowingMe: [Int!]
+    usersFollowingMe: [User!]
   }
 
   union MeResponse = Me | UnauthorizedResponse
@@ -119,7 +119,7 @@ export const typeDefs = gql`
 
   union AddFriendResponse = AddFriendSuccess | UnauthorizedResponse
 
-  type AddFriendAndAddToTeamSuccess implements MutationResponse {
+  type AddFriendAndAddToGameSuccess implements MutationResponse {
     success: Boolean!
     userId: Int!
     user: User
@@ -127,8 +127,8 @@ export const typeDefs = gql`
     game: Game
   }
 
-  union AddFriendAndAddToTeamResponse =
-      AddFriendAndAddToTeamSuccess
+  union AddFriendAndAddToGameResponse =
+      AddFriendAndAddToGameSuccess
     | UnauthorizedResponse
 
   ######
@@ -308,17 +308,19 @@ export const typeDefs = gql`
     slug: String
   }
 
-  input EditGameNameInput {
+  input EditGameInput {
     id: Int!
-    name: String!
+    name: String
+    body: String
   }
 
-  type EditGameNameSuccess implements MutationResponse {
+  type EditGameSuccess implements MutationResponse {
     success: Boolean!
+    gameId: Int!
     game: Game
   }
 
-  union EditGameNameResponse = EditGameNameSuccess | UnauthorizedResponse
+  union EditGameResponse = EditGameSuccess | UnauthorizedResponse
 
   input AddUserToGameInput {
     gameId: Int!

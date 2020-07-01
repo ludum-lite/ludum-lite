@@ -29,13 +29,14 @@ export function useMinLoadingTime<T extends (...args: any) => any>(
       return new Promise((resolve, reject) => {
         let hasFinished = false
         let failed = false
+        let startedForceLoading = false
         let doneForceLoading = false
         let resolvedData: ReturnType<T>
 
         fn(...args)
           .then((data: ReturnType<T>) => {
             resolvedData = data
-            if (doneForceLoading) {
+            if (!startedForceLoading || doneForceLoading) {
               setIsLoading(false)
               resolve(resolvedData)
             }
@@ -46,6 +47,7 @@ export function useMinLoadingTime<T extends (...args: any) => any>(
             reject(e)
           })
           .finally(() => {
+            console.log('finished')
             hasFinished = true
           })
 

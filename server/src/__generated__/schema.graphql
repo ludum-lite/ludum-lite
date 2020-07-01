@@ -8,8 +8,6 @@ type Query {
 
 type Mutation {
   login(input: LoginInput!): LoginResponse!
-  addFriend(input: IdInput!): AddFriendResponse!
-  addFriendAndAddToTeam(input: IdInput!): AddFriendAndAddToTeamResponse!
   lovePost(input: IdInput!): LovePostResponse!
   unlovePost(input: IdInput!): UnlovePostResponse!
   loveComment(input: IdInput!): LoveCommentResponse!
@@ -17,7 +15,9 @@ type Mutation {
   addComment(input: AddCommentInput!): AddCommentResponse!
   editComment(input: EditCommentInput!): EditCommentResponse!
   joinEvent: JoinEventResponse!
-  editGameName(input: EditGameNameInput!): EditGameNameResponse!
+  editGame(input: EditGameInput!): EditGameResponse!
+  addFriend(input: IdInput!): AddFriendResponse!
+  addFriendAndAddToGame(input: IdInput!): AddFriendAndAddToGameResponse!
   addUserToGame(input: AddUserToGameInput!): AddUserToGameResponse!
   removeUserFromGame(input: RemoveUserFromGameInput!): RemoveUserFromGameResponse!
 }
@@ -68,11 +68,11 @@ type Me implements BaseUser {
   numPosts: Int!
   profilePath: String!
   type: String!
-  lovedPosts: [Int!]!
-  userIdsImFollowing: [Int!]!
-  usersImFollowing: [User!]!
-  userIdsFollowingMe: [Int!]!
-  usersFollowingMe: [User!]!
+  lovedPosts: [Int!]
+  userIdsImFollowing: [Int!]
+  usersImFollowing: [User!]
+  userIdsFollowingMe: [Int!]
+  usersFollowingMe: [User!]
 }
 
 union MeResponse = Me | UnauthorizedResponse
@@ -102,7 +102,7 @@ type AddFriendSuccess implements MutationResponse {
 
 union AddFriendResponse = AddFriendSuccess | UnauthorizedResponse
 
-type AddFriendAndAddToTeamSuccess implements MutationResponse {
+type AddFriendAndAddToGameSuccess implements MutationResponse {
   success: Boolean!
   userId: Int!
   user: User
@@ -110,7 +110,7 @@ type AddFriendAndAddToTeamSuccess implements MutationResponse {
   game: Game
 }
 
-union AddFriendAndAddToTeamResponse = AddFriendAndAddToTeamSuccess | UnauthorizedResponse
+union AddFriendAndAddToGameResponse = AddFriendAndAddToGameSuccess | UnauthorizedResponse
 
 enum PostType {
   All
@@ -269,17 +269,19 @@ type Game {
   slug: String
 }
 
-input EditGameNameInput {
+input EditGameInput {
   id: Int!
-  name: String!
+  name: String
+  body: String
 }
 
-type EditGameNameSuccess implements MutationResponse {
+type EditGameSuccess implements MutationResponse {
   success: Boolean!
+  gameId: Int!
   game: Game
 }
 
-union EditGameNameResponse = EditGameNameSuccess | UnauthorizedResponse
+union EditGameResponse = EditGameSuccess | UnauthorizedResponse
 
 input AddUserToGameInput {
   gameId: Int!

@@ -6,7 +6,7 @@ import {
   useGameWidgetDataQuery,
   EventPhase,
   useJoinEventMutation,
-  useEditGameNameMutation,
+  useGameWidget_EditGameMutation,
 } from '__generated__/client-types'
 import Button from 'components/common/mui/Button'
 import {
@@ -74,13 +74,14 @@ export default function GameWidget({ className }: Props) {
     },
   })
 
-  const [preferredEventType, setPreferredEventType] = useLocalStorage<
-    'compo' | 'jam' | null
-  >('currentEventPreferredEventType', null)
+  const [_, setPreferredEventType] = useLocalStorage<'compo' | 'jam' | null>(
+    'currentEventPreferredEventType',
+    null
+  )
   const [showJoinEventDialog, setShowJoinEventDialog] = React.useState<boolean>(
     false
   )
-  const [editGameNameMutation] = useEditGameNameMutation()
+  const [editGameNameMutation] = useGameWidget_EditGameMutation()
 
   const handleClose = React.useCallback(() => {
     setShowJoinEventDialog(false)
@@ -186,10 +187,18 @@ export default function GameWidget({ className }: Props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button fullWidth onClick={() => joinEvent('jam')}>
+          <Button
+            fullWidth
+            onClick={() => joinEvent('jam')}
+            variant="contained"
+          >
             Jam
           </Button>
-          <Button fullWidth onClick={() => joinEvent('compo')}>
+          <Button
+            fullWidth
+            onClick={() => joinEvent('compo')}
+            variant="contained"
+          >
             Compo
           </Button>
         </DialogActions>
@@ -211,9 +220,27 @@ gql`
     }
   }
 
-  mutation EditGameName($input: EditGameNameInput!) {
-    editGameName(input: $input) {
-      ... on EditGameNameSuccess {
+  mutation JoinEvent {
+    joinEvent {
+      ... on JoinEventSuccess {
+        gameId
+        featuredEvent {
+          id
+          currentUserGameId
+          currentUserGame {
+            id
+            teamUsers {
+              ...TeamWidget_teamUser
+            }
+          }
+        }
+      }
+    }
+  }
+
+  mutation GameWidget_EditGame($input: EditGameInput!) {
+    editGame(input: $input) {
+      ... on EditGameSuccess {
         game {
           id
           name

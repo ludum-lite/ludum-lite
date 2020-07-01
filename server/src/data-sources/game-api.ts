@@ -4,13 +4,13 @@ import sort from 'dataloader-sort'
 import BaseAPI from './base-api'
 import {
   Game,
-  EditGameNameResponse,
-  EditGameNameInput,
   AddUserToGameInput,
   AddUserToGameResponse,
   RemoveUserFromGameInput,
   RemoveUserFromGameResponse,
   User,
+  EditGameInput,
+  EditGameResponse,
 } from '../__generated__/schema-types'
 import { unauthorizedResponse } from './const'
 import { Context } from './context'
@@ -88,16 +88,15 @@ export default class GameAPI extends BaseAPI {
     return users
   }
 
-  async editGameName({
-    id,
-    name,
-  }: EditGameNameInput): Promise<EditGameNameResponse> {
+  async editGame({ id, name, body }: EditGameInput): Promise<EditGameResponse> {
     try {
       await this.post(`vx/node/update/${id}`, {
         name,
+        body,
       })
       return {
-        __typename: 'EditGameNameSuccess',
+        __typename: 'EditGameSuccess',
+        gameId: id,
         success: true,
       }
     } catch (e) {
@@ -115,6 +114,14 @@ export default class GameAPI extends BaseAPI {
         author: null,
       })
 
+      /**
+       * Update the game so the last modified date is the most recent possible.
+       * Why? When a user has multiple games, the most recently modified is the selected game you are a part of,
+       * but adding a team member doesn't update the modified date, so if they created
+       * their own game before getting invited, they won't see the team's game unless we do this
+       */
+      await this.updateLastModified(gameId)
+
       return {
         __typename: 'AddUserToGameSuccess',
         success: true,
@@ -125,6 +132,19 @@ export default class GameAPI extends BaseAPI {
       console.error(e)
       return unauthorizedResponse
     }
+  }
+
+  private async updateLastModified(id: number) {
+    // This is a super hacky way to get `modifiedDate` updated, but I haven't found another way
+    const game = await this.getGame(id)
+    await this.editGame({
+      id,
+      body: game.body + ' ',
+    })
+    await this.editGame({
+      id,
+      body: game.body,
+    })
   }
 
   async removeUserFromGame({
