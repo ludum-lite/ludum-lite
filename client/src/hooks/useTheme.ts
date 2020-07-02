@@ -72,6 +72,10 @@ export type ThemeColors = {
   bookmarkButton: {
     activeColor: string
   }
+  friendAddedBadge: {
+    backgroundColor: string
+    color: string
+  }
   popupPage: {
     background: string
   }
@@ -210,6 +214,10 @@ const lightTheme: ThemeColors = {
   },
   bookmarkButton: {
     activeColor: styleVariables.greenShade,
+  },
+  friendAddedBadge: {
+    backgroundColor: styleVariables.bittersweet,
+    color: 'white',
   },
   moreButton: {
     background: styleVariables.white,
@@ -359,6 +367,10 @@ const darkTheme: ThemeColors = {
   },
   bookmarkButton: {
     activeColor: ldStyleVariables.blueGreen,
+  },
+  friendAddedBadge: {
+    backgroundColor: ldStyleVariables.portlandOrange,
+    color: 'white',
   },
   popupPage: {
     background: ldStyleVariables.cultured,

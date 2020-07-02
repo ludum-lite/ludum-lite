@@ -5,6 +5,7 @@ import { gql } from '@apollo/client'
 import {
   useTeamWidgetDataQuery,
   useAddUserToGameMutation,
+  useRemoveUserFromGameMutation,
 } from '__generated__/client-types'
 import {
   Typography,
@@ -15,6 +16,11 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  ListItemSecondaryAction,
+  Menu,
+  MenuItem,
+  DialogContent,
+  DialogContentText,
 } from '@material-ui/core'
 import { useLogin } from 'hooks/useLogin'
 import IconButton from 'components/common/mui/IconButton'
@@ -22,11 +28,15 @@ import Icon from 'components/common/mui/Icon'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import TeamMember from './TeamMember'
 import AddTeamMemberButton from './AddTeamMemberButton'
-import { useMe } from 'hooks/useMe'
-import Button from 'components/common/mui/Button'
-import CopyToClipboard from 'react-copy-to-clipboard'
 import Avatar from 'components/posts/Avatar'
 import ClickToCopyButton from 'components/common/ClickToCopyButton'
+import { useSnackbar } from 'notistack'
+import ProgressOverlay from 'components/common/ProgressOverlay'
+import {
+  usePopupState,
+  bindTrigger,
+  bindMenu,
+} from 'material-ui-popup-state/hooks'
 
 const Root = styled.div`
   display: flex;
@@ -72,27 +82,64 @@ const InviteText = styled(Typography)`
   white-space: pre;
 `
 
+const AddedTagContainer = styled(ListItemSecondaryAction)`
+  pointer-events: none;
+`
+
+const AddedTag = styled.div`
+  padding: ${({ theme }) => `${theme.spacing(1)}px ${theme.spacing(3)}px`};
+  background: ${({ theme }) =>
+    theme.themeColors.friendAddedBadge.backgroundColor};
+  color: ${({ theme }) => theme.themeColors.friendAddedBadge.color};
+  border-radius: ${({ theme }) => theme.shape.borderRadius}px;
+`
+
 interface Props {
   className?: string
 }
 export default function GameWidget({ className }: Props) {
+  const popupState = usePopupState({ variant: 'popover', popupId: 'menu' })
+
   const { isLoggedIn } = useLogin()
-  const { me } = useMe()
+
+  const { enqueueSnackbar } = useSnackbar()
+
+  const [
+    showUserOptionsForUserId,
+    setShowUserOptionsForUserId,
+  ] = React.useState<number | null>(null)
+
   const [
     showTeamMemberSelectDialog,
     setShowTeamMemberSelectDialog,
   ] = React.useState<boolean>(false)
 
-  const { data } = useTeamWidgetDataQuery()
+  const [showJoinATeamDialog, setShowJoinATeamDialog] = React.useState<boolean>(
+    false
+  )
 
-  const handleClose = () => {
+  const { data, refetch } = useTeamWidgetDataQuery()
+
+  const handleCloseUserOptions = () => {
+    setShowUserOptionsForUserId(null)
+  }
+
+  const handleCloseAddFriendToTeam = () => {
     setShowTeamMemberSelectDialog(false)
   }
 
+  const handleCloseJoinATeam = () => {
+    setShowJoinATeamDialog(false)
+  }
+
+  const [
+    removeUserFromGameMutation,
+    { loading: isRemovingUserFromGame },
+  ] = useRemoveUserFromGameMutation()
   const [addUserToGameMutation] = useAddUserToGameMutation()
 
   const addUserToGame = React.useCallback(
-    async (userId: number) => {
+    async (userId: number, userName: string) => {
       if (data?.featuredEvent?.currentUserGameId) {
         try {
           await addUserToGameMutation({
@@ -104,33 +151,162 @@ export default function GameWidget({ className }: Props) {
             },
           })
 
-          handleClose()
+          enqueueSnackbar(`Successfully added ${userName} to the team`, {
+            variant: 'success',
+          })
+
+          handleCloseAddFriendToTeam()
         } catch (e) {
           console.error(e)
         }
       }
     },
-    [data, addUserToGameMutation]
+    [data, addUserToGameMutation, enqueueSnackbar]
   )
 
-  if (isLoggedIn && me) {
+  const gameId = data?.featuredEvent.currentUserGameId
+
+  const userOptionsDialog = React.useMemo(() => {
+    if (showUserOptionsForUserId) {
+      const user = data?.featuredEvent.currentUserGame?.teamUsers?.find(
+        (user) => user.id === showUserOptionsForUserId
+      )
+
+      return (
+        <Dialog
+          open={Boolean(showUserOptionsForUserId)}
+          onClose={handleCloseUserOptions}
+        >
+          <ProgressOverlay loading={isRemovingUserFromGame} />
+          <List>
+            <ListItem button>
+              <ListItemText primary={`Go to ${user?.name}'s profile`} />
+            </ListItem>
+            {gameId && (
+              <ListItem
+                button
+                onClick={async () => {
+                  await removeUserFromGameMutation({
+                    variables: {
+                      input: {
+                        gameId,
+                        userId: showUserOptionsForUserId,
+                      },
+                    },
+                  })
+
+                  enqueueSnackbar(
+                    `Successfully removed ${user?.name} from the team`,
+                    {
+                      variant: 'success',
+                    }
+                  )
+
+                  handleCloseUserOptions()
+                }}
+              >
+                <ListItemText primary={`Remove ${user?.name} from team`} />
+              </ListItem>
+            )}
+          </List>
+        </Dialog>
+      )
+    }
+
+    return null
+  }, [
+    showUserOptionsForUserId,
+    data,
+    isRemovingUserFromGame,
+    gameId,
+    removeUserFromGameMutation,
+    enqueueSnackbar,
+  ])
+
+  const joinATeamDialog = React.useMemo(() => {
+    if (showJoinATeamDialog) {
+      return (
+        <Dialog
+          open={Boolean(showJoinATeamDialog)}
+          onClose={handleCloseJoinATeam}
+        >
+          <DialogTitle>Join a Team</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Please ask your team leader to initiate the join process from
+              their end.
+            </DialogContentText>
+          </DialogContent>
+        </Dialog>
+      )
+    }
+
+    return null
+  }, [showJoinATeamDialog, handleCloseJoinATeam])
+
+  if (isLoggedIn) {
     if (
       data?.featuredEvent?.__typename === 'Event' &&
       data?.me?.__typename === 'Me'
     ) {
+      const me = data!.me
+
       if (data.featuredEvent.currentUserGameId) {
         const inviteLink = `${window.location.origin}/invite/${me.id}`
         const userIdsFollowingMe = data.me.userIdsFollowingMe
         const leaderUser = data.featuredEvent.currentUserGame?.author
         const teamUsers = data.featuredEvent.currentUserGame?.teamUsers
+        const isLeader = leaderUser?.id === me.id
 
         return (
           <Root className={className}>
             <TopRow>
               <Typography variant="h6">My Team</Typography>
-              <IconButton background="globalNav" size="small">
+              <IconButton
+                background="globalNav"
+                size="small"
+                {...bindTrigger(popupState)}
+              >
                 <Icon icon={MoreHorizIcon} />
               </IconButton>
+              <Menu
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                {...bindMenu(popupState)}
+              >
+                <MenuItem
+                  onClick={async () => {
+                    popupState.close()
+                    setShowJoinATeamDialog(true)
+                  }}
+                >
+                  Join a different team
+                </MenuItem>
+                {gameId && (
+                  <MenuItem
+                    onClick={async () => {
+                      popupState.close()
+                      await removeUserFromGameMutation({
+                        variables: {
+                          input: {
+                            gameId,
+                            userId: me.id,
+                          },
+                        },
+                      })
+                      await refetch()
+                    }}
+                  >
+                    Leave Team
+                  </MenuItem>
+                )}
+              </Menu>
             </TopRow>
             <TeamList>
               <AddTeamMemberButton
@@ -154,7 +330,14 @@ export default function GameWidget({ className }: Props) {
                       arrow
                       placement="top"
                     >
-                      <TeamMember avatarPath={user.avatarPath} />
+                      <TeamMember
+                        avatarPath={user.avatarPath}
+                        onClick={() => {
+                          if (isLeader) {
+                            setShowUserOptionsForUserId(user.id)
+                          }
+                        }}
+                      />
                     </Tooltip>
                   ))}
               {leaderUser && (
@@ -168,7 +351,10 @@ export default function GameWidget({ className }: Props) {
                 </Tooltip>
               )}
             </TeamList>
-            <Dialog open={showTeamMemberSelectDialog} onClose={handleClose}>
+            <Dialog
+              open={showTeamMemberSelectDialog}
+              onClose={handleCloseAddFriendToTeam}
+            >
               <DialogTitle>Add friend to team</DialogTitle>
               <List>
                 {data.me.usersImFollowing
@@ -177,7 +363,7 @@ export default function GameWidget({ className }: Props) {
                     <ListItem
                       key={user.id}
                       button
-                      onClick={() => addUserToGame(user.id)}
+                      onClick={() => addUserToGame(user.id, user.name)}
                     >
                       <ListItemAvatar>
                         <Avatar
@@ -188,6 +374,13 @@ export default function GameWidget({ className }: Props) {
                         />
                       </ListItemAvatar>
                       <ListItemText primary={user.name} />
+                      {teamUsers?.some(
+                        (teamUser) => teamUser.id === user.id
+                      ) && (
+                        <AddedTagContainer>
+                          <AddedTag>Added</AddedTag>
+                        </AddedTagContainer>
+                      )}
                     </ListItem>
                   ))}
               </List>
@@ -200,12 +393,14 @@ export default function GameWidget({ className }: Props) {
                 >
                   {inviteLink}
                 </InviteButton>
-                <InviteText variant="caption" color="primary">
+                <InviteText variant="caption" color="textSecondary">
                   {`Don't see your friend listed? Send this link to your friend!
 They'll get a confirmation link to send back to you.`}
                 </InviteText>
               </InviteLinkContainer>
             </Dialog>
+            {userOptionsDialog}
+            {joinATeamDialog}
           </Root>
         )
       }
@@ -254,6 +449,20 @@ gql`
   mutation AddUserToGame($input: AddUserToGameInput!) {
     addUserToGame(input: $input) {
       ... on AddUserToGameSuccess {
+        success
+        game {
+          id
+          teamUsers {
+            ...TeamWidget_teamUser
+          }
+        }
+      }
+    }
+  }
+
+  mutation RemoveUserFromGame($input: RemoveUserFromGameInput!) {
+    removeUserFromGame(input: $input) {
+      ... on RemoveUserFromGameSuccess {
         success
         game {
           id

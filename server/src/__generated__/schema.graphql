@@ -305,7 +305,9 @@ input RemoveUserFromGameInput {
 
 type RemoveUserFromGameSuccess implements MutationResponse {
   success: Boolean!
+  gameId: Int!
   game: Game
+  userId: Int!
   user: User
 }
 

@@ -47,11 +47,11 @@ export function useMinLoadingTime<T extends (...args: any) => any>(
             reject(e)
           })
           .finally(() => {
-            console.log('finished')
             hasFinished = true
           })
 
         sleep(timeBeforeLoaderShown).then(() => {
+          startedForceLoading = true
           if (!hasFinished) {
             setIsLoading(true)
             sleep(showLoaderMinDuration).then(() => {

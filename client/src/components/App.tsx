@@ -46,6 +46,7 @@ const WidgetsContainer = styled.div`
   position: relative;
   min-width: 277px;
   width: 277px;
+  margin-right: ${({ theme }) => theme.spacing(2)}px;
 `
 
 const Widgets = styled.div`

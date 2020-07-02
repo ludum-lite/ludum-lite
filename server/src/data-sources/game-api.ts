@@ -152,11 +152,15 @@ export default class GameAPI extends BaseAPI {
     userId,
   }: RemoveUserFromGameInput): Promise<RemoveUserFromGameResponse> {
     try {
-      await this.post(`vx/node/link/add/${gameId}/${userId}`)
+      await this.post(`vx/node/link/remove/${gameId}/${userId}`, {
+        author: null,
+      })
 
       return {
         __typename: 'RemoveUserFromGameSuccess',
         success: true,
+        gameId,
+        userId,
       }
     } catch (e) {
       console.error(e)

@@ -419,7 +419,9 @@ export type RemoveUserFromGameInput = {
 export type RemoveUserFromGameSuccess = MutationResponse & {
    __typename: 'RemoveUserFromGameSuccess';
   success: Scalars['Boolean'];
+  gameId: Scalars['Int'];
   game?: Maybe<Game>;
+  userId: Scalars['Int'];
   user?: Maybe<User>;
 };
 
@@ -911,7 +913,9 @@ export type AddUserToGameResponseResolvers<ContextType = any, ParentType extends
 
 export type RemoveUserFromGameSuccessResolvers<ContextType = any, ParentType extends ResolversParentTypes['RemoveUserFromGameSuccess'] = ResolversParentTypes['RemoveUserFromGameSuccess']> = ResolversObject<{
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  gameId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   game?: Resolver<Maybe<ResolversTypes['Game']>, ParentType, ContextType>,
+  userId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;

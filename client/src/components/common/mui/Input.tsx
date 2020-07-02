@@ -67,20 +67,21 @@ interface Props {
   flushLeftEdge?: boolean
 }
 
-const Input: React.FC<Props & InputProps> = ({
-  background = null,
-  textColor = 'black',
-  flushLeftEdge,
-  ...other
-}) => {
-  return (
-    <StyledInput
-      background={background}
-      textColor={textColor}
-      flushLeftEdge={flushLeftEdge}
-      {...other}
-    />
-  )
-}
+const Input = React.forwardRef<HTMLInputElement, Props & InputProps>(
+  (
+    { background = null, textColor = 'black', flushLeftEdge, ...other },
+    ref
+  ) => {
+    return (
+      <StyledInput
+        inputRef={ref}
+        background={background}
+        textColor={textColor}
+        flushLeftEdge={flushLeftEdge}
+        {...other}
+      />
+    )
+  }
+)
 
 export default Input

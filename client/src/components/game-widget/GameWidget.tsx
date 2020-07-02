@@ -24,6 +24,8 @@ import Icon from 'components/common/mui/Icon'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import GameDetailListItem from './GameDetailListItem'
 import Input from 'components/common/mui/Input'
+import { useSnackbar } from 'notistack'
+import { useMinLoadingTime } from 'hooks/useMinLoadingTime'
 
 const Root = styled.div`
   display: flex;
@@ -66,6 +68,8 @@ interface Props {
   className?: string
 }
 export default function GameWidget({ className }: Props) {
+  const gameNameInputRef = React.useRef<HTMLInputElement>(null)
+  const { enqueueSnackbar } = useSnackbar()
   const { isLoggedIn } = useLogin()
   const [gameName, setGameName] = React.useState<string>('')
   const { data } = useGameWidgetDataQuery({
@@ -82,6 +86,7 @@ export default function GameWidget({ className }: Props) {
     false
   )
   const [editGameNameMutation] = useGameWidget_EditGameMutation()
+  const { fn: editGameName } = useMinLoadingTime(editGameNameMutation)
 
   const handleClose = React.useCallback(() => {
     setShowJoinEventDialog(false)
@@ -102,6 +107,14 @@ export default function GameWidget({ className }: Props) {
     [setPreferredEventType, handleClose, joinEventMutation]
   )
 
+  const persistedGameName = data?.featuredEvent.currentUserGame?.name
+
+  React.useEffect(() => {
+    if (persistedGameName) {
+      setGameName(persistedGameName)
+    }
+  }, [persistedGameName])
+
   const content = React.useMemo(() => {
     if (isLoggedIn) {
       if (data?.featuredEvent?.__typename === 'Event') {
@@ -110,9 +123,9 @@ export default function GameWidget({ className }: Props) {
             <GameDetails>
               <TopRow>
                 <Typography variant="h6">My Game</Typography>
-                <IconButton background="contextualNav" size="small">
+                {/* <IconButton background="contextualNav" size="small">
                   <Icon icon={MoreHorizIcon} />
-                </IconButton>
+                </IconButton> */}
               </TopRow>
               <GameDetailsBody>
                 <GameNameListItem
@@ -127,9 +140,18 @@ export default function GameWidget({ className }: Props) {
                       onChange={(e) => {
                         setGameName(e.target.value)
                       }}
-                      onBlur={() => {
-                        if (data.featuredEvent.currentUserGameId) {
-                          editGameNameMutation({
+                      ref={gameNameInputRef}
+                      onKeyDown={async (e) => {
+                        if (e.key === 'Enter') {
+                          gameNameInputRef.current?.blur()
+                        }
+                      }}
+                      onBlur={async () => {
+                        if (
+                          data?.featuredEvent.currentUserGameId &&
+                          data?.featuredEvent.currentUserGame?.name !== gameName
+                        ) {
+                          await editGameName({
                             variables: {
                               input: {
                                 id: data.featuredEvent.currentUserGameId,
@@ -137,6 +159,13 @@ export default function GameWidget({ className }: Props) {
                               },
                             },
                           })
+
+                          enqueueSnackbar(
+                            `Successfully updated your game's name to: ${gameName}`,
+                            {
+                              variant: 'success',
+                            }
+                          )
                         }
                       }}
                       value={gameName}
@@ -174,7 +203,7 @@ export default function GameWidget({ className }: Props) {
         }
       }
     }
-  }, [data, isLoggedIn, gameName, editGameNameMutation])
+  }, [data, isLoggedIn, gameName, editGameName])
 
   return (
     <Root className={className}>

@@ -409,7 +409,9 @@ export type RemoveUserFromGameInput = {
 export type RemoveUserFromGameSuccess = MutationResponse & {
   __typename: 'RemoveUserFromGameSuccess'
   success: Scalars['Boolean']
+  gameId: Scalars['Int']
   game?: Maybe<Game>
+  userId: Scalars['Int']
   user?: Maybe<User>
 }
 
@@ -826,6 +828,27 @@ export type AddUserToGameMutation = { __typename: 'Mutation' } & {
   addUserToGame:
     | ({ __typename: 'AddUserToGameSuccess' } & Pick<
         AddUserToGameSuccess,
+        'success'
+      > & {
+          game?: Maybe<
+            { __typename: 'Game' } & Pick<Game, 'id'> & {
+                teamUsers?: Maybe<
+                  Array<{ __typename: 'User' } & TeamWidget_TeamUserFragment>
+                >
+              }
+          >
+        })
+    | { __typename: 'UnauthorizedResponse' }
+}
+
+export type RemoveUserFromGameMutationVariables = Exact<{
+  input: RemoveUserFromGameInput
+}>
+
+export type RemoveUserFromGameMutation = { __typename: 'Mutation' } & {
+  removeUserFromGame:
+    | ({ __typename: 'RemoveUserFromGameSuccess' } & Pick<
+        RemoveUserFromGameSuccess,
         'success'
       > & {
           game?: Maybe<
@@ -2196,6 +2219,65 @@ export type AddUserToGameMutationResult = ApolloReactCommon.MutationResult<
 export type AddUserToGameMutationOptions = ApolloReactCommon.BaseMutationOptions<
   AddUserToGameMutation,
   AddUserToGameMutationVariables
+>
+export const RemoveUserFromGameDocument = gql`
+  mutation RemoveUserFromGame($input: RemoveUserFromGameInput!) {
+    removeUserFromGame(input: $input) {
+      ... on RemoveUserFromGameSuccess {
+        success
+        game {
+          id
+          teamUsers {
+            ...TeamWidget_teamUser
+          }
+        }
+      }
+    }
+  }
+  ${TeamWidget_TeamUserFragmentDoc}
+`
+export type RemoveUserFromGameMutationFn = ApolloReactCommon.MutationFunction<
+  RemoveUserFromGameMutation,
+  RemoveUserFromGameMutationVariables
+>
+
+/**
+ * __useRemoveUserFromGameMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserFromGameMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserFromGameMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserFromGameMutation, { data, loading, error }] = useRemoveUserFromGameMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRemoveUserFromGameMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    RemoveUserFromGameMutation,
+    RemoveUserFromGameMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    RemoveUserFromGameMutation,
+    RemoveUserFromGameMutationVariables
+  >(RemoveUserFromGameDocument, baseOptions)
+}
+export type RemoveUserFromGameMutationHookResult = ReturnType<
+  typeof useRemoveUserFromGameMutation
+>
+export type RemoveUserFromGameMutationResult = ApolloReactCommon.MutationResult<
+  RemoveUserFromGameMutation
+>
+export type RemoveUserFromGameMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  RemoveUserFromGameMutation,
+  RemoveUserFromGameMutationVariables
 >
 export const GlobalIsLoggedInDocument = gql`
   query GlobalIsLoggedIn {

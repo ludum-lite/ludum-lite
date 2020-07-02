@@ -67,19 +67,6 @@ const resolvers: Resolvers<Context> = {
       return context.dataSources.gameApi.removeUserFromGame(input)
     },
   },
-  AddFriendSuccess: {
-    user(response, __, context) {
-      return context.dataSources.userApi.getUser(response.userId)
-    },
-  },
-  AddFriendAndAddToGameSuccess: {
-    game(response, __, context) {
-      return context.dataSources.gameApi.getGame(response.gameId)
-    },
-    user(response, __, context) {
-      return context.dataSources.userApi.getUser(response.userId)
-    },
-  },
   Post: {
     author(post, __, context) {
       return context.dataSources.userApi.getUser(post.authorId)
@@ -130,6 +117,35 @@ const resolvers: Resolvers<Context> = {
       return context.dataSources.userApi.getUsers(userIdsFollowingMe || [])
     },
   },
+  AddFriendSuccess: {
+    user(response, __, context) {
+      return context.dataSources.userApi.getUser(response.userId)
+    },
+  },
+  AddFriendAndAddToGameSuccess: {
+    game(response, __, context) {
+      return context.dataSources.gameApi.getGame(response.gameId)
+    },
+    user(response, __, context) {
+      return context.dataSources.userApi.getUser(response.userId)
+    },
+  },
+  AddUserToGameSuccess: {
+    game(response, __, context) {
+      return context.dataSources.gameApi.getGame(response.gameId)
+    },
+    user(response, __, context) {
+      return context.dataSources.userApi.getUser(response.userId)
+    },
+  },
+  RemoveUserFromGameSuccess: {
+    game(response, __, context) {
+      return context.dataSources.gameApi.getGame(response.gameId)
+    },
+    user(response, __, context) {
+      return context.dataSources.userApi.getUser(response.userId)
+    },
+  },
   Game: {
     author(game, __, context) {
       return context.dataSources.userApi.getUser(game.authorId)
@@ -175,14 +191,6 @@ const resolvers: Resolvers<Context> = {
     EventRunning: 5,
     GameVoting: 6,
     Results: 7,
-  },
-  AddUserToGameSuccess: {
-    game(response, __, context) {
-      return context.dataSources.gameApi.getGame(response.gameId)
-    },
-    user(response, __, context) {
-      return context.dataSources.userApi.getUser(response.userId)
-    },
   },
 }
 

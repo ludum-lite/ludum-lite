@@ -10,6 +10,7 @@ const Root = styled.div`
 interface Props {
   avatarPath?: string | null
   leader?: boolean
+  onClick?: () => void
   className?: string
 }
 export default React.forwardRef<HTMLDivElement, Props>(

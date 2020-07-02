@@ -344,7 +344,9 @@ export const typeDefs = gql`
 
   type RemoveUserFromGameSuccess implements MutationResponse {
     success: Boolean!
+    gameId: Int!
     game: Game
+    userId: Int!
     user: User
   }
 
