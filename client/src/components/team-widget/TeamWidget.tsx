@@ -128,9 +128,9 @@ export default function GameWidget({ className }: Props) {
     setShowTeamMemberSelectDialog(false)
   }
 
-  const handleCloseJoinATeam = () => {
+  const handleCloseJoinATeam = React.useCallback(() => {
     setShowJoinATeamDialog(false)
-  }
+  }, [setShowJoinATeamDialog])
 
   const [
     removeUserFromGameMutation,

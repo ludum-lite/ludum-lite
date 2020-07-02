@@ -19,9 +19,6 @@ import {
 } from '@material-ui/core'
 import useLocalStorage from 'hooks/useLocalStorage'
 import { useLogin } from 'hooks/useLogin'
-import IconButton from 'components/common/mui/IconButton'
-import Icon from 'components/common/mui/Icon'
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import GameDetailListItem from './GameDetailListItem'
 import Input from 'components/common/mui/Input'
 import { useSnackbar } from 'notistack'
@@ -203,7 +200,7 @@ export default function GameWidget({ className }: Props) {
         }
       }
     }
-  }, [data, isLoggedIn, gameName, editGameName])
+  }, [isLoggedIn, data, gameName, editGameName, enqueueSnackbar])
 
   return (
     <Root className={className}>
