@@ -29,6 +29,9 @@ export type ThemeColors = {
   borderColor: string
   fadedWhite: string
   fadedBlack: string
+  appBar: {
+    background: string
+  }
   markdown: {
     codeBackground: string
   }
@@ -154,6 +157,9 @@ const lightTheme: ThemeColors = {
   fadedWhite,
   fadedBlack,
   borderColor,
+  appBar: {
+    background: styleVariables.sapphireBlue,
+  },
   markdown: {
     codeBackground: 'rgba(64, 75, 86, 0.15)',
   },
@@ -287,6 +293,9 @@ const darkTheme: ThemeColors = {
   fadedWhite,
   fadedBlack,
   borderColor,
+  appBar: {
+    background: ldStyleVariables.portlandOrange,
+  },
   markdown: {
     codeBackground: 'rgba(64, 75, 86, 0.11)',
   },
@@ -458,6 +467,16 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       },
     },
     overrides: {
+      MuiToolbar: {
+        gutters: {
+          paddingLeft: defaultTheme.spacing(1),
+          paddingRight: defaultTheme.spacing(1),
+          [defaultTheme.breakpoints.up('sm')]: {
+            paddingLeft: defaultTheme.spacing(2),
+            paddingRight: defaultTheme.spacing(2),
+          },
+        },
+      },
       MuiButton: {
         root: {
           textTransform: 'none',

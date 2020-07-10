@@ -75,7 +75,7 @@ export default function GameWidget({ className }: Props) {
     },
   })
 
-  const [_, setPreferredEventType] = useLocalStorage<'compo' | 'jam' | null>(
+  const [, setPreferredEventType] = useLocalStorage<'compo' | 'jam' | null>(
     'currentEventPreferredEventType',
     null
   )
@@ -201,6 +201,10 @@ export default function GameWidget({ className }: Props) {
       }
     }
   }, [isLoggedIn, data, gameName, editGameName, enqueueSnackbar])
+
+  if (!content) {
+    return null
+  }
 
   return (
     <Root className={className}>
