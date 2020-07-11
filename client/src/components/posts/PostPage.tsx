@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import styled from 'styled-components/macro'
 import { gql } from '@apollo/client'
 
@@ -9,7 +9,9 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  FilledInput,
 } from '@material-ui/core'
+import EditIcon from '@material-ui/icons/Edit'
 import PopupPage from './PopupPage'
 import UserPostedHeader from './UserPostedHeader'
 import { useParams } from 'react-router'
@@ -29,6 +31,13 @@ import {
   PostLoveButton_PostFragmentDoc,
 } from '__generated__/client-types'
 import useLocalStorage from 'hooks/useLocalStorage'
+import IconButton from 'components/common/mui/IconButton'
+import Icon from 'components/common/mui/Icon'
+import useEditablePreviewActionRow from 'hooks/useEditablePreviewActionRow'
+import Input from 'components/common/mui/Input'
+import { useForm } from 'react-hook-form'
+import MultilineTextField from 'components/common/MultilineTextField'
+import MultilineInput from 'components/common/MultilineInput'
 
 enum CommentSortBy {
   DatePostedNewest = 'datePosted_newest',
@@ -56,7 +65,6 @@ const HeaderContent = styled.div`
 const HeaderUserContainer = styled.div``
 
 const Title = styled.div`
-  margin-right: 8px;
   margin-bottom: ${({ theme }) => theme.spacing(1)}px;
 `
 
@@ -109,17 +117,40 @@ const CommentsTitle = styled(Typography)`
   line-height: 0.9;
 `
 
+const EditActionRow = styled.div`
+  padding: ${({ theme }) => theme.spacing(1)}px;
+  margin-bottom: ${({ theme }) => theme.spacing(3)}px;
+  background: ${({ theme }) => theme.themeColors.post.editActionRowBackground};
+`
+
+const TitleInput = styled(FilledInput)`
+  margin-bottom: ${({ theme }) => theme.spacing(1)}px;
+`
+
+const StyledBodyInput = styled(MultilineTextField)`
+  margin-bottom: ${({ theme }) => theme.spacing(3)}px;
+`
+
+type FormInputs = {
+  title: string
+  body: string
+}
+
 export default function PostPage() {
   const { id: postId } = useParams()
+  const [isEditing, setIsEditing] = React.useState(false)
   const [commentSortBy, setSortBy] = useLocalStorage(
     'comments_sortBy',
     CommentSortBy.DatePostedNewest
   )
 
-  const onChangeSortBy = React.useCallback((sortBy: CommentSortBy) => {
-    localStorage.setItem('comments_sortBy', JSON.stringify(sortBy))
-    setSortBy(sortBy)
-  }, [])
+  const onChangeSortBy = React.useCallback(
+    (sortBy: CommentSortBy) => {
+      localStorage.setItem('comments_sortBy', JSON.stringify(sortBy))
+      setSortBy(sortBy)
+    },
+    [setSortBy]
+  )
 
   const { setActivePostId } = useActivePostId()
 
@@ -156,74 +187,137 @@ export default function PostPage() {
     return []
   }, [commentSortBy, comments])
 
+  const { register, handleSubmit } = useForm<FormInputs>()
+
+  const onSave = React.useCallback(() => {
+    handleSubmit(() => {
+      console.log('saving')
+    })
+  }, [handleSubmit])
+
+  const onCancel = React.useCallback(() => {}, [])
+
+  const { state, actionRow: editActionRow } = useEditablePreviewActionRow({
+    value: post?.body || '',
+    onSubmit: onSave,
+    onCancel,
+  })
+
+  const startEditing = React.useCallback(() => {
+    setIsEditing(true)
+  }, [setIsEditing])
+
   const body = React.useMemo(() => {
     if (!loading && post) {
+      console.log(post?.name)
       return (
         <Body>
+          {isEditing && <EditActionRow>{editActionRow}</EditActionRow>}
           <Article>
             <Header>
               <HeaderContent>
-                <Title>
-                  <TitleText variant="h5">{post.name}</TitleText>
-                </Title>
-                <HeaderUserContainer>
-                  <UserPostedHeader
-                    userProfilePath={post.author?.profilePath || 'N/A'}
-                    userAvatarPath={post.author?.avatarPath || 'N/A'}
-                    userName={post.author?.name || 'N/A'}
-                    postedDate={post.publishedDate || 'N/A'}
+                {isEditing ? (
+                  <TitleInput
+                    name="title"
+                    placeholder="Title"
+                    defaultValue={post.name || ''}
+                    inputRef={register}
                   />
-                </HeaderUserContainer>
+                ) : (
+                  <Title>
+                    <TitleText variant="h5">{post.name}</TitleText>
+                  </Title>
+                )}
+                {!isEditing && (
+                  <HeaderUserContainer>
+                    <UserPostedHeader
+                      userProfilePath={post.author?.profilePath || 'N/A'}
+                      userAvatarPath={post.author?.avatarPath || 'N/A'}
+                      userName={post.author?.name || 'N/A'}
+                      postedDate={post.publishedDate || 'N/A'}
+                    />
+                  </HeaderUserContainer>
+                )}
               </HeaderContent>
             </Header>
-            {post.body && <Markdown source={post.body} />}
-          </Article>
-          <StyledAddCommentForm postId={post.id} />
-          <CommentsContained>
-            <CommentsTitleContainer>
-              <CommentsTitle variant="h5">Comments</CommentsTitle>
-              <FormControl variant="filled">
-                <InputLabel id="demo-simple-select-filled-label">
-                  Sort By
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-filled-label"
-                  id="demo-simple-select-filled"
-                  value={commentSortBy}
-                  onChange={(e) => {
-                    onChangeSortBy(e.target.value as CommentSortBy)
-                  }}
-                >
-                  <MenuItem value={CommentSortBy.DatePostedNewest}>
-                    {CommentSortByToDisplay[CommentSortBy.DatePostedNewest]}
-                  </MenuItem>
-                  <MenuItem value={CommentSortBy.DatePostedOldest}>
-                    {CommentSortByToDisplay[CommentSortBy.DatePostedOldest]}
-                  </MenuItem>
-                  <MenuItem value={CommentSortBy.Loves}>
-                    {CommentSortByToDisplay[CommentSortBy.Loves]}
-                  </MenuItem>
-                </Select>
-              </FormControl>
-            </CommentsTitleContainer>
-            {post && (
-              <Comments
-                comments={filter(Comments_CommentFragmentDoc, sortedComments)}
-                post={filter(Comments_PostFragmentDoc, post)}
+            {isEditing ? (
+              <StyledBodyInput
+                name="body"
+                placeholder="Body"
+                defaultValue={post.body || ''}
               />
+            ) : (
+              post.body && <Markdown source={post.body} />
             )}
-          </CommentsContained>
+          </Article>
+          {!isEditing && (
+            <Fragment>
+              <StyledAddCommentForm postId={post.id} />
+              <CommentsContained>
+                <CommentsTitleContainer>
+                  <CommentsTitle variant="h5">Comments</CommentsTitle>
+                  <FormControl variant="filled">
+                    <InputLabel id="demo-simple-select-filled-label">
+                      Sort By
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-filled-label"
+                      id="demo-simple-select-filled"
+                      value={commentSortBy}
+                      onChange={(e) => {
+                        onChangeSortBy(e.target.value as CommentSortBy)
+                      }}
+                    >
+                      <MenuItem value={CommentSortBy.DatePostedNewest}>
+                        {CommentSortByToDisplay[CommentSortBy.DatePostedNewest]}
+                      </MenuItem>
+                      <MenuItem value={CommentSortBy.DatePostedOldest}>
+                        {CommentSortByToDisplay[CommentSortBy.DatePostedOldest]}
+                      </MenuItem>
+                      <MenuItem value={CommentSortBy.Loves}>
+                        {CommentSortByToDisplay[CommentSortBy.Loves]}
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </CommentsTitleContainer>
+                {post && (
+                  <Comments
+                    comments={filter(
+                      Comments_CommentFragmentDoc,
+                      sortedComments
+                    )}
+                    post={filter(Comments_PostFragmentDoc, post)}
+                  />
+                )}
+              </CommentsContained>
+            </Fragment>
+          )}
         </Body>
       )
     }
 
     return <StyledLinearProgress />
-  }, [post, loading, commentSortBy, onChangeSortBy, sortedComments])
+  }, [
+    loading,
+    post,
+    isEditing,
+    editActionRow,
+    commentSortBy,
+    sortedComments,
+    onChangeSortBy,
+  ])
 
   const actionRow = React.useMemo(() => {
     if (!loading) {
+      const isMyPost = me?.__typename === 'Me' && me?.id === post?.authorId
+
       return (
         <ActionRow>
+          {isMyPost && !isEditing && (
+            <IconButton background="white" onClick={startEditing}>
+              <Icon icon={EditIcon} />
+            </IconButton>
+          )}
           {post && me && (
             <PostLoveButton
               post={filter(PostLoveButton_PostFragmentDoc, post)}
@@ -236,7 +330,7 @@ export default function PostPage() {
     }
 
     return null
-  }, [post, me, loading])
+  }, [post, me, loading, isEditing])
 
   return <PopupPage actionRow={actionRow}>{body}</PopupPage>
 }

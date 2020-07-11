@@ -22,6 +22,7 @@ export type ThemeColors = {
   background: string
   globalNavBackground: string
   contextualNavBackground: string
+  pageBackground: string
   whiteBackground: string
   loaderBackground: string
   loaderBarBackground: string
@@ -40,6 +41,10 @@ export type ThemeColors = {
   }
   error: {
     background: string
+  }
+  input: {
+    background: string
+    hoverOutlineColor: string
   }
   button: {
     background: {
@@ -61,6 +66,7 @@ export type ThemeColors = {
   post: {
     backgroundColor: string
     activeBorderColor: string
+    editActionRowBackground: string
   }
   moreButton: {
     background: string
@@ -86,7 +92,6 @@ export type ThemeColors = {
     background: string
     textFieldBackground: string
     textFieldActiveBackground: string
-    boxShadow: string
   }
   comment: {
     evenBackground: string
@@ -125,7 +130,6 @@ const buttonContainedHoverBackgroundColor = 'rgba(0,0,0,0.32)'
 const buttonLightBackgroundHoverColor = 'rgba(255,255,255,0.2)'
 const buttonContainedColor = 'rgba(0, 0, 0, 0.87)'
 const cardBoxShadow = '0 0 6px 0px rgba(0,0,0,0.04)'
-const inputBackground = 'rgba(75, 80, 97, 0.17)'
 const fadedWhite = 'rgba(255,255,255,0.9)'
 const fadedBlack = 'rgba(0, 0, 0, 0.38)'
 
@@ -150,6 +154,7 @@ const lightTheme: ThemeColors = {
   background: styleVariables.cultured,
   globalNavBackground: styleVariables.sapphireBlue,
   contextualNavBackground: styleVariables.greenBlue,
+  pageBackground: styleVariables.white,
   whiteBackground: styleVariables.white,
   loaderBackground: 'rgba(0, 0, 0, 0.166)',
   loaderBarBackground: 'rgba(0, 0, 0, 0.166)',
@@ -168,6 +173,10 @@ const lightTheme: ThemeColors = {
   },
   error: {
     background: styleVariables.bittersweet,
+  },
+  input: {
+    background: 'rgba(75, 80, 97, 0.17)',
+    hoverOutlineColor: styleVariables.greenBlue,
   },
   button: {
     background: {
@@ -211,6 +220,7 @@ const lightTheme: ThemeColors = {
   post: {
     backgroundColor: styleVariables.white,
     activeBorderColor: styleVariables.greenBlue,
+    editActionRowBackground: styleVariables.greenBlue,
   },
   loveButton: {
     activeColor: styleVariables.bittersweet,
@@ -234,13 +244,12 @@ const lightTheme: ThemeColors = {
   },
   addCommentForm: {
     background: styleVariables.greenBlue,
-    boxShadow: cardBoxShadow,
     textFieldBackground: styleVariables.cultured,
     textFieldActiveBackground: styleVariables.white,
   },
   comment: {
     evenBackground: styleVariables.cultured,
-    oddBackground: inputBackground,
+    oddBackground: 'rgba(75,80,97,0.17)',
     boxShadow: cardBoxShadow,
     postAuthorLinkColor: styleVariables.greenBlue,
   },
@@ -286,6 +295,7 @@ const darkTheme: ThemeColors = {
   background: ldStyleVariables.slateGray,
   globalNavBackground: ldStyleVariables.portlandOrange,
   contextualNavBackground: ldStyleVariables.raisinBlack,
+  pageBackground: ldStyleVariables.cultured,
   whiteBackground: ldStyleVariables.white,
   loaderBackground: ldStyleVariables.portlandOrange,
   loaderBarBackground: ldStyleVariables.darkOrange,
@@ -304,6 +314,10 @@ const darkTheme: ThemeColors = {
   },
   error: {
     background: styleVariables.bittersweet,
+  },
+  input: {
+    background: 'white',
+    hoverOutlineColor: ldStyleVariables.portlandOrange,
   },
   button: {
     background: {
@@ -363,6 +377,7 @@ const darkTheme: ThemeColors = {
   post: {
     backgroundColor: ldStyleVariables.cultured,
     activeBorderColor: ldStyleVariables.portlandOrange,
+    editActionRowBackground: ldStyleVariables.portlandOrange,
   },
   moreButton: {
     background: ldStyleVariables.cultured,
@@ -386,13 +401,12 @@ const darkTheme: ThemeColors = {
   },
   addCommentForm: {
     background: ldStyleVariables.portlandOrange,
-    boxShadow: cardBoxShadow,
     textFieldBackground: ldStyleVariables.white,
     textFieldActiveBackground: ldStyleVariables.white,
   },
   comment: {
     evenBackground: ldStyleVariables.white,
-    oddBackground: inputBackground,
+    oddBackground: 'rgba(75,80,97,0.17)',
     boxShadow: cardBoxShadow,
     postAuthorLinkColor: ldStyleVariables.darkOrange,
   },
@@ -554,7 +568,17 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
           backgroundColor: selectedThemeColors.loaderBarBackground,
         },
       },
+      MuiTextField: {
+        root: {
+          '& input': {
+            padding: '27px 12px 8px',
+          },
+        },
+      },
       MuiInputBase: {
+        root: {
+          boxShadow: cardBoxShadow,
+        },
         input: {
           '&::placeholder': {
             color: fadedBlack,
@@ -585,18 +609,22 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       MuiFilledInput: {
         root: {
           borderRadius: defaultTheme.shape.borderRadius,
-          backgroundColor: inputBackground,
+          backgroundColor: selectedThemeColors.input.background,
+          transition: 'none',
           '&:hover': {
-            backgroundColor: 'rgba(63, 65, 72, 0.23)',
+            backgroundColor: selectedThemeColors.input.background,
+            boxShadow: `0 0 0 2px ${selectedThemeColors.input.hoverOutlineColor}`,
           },
           '&$focused': {
-            backgroundColor: inputBackground,
+            backgroundColor: selectedThemeColors.input.background,
+            boxShadow: `0 0 0 4px ${selectedThemeColors.input.hoverOutlineColor}`,
           },
         },
         input: {
-          paddingTop: 21,
-          paddingBottom: 8,
-          paddingRight: 27,
+          padding: '12px',
+        },
+        multiline: {
+          padding: '12px',
         },
       },
       MuiInputLabel: {
@@ -606,6 +634,11 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
           '&.MuiInputLabel-shrink': {
             transform: 'translate(12px, 8px) scale(0.7)',
           },
+        },
+      },
+      MuiSelect: {
+        selectMenu: {
+          padding: '27px 12px 10px',
         },
       },
     },
@@ -657,6 +690,10 @@ declare module 'styled-components' {
 }
 
 const ICON_SCALING = [
+  {
+    name: 'EditIcon',
+    base: 0.86,
+  },
   {
     name: 'ChrevronLeft',
     base: 1.2,

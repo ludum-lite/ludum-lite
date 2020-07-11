@@ -18,7 +18,6 @@ const StyledButton = styled(Button).withConfig({
     css`
       &:hover {
         color: ${activeColor};
-        background-color: ${({ theme }) => theme.buttonRootBackgroundColor};
       }
     `}
 

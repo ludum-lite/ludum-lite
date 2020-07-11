@@ -1,12 +1,9 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useRef, useEffect } from 'react'
 
-import TextField, { TextFieldProps } from '@material-ui/core/TextField'
+import Input, { Props as InputProps } from './mui/Input'
 
-export default function MultilineTextField({
-  onChange,
-  ...others
-}: TextFieldProps) {
+export default function MultilineInput({ onChange, ...others }: InputProps) {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const updateHeight = () => {
@@ -21,7 +18,7 @@ export default function MultilineTextField({
   }, [])
 
   return (
-    <TextField
+    <Input
       onChange={(e) => {
         if (onChange) {
           onChange(e)

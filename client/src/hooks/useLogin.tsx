@@ -8,6 +8,7 @@ import {
   useLoginMutation,
   useGlobalIsLoggedInQuery,
 } from '__generated__/client-types'
+import styled from 'styled-components/macro'
 
 type UseLoginReturnType = {
   login: ({
@@ -30,6 +31,12 @@ const init: UseLoginReturnType = {
   loginComponent: null,
   isLoggedIn: false,
 }
+
+const StyledDrawer = styled(Drawer)`
+  .MuiDrawer-paper {
+    background: ${({ theme }) => theme.themeColors.pageBackground};
+  }
+`
 
 export const useLogin = singletonHook(init, () => {
   const { data } = useGlobalIsLoggedInQuery()
@@ -68,13 +75,13 @@ export const useLogin = singletonHook(init, () => {
 
   const loginComponent = React.useMemo(() => {
     return (
-      <Drawer
+      <StyledDrawer
         open={isPromptingLogin}
         anchor="left"
         onClose={() => setIsPromptingLogin(false)}
       >
         <LoginForm login={login} error={error} />
-      </Drawer>
+      </StyledDrawer>
     )
   }, [isPromptingLogin, login, error])
 

@@ -1,5 +1,8 @@
 import React from 'react'
-import { Input as MuiInput, InputProps } from '@material-ui/core'
+import {
+  FilledInput as MuiFillInput,
+  FilledInputProps,
+} from '@material-ui/core'
 import styled, { css } from 'styled-components/macro'
 
 type Background = 'transparent' | null
@@ -12,11 +15,12 @@ interface StyledInputProps {
   flushLeftEdge?: boolean
 }
 
-const StyledInput = styled(MuiInput).withConfig({
+const StyledInput = styled(MuiFillInput).withConfig({
   shouldForwardProp: (prop) =>
     !['background', 'textColor', 'flushLeftEdge'].includes(prop),
 })<StyledInputProps>`
   box-shadow: 0 0 6px 1px rgba(0, 0, 0, 0.03);
+  padding-left: 6px;
 
   ${({ background }) =>
     background === 'transparent' &&
@@ -24,7 +28,6 @@ const StyledInput = styled(MuiInput).withConfig({
       box-shadow: none;
       background: transparent;
       border-color: transparent;
-      padding-left: 6px;
     `}
 
   ${({ textColor, background }) =>
@@ -61,13 +64,16 @@ const StyledInput = styled(MuiInput).withConfig({
     `}
 `
 
-interface Props {
+interface MoreProps {
   background?: Background
   textColor?: Color
   flushLeftEdge?: boolean
+  ref?: React.RefObject<HTMLInputElement>
 }
 
-const Input = React.forwardRef<HTMLInputElement, Props & InputProps>(
+export type Props = MoreProps & FilledInputProps
+
+const Input = React.forwardRef<HTMLInputElement, Props>(
   (
     { background = null, textColor = 'black', flushLeftEdge, ...other },
     ref

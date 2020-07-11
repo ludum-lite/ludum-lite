@@ -32,6 +32,8 @@ export default function EditCommentForm({
       onChange={(data) => {
         setBody(data.body)
       }}
+      autoFocus
+      forceControlsToDisplay
       onSubmit={() => {
         return editComment({
           variables: {
