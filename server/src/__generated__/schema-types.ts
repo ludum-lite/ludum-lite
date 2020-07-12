@@ -42,6 +42,7 @@ export type Mutation = {
   login: LoginResponse;
   lovePost: LovePostResponse;
   unlovePost: UnlovePostResponse;
+  editPost: EditPostResponse;
   loveComment: LoveCommentResponse;
   unloveComment: UnloveCommentResponse;
   addComment: AddCommentResponse;
@@ -67,6 +68,11 @@ export type MutationLovePostArgs = {
 
 export type MutationUnlovePostArgs = {
   input: IdInput;
+};
+
+
+export type MutationEditPostArgs = {
+  input: EditPostInput;
 };
 
 
@@ -272,6 +278,20 @@ export type SearchPostsFiltersInput = {
   postType: PostType;
   favoritedIds?: Maybe<Array<Scalars['Int']>>;
 };
+
+export type EditPostInput = {
+  id: Scalars['Int'];
+  title: Scalars['String'];
+  body: Scalars['String'];
+};
+
+export type EditPostSuccess = MutationResponse & {
+   __typename: 'EditPostSuccess';
+  success: Scalars['Boolean'];
+  post: Post;
+};
+
+export type EditPostResponse = EditPostSuccess | UnauthorizedResponse;
 
 export type Comment = {
    __typename: 'Comment';
@@ -506,7 +526,7 @@ export type ResolversTypes = ResolversObject<{
   Query: ResolverTypeWrapper<{}>,
   Int: ResolverTypeWrapper<Scalars['Int']>,
   Mutation: ResolverTypeWrapper<{}>,
-  MutationResponse: ResolversTypes['LoginFailure'] | ResolversTypes['LoginSuccess'] | ResolversTypes['AddFriendSuccess'] | ResolversTypes['AddFriendAndAddToGameSuccess'] | ResolversTypes['LovePostSuccess'] | ResolversTypes['UnlovePostSuccess'] | ResolversTypes['LoveCommentSuccess'] | ResolversTypes['UnloveCommentSuccess'] | ResolversTypes['AddCommentSuccess'] | ResolversTypes['EditCommentSuccess'] | ResolversTypes['JoinEventSuccess'] | ResolversTypes['EditGameSuccess'] | ResolversTypes['AddUserToGameSuccess'] | ResolversTypes['RemoveUserFromGameSuccess'],
+  MutationResponse: ResolversTypes['LoginFailure'] | ResolversTypes['LoginSuccess'] | ResolversTypes['AddFriendSuccess'] | ResolversTypes['AddFriendAndAddToGameSuccess'] | ResolversTypes['LovePostSuccess'] | ResolversTypes['UnlovePostSuccess'] | ResolversTypes['EditPostSuccess'] | ResolversTypes['LoveCommentSuccess'] | ResolversTypes['UnloveCommentSuccess'] | ResolversTypes['AddCommentSuccess'] | ResolversTypes['EditCommentSuccess'] | ResolversTypes['JoinEventSuccess'] | ResolversTypes['EditGameSuccess'] | ResolversTypes['AddUserToGameSuccess'] | ResolversTypes['RemoveUserFromGameSuccess'],
   UnauthorizedResponse: ResolverTypeWrapper<UnauthorizedResponse>,
   IdInput: IdInput,
   BaseUser: ResolversTypes['User'] | ResolversTypes['Me'],
@@ -529,6 +549,9 @@ export type ResolversTypes = ResolversObject<{
   UnlovePostResponse: ResolversTypes['UnlovePostSuccess'] | ResolversTypes['UnauthorizedResponse'],
   SearchPostResponse: ResolverTypeWrapper<SearchPostResponse>,
   SearchPostsFiltersInput: SearchPostsFiltersInput,
+  EditPostInput: EditPostInput,
+  EditPostSuccess: ResolverTypeWrapper<EditPostSuccess>,
+  EditPostResponse: ResolversTypes['EditPostSuccess'] | ResolversTypes['UnauthorizedResponse'],
   Comment: ResolverTypeWrapper<Comment>,
   LoveCommentSuccess: ResolverTypeWrapper<LoveCommentSuccess>,
   LoveCommentResponse: ResolversTypes['LoveCommentSuccess'] | ResolversTypes['UnauthorizedResponse'],
@@ -563,7 +586,7 @@ export type ResolversParentTypes = ResolversObject<{
   Query: {},
   Int: Scalars['Int'],
   Mutation: {},
-  MutationResponse: ResolversParentTypes['LoginFailure'] | ResolversParentTypes['LoginSuccess'] | ResolversParentTypes['AddFriendSuccess'] | ResolversParentTypes['AddFriendAndAddToGameSuccess'] | ResolversParentTypes['LovePostSuccess'] | ResolversParentTypes['UnlovePostSuccess'] | ResolversParentTypes['LoveCommentSuccess'] | ResolversParentTypes['UnloveCommentSuccess'] | ResolversParentTypes['AddCommentSuccess'] | ResolversParentTypes['EditCommentSuccess'] | ResolversParentTypes['JoinEventSuccess'] | ResolversParentTypes['EditGameSuccess'] | ResolversParentTypes['AddUserToGameSuccess'] | ResolversParentTypes['RemoveUserFromGameSuccess'],
+  MutationResponse: ResolversParentTypes['LoginFailure'] | ResolversParentTypes['LoginSuccess'] | ResolversParentTypes['AddFriendSuccess'] | ResolversParentTypes['AddFriendAndAddToGameSuccess'] | ResolversParentTypes['LovePostSuccess'] | ResolversParentTypes['UnlovePostSuccess'] | ResolversParentTypes['EditPostSuccess'] | ResolversParentTypes['LoveCommentSuccess'] | ResolversParentTypes['UnloveCommentSuccess'] | ResolversParentTypes['AddCommentSuccess'] | ResolversParentTypes['EditCommentSuccess'] | ResolversParentTypes['JoinEventSuccess'] | ResolversParentTypes['EditGameSuccess'] | ResolversParentTypes['AddUserToGameSuccess'] | ResolversParentTypes['RemoveUserFromGameSuccess'],
   UnauthorizedResponse: UnauthorizedResponse,
   IdInput: IdInput,
   BaseUser: ResolversParentTypes['User'] | ResolversParentTypes['Me'],
@@ -586,6 +609,9 @@ export type ResolversParentTypes = ResolversObject<{
   UnlovePostResponse: ResolversParentTypes['UnlovePostSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
   SearchPostResponse: SearchPostResponse,
   SearchPostsFiltersInput: SearchPostsFiltersInput,
+  EditPostInput: EditPostInput,
+  EditPostSuccess: EditPostSuccess,
+  EditPostResponse: ResolversParentTypes['EditPostSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
   Comment: Comment,
   LoveCommentSuccess: LoveCommentSuccess,
   LoveCommentResponse: ResolversParentTypes['LoveCommentSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
@@ -625,6 +651,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   login?: Resolver<ResolversTypes['LoginResponse'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>,
   lovePost?: Resolver<ResolversTypes['LovePostResponse'], ParentType, ContextType, RequireFields<MutationLovePostArgs, 'input'>>,
   unlovePost?: Resolver<ResolversTypes['UnlovePostResponse'], ParentType, ContextType, RequireFields<MutationUnlovePostArgs, 'input'>>,
+  editPost?: Resolver<ResolversTypes['EditPostResponse'], ParentType, ContextType, RequireFields<MutationEditPostArgs, 'input'>>,
   loveComment?: Resolver<ResolversTypes['LoveCommentResponse'], ParentType, ContextType, RequireFields<MutationLoveCommentArgs, 'input'>>,
   unloveComment?: Resolver<ResolversTypes['UnloveCommentResponse'], ParentType, ContextType, RequireFields<MutationUnloveCommentArgs, 'input'>>,
   addComment?: Resolver<ResolversTypes['AddCommentResponse'], ParentType, ContextType, RequireFields<MutationAddCommentArgs, 'input'>>,
@@ -638,7 +665,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 }>;
 
 export type MutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{
-  __resolveType: TypeResolveFn<'LoginFailure' | 'LoginSuccess' | 'AddFriendSuccess' | 'AddFriendAndAddToGameSuccess' | 'LovePostSuccess' | 'UnlovePostSuccess' | 'LoveCommentSuccess' | 'UnloveCommentSuccess' | 'AddCommentSuccess' | 'EditCommentSuccess' | 'JoinEventSuccess' | 'EditGameSuccess' | 'AddUserToGameSuccess' | 'RemoveUserFromGameSuccess', ParentType, ContextType>,
+  __resolveType: TypeResolveFn<'LoginFailure' | 'LoginSuccess' | 'AddFriendSuccess' | 'AddFriendAndAddToGameSuccess' | 'LovePostSuccess' | 'UnlovePostSuccess' | 'EditPostSuccess' | 'LoveCommentSuccess' | 'UnloveCommentSuccess' | 'AddCommentSuccess' | 'EditCommentSuccess' | 'JoinEventSuccess' | 'EditGameSuccess' | 'AddUserToGameSuccess' | 'RemoveUserFromGameSuccess', ParentType, ContextType>,
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
 }>;
 
@@ -788,6 +815,16 @@ export type SearchPostResponseResolvers<ContextType = any, ParentType extends Re
   page?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   posts?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
+export type EditPostSuccessResolvers<ContextType = any, ParentType extends ResolversParentTypes['EditPostSuccess'] = ResolversParentTypes['EditPostSuccess']> = ResolversObject<{
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  post?: Resolver<ResolversTypes['Post'], ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
+export type EditPostResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['EditPostResponse'] = ResolversParentTypes['EditPostResponse']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'EditPostSuccess' | 'UnauthorizedResponse', ParentType, ContextType>
 }>;
 
 export type CommentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = ResolversObject<{
@@ -946,6 +983,8 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   UnlovePostSuccess?: UnlovePostSuccessResolvers<ContextType>,
   UnlovePostResponse?: UnlovePostResponseResolvers,
   SearchPostResponse?: SearchPostResponseResolvers<ContextType>,
+  EditPostSuccess?: EditPostSuccessResolvers<ContextType>,
+  EditPostResponse?: EditPostResponseResolvers,
   Comment?: CommentResolvers<ContextType>,
   LoveCommentSuccess?: LoveCommentSuccessResolvers<ContextType>,
   LoveCommentResponse?: LoveCommentResponseResolvers,

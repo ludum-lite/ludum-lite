@@ -29,15 +29,16 @@ import {
   Comments_PostFragmentDoc,
   PostLoveButton_MeFragmentDoc,
   PostLoveButton_PostFragmentDoc,
+  useEditPostMutation,
 } from '__generated__/client-types'
 import useLocalStorage from 'hooks/useLocalStorage'
 import IconButton from 'components/common/mui/IconButton'
 import Icon from 'components/common/mui/Icon'
 import useEditablePreviewActionRow from 'hooks/useEditablePreviewActionRow'
-import Input from 'components/common/mui/Input'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import MultilineTextField from 'components/common/MultilineTextField'
-import MultilineInput from 'components/common/MultilineInput'
+import { useSnackbar } from 'notistack'
+import { useMinLoadingTime } from 'hooks/useMinLoadingTime'
 
 enum CommentSortBy {
   DatePostedNewest = 'datePosted_newest',
@@ -137,6 +138,7 @@ type FormInputs = {
 }
 
 export default function PostPage() {
+  const { enqueueSnackbar } = useSnackbar()
   const { id: postId } = useParams()
   const [isEditing, setIsEditing] = React.useState(false)
   const [commentSortBy, setSortBy] = useLocalStorage(
@@ -153,6 +155,12 @@ export default function PostPage() {
   )
 
   const { setActivePostId } = useActivePostId()
+
+  const [editPostMutation] = useEditPostMutation()
+
+  const { fn: editPost, isLoading: isSavingPost } = useMinLoadingTime(
+    editPostMutation
+  )
 
   React.useEffect(() => {
     return () => {
@@ -187,13 +195,37 @@ export default function PostPage() {
     return []
   }, [commentSortBy, comments])
 
-  const { register, handleSubmit } = useForm<FormInputs>()
+  const { control, register, errors, handleSubmit } = useForm<FormInputs>()
 
-  const onSave = React.useCallback(() => {
-    handleSubmit(() => {
-      console.log('saving')
+  const onSave = React.useMemo(() => {
+    return handleSubmit(async (data) => {
+      console.log(data)
+      if (post) {
+        try {
+          await editPost({
+            variables: {
+              input: {
+                id: post?.id,
+                title: data.title,
+                body: data.body,
+              },
+            },
+          })
+          enqueueSnackbar('Post saved successfully', {
+            variant: 'success',
+          })
+          setIsEditing(false)
+        } catch (e) {
+          console.log(e)
+          enqueueSnackbar('There was an error', {
+            variant: 'error',
+          })
+        }
+      } else {
+        console.error('post wasnt loaded')
+      }
     })
-  }, [handleSubmit])
+  }, [editPost, enqueueSnackbar, handleSubmit, post])
 
   const onCancel = React.useCallback(() => {
     setIsEditing(false)
@@ -201,6 +233,7 @@ export default function PostPage() {
 
   const { state, actionRow: editActionRow } = useEditablePreviewActionRow({
     value: post?.body || '',
+    isSaving: isSavingPost,
     onSubmit: onSave,
     onCancel,
   })
@@ -242,9 +275,11 @@ export default function PostPage() {
               </HeaderContent>
             </Header>
             {isEditing && state === 'write' ? (
-              <StyledBodyInput
+              <Controller
+                as={StyledBodyInput}
                 name="body"
                 placeholder="Body"
+                control={control}
                 defaultValue={post.body || ''}
               />
             ) : (
@@ -303,7 +338,9 @@ export default function PostPage() {
     post,
     isEditing,
     editActionRow,
+    state,
     register,
+    control,
     commentSortBy,
     sortedComments,
     onChangeSortBy,
@@ -372,4 +409,16 @@ gql`
   ${PostLoveButton_MeFragmentDoc}
   ${Comments_CommentFragmentDoc}
   ${Comments_PostFragmentDoc}
+
+  mutation EditPost($input: EditPostInput!) {
+    editPost(input: $input) {
+      ... on EditPostSuccess {
+        post {
+          id
+          name
+          body
+        }
+      }
+    }
+  }
 `

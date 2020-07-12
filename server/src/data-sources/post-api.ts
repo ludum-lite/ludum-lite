@@ -11,6 +11,8 @@ import {
   UnlovePostResponse,
   QuerySearchPostsArgs,
   SearchPostResponse,
+  EditPostInput,
+  EditPostResponse,
 } from '../__generated__/schema-types'
 import { unauthorizedResponse } from './const'
 import { delegateToSchema } from 'apollo-server'
@@ -174,6 +176,24 @@ export default class PostAPI extends BaseAPI {
         post,
       }
     } catch (e) {
+      return unauthorizedResponse
+    }
+  }
+
+  async editPost(input: EditPostInput): Promise<EditPostResponse> {
+    try {
+      await this.post(`vx/node/update/${input.id}`, {
+        name: input.title,
+        body: input.body,
+      })
+
+      return {
+        __typename: 'EditPostSuccess',
+        success: true,
+        post: await this.context.loaders.postLoader.load(input.id),
+      }
+    } catch (e) {
+      console.error(e)
       return unauthorizedResponse
     }
   }

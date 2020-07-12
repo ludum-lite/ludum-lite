@@ -42,6 +42,7 @@ export type Mutation = {
   login: LoginResponse
   lovePost: LovePostResponse
   unlovePost: UnlovePostResponse
+  editPost: EditPostResponse
   loveComment: LoveCommentResponse
   unloveComment: UnloveCommentResponse
   addComment: AddCommentResponse
@@ -64,6 +65,10 @@ export type MutationLovePostArgs = {
 
 export type MutationUnlovePostArgs = {
   input: IdInput
+}
+
+export type MutationEditPostArgs = {
+  input: EditPostInput
 }
 
 export type MutationLoveCommentArgs = {
@@ -262,6 +267,20 @@ export type SearchPostsFiltersInput = {
   postType: PostType
   favoritedIds?: Maybe<Array<Scalars['Int']>>
 }
+
+export type EditPostInput = {
+  id: Scalars['Int']
+  title: Scalars['String']
+  body: Scalars['String']
+}
+
+export type EditPostSuccess = MutationResponse & {
+  __typename: 'EditPostSuccess'
+  success: Scalars['Boolean']
+  post: Post
+}
+
+export type EditPostResponse = EditPostSuccess | UnauthorizedResponse
 
 export type Comment = {
   __typename: 'Comment'
@@ -594,6 +613,18 @@ export type GetPostOverlayPageDataQuery = { __typename: 'Query' } & {
     | ({
         __typename: 'UnauthorizedResponse'
       } & PostLoveButton_Me_UnauthorizedResponse_Fragment)
+}
+
+export type EditPostMutationVariables = Exact<{
+  input: EditPostInput
+}>
+
+export type EditPostMutation = { __typename: 'Mutation' } & {
+  editPost:
+    | ({ __typename: 'EditPostSuccess' } & {
+        post: { __typename: 'Post' } & Pick<Post, 'id' | 'name' | 'body'>
+      })
+    | { __typename: 'UnauthorizedResponse' }
 }
 
 export type PostsPage_GetFavoritedIdsQueryVariables = Exact<{
@@ -1386,6 +1417,60 @@ export type GetPostOverlayPageDataLazyQueryHookResult = ReturnType<
 export type GetPostOverlayPageDataQueryResult = ApolloReactCommon.QueryResult<
   GetPostOverlayPageDataQuery,
   GetPostOverlayPageDataQueryVariables
+>
+export const EditPostDocument = gql`
+  mutation EditPost($input: EditPostInput!) {
+    editPost(input: $input) {
+      ... on EditPostSuccess {
+        post {
+          id
+          name
+          body
+        }
+      }
+    }
+  }
+`
+export type EditPostMutationFn = ApolloReactCommon.MutationFunction<
+  EditPostMutation,
+  EditPostMutationVariables
+>
+
+/**
+ * __useEditPostMutation__
+ *
+ * To run a mutation, you first call `useEditPostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditPostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editPostMutation, { data, loading, error }] = useEditPostMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useEditPostMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    EditPostMutation,
+    EditPostMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    EditPostMutation,
+    EditPostMutationVariables
+  >(EditPostDocument, baseOptions)
+}
+export type EditPostMutationHookResult = ReturnType<typeof useEditPostMutation>
+export type EditPostMutationResult = ApolloReactCommon.MutationResult<
+  EditPostMutation
+>
+export type EditPostMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  EditPostMutation,
+  EditPostMutationVariables
 >
 export const PostsPage_GetFavoritedIdsDocument = gql`
   query PostsPage_GetFavoritedIds {
@@ -2479,6 +2564,9 @@ const result: IntrospectionResultData = {
             name: 'UnlovePostSuccess',
           },
           {
+            name: 'EditPostSuccess',
+          },
+          {
             name: 'LoveCommentSuccess',
           },
           {
@@ -2582,6 +2670,18 @@ const result: IntrospectionResultData = {
         possibleTypes: [
           {
             name: 'UnlovePostSuccess',
+          },
+          {
+            name: 'UnauthorizedResponse',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'EditPostResponse',
+        possibleTypes: [
+          {
+            name: 'EditPostSuccess',
           },
           {
             name: 'UnauthorizedResponse',

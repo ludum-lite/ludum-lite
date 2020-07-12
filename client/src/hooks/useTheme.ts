@@ -707,6 +707,14 @@ const ICON_SCALING = [
     base: 0.85,
   },
   {
+    name: 'BookmarkBorderIcon',
+    base: 0.95,
+  },
+  {
+    name: 'BookmarkIcon',
+    base: 0.95,
+  },
+  {
     name: 'ModeCommentIcon',
     base: 0.83,
   },

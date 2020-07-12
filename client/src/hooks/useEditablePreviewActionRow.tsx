@@ -39,10 +39,12 @@ export type State = 'write' | 'preview'
 
 export default function useEditablePreviewActionRow({
   value,
+  isSaving,
   onSubmit,
   onCancel,
 }: {
   value: string
+  isSaving?: boolean
   onSubmit: () => void
   onCancel?: () => void
 }) {
@@ -71,13 +73,14 @@ export default function useEditablePreviewActionRow({
         </ActionButton>
         <Separator />
         {onCancel && (
-          <Button background="globalNav" onClick={onCancel}>
+          <Button background="globalNav" onClick={onCancel} disabled={isSaving}>
             Cancel
           </Button>
         )}
         <Button
           type="submit"
           background="globalNav"
+          loading={isSaving}
           onClick={async (e) => {
             e.preventDefault()
 
