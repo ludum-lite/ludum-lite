@@ -195,7 +195,9 @@ export default function PostPage() {
     })
   }, [handleSubmit])
 
-  const onCancel = React.useCallback(() => {}, [])
+  const onCancel = React.useCallback(() => {
+    setIsEditing(false)
+  }, [])
 
   const { state, actionRow: editActionRow } = useEditablePreviewActionRow({
     value: post?.body || '',
@@ -205,18 +207,17 @@ export default function PostPage() {
 
   const startEditing = React.useCallback(() => {
     setIsEditing(true)
-  }, [setIsEditing])
+  }, [])
 
   const body = React.useMemo(() => {
     if (!loading && post) {
-      console.log(post?.name)
       return (
         <Body>
           {isEditing && <EditActionRow>{editActionRow}</EditActionRow>}
           <Article>
             <Header>
               <HeaderContent>
-                {isEditing ? (
+                {isEditing && state === 'write' ? (
                   <TitleInput
                     name="title"
                     placeholder="Title"
@@ -240,7 +241,7 @@ export default function PostPage() {
                 )}
               </HeaderContent>
             </Header>
-            {isEditing ? (
+            {isEditing && state === 'write' ? (
               <StyledBodyInput
                 name="body"
                 placeholder="Body"
@@ -302,18 +303,19 @@ export default function PostPage() {
     post,
     isEditing,
     editActionRow,
+    register,
     commentSortBy,
     sortedComments,
     onChangeSortBy,
   ])
 
   const actionRow = React.useMemo(() => {
-    if (!loading) {
+    if (!loading && !isEditing) {
       const isMyPost = me?.__typename === 'Me' && me?.id === post?.authorId
 
       return (
         <ActionRow>
-          {isMyPost && !isEditing && (
+          {isMyPost && (
             <IconButton background="white" onClick={startEditing}>
               <Icon icon={EditIcon} />
             </IconButton>
@@ -330,9 +332,17 @@ export default function PostPage() {
     }
 
     return null
-  }, [post, me, loading, isEditing])
+  }, [loading, me, post, isEditing, startEditing])
 
-  return <PopupPage actionRow={actionRow}>{body}</PopupPage>
+  return (
+    <PopupPage
+      hideActionRow={isEditing}
+      actionRow={actionRow}
+      previousPath="/posts"
+    >
+      {body}
+    </PopupPage>
+  )
 }
 
 gql`

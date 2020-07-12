@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, Fragment } from 'react'
 import styled from 'styled-components/macro'
 import { usePostOverlayed } from 'hooks/usePostOverlay'
 import ChevronLeft from '@material-ui/icons/ChevronLeft'
@@ -32,12 +32,17 @@ const Card = styled.div`
   z-index: 1;
 `
 
-const ActionRowTop = styled.div`
+interface ActionRowTopProps {
+  hideActionRow: boolean
+}
+const ActionRowTop = styled.div<ActionRowTopProps>`
   position: sticky;
-  top: -${BORDER_RADIUS}px;
+  top: ${({ hideActionRow }) => !hideActionRow && `-${BORDER_RADIUS}px`};
   background: ${({ theme }) => theme.themeColors.popupPage.background};
-  padding: ${BORDER_RADIUS}px 0;
-  margin-bottom: -${BORDER_RADIUS}px;
+  padding: ${({ hideActionRow }) =>
+    hideActionRow ? `${BORDER_RADIUS}px 0 0` : `${BORDER_RADIUS}px 0`};
+  margin-bottom: ${({ hideActionRow }) =>
+    !hideActionRow && `-${BORDER_RADIUS}px`};
   border-radius: ${BORDER_RADIUS}px ${BORDER_RADIUS}px 0 0;
   z-index: 1;
 `
@@ -84,8 +89,15 @@ const Content = styled.div`
 interface Props {
   children: React.ReactNode
   actionRow?: React.ReactNode
+  previousPath?: string
+  hideActionRow?: boolean
 }
-export default function PopupPage({ children, actionRow }: Props) {
+export default function PopupPage({
+  children,
+  actionRow,
+  previousPath,
+  hideActionRow = false,
+}: Props) {
   const [postOverlayed, setUsePostOverlay] = usePostOverlayed()
   const [hasNavigatedWithin] = useHasNavigatedWithin()
   const navigate = useNavigate()
@@ -99,24 +111,30 @@ export default function PopupPage({ children, actionRow }: Props) {
   return (
     <Root postOverlayed={postOverlayed}>
       <Card>
-        <ActionRowTop />
-        <ActionRowContainer>
-          <ActionRow>
-            <IconButton
-              href="/posts"
-              onClick={(e) => {
-                if (hasNavigatedWithin) {
-                  e.preventDefault()
-                  navigate(-1)
-                }
-              }}
-            >
-              <Icon icon={ChevronLeft} />
-            </IconButton>
-            {actionRow}
-          </ActionRow>
-        </ActionRowContainer>
-        <ActionRowShadow />
+        <ActionRowTop hideActionRow={hideActionRow} />
+        {!hideActionRow && (
+          <Fragment>
+            <ActionRowContainer>
+              <ActionRow>
+                {previousPath && (
+                  <IconButton
+                    href={previousPath}
+                    onClick={(e) => {
+                      if (hasNavigatedWithin) {
+                        e.preventDefault()
+                        navigate(-1)
+                      }
+                    }}
+                  >
+                    <Icon icon={ChevronLeft} />
+                  </IconButton>
+                )}
+                {actionRow}
+              </ActionRow>
+            </ActionRowContainer>
+            <ActionRowShadow />
+          </Fragment>
+        )}
         <Content>{children}</Content>
       </Card>
     </Root>
