@@ -11,6 +11,7 @@ type Mutation {
   lovePost(input: IdInput!): LovePostResponse!
   unlovePost(input: IdInput!): UnlovePostResponse!
   editPost(input: EditPostInput!): EditPostResponse!
+  createPost(input: CreatePostInput!): CreatePostResponse!
   loveComment(input: IdInput!): LoveCommentResponse!
   unloveComment(input: IdInput!): UnloveCommentResponse!
   addComment(input: AddCommentInput!): AddCommentResponse!
@@ -183,6 +184,17 @@ type EditPostSuccess implements MutationResponse {
 }
 
 union EditPostResponse = EditPostSuccess | UnauthorizedResponse
+
+input CreatePostInput {
+  gameId: Int!
+}
+
+type CreatePostSuccess implements MutationResponse {
+  success: Boolean!
+  post: Post!
+}
+
+union CreatePostResponse = CreatePostSuccess | UnauthorizedResponse
 
 type Comment {
   id: Int!

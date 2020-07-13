@@ -538,6 +538,11 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
           paddingTop: 16,
         },
       },
+      MuiDrawer: {
+        paper: {
+          background: selectedThemeColors.pageBackground,
+        },
+      },
       MuiIconButton: {
         root: {
           transition: 'none',

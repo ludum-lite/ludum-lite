@@ -194,6 +194,7 @@ export default function App({}: Props) {
               ) : (
                 <Route path="/posts/:id" element={<PostPage />} />
               )}
+              <Route path="/posts/:id/edit" element={<PostPage isEditing />} />
               <Route path="/invite/:userId" element={<InvitePage />} />
               <Route
                 path="/accepted-invite/:userId"

@@ -18,6 +18,7 @@ export const typeDefs = gql`
     lovePost(input: IdInput!): LovePostResponse!
     unlovePost(input: IdInput!): UnlovePostResponse!
     editPost(input: EditPostInput!): EditPostResponse!
+    createPost(input: CreatePostInput!): CreatePostResponse!
     loveComment(input: IdInput!): LoveCommentResponse!
     unloveComment(input: IdInput!): UnloveCommentResponse!
     addComment(input: AddCommentInput!): AddCommentResponse!
@@ -206,6 +207,17 @@ export const typeDefs = gql`
   }
 
   union EditPostResponse = EditPostSuccess | UnauthorizedResponse
+
+  input CreatePostInput {
+    gameId: Int!
+  }
+
+  type CreatePostSuccess implements MutationResponse {
+    success: Boolean!
+    post: Post!
+  }
+
+  union CreatePostResponse = CreatePostSuccess | UnauthorizedResponse
 
   #########
   # Comment

@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { css } from 'styled-components/macro'
 import { isLoggedInVar } from 'resolvers'
-import { Menu as MuiMenu, MenuItem, Fade } from '@material-ui/core'
+import { Menu as MuiMenu, MenuItem, Fade, Tooltip } from '@material-ui/core'
 import MuiAddIcon from '@material-ui/icons/Add'
 import MuiLightBrightnessIcon from '@material-ui/icons/Brightness4'
 import MuiDarkBrightnessIcon from '@material-ui/icons/Brightness4Outlined'
@@ -9,6 +9,13 @@ import IconButton from 'components/common/mui/IconButton'
 import { ReactComponent as UserIcon } from 'assets/user.svg'
 import { useLogin } from 'hooks/useLogin'
 import { useTheme } from 'hooks/useTheme'
+import { gql } from '@apollo/client'
+import {
+  useCreatePostMutation,
+  useGlobalNavDataQuery,
+} from '__generated__/client-types'
+import { useSnackbar } from 'notistack'
+import { useNavigate } from 'react-router'
 
 const Root = styled.div`
   display: flex;
@@ -94,8 +101,12 @@ const Footer = styled.div`
 
 interface Props {}
 export default function GlobalNav({}: Props) {
+  const { enqueueSnackbar } = useSnackbar()
+  const navigate = useNavigate()
   const { themeMode, toggleTheme } = useTheme()
   const { promptLogin, isLoggedIn } = useLogin()
+  const { data } = useGlobalNavDataQuery()
+  const [createPostMutation] = useCreatePostMutation()
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
@@ -122,9 +133,44 @@ export default function GlobalNav({}: Props) {
     <Root>
       <Header />
       <Body>
-        <StyledIconButton background="globalNav">
-          <AddIcon />
-        </StyledIconButton>
+        <Tooltip placement="right" title="Create Post">
+          <StyledIconButton
+            background="globalNav"
+            onClick={async () => {
+              const gameId = data?.featuredEvent.currentUserGameId
+              if (gameId) {
+                try {
+                  const response = await createPostMutation({
+                    variables: {
+                      input: {
+                        gameId,
+                      },
+                    },
+                  })
+
+                  navigate(
+                    `/posts/${
+                      response.data?.createPost.__typename ===
+                        'CreatePostSuccess' && response.data.createPost.post.id
+                    }/edit`
+                  )
+                } catch (e) {
+                  console.error(e)
+                  enqueueSnackbar('Something went wrong', {
+                    variant: 'error',
+                  })
+                }
+              } else {
+                console.error('Trying to create post error: No game id')
+                enqueueSnackbar('Please login or join the event', {
+                  variant: 'error',
+                })
+              }
+            }}
+          >
+            <AddIcon />
+          </StyledIconButton>
+        </Tooltip>
       </Body>
       <Footer>
         <StyledIconButton onClick={toggleTheme} background="globalNav">
@@ -167,3 +213,22 @@ export default function GlobalNav({}: Props) {
     </Root>
   )
 }
+
+gql`
+  query GlobalNavData {
+    featuredEvent {
+      id
+      currentUserGameId
+    }
+  }
+
+  mutation CreatePost($input: CreatePostInput!) {
+    createPost(input: $input) {
+      ... on CreatePostSuccess {
+        post {
+          id
+        }
+      }
+    }
+  }
+`

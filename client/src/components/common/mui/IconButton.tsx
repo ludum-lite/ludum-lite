@@ -27,9 +27,11 @@ const StyledIconButton = styled(MuiIconButton).withConfig({
 export interface Props {
   background?: Background
 }
-export default function IconButton({
-  background = 'white',
-  ...others
-}: Props & Omit<IconButtonProps, keyof Props>) {
-  return <StyledIconButton background={background} {...others} />
-}
+const IconButton = React.forwardRef<
+  HTMLButtonElement,
+  Props & Omit<IconButtonProps, keyof Props>
+>(({ background = 'white', ...others }, ref) => {
+  return <StyledIconButton ref={ref} background={background} {...others} />
+})
+
+export default IconButton

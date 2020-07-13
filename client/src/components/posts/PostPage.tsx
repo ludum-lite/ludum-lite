@@ -14,7 +14,7 @@ import {
 import EditIcon from '@material-ui/icons/Edit'
 import PopupPage from './PopupPage'
 import UserPostedHeader from './UserPostedHeader'
-import { useParams } from 'react-router'
+import { useParams, useNavigate } from 'react-router'
 import Markdown from 'components/common/Markdown'
 import PostLoveButton from './post-buttons/PostLoveButton'
 import PostBookmarkButton from './post-buttons/PostBookmarkButton'
@@ -137,14 +137,28 @@ type FormInputs = {
   body: string
 }
 
-export default function PostPage() {
+interface PostPageProps {
+  isEditing?: boolean
+}
+
+export default function PostPage({ isEditing }: PostPageProps) {
   const { enqueueSnackbar } = useSnackbar()
+  const navigate = useNavigate()
   const { id: postId } = useParams()
-  const [isEditing, setIsEditing] = React.useState(false)
   const [commentSortBy, setSortBy] = useLocalStorage(
     'comments_sortBy',
     CommentSortBy.DatePostedNewest
   )
+
+  const startEditing = React.useCallback(() => {
+    navigate(`/posts/${postId}/edit`)
+  }, [navigate, postId])
+
+  const stopEditing = React.useCallback(() => {
+    navigate(`/posts/${postId}`, {
+      replace: true,
+    })
+  }, [navigate, postId])
 
   const onChangeSortBy = React.useCallback(
     (sortBy: CommentSortBy) => {
@@ -214,7 +228,7 @@ export default function PostPage() {
           enqueueSnackbar('Post saved successfully', {
             variant: 'success',
           })
-          setIsEditing(false)
+          stopEditing()
         } catch (e) {
           console.log(e)
           enqueueSnackbar('There was an error', {
@@ -225,22 +239,14 @@ export default function PostPage() {
         console.error('post wasnt loaded')
       }
     })
-  }, [editPost, enqueueSnackbar, handleSubmit, post])
-
-  const onCancel = React.useCallback(() => {
-    setIsEditing(false)
-  }, [])
+  }, [editPost, enqueueSnackbar, handleSubmit, post, stopEditing])
 
   const { state, actionRow: editActionRow } = useEditablePreviewActionRow({
     value: post?.body || '',
     isSaving: isSavingPost,
     onSubmit: onSave,
-    onCancel,
+    onCancel: stopEditing,
   })
-
-  const startEditing = React.useCallback(() => {
-    setIsEditing(true)
-  }, [])
 
   const body = React.useMemo(() => {
     if (!loading && post) {

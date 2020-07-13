@@ -43,6 +43,7 @@ export type Mutation = {
   lovePost: LovePostResponse
   unlovePost: UnlovePostResponse
   editPost: EditPostResponse
+  createPost: CreatePostResponse
   loveComment: LoveCommentResponse
   unloveComment: UnloveCommentResponse
   addComment: AddCommentResponse
@@ -69,6 +70,10 @@ export type MutationUnlovePostArgs = {
 
 export type MutationEditPostArgs = {
   input: EditPostInput
+}
+
+export type MutationCreatePostArgs = {
+  input: CreatePostInput
 }
 
 export type MutationLoveCommentArgs = {
@@ -281,6 +286,18 @@ export type EditPostSuccess = MutationResponse & {
 }
 
 export type EditPostResponse = EditPostSuccess | UnauthorizedResponse
+
+export type CreatePostInput = {
+  gameId: Scalars['Int']
+}
+
+export type CreatePostSuccess = MutationResponse & {
+  __typename: 'CreatePostSuccess'
+  success: Scalars['Boolean']
+  post: Post
+}
+
+export type CreatePostResponse = CreatePostSuccess | UnauthorizedResponse
 
 export type Comment = {
   __typename: 'Comment'
@@ -760,6 +777,27 @@ export type UnlovePostMutation = { __typename: 'Mutation' } & {
               __typename: 'UnauthorizedResponse'
             } & PostLoveButton_Me_UnauthorizedResponse_Fragment)
         >
+      })
+    | { __typename: 'UnauthorizedResponse' }
+}
+
+export type GlobalNavDataQueryVariables = Exact<{ [key: string]: never }>
+
+export type GlobalNavDataQuery = { __typename: 'Query' } & {
+  featuredEvent: { __typename: 'Event' } & Pick<
+    Event,
+    'id' | 'currentUserGameId'
+  >
+}
+
+export type CreatePostMutationVariables = Exact<{
+  input: CreatePostInput
+}>
+
+export type CreatePostMutation = { __typename: 'Mutation' } & {
+  createPost:
+    | ({ __typename: 'CreatePostSuccess' } & {
+        post: { __typename: 'Post' } & Pick<Post, 'id'>
       })
     | { __typename: 'UnauthorizedResponse' }
 }
@@ -1885,6 +1923,116 @@ export type UnlovePostMutationOptions = ApolloReactCommon.BaseMutationOptions<
   UnlovePostMutation,
   UnlovePostMutationVariables
 >
+export const GlobalNavDataDocument = gql`
+  query GlobalNavData {
+    featuredEvent {
+      id
+      currentUserGameId
+    }
+  }
+`
+
+/**
+ * __useGlobalNavDataQuery__
+ *
+ * To run a query within a React component, call `useGlobalNavDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGlobalNavDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGlobalNavDataQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGlobalNavDataQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GlobalNavDataQuery,
+    GlobalNavDataQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<
+    GlobalNavDataQuery,
+    GlobalNavDataQueryVariables
+  >(GlobalNavDataDocument, baseOptions)
+}
+export function useGlobalNavDataLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GlobalNavDataQuery,
+    GlobalNavDataQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    GlobalNavDataQuery,
+    GlobalNavDataQueryVariables
+  >(GlobalNavDataDocument, baseOptions)
+}
+export type GlobalNavDataQueryHookResult = ReturnType<
+  typeof useGlobalNavDataQuery
+>
+export type GlobalNavDataLazyQueryHookResult = ReturnType<
+  typeof useGlobalNavDataLazyQuery
+>
+export type GlobalNavDataQueryResult = ApolloReactCommon.QueryResult<
+  GlobalNavDataQuery,
+  GlobalNavDataQueryVariables
+>
+export const CreatePostDocument = gql`
+  mutation CreatePost($input: CreatePostInput!) {
+    createPost(input: $input) {
+      ... on CreatePostSuccess {
+        post {
+          id
+        }
+      }
+    }
+  }
+`
+export type CreatePostMutationFn = ApolloReactCommon.MutationFunction<
+  CreatePostMutation,
+  CreatePostMutationVariables
+>
+
+/**
+ * __useCreatePostMutation__
+ *
+ * To run a mutation, you first call `useCreatePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPostMutation, { data, loading, error }] = useCreatePostMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreatePostMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    CreatePostMutation,
+    CreatePostMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    CreatePostMutation,
+    CreatePostMutationVariables
+  >(CreatePostDocument, baseOptions)
+}
+export type CreatePostMutationHookResult = ReturnType<
+  typeof useCreatePostMutation
+>
+export type CreatePostMutationResult = ApolloReactCommon.MutationResult<
+  CreatePostMutation
+>
+export type CreatePostMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreatePostMutation,
+  CreatePostMutationVariables
+>
 export const AcceptedInvitePageDocument = gql`
   query AcceptedInvitePage($input: IdInput!) {
     user(input: $input) {
@@ -2567,6 +2715,9 @@ const result: IntrospectionResultData = {
             name: 'EditPostSuccess',
           },
           {
+            name: 'CreatePostSuccess',
+          },
+          {
             name: 'LoveCommentSuccess',
           },
           {
@@ -2682,6 +2833,18 @@ const result: IntrospectionResultData = {
         possibleTypes: [
           {
             name: 'EditPostSuccess',
+          },
+          {
+            name: 'UnauthorizedResponse',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'CreatePostResponse',
+        possibleTypes: [
+          {
+            name: 'CreatePostSuccess',
           },
           {
             name: 'UnauthorizedResponse',

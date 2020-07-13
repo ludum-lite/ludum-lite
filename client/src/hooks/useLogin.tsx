@@ -32,12 +32,6 @@ const init: UseLoginReturnType = {
   isLoggedIn: false,
 }
 
-const StyledDrawer = styled(Drawer)`
-  .MuiDrawer-paper {
-    background: ${({ theme }) => theme.themeColors.pageBackground};
-  }
-`
-
 export const useLogin = singletonHook(init, () => {
   const { data } = useGlobalIsLoggedInQuery()
   const [isPromptingLogin, setIsPromptingLogin] = React.useState(false)
@@ -75,13 +69,13 @@ export const useLogin = singletonHook(init, () => {
 
   const loginComponent = React.useMemo(() => {
     return (
-      <StyledDrawer
+      <Drawer
         open={isPromptingLogin}
         anchor="left"
         onClose={() => setIsPromptingLogin(false)}
       >
         <LoginForm login={login} error={error} />
-      </StyledDrawer>
+      </Drawer>
     )
   }, [isPromptingLogin, login, error])
 

@@ -13,6 +13,8 @@ import {
   SearchPostResponse,
   EditPostInput,
   EditPostResponse,
+  CreatePostInput,
+  CreatePostResponse,
 } from '../__generated__/schema-types'
 import { unauthorizedResponse } from './const'
 import { delegateToSchema } from 'apollo-server'
@@ -191,6 +193,21 @@ export default class PostAPI extends BaseAPI {
         __typename: 'EditPostSuccess',
         success: true,
         post: await this.context.loaders.postLoader.load(input.id),
+      }
+    } catch (e) {
+      console.error(e)
+      return unauthorizedResponse
+    }
+  }
+
+  async createPost({ gameId }: CreatePostInput): Promise<CreatePostResponse> {
+    try {
+      const { id } = await this.post(`vx/node/add/${gameId}/post`)
+
+      return {
+        __typename: 'CreatePostSuccess',
+        success: true,
+        post: await this.context.loaders.postLoader.load(id),
       }
     } catch (e) {
       console.error(e)
