@@ -95,7 +95,7 @@ export default function useEditablePreviewActionRow({
         </Button>
       </ActionRow>
     )
-  }, [onCancel, onSubmit, state])
+  }, [isSaving, onCancel, onSubmit, state])
 
   return {
     state,

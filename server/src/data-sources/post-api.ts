@@ -1,6 +1,7 @@
 import DataLoader from 'dataloader'
 import { sortBy, isNil } from 'lodash'
 import { DataSourceConfig } from 'apollo-datasource'
+import _ from 'lodash'
 import sort from 'dataloader-sort'
 import BaseAPI from './base-api'
 import { Context } from './context'
@@ -15,9 +16,12 @@ import {
   EditPostResponse,
   CreatePostInput,
   CreatePostResponse,
+  PublishPostResponse,
+  EditPostFieldErrorFields,
 } from '../__generated__/schema-types'
 import { unauthorizedResponse } from './const'
 import { delegateToSchema } from 'apollo-server'
+import { sleep } from './utils'
 
 export type ApiPostDto = {
   id: number
@@ -182,17 +186,45 @@ export default class PostAPI extends BaseAPI {
     }
   }
 
-  async editPost(input: EditPostInput): Promise<EditPostResponse> {
+  async editPost({
+    id,
+    title,
+    body,
+  }: EditPostInput): Promise<EditPostResponse> {
     try {
-      await this.post(`vx/node/update/${input.id}`, {
-        name: input.title,
-        body: input.body,
+      const post = await this.context.loaders.postLoader.load(id)
+      const cleanedTitle = title.trim()
+
+      const errors: EditPostFieldErrorFields = {
+        __typename: 'EditPostFieldErrorFields',
+      }
+
+      if (post.publishedDate) {
+        if (!cleanedTitle) {
+          errors.title = 'Title is blank'
+        }
+      }
+
+      if (_.size(errors) - 1 > 0) {
+        return {
+          __typename: 'EditPostFieldError',
+          success: false,
+          fields: errors,
+        }
+      }
+
+      await this.post(`vx/node/update/${id}`, {
+        name: cleanedTitle,
+        body: body,
       })
+
+      this.context.loaders.postLoader.clear(id)
+      const newPost = await this.context.loaders.postLoader.load(id)
 
       return {
         __typename: 'EditPostSuccess',
         success: true,
-        post: await this.context.loaders.postLoader.load(input.id),
+        post: newPost,
       }
     } catch (e) {
       console.error(e)
@@ -211,6 +243,27 @@ export default class PostAPI extends BaseAPI {
       }
     } catch (e) {
       console.error(e)
+      return unauthorizedResponse
+    }
+  }
+
+  async publishPost(id: number): Promise<PublishPostResponse> {
+    try {
+      await this.post(`vx/node/publish/${id}`)
+
+      return {
+        __typename: 'PublishPostSuccess',
+        success: true,
+        post: await this.context.loaders.postLoader.load(id),
+      }
+    } catch (e) {
+      if (e.extensions.response?.body?.message.includes('Name is too short')) {
+        return {
+          __typename: 'PublishPostNameTooShort',
+          success: false,
+        }
+      }
+
       return unauthorizedResponse
     }
   }

@@ -38,6 +38,12 @@ export default class BaseAPI extends RESTDataSource<Context> {
   }
 
   async didReceiveResponse(response: Response, request: Request) {
+    // https://github.com/apollographql/apollo-server/issues/1562#issuecomment-642141533
+    // Deleting the cache so that resolvers that fetch/update/fetch will work
+    // I think this is fine to do globally since dataloader has a cache as well that has
+    // a better api
+    this.memoizedResults.delete(this.cacheKeyFor(request))
+
     const body = await super.didReceiveResponse(response, request)
 
     if (response.ok && request.headers.get('includeHeaders')) {

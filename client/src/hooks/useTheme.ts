@@ -54,6 +54,12 @@ export type ThemeColors = {
       white: ButtonThemeColors
     }
   }
+  tag: {
+    primaryBackground: string
+    primaryColor: string
+    secondaryBackground: string
+    secondaryColor: string
+  }
   dialog: {
     titleBackground: string
     titleColor: string
@@ -132,6 +138,7 @@ const buttonContainedColor = 'rgba(0, 0, 0, 0.87)'
 const cardBoxShadow = '0 0 6px 0px rgba(0,0,0,0.04)'
 const fadedWhite = 'rgba(255,255,255,0.9)'
 const fadedBlack = 'rgba(0, 0, 0, 0.38)'
+const textBlack = 'rgba(0, 0, 0, 0.87)'
 
 // https://coolors.co/13293d-006494-058ed9-3fa6de-6ab8e2-004567-eaebed-f9f9ff-fdffff
 const styleVariables = {
@@ -142,6 +149,7 @@ const styleVariables = {
   carolinaBlue: 'rgb(63, 166, 222)',
   bittersweet: 'rgb(248, 112, 96)',
   greenShade: 'rgb(103, 214, 198)',
+  aliceBlue: 'rgb(229, 233, 239)',
   cultured: 'rgb(238, 242, 247)',
   ghostWhite: 'rgb(249, 249, 255)',
   white: 'rgb(253, 255, 255)',
@@ -151,10 +159,10 @@ const styleVariables = {
 } as const
 
 const lightTheme: ThemeColors = {
-  background: styleVariables.cultured,
+  background: styleVariables.aliceBlue,
   globalNavBackground: styleVariables.sapphireBlue,
   contextualNavBackground: styleVariables.greenBlue,
-  pageBackground: styleVariables.white,
+  pageBackground: styleVariables.cultured,
   whiteBackground: styleVariables.white,
   loaderBackground: 'rgba(0, 0, 0, 0.166)',
   loaderBarBackground: 'rgba(0, 0, 0, 0.166)',
@@ -207,6 +215,12 @@ const lightTheme: ThemeColors = {
       page: {},
       white: {},
     },
+  },
+  tag: {
+    primaryBackground: styleVariables.greenBlue,
+    primaryColor: 'white',
+    secondaryBackground: styleVariables.bittersweet,
+    secondaryColor: textBlack,
   },
   dialog: {
     titleBackground: styleVariables.greenBlue,
@@ -365,6 +379,12 @@ const darkTheme: ThemeColors = {
       },
     },
   },
+  tag: {
+    primaryBackground: ldStyleVariables.portlandOrange,
+    primaryColor: 'white',
+    secondaryBackground: ldStyleVariables.darkOrange,
+    secondaryColor: textBlack,
+  },
   dialog: {
     titleBackground: ldStyleVariables.darkOrange,
     titleColor: 'white',
@@ -479,6 +499,16 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       MuiButton: {
         disableElevation: true,
       },
+      MuiMenu: {
+        transformOrigin: {
+          vertical: 'top',
+          horizontal: 'right',
+        },
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'right',
+        },
+      },
     },
     overrides: {
       MuiToolbar: {
@@ -489,6 +519,11 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
             paddingLeft: defaultTheme.spacing(2),
             paddingRight: defaultTheme.spacing(2),
           },
+        },
+      },
+      MuiMenu: {
+        paper: {
+          minWidth: 150,
         },
       },
       MuiButton: {

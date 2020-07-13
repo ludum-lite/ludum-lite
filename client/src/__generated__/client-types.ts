@@ -44,6 +44,7 @@ export type Mutation = {
   unlovePost: UnlovePostResponse
   editPost: EditPostResponse
   createPost: CreatePostResponse
+  publishPost: PublishPostResponse
   loveComment: LoveCommentResponse
   unloveComment: UnloveCommentResponse
   addComment: AddCommentResponse
@@ -74,6 +75,10 @@ export type MutationEditPostArgs = {
 
 export type MutationCreatePostArgs = {
   input: CreatePostInput
+}
+
+export type MutationPublishPostArgs = {
+  input: IdInput
 }
 
 export type MutationLoveCommentArgs = {
@@ -285,7 +290,22 @@ export type EditPostSuccess = MutationResponse & {
   post: Post
 }
 
-export type EditPostResponse = EditPostSuccess | UnauthorizedResponse
+export type EditPostFieldErrorFields = {
+  __typename: 'EditPostFieldErrorFields'
+  title?: Maybe<Scalars['String']>
+  body?: Maybe<Scalars['String']>
+}
+
+export type EditPostFieldError = MutationResponse & {
+  __typename: 'EditPostFieldError'
+  success: Scalars['Boolean']
+  fields?: Maybe<EditPostFieldErrorFields>
+}
+
+export type EditPostResponse =
+  | EditPostSuccess
+  | EditPostFieldError
+  | UnauthorizedResponse
 
 export type CreatePostInput = {
   gameId: Scalars['Int']
@@ -298,6 +318,22 @@ export type CreatePostSuccess = MutationResponse & {
 }
 
 export type CreatePostResponse = CreatePostSuccess | UnauthorizedResponse
+
+export type PublishPostSuccess = MutationResponse & {
+  __typename: 'PublishPostSuccess'
+  success: Scalars['Boolean']
+  post: Post
+}
+
+export type PublishPostNameTooShort = MutationResponse & {
+  __typename: 'PublishPostNameTooShort'
+  success: Scalars['Boolean']
+}
+
+export type PublishPostResponse =
+  | PublishPostSuccess
+  | PublishPostNameTooShort
+  | UnauthorizedResponse
 
 export type Comment = {
   __typename: 'Comment'
@@ -610,27 +646,29 @@ export type GetPostOverlayPageDataQueryVariables = Exact<{
 }>
 
 export type GetPostOverlayPageDataQuery = { __typename: 'Query' } & {
-  post: { __typename: 'Post' } & Pick<
-    Post,
-    'id' | 'name' | 'publishedDate' | 'body'
-  > & {
-      author?: Maybe<
-        { __typename: 'User' } & Pick<
-          User,
-          'id' | 'profilePath' | 'avatarPath' | 'name'
-        >
-      >
-      comments?: Maybe<
-        Array<{ __typename: 'Comment' } & Comments_CommentFragment>
-      >
-    } & PostLoveButton_PostFragment &
-    Comments_PostFragment
+  post: { __typename: 'Post' } & PostPage_PostFragment
   me:
     | ({ __typename: 'Me' } & PostLoveButton_Me_Me_Fragment)
     | ({
         __typename: 'UnauthorizedResponse'
       } & PostLoveButton_Me_UnauthorizedResponse_Fragment)
 }
+
+export type PostPage_PostFragment = { __typename: 'Post' } & Pick<
+  Post,
+  'id' | 'name' | 'publishedDate' | 'body'
+> & {
+    author?: Maybe<
+      { __typename: 'User' } & Pick<
+        User,
+        'id' | 'profilePath' | 'avatarPath' | 'name'
+      >
+    >
+    comments?: Maybe<
+      Array<{ __typename: 'Comment' } & Comments_CommentFragment>
+    >
+  } & PostLoveButton_PostFragment &
+  Comments_PostFragment
 
 export type EditPostMutationVariables = Exact<{
   input: EditPostInput
@@ -641,7 +679,34 @@ export type EditPostMutation = { __typename: 'Mutation' } & {
     | ({ __typename: 'EditPostSuccess' } & {
         post: { __typename: 'Post' } & Pick<Post, 'id' | 'name' | 'body'>
       })
+    | ({ __typename: 'EditPostFieldError' } & {
+        fields?: Maybe<
+          { __typename: 'EditPostFieldErrorFields' } & Pick<
+            EditPostFieldErrorFields,
+            'body' | 'title'
+          >
+        >
+      })
     | { __typename: 'UnauthorizedResponse' }
+}
+
+export type PublishPostMutationVariables = Exact<{
+  input: IdInput
+}>
+
+export type PublishPostMutation = { __typename: 'Mutation' } & {
+  publishPost:
+    | ({ __typename: 'PublishPostSuccess' } & {
+        post: { __typename: 'Post' } & PostPage_PostFragment
+      })
+    | ({ __typename: 'PublishPostNameTooShort' } & Pick<
+        PublishPostNameTooShort,
+        'success'
+      >)
+    | ({ __typename: 'UnauthorizedResponse' } & Pick<
+        UnauthorizedResponse,
+        'code'
+      >)
 }
 
 export type PostsPage_GetFavoritedIdsQueryVariables = Exact<{
@@ -964,62 +1029,6 @@ export const AddCommentForm_PostFragmentDoc = gql`
     }
   }
 `
-export const CommentLoveButton_CommentFragmentDoc = gql`
-  fragment CommentLoveButton_comment on Comment {
-    id
-    numLove
-  }
-`
-export const EditCommentForm_CommentFragmentDoc = gql`
-  fragment EditCommentForm_comment on Comment {
-    id
-    postId
-    body
-  }
-`
-export const Comment_CommentFragmentDoc = gql`
-  fragment Comment_comment on Comment {
-    id
-    body
-    numLove
-    createdDate
-    author {
-      id
-      avatarPath
-      profilePath
-      name
-    }
-    ...CommentLoveButton_comment
-    ...EditCommentForm_comment
-  }
-  ${CommentLoveButton_CommentFragmentDoc}
-  ${EditCommentForm_CommentFragmentDoc}
-`
-export const Comments_CommentFragmentDoc = gql`
-  fragment Comments_comment on Comment {
-    ...Comment_comment
-  }
-  ${Comment_CommentFragmentDoc}
-`
-export const CommentLoveButton_PostFragmentDoc = gql`
-  fragment CommentLoveButton_post on Post {
-    id
-    myCommentLove
-  }
-`
-export const Comment_PostFragmentDoc = gql`
-  fragment Comment_post on Post {
-    authorId
-    ...CommentLoveButton_post
-  }
-  ${CommentLoveButton_PostFragmentDoc}
-`
-export const Comments_PostFragmentDoc = gql`
-  fragment Comments_post on Post {
-    ...Comment_post
-  }
-  ${Comment_PostFragmentDoc}
-`
 export const PostDetails_PostFragmentDoc = gql`
   fragment PostDetails_post on Post {
     id
@@ -1082,6 +1091,84 @@ export const Post_MeFragmentDoc = gql`
     ...PostLoveButton_me
   }
   ${PostLoveButton_MeFragmentDoc}
+`
+export const CommentLoveButton_CommentFragmentDoc = gql`
+  fragment CommentLoveButton_comment on Comment {
+    id
+    numLove
+  }
+`
+export const EditCommentForm_CommentFragmentDoc = gql`
+  fragment EditCommentForm_comment on Comment {
+    id
+    postId
+    body
+  }
+`
+export const Comment_CommentFragmentDoc = gql`
+  fragment Comment_comment on Comment {
+    id
+    body
+    numLove
+    createdDate
+    author {
+      id
+      avatarPath
+      profilePath
+      name
+    }
+    ...CommentLoveButton_comment
+    ...EditCommentForm_comment
+  }
+  ${CommentLoveButton_CommentFragmentDoc}
+  ${EditCommentForm_CommentFragmentDoc}
+`
+export const Comments_CommentFragmentDoc = gql`
+  fragment Comments_comment on Comment {
+    ...Comment_comment
+  }
+  ${Comment_CommentFragmentDoc}
+`
+export const CommentLoveButton_PostFragmentDoc = gql`
+  fragment CommentLoveButton_post on Post {
+    id
+    myCommentLove
+  }
+`
+export const Comment_PostFragmentDoc = gql`
+  fragment Comment_post on Post {
+    authorId
+    ...CommentLoveButton_post
+  }
+  ${CommentLoveButton_PostFragmentDoc}
+`
+export const Comments_PostFragmentDoc = gql`
+  fragment Comments_post on Post {
+    ...Comment_post
+  }
+  ${Comment_PostFragmentDoc}
+`
+export const PostPage_PostFragmentDoc = gql`
+  fragment PostPage_post on Post {
+    id
+    name
+    publishedDate
+    body
+    author {
+      id
+      profilePath
+      avatarPath
+      name
+    }
+    comments {
+      ...Comments_comment
+    }
+    ...PostLoveButton_post
+    ...Comments_post
+  }
+  ${Comments_CommentFragmentDoc}
+  ${PostLoveButton_PostFragmentDoc}
+  ${Comments_PostFragmentDoc}
 `
 export const TeamWidget_TeamUserFragmentDoc = gql`
   fragment TeamWidget_teamUser on User {
@@ -1382,29 +1469,13 @@ export type EditCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<
 export const GetPostOverlayPageDataDocument = gql`
   query GetPostOverlayPageData($input: IdInput!) {
     post(input: $input) {
-      id
-      name
-      publishedDate
-      body
-      author {
-        id
-        profilePath
-        avatarPath
-        name
-      }
-      comments {
-        ...Comments_comment
-      }
-      ...PostLoveButton_post
-      ...Comments_post
+      ...PostPage_post
     }
     me {
       ...PostLoveButton_me
     }
   }
-  ${Comments_CommentFragmentDoc}
-  ${PostLoveButton_PostFragmentDoc}
-  ${Comments_PostFragmentDoc}
+  ${PostPage_PostFragmentDoc}
   ${PostLoveButton_MeFragmentDoc}
 `
 
@@ -1466,6 +1537,12 @@ export const EditPostDocument = gql`
           body
         }
       }
+      ... on EditPostFieldError {
+        fields {
+          body
+          title
+        }
+      }
     }
   }
 `
@@ -1509,6 +1586,67 @@ export type EditPostMutationResult = ApolloReactCommon.MutationResult<
 export type EditPostMutationOptions = ApolloReactCommon.BaseMutationOptions<
   EditPostMutation,
   EditPostMutationVariables
+>
+export const PublishPostDocument = gql`
+  mutation PublishPost($input: IdInput!) {
+    publishPost(input: $input) {
+      ... on PublishPostSuccess {
+        post {
+          ...PostPage_post
+        }
+      }
+      ... on PublishPostNameTooShort {
+        success
+      }
+      ... on UnauthorizedResponse {
+        code
+      }
+    }
+  }
+  ${PostPage_PostFragmentDoc}
+`
+export type PublishPostMutationFn = ApolloReactCommon.MutationFunction<
+  PublishPostMutation,
+  PublishPostMutationVariables
+>
+
+/**
+ * __usePublishPostMutation__
+ *
+ * To run a mutation, you first call `usePublishPostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePublishPostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [publishPostMutation, { data, loading, error }] = usePublishPostMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function usePublishPostMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    PublishPostMutation,
+    PublishPostMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    PublishPostMutation,
+    PublishPostMutationVariables
+  >(PublishPostDocument, baseOptions)
+}
+export type PublishPostMutationHookResult = ReturnType<
+  typeof usePublishPostMutation
+>
+export type PublishPostMutationResult = ApolloReactCommon.MutationResult<
+  PublishPostMutation
+>
+export type PublishPostMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  PublishPostMutation,
+  PublishPostMutationVariables
 >
 export const PostsPage_GetFavoritedIdsDocument = gql`
   query PostsPage_GetFavoritedIds {
@@ -2715,7 +2853,16 @@ const result: IntrospectionResultData = {
             name: 'EditPostSuccess',
           },
           {
+            name: 'EditPostFieldError',
+          },
+          {
             name: 'CreatePostSuccess',
+          },
+          {
+            name: 'PublishPostSuccess',
+          },
+          {
+            name: 'PublishPostNameTooShort',
           },
           {
             name: 'LoveCommentSuccess',
@@ -2835,6 +2982,9 @@ const result: IntrospectionResultData = {
             name: 'EditPostSuccess',
           },
           {
+            name: 'EditPostFieldError',
+          },
+          {
             name: 'UnauthorizedResponse',
           },
         ],
@@ -2845,6 +2995,21 @@ const result: IntrospectionResultData = {
         possibleTypes: [
           {
             name: 'CreatePostSuccess',
+          },
+          {
+            name: 'UnauthorizedResponse',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'PublishPostResponse',
+        possibleTypes: [
+          {
+            name: 'PublishPostSuccess',
+          },
+          {
+            name: 'PublishPostNameTooShort',
           },
           {
             name: 'UnauthorizedResponse',

@@ -38,7 +38,7 @@ interface Props {
   userProfilePath?: string
   userAvatarPath?: string | null
   userName?: string
-  postedDate?: string | null
+  postedDate?: string | React.ReactNode | null
   highlightUserLink?: boolean
 }
 
@@ -49,6 +49,20 @@ export default function UserPostedHeader({
   postedDate,
   highlightUserLink,
 }: Props) {
+  const postedDateComponent = React.useMemo(() => {
+    if (typeof postedDate === 'string') {
+      const postedDateMoment = moment(postedDate)
+
+      if (postedDateMoment.isValid()) {
+        return postedDateMoment.fromNow()
+      } else {
+        return postedDate
+      }
+    } else {
+      return postedDate
+    }
+  }, [postedDate])
+
   return (
     <HeaderUserContainer>
       <StyledAvatar
@@ -63,7 +77,7 @@ export default function UserPostedHeader({
         highlightUserLink={highlightUserLink}
       >{`u/${userName}`}</UserLink>
       <Typography variant="caption" color="textPrimary">
-        {postedDate && moment(postedDate).fromNow()}
+        {postedDateComponent}
       </Typography>
     </HeaderUserContainer>
   )

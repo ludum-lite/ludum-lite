@@ -8,3 +8,7 @@ export function filterOutErrorsFromResponses<K>(responses: (Error | K)[]): K[] {
 
   return responses as K[]
 }
+
+export function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}

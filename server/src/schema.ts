@@ -19,6 +19,7 @@ export const typeDefs = gql`
     unlovePost(input: IdInput!): UnlovePostResponse!
     editPost(input: EditPostInput!): EditPostResponse!
     createPost(input: CreatePostInput!): CreatePostResponse!
+    publishPost(input: IdInput!): PublishPostResponse!
     loveComment(input: IdInput!): LoveCommentResponse!
     unloveComment(input: IdInput!): UnloveCommentResponse!
     addComment(input: AddCommentInput!): AddCommentResponse!
@@ -206,7 +207,20 @@ export const typeDefs = gql`
     post: Post!
   }
 
-  union EditPostResponse = EditPostSuccess | UnauthorizedResponse
+  type EditPostFieldErrorFields {
+    title: String
+    body: String
+  }
+
+  type EditPostFieldError implements MutationResponse {
+    success: Boolean!
+    fields: EditPostFieldErrorFields
+  }
+
+  union EditPostResponse =
+      EditPostSuccess
+    | EditPostFieldError
+    | UnauthorizedResponse
 
   input CreatePostInput {
     gameId: Int!
@@ -218,6 +232,20 @@ export const typeDefs = gql`
   }
 
   union CreatePostResponse = CreatePostSuccess | UnauthorizedResponse
+
+  type PublishPostSuccess implements MutationResponse {
+    success: Boolean!
+    post: Post!
+  }
+
+  type PublishPostNameTooShort implements MutationResponse {
+    success: Boolean!
+  }
+
+  union PublishPostResponse =
+      PublishPostSuccess
+    | PublishPostNameTooShort
+    | UnauthorizedResponse
 
   #########
   # Comment

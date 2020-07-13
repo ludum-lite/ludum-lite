@@ -269,17 +269,7 @@ export default function GameWidget({ className }: Props) {
               >
                 <Icon icon={MoreHorizIcon} />
               </IconButton>
-              <Menu
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                {...bindMenu(popupState)}
-              >
+              <Menu {...bindMenu(popupState)}>
                 <MenuItem
                   onClick={async () => {
                     popupState.close()

@@ -42,6 +42,9 @@ const resolvers: Resolvers<Context> = {
     createPost(_, { input }, context) {
       return context.dataSources.postApi.createPost(input)
     },
+    publishPost(_, { input: { id } }, context) {
+      return context.dataSources.postApi.publishPost(id)
+    },
     loveComment(_, { input: { id } }, context) {
       return context.dataSources.commentApi.loveComment(id)
     },

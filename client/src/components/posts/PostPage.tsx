@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import styled from 'styled-components/macro'
 import { gql } from '@apollo/client'
+import _ from 'lodash'
 
 import {
   Typography,
@@ -10,8 +11,8 @@ import {
   MenuItem,
   Select,
   FilledInput,
+  Menu,
 } from '@material-ui/core'
-import EditIcon from '@material-ui/icons/Edit'
 import PopupPage from './PopupPage'
 import UserPostedHeader from './UserPostedHeader'
 import { useParams, useNavigate } from 'react-router'
@@ -30,15 +31,23 @@ import {
   PostLoveButton_MeFragmentDoc,
   PostLoveButton_PostFragmentDoc,
   useEditPostMutation,
+  usePublishPostMutation,
 } from '__generated__/client-types'
 import useLocalStorage from 'hooks/useLocalStorage'
 import IconButton from 'components/common/mui/IconButton'
 import Icon from 'components/common/mui/Icon'
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import useEditablePreviewActionRow from 'hooks/useEditablePreviewActionRow'
 import { useForm, Controller } from 'react-hook-form'
 import MultilineTextField from 'components/common/MultilineTextField'
 import { useSnackbar } from 'notistack'
 import { useMinLoadingTime } from 'hooks/useMinLoadingTime'
+import {
+  usePopupState,
+  bindTrigger,
+  bindMenu,
+} from 'material-ui-popup-state/hooks'
+import Tag from 'components/common/Tag'
 
 enum CommentSortBy {
   DatePostedNewest = 'datePosted_newest',
@@ -128,6 +137,10 @@ const TitleInput = styled(FilledInput)`
   margin-bottom: ${({ theme }) => theme.spacing(1)}px;
 `
 
+const TitleInputError = styled(Typography)`
+  margin-bottom: ${({ theme }) => theme.spacing(1)}px;
+`
+
 const StyledBodyInput = styled(MultilineTextField)`
   margin-bottom: ${({ theme }) => theme.spacing(3)}px;
 `
@@ -144,7 +157,16 @@ interface PostPageProps {
 export default function PostPage({ isEditing }: PostPageProps) {
   const { enqueueSnackbar } = useSnackbar()
   const navigate = useNavigate()
+  const popupState = usePopupState({ variant: 'popover', popupId: 'menu' })
   const { id: postId } = useParams()
+  const {
+    control,
+    register,
+    handleSubmit,
+    errors,
+    setError,
+    clearErrors,
+  } = useForm<FormInputs>()
   const [commentSortBy, setSortBy] = useLocalStorage(
     'comments_sortBy',
     CommentSortBy.DatePostedNewest
@@ -152,13 +174,15 @@ export default function PostPage({ isEditing }: PostPageProps) {
 
   const startEditing = React.useCallback(() => {
     navigate(`/posts/${postId}/edit`)
-  }, [navigate, postId])
+    clearErrors()
+  }, [navigate, postId, clearErrors])
 
   const stopEditing = React.useCallback(() => {
     navigate(`/posts/${postId}`, {
       replace: true,
     })
-  }, [navigate, postId])
+    clearErrors()
+  }, [clearErrors, navigate, postId])
 
   const onChangeSortBy = React.useCallback(
     (sortBy: CommentSortBy) => {
@@ -171,6 +195,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
   const { setActivePostId } = useActivePostId()
 
   const [editPostMutation] = useEditPostMutation()
+  const [publishPostMutation] = usePublishPostMutation()
 
   const { fn: editPost, isLoading: isSavingPost } = useMinLoadingTime(
     editPostMutation
@@ -192,6 +217,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
 
   const post = data?.post
   const me = data?.me
+  const isMyPost = me?.__typename === 'Me' && me?.id === post?.authorId
 
   const comments = post?.comments
 
@@ -209,14 +235,11 @@ export default function PostPage({ isEditing }: PostPageProps) {
     return []
   }, [commentSortBy, comments])
 
-  const { control, register, errors, handleSubmit } = useForm<FormInputs>()
-
   const onSave = React.useMemo(() => {
     return handleSubmit(async (data) => {
-      console.log(data)
       if (post) {
         try {
-          await editPost({
+          const response = await editPost({
             variables: {
               input: {
                 id: post?.id,
@@ -225,10 +248,28 @@ export default function PostPage({ isEditing }: PostPageProps) {
               },
             },
           })
-          enqueueSnackbar('Post saved successfully', {
-            variant: 'success',
-          })
-          stopEditing()
+
+          if (response.data?.editPost.__typename === 'EditPostFieldError') {
+            if (response.data.editPost.fields?.title) {
+              setError('title', {
+                type: 'manual',
+                message: response.data.editPost.fields?.title,
+              })
+            }
+
+            if (response.data.editPost.fields?.body) {
+              setError('body', {
+                type: 'manual',
+                message: response.data.editPost.fields?.body,
+              })
+            }
+          } else {
+            enqueueSnackbar('Post saved successfully', {
+              variant: 'success',
+            })
+
+            stopEditing()
+          }
         } catch (e) {
           console.log(e)
           enqueueSnackbar('There was an error', {
@@ -239,7 +280,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
         console.error('post wasnt loaded')
       }
     })
-  }, [editPost, enqueueSnackbar, handleSubmit, post, stopEditing])
+  }, [editPost, enqueueSnackbar, handleSubmit, post, setError, stopEditing])
 
   const { state, actionRow: editActionRow } = useEditablePreviewActionRow({
     value: post?.body || '',
@@ -247,6 +288,84 @@ export default function PostPage({ isEditing }: PostPageProps) {
     onSubmit: onSave,
     onCancel: stopEditing,
   })
+
+  const menu = React.useMemo(() => {
+    const menuItems = []
+
+    if (isMyPost) {
+      menuItems.push(
+        <MenuItem
+          key="edit"
+          onClick={() => {
+            popupState.close()
+            startEditing()
+          }}
+        >
+          Edit
+        </MenuItem>
+      )
+
+      if (!post?.publishedDate) {
+        menuItems.push(
+          <MenuItem
+            key="publish"
+            onClick={async () => {
+              popupState.close()
+
+              if (post?.id) {
+                try {
+                  const response = await publishPostMutation({
+                    variables: {
+                      input: {
+                        id: post.id,
+                      },
+                    },
+                  })
+
+                  if (
+                    response.data?.publishPost.__typename ===
+                    'PublishPostNameTooShort'
+                  ) {
+                    setError('title', {
+                      type: 'manual',
+                      message: 'Title is blank',
+                    })
+                  } else {
+                    enqueueSnackbar('Successfully published', {
+                      variant: 'success',
+                    })
+                  }
+                } catch (e) {
+                  console.error(e)
+                }
+              }
+            }}
+          >
+            Publish
+          </MenuItem>
+        )
+      }
+    }
+
+    if (menuItems.length) {
+      return (
+        <Fragment>
+          <IconButton background="white" {...bindTrigger(popupState)}>
+            <Icon icon={MoreHorizIcon} />
+          </IconButton>
+          <Menu {...bindMenu(popupState)}>{menuItems}</Menu>
+        </Fragment>
+      )
+    }
+  }, [
+    enqueueSnackbar,
+    isMyPost,
+    popupState,
+    post,
+    publishPostMutation,
+    setError,
+    startEditing,
+  ])
 
   const body = React.useMemo(() => {
     if (!loading && post) {
@@ -257,15 +376,29 @@ export default function PostPage({ isEditing }: PostPageProps) {
             <Header>
               <HeaderContent>
                 {isEditing && state === 'write' ? (
-                  <TitleInput
-                    name="title"
-                    placeholder="Title"
-                    defaultValue={post.name || ''}
-                    inputRef={register}
-                  />
+                  <Fragment>
+                    <TitleInput
+                      name="title"
+                      placeholder="Title"
+                      defaultValue={post.name}
+                      inputRef={register}
+                    />
+                    {errors.title && (
+                      <TitleInputError variant="caption" color="error">
+                        {errors.title.message}
+                      </TitleInputError>
+                    )}
+                  </Fragment>
                 ) : (
                   <Title>
-                    <TitleText variant="h5">{post.name}</TitleText>
+                    <TitleText variant="h5">
+                      {post.name || '-- No Title  --'}
+                    </TitleText>
+                    {errors.title && (
+                      <Typography variant="caption" color="error">
+                        {errors.title.message}
+                      </Typography>
+                    )}
                   </Title>
                 )}
                 {!isEditing && (
@@ -274,7 +407,11 @@ export default function PostPage({ isEditing }: PostPageProps) {
                       userProfilePath={post.author?.profilePath || 'N/A'}
                       userAvatarPath={post.author?.avatarPath || 'N/A'}
                       userName={post.author?.name || 'N/A'}
-                      postedDate={post.publishedDate || 'N/A'}
+                      postedDate={
+                        post.publishedDate || (
+                          <Tag variant="primary">Unpublished</Tag>
+                        )
+                      }
                     />
                   </HeaderUserContainer>
                 )}
@@ -289,7 +426,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
                 defaultValue={post.body || ''}
               />
             ) : (
-              post.body && <Markdown source={post.body} />
+              <Markdown source={post.body || '-- No Body --'} />
             )}
           </Article>
           {!isEditing && (
@@ -346,6 +483,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
     editActionRow,
     state,
     register,
+    errors.title,
     control,
     commentSortBy,
     sortedComments,
@@ -354,15 +492,8 @@ export default function PostPage({ isEditing }: PostPageProps) {
 
   const actionRow = React.useMemo(() => {
     if (!loading && !isEditing) {
-      const isMyPost = me?.__typename === 'Me' && me?.id === post?.authorId
-
       return (
         <ActionRow>
-          {isMyPost && (
-            <IconButton background="white" onClick={startEditing}>
-              <Icon icon={EditIcon} />
-            </IconButton>
-          )}
           {post && me && (
             <PostLoveButton
               post={filter(PostLoveButton_PostFragmentDoc, post)}
@@ -370,12 +501,13 @@ export default function PostPage({ isEditing }: PostPageProps) {
             />
           )}
           {post && <PostBookmarkButton postId={post.id} />}
+          {menu}
         </ActionRow>
       )
     }
 
     return null
-  }, [loading, me, post, isEditing, startEditing])
+  }, [loading, isEditing, post, me, menu])
 
   return (
     <PopupPage
@@ -391,26 +523,31 @@ export default function PostPage({ isEditing }: PostPageProps) {
 gql`
   query GetPostOverlayPageData($input: IdInput!) {
     post(input: $input) {
-      id
-      name
-      publishedDate
-      body
-      author {
-        id
-        profilePath
-        avatarPath
-        name
-      }
-      comments {
-        ...Comments_comment
-      }
-      ...PostLoveButton_post
-      ...Comments_post
+      ...PostPage_post
     }
     me {
       ...PostLoveButton_me
     }
   }
+
+  fragment PostPage_post on Post {
+    id
+    name
+    publishedDate
+    body
+    author {
+      id
+      profilePath
+      avatarPath
+      name
+    }
+    comments {
+      ...Comments_comment
+    }
+    ...PostLoveButton_post
+    ...Comments_post
+  }
+
   ${PostLoveButton_PostFragmentDoc}
   ${PostLoveButton_MeFragmentDoc}
   ${Comments_CommentFragmentDoc}
@@ -424,6 +561,28 @@ gql`
           name
           body
         }
+      }
+      ... on EditPostFieldError {
+        fields {
+          body
+          title
+        }
+      }
+    }
+  }
+
+  mutation PublishPost($input: IdInput!) {
+    publishPost(input: $input) {
+      ... on PublishPostSuccess {
+        post {
+          ...PostPage_post
+        }
+      }
+      ... on PublishPostNameTooShort {
+        success
+      }
+      ... on UnauthorizedResponse {
+        code
       }
     }
   }
