@@ -20,7 +20,6 @@ const StyledInput = styled(MuiFillInput).withConfig({
     !['background', 'textColor', 'flushLeftEdge'].includes(prop),
 })<StyledInputProps>`
   box-shadow: 0 0 6px 1px rgba(0, 0, 0, 0.03);
-  padding-left: 6px;
 
   ${({ background }) =>
     background === 'transparent' &&
@@ -60,7 +59,7 @@ const StyledInput = styled(MuiFillInput).withConfig({
   ${({ flushLeftEdge }) =>
     flushLeftEdge &&
     css`
-      margin-left: -7px;
+      margin-left: -12px;
     `}
 `
 

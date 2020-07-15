@@ -99,14 +99,14 @@ const Sidebar = React.memo(({}: Props) => {
 
   const { basePath } = useParams()
 
-  const handleDrawerClose = React.useCallback(() => {
+  const closeSidebar = React.useCallback(() => {
     setIsSidebarOpen(false)
   }, [setIsSidebarOpen])
 
   const content = React.useMemo(() => {
     return (
       <Root>
-        <GlobalNav />
+        <GlobalNav closeSidebar={closeSidebar} />
         <ContextualNav>
           <Title>
             <StyledLudumLogo />
@@ -120,6 +120,9 @@ const Sidebar = React.memo(({}: Props) => {
                 selected={basePath === path.url}
                 component={RouterLink}
                 to={`/${path.url}`}
+                onClick={() => {
+                  closeSidebar()
+                }}
               >
                 <ListItemText primary={path.text} />
               </ListItem>
@@ -128,7 +131,7 @@ const Sidebar = React.memo(({}: Props) => {
         </ContextualNav>
       </Root>
     )
-  }, [basePath])
+  }, [basePath, closeSidebar])
 
   return (
     <Fragment>
@@ -138,7 +141,7 @@ const Sidebar = React.memo(({}: Props) => {
           // variant="temporary"
           anchor="left"
           open={isSidebarOpen}
-          onClose={handleDrawerClose}
+          onClose={closeSidebar}
           ModalProps={{
             keepMounted: true, // Better open performance on mobile.
           }}

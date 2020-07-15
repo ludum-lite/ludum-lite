@@ -99,8 +99,10 @@ const Footer = styled.div`
   }
 `
 
-interface Props {}
-export default function GlobalNav({}: Props) {
+interface Props {
+  closeSidebar: () => void
+}
+export default function GlobalNav({ closeSidebar }: Props) {
   const { enqueueSnackbar } = useSnackbar()
   const navigate = useNavigate()
   const { themeMode, toggleTheme } = useTheme()
@@ -154,6 +156,7 @@ export default function GlobalNav({}: Props) {
                         'CreatePostSuccess' && response.data.createPost.post.id
                     }/edit`
                   )
+                  closeSidebar()
                 } catch (e) {
                   console.error(e)
                   enqueueSnackbar('Something went wrong', {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import styled, { css } from 'styled-components/macro'
 import { Routes, Route } from 'react-router-dom'
 import Sidebar from './sidebar/Sidebar'
@@ -10,25 +10,33 @@ import { useLogin } from 'hooks/useLogin'
 import { useHasNavigatedWithin } from 'hooks/useHasNavigatedWithin'
 import { useMe } from 'hooks/useMe'
 import CountdownWidget from './sidebar/CountdownWidget'
-import { events } from 'utils'
+import { events, ignoreProps, getValidValue } from 'utils'
 import TeamWidget from './team-widget/TeamWidget'
 import GameWidget from './game-widget/GameWidget'
 import InvitePage from './team-widget/InvitePage'
 import AcceptedInvitePage from './team-widget/AcceptedInvitePage'
+import QueryBuilderIcon from '@material-ui/icons/QueryBuilder'
+import VideogameAssetIcon from '@material-ui/icons/VideogameAsset'
+import PeopleAltIcon from '@material-ui/icons/PeopleAlt'
 import ConfirmInviteAndAddToTeamPage from './team-widget/ConfirmInviteAndAddToTeamPage'
 import { AppBar, Toolbar, Hidden } from '@material-ui/core'
 import IconButton from 'components/common/mui/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import { useSidebarOpen } from 'hooks/useSidebarOpen'
+import useLocalStorage from 'hooks/useLocalStorage'
+import Icon from './common/mui/Icon'
+import { borderRadius } from 'polished'
+import { useFeaturedEvent } from 'hooks/useFeaturedEvent'
 
-const Root = styled.div``
+const Root = styled.div`
+  min-height: 100vh;
+`
 
 interface AppProps {
   showingOverlay: boolean
 }
 const AppBody = styled.div<AppProps>`
   display: flex;
-  min-height: 100vh;
 
   ${({ showingOverlay }) =>
     showingOverlay &&
@@ -54,71 +62,63 @@ const AppContent = styled.div`
   }
 `
 
-const WidgetsContainer = styled.div`
+const WidgetSelector = styled.div`
   display: flex;
-  position: relative;
-  min-width: 277px;
 
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    margin: 0 ${({ theme }) => theme.spacing(4)}px;
+  & > *:not(:last-child) {
+    margin-right: ${({ theme }) => theme.spacing(1)}px;
   }
+`
 
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    margin-right: ${({ theme }) => theme.spacing(2)}px;
-    width: 277px;
-  }
+interface WidgetSelectorButtonProps {
+  active?: boolean
+}
+const WidgetSelectorButton = styled(IconButton).withConfig({
+  shouldForwardProp: ignoreProps(['active']),
+})<WidgetSelectorButtonProps>`
+  ${borderRadius('bottom', 0)}
+  background: rgba(0, 0, 0, 0.18);
+
+  ${({ active }) =>
+    active &&
+    css`
+      background: ${({ theme }) => theme.themeColors.contextualNavBackground};
+      color: white;
+      width: 70px;
+
+      &:hover {
+        background: ${({ theme }) => theme.themeColors.contextualNavBackground};
+      }
+    `}
 `
 
 const Widgets = styled.div`
   flex: 1 1 auto;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   width: inherit;
+`
+
+interface CommonWidgetProps {
+  hide?: boolean
+  hasTabs?: boolean
+}
+const widgetContainerStyles = ({ hide, hasTabs }: CommonWidgetProps) => css`
+  border-radius: ${({ theme }) => theme.shape.borderRadius}px;
   overflow: hidden;
-  margin-bottom: -${({ theme }) => theme.spacing(1)}px;
-  margin-top: -${({ theme }) => theme.shape.borderRadius}px;
-  margin-right: -${({ theme }) => theme.shape.borderRadius}px;
-
-  & > * {
-    border-radius: ${({ theme }) => theme.shape.borderRadius}px;
-    overflow: hidden;
-    margin-right: ${({ theme }) => theme.spacing(1)}px;
-    margin-bottom: ${({ theme }) => theme.spacing(1)}px;
-
-    /* This makes sure a single widget won't be too wide. If there's more than
-    one widget, they'll take up enough space so that an explicit max width isn't necessary */
-    &:first-child:last-child {
-      max-width: 400px;
-    }
-  }
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    justify-content: center;
-  }
-
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    flex-direction: column;
-  }
+  display: ${hide && 'none'};
+  border-top-left-radius: ${hasTabs && 0};
 `
-
-const widgetContainerStyles = css`
-  display: flex;
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    flex: 1 0 auto;
-  }
-`
-
-const StyledCountdownWidget = styled(CountdownWidget)`
+const StyledCountdownWidget = styled(CountdownWidget)<CommonWidgetProps>`
   max-height: 600px;
   ${widgetContainerStyles}
 `
 
-const StyledGameWidget = styled(GameWidget)`
+const StyledGameWidget = styled(GameWidget)<CommonWidgetProps>`
   ${widgetContainerStyles}
 `
 
-const StyledTeamWidget = styled(TeamWidget)`
+const StyledTeamWidget = styled(TeamWidget)<CommonWidgetProps>`
   ${widgetContainerStyles}
 `
 
@@ -134,6 +134,29 @@ const StyledLeftIcon = styled(IconButton)`
   }
 `
 
+const MobileWidgetContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: ${({ theme }) => `${theme.spacing(2)}px ${theme.spacing(4)}px 0`};
+  margin-top: ${({ theme }) => theme.spacing(2)}px;
+  max-width: 277px;
+`
+
+const WidgetsContainer = styled.div`
+  display: flex;
+  position: relative;
+  min-width: 277px;
+  width: 277px;
+  margin-right: ${({ theme }) => theme.spacing(2)}px;
+  margin-top: -${({ theme }) => theme.shape.borderRadius}px;
+
+  ${Widgets} {
+    & > *:not(:last-child) {
+      margin-bottom: ${({ theme }) => theme.spacing(1)}px;
+    }
+  }
+`
+
 // const NotificationBar = styled.div`
 //   background: ${({ theme }) => theme.themeColors.globalNavBackground};
 //   display: flex;
@@ -143,13 +166,33 @@ const StyledLeftIcon = styled(IconButton)`
 //   color: white;
 // `
 
+type SelectableWidgets = 'countdown' | 'game' | 'team'
+
 interface Props {}
 export default function App({}: Props) {
+  const [selectedWidget, setSelectedWidget] = useLocalStorage<
+    SelectableWidgets
+  >('selectedWidget', 'countdown')
   useHasNavigatedWithin()
   const { setIsSidebarOpen } = useSidebarOpen()
   const [postOverlayed] = usePostOverlayed()
-  const { loginComponent } = useLogin()
+  const { isLoggedIn, loginComponent } = useLogin()
   const { hasLoaded } = useMe()
+  const { featuredEvent } = useFeaturedEvent()
+
+  React.useEffect(() => {
+    const validSelectedWidget = getValidValue(
+      {
+        countdown: true,
+        game: isLoggedIn,
+        team:
+          typeof (isLoggedIn && featuredEvent?.currentUserGameId) === 'number',
+      },
+      selectedWidget
+    )
+
+    setSelectedWidget(validSelectedWidget || 'countdown')
+  }, [featuredEvent, isLoggedIn, selectedWidget, setSelectedWidget])
 
   const onClickLeftIcon = React.useCallback(() => {
     setIsSidebarOpen(true)
@@ -206,13 +249,64 @@ export default function App({}: Props) {
               />
             </RoutesWithFallback>
           </AppContent>
-          <WidgetsContainer>
-            <Widgets>
-              <StyledCountdownWidget events={events} />
-              <StyledGameWidget />
-              <StyledTeamWidget />
-            </Widgets>
-          </WidgetsContainer>
+          <Hidden mdUp>
+            <MobileWidgetContainer>
+              {isLoggedIn && (
+                <WidgetSelector>
+                  <WidgetSelectorButton
+                    active={selectedWidget === 'countdown'}
+                    onClick={() => setSelectedWidget('countdown')}
+                  >
+                    <Icon icon={QueryBuilderIcon} />
+                  </WidgetSelectorButton>
+                  <WidgetSelectorButton
+                    active={selectedWidget === 'game'}
+                    onClick={() => setSelectedWidget('game')}
+                  >
+                    <Icon icon={VideogameAssetIcon} />
+                  </WidgetSelectorButton>
+                  {featuredEvent?.currentUserGameId && (
+                    <WidgetSelectorButton
+                      active={selectedWidget === 'team'}
+                      onClick={() => setSelectedWidget('team')}
+                    >
+                      <Icon icon={PeopleAltIcon} />
+                    </WidgetSelectorButton>
+                  )}
+                </WidgetSelector>
+              )}
+              <Widgets>
+                {isLoggedIn ? (
+                  <Fragment>
+                    <StyledCountdownWidget
+                      hide={selectedWidget !== 'countdown'}
+                      events={events}
+                      hasTabs
+                    />
+                    <StyledGameWidget
+                      hide={selectedWidget !== 'game'}
+                      hasTabs
+                    />
+                    <StyledTeamWidget
+                      hide={selectedWidget !== 'team'}
+                      hasTabs
+                    />
+                  </Fragment>
+                ) : (
+                  <StyledCountdownWidget events={events} />
+                )}
+              </Widgets>
+            </MobileWidgetContainer>
+          </Hidden>
+          <Hidden smDown>
+            <WidgetsContainer>
+              <Widgets>
+                <StyledCountdownWidget events={events} />
+                <StyledGameWidget />
+                <StyledTeamWidget />
+              </Widgets>
+            </WidgetsContainer>
+          </Hidden>
           {loginComponent}
         </AppBody>
       </Root>

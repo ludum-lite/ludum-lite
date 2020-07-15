@@ -51,6 +51,7 @@ const TopRow = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: ${({ theme }) => theme.spacing(3)}px;
+  min-height: 40px;
 `
 
 const TeamList = styled.div`

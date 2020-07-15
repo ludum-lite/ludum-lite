@@ -996,6 +996,15 @@ export type RemoveUserFromGameMutation = { __typename: 'Mutation' } & {
     | { __typename: 'UnauthorizedResponse' }
 }
 
+export type GetFeaturedEventDataQueryVariables = Exact<{ [key: string]: never }>
+
+export type GetFeaturedEventDataQuery = { __typename: 'Query' } & {
+  featuredEvent: { __typename: 'Event' } & Pick<
+    Event,
+    'id' | 'currentUserGameId'
+  >
+}
+
 export type GlobalIsLoggedInQueryVariables = Exact<{ [key: string]: never }>
 
 export type GlobalIsLoggedInQuery = { __typename: 'Query' } & Pick<
@@ -2649,6 +2658,64 @@ export type RemoveUserFromGameMutationResult = ApolloReactCommon.MutationResult<
 export type RemoveUserFromGameMutationOptions = ApolloReactCommon.BaseMutationOptions<
   RemoveUserFromGameMutation,
   RemoveUserFromGameMutationVariables
+>
+export const GetFeaturedEventDataDocument = gql`
+  query GetFeaturedEventData {
+    featuredEvent {
+      ... on Event {
+        id
+        currentUserGameId
+      }
+    }
+  }
+`
+
+/**
+ * __useGetFeaturedEventDataQuery__
+ *
+ * To run a query within a React component, call `useGetFeaturedEventDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFeaturedEventDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFeaturedEventDataQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetFeaturedEventDataQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GetFeaturedEventDataQuery,
+    GetFeaturedEventDataQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<
+    GetFeaturedEventDataQuery,
+    GetFeaturedEventDataQueryVariables
+  >(GetFeaturedEventDataDocument, baseOptions)
+}
+export function useGetFeaturedEventDataLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetFeaturedEventDataQuery,
+    GetFeaturedEventDataQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    GetFeaturedEventDataQuery,
+    GetFeaturedEventDataQueryVariables
+  >(GetFeaturedEventDataDocument, baseOptions)
+}
+export type GetFeaturedEventDataQueryHookResult = ReturnType<
+  typeof useGetFeaturedEventDataQuery
+>
+export type GetFeaturedEventDataLazyQueryHookResult = ReturnType<
+  typeof useGetFeaturedEventDataLazyQuery
+>
+export type GetFeaturedEventDataQueryResult = ApolloReactCommon.QueryResult<
+  GetFeaturedEventDataQuery,
+  GetFeaturedEventDataQueryVariables
 >
 export const GlobalIsLoggedInDocument = gql`
   query GlobalIsLoggedIn {
