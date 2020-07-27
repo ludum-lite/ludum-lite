@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null | undefined;
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
@@ -9,7 +9,9 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Upload: any;
 };
+
 
 export type Query = {
    __typename: 'Query';
@@ -55,6 +57,7 @@ export type Mutation = {
   addFriendAndAddToGame: AddFriendAndAddToGameResponse;
   addUserToGame: AddUserToGameResponse;
   removeUserFromGame: RemoveUserFromGameResponse;
+  uploadImage: UploadImageResponse;
 };
 
 
@@ -132,6 +135,11 @@ export type MutationRemoveUserFromGameArgs = {
   input: RemoveUserFromGameInput;
 };
 
+
+export type MutationUploadImageArgs = {
+  file: Scalars['Upload'];
+};
+
 export type MutationResponse = {
   success: Scalars['Boolean'];
 };
@@ -144,6 +152,20 @@ export type UnauthorizedResponse = {
 export type IdInput = {
   id: Scalars['Int'];
 };
+
+export type UploadImageSuccess = MutationResponse & {
+   __typename: 'UploadImageSuccess';
+  success: Scalars['Boolean'];
+  path: Scalars['String'];
+};
+
+export type UploadImageFailure = MutationResponse & {
+   __typename: 'UploadImageFailure';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+};
+
+export type UploadImageResponse = UploadImageSuccess | UploadImageFailure;
 
 export type BaseUser = {
   avatarPath?: Maybe<Scalars['String']>;
@@ -572,12 +594,16 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = ResolversObject<{
   String: ResolverTypeWrapper<Scalars['String']>,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
+  Upload: ResolverTypeWrapper<Scalars['Upload']>,
   Query: ResolverTypeWrapper<{}>,
   Int: ResolverTypeWrapper<Scalars['Int']>,
   Mutation: ResolverTypeWrapper<{}>,
-  MutationResponse: ResolversTypes['LoginFailure'] | ResolversTypes['LoginSuccess'] | ResolversTypes['AddFriendSuccess'] | ResolversTypes['AddFriendAndAddToGameSuccess'] | ResolversTypes['LovePostSuccess'] | ResolversTypes['UnlovePostSuccess'] | ResolversTypes['EditPostSuccess'] | ResolversTypes['EditPostFieldError'] | ResolversTypes['CreatePostSuccess'] | ResolversTypes['PublishPostSuccess'] | ResolversTypes['PublishPostNameTooShort'] | ResolversTypes['LoveCommentSuccess'] | ResolversTypes['UnloveCommentSuccess'] | ResolversTypes['AddCommentSuccess'] | ResolversTypes['EditCommentSuccess'] | ResolversTypes['JoinEventSuccess'] | ResolversTypes['EditGameSuccess'] | ResolversTypes['AddUserToGameSuccess'] | ResolversTypes['RemoveUserFromGameSuccess'],
+  MutationResponse: ResolversTypes['UploadImageSuccess'] | ResolversTypes['UploadImageFailure'] | ResolversTypes['LoginFailure'] | ResolversTypes['LoginSuccess'] | ResolversTypes['AddFriendSuccess'] | ResolversTypes['AddFriendAndAddToGameSuccess'] | ResolversTypes['LovePostSuccess'] | ResolversTypes['UnlovePostSuccess'] | ResolversTypes['EditPostSuccess'] | ResolversTypes['EditPostFieldError'] | ResolversTypes['CreatePostSuccess'] | ResolversTypes['PublishPostSuccess'] | ResolversTypes['PublishPostNameTooShort'] | ResolversTypes['LoveCommentSuccess'] | ResolversTypes['UnloveCommentSuccess'] | ResolversTypes['AddCommentSuccess'] | ResolversTypes['EditCommentSuccess'] | ResolversTypes['JoinEventSuccess'] | ResolversTypes['EditGameSuccess'] | ResolversTypes['AddUserToGameSuccess'] | ResolversTypes['RemoveUserFromGameSuccess'],
   UnauthorizedResponse: ResolverTypeWrapper<UnauthorizedResponse>,
   IdInput: IdInput,
+  UploadImageSuccess: ResolverTypeWrapper<UploadImageSuccess>,
+  UploadImageFailure: ResolverTypeWrapper<UploadImageFailure>,
+  UploadImageResponse: ResolversTypes['UploadImageSuccess'] | ResolversTypes['UploadImageFailure'],
   BaseUser: ResolversTypes['User'] | ResolversTypes['Me'],
   User: ResolverTypeWrapper<User>,
   Me: ResolverTypeWrapper<Me>,
@@ -640,12 +666,16 @@ export type ResolversTypes = ResolversObject<{
 export type ResolversParentTypes = ResolversObject<{
   String: Scalars['String'],
   Boolean: Scalars['Boolean'],
+  Upload: Scalars['Upload'],
   Query: {},
   Int: Scalars['Int'],
   Mutation: {},
-  MutationResponse: ResolversParentTypes['LoginFailure'] | ResolversParentTypes['LoginSuccess'] | ResolversParentTypes['AddFriendSuccess'] | ResolversParentTypes['AddFriendAndAddToGameSuccess'] | ResolversParentTypes['LovePostSuccess'] | ResolversParentTypes['UnlovePostSuccess'] | ResolversParentTypes['EditPostSuccess'] | ResolversParentTypes['EditPostFieldError'] | ResolversParentTypes['CreatePostSuccess'] | ResolversParentTypes['PublishPostSuccess'] | ResolversParentTypes['PublishPostNameTooShort'] | ResolversParentTypes['LoveCommentSuccess'] | ResolversParentTypes['UnloveCommentSuccess'] | ResolversParentTypes['AddCommentSuccess'] | ResolversParentTypes['EditCommentSuccess'] | ResolversParentTypes['JoinEventSuccess'] | ResolversParentTypes['EditGameSuccess'] | ResolversParentTypes['AddUserToGameSuccess'] | ResolversParentTypes['RemoveUserFromGameSuccess'],
+  MutationResponse: ResolversParentTypes['UploadImageSuccess'] | ResolversParentTypes['UploadImageFailure'] | ResolversParentTypes['LoginFailure'] | ResolversParentTypes['LoginSuccess'] | ResolversParentTypes['AddFriendSuccess'] | ResolversParentTypes['AddFriendAndAddToGameSuccess'] | ResolversParentTypes['LovePostSuccess'] | ResolversParentTypes['UnlovePostSuccess'] | ResolversParentTypes['EditPostSuccess'] | ResolversParentTypes['EditPostFieldError'] | ResolversParentTypes['CreatePostSuccess'] | ResolversParentTypes['PublishPostSuccess'] | ResolversParentTypes['PublishPostNameTooShort'] | ResolversParentTypes['LoveCommentSuccess'] | ResolversParentTypes['UnloveCommentSuccess'] | ResolversParentTypes['AddCommentSuccess'] | ResolversParentTypes['EditCommentSuccess'] | ResolversParentTypes['JoinEventSuccess'] | ResolversParentTypes['EditGameSuccess'] | ResolversParentTypes['AddUserToGameSuccess'] | ResolversParentTypes['RemoveUserFromGameSuccess'],
   UnauthorizedResponse: UnauthorizedResponse,
   IdInput: IdInput,
+  UploadImageSuccess: UploadImageSuccess,
+  UploadImageFailure: UploadImageFailure,
+  UploadImageResponse: ResolversParentTypes['UploadImageSuccess'] | ResolversParentTypes['UploadImageFailure'],
   BaseUser: ResolversParentTypes['User'] | ResolversParentTypes['Me'],
   User: User,
   Me: Me,
@@ -704,6 +734,10 @@ export type ResolversParentTypes = ResolversObject<{
   RemoveUserFromGameResponse: ResolversParentTypes['RemoveUserFromGameSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
 }>;
 
+export interface UploadScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Upload'], any> {
+  name: 'Upload'
+}
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   me?: Resolver<ResolversTypes['MeResponse'], ParentType, ContextType>,
   post?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<QueryPostArgs, 'input'>>,
@@ -729,16 +763,33 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   addFriendAndAddToGame?: Resolver<ResolversTypes['AddFriendAndAddToGameResponse'], ParentType, ContextType, RequireFields<MutationAddFriendAndAddToGameArgs, 'input'>>,
   addUserToGame?: Resolver<ResolversTypes['AddUserToGameResponse'], ParentType, ContextType, RequireFields<MutationAddUserToGameArgs, 'input'>>,
   removeUserFromGame?: Resolver<ResolversTypes['RemoveUserFromGameResponse'], ParentType, ContextType, RequireFields<MutationRemoveUserFromGameArgs, 'input'>>,
+  uploadImage?: Resolver<ResolversTypes['UploadImageResponse'], ParentType, ContextType, RequireFields<MutationUploadImageArgs, 'file'>>,
 }>;
 
 export type MutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{
-  __resolveType: TypeResolveFn<'LoginFailure' | 'LoginSuccess' | 'AddFriendSuccess' | 'AddFriendAndAddToGameSuccess' | 'LovePostSuccess' | 'UnlovePostSuccess' | 'EditPostSuccess' | 'EditPostFieldError' | 'CreatePostSuccess' | 'PublishPostSuccess' | 'PublishPostNameTooShort' | 'LoveCommentSuccess' | 'UnloveCommentSuccess' | 'AddCommentSuccess' | 'EditCommentSuccess' | 'JoinEventSuccess' | 'EditGameSuccess' | 'AddUserToGameSuccess' | 'RemoveUserFromGameSuccess', ParentType, ContextType>,
+  __resolveType: TypeResolveFn<'UploadImageSuccess' | 'UploadImageFailure' | 'LoginFailure' | 'LoginSuccess' | 'AddFriendSuccess' | 'AddFriendAndAddToGameSuccess' | 'LovePostSuccess' | 'UnlovePostSuccess' | 'EditPostSuccess' | 'EditPostFieldError' | 'CreatePostSuccess' | 'PublishPostSuccess' | 'PublishPostNameTooShort' | 'LoveCommentSuccess' | 'UnloveCommentSuccess' | 'AddCommentSuccess' | 'EditCommentSuccess' | 'JoinEventSuccess' | 'EditGameSuccess' | 'AddUserToGameSuccess' | 'RemoveUserFromGameSuccess', ParentType, ContextType>,
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
 }>;
 
 export type UnauthorizedResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UnauthorizedResponse'] = ResolversParentTypes['UnauthorizedResponse']> = ResolversObject<{
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
+export type UploadImageSuccessResolvers<ContextType = any, ParentType extends ResolversParentTypes['UploadImageSuccess'] = ResolversParentTypes['UploadImageSuccess']> = ResolversObject<{
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  path?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
+export type UploadImageFailureResolvers<ContextType = any, ParentType extends ResolversParentTypes['UploadImageFailure'] = ResolversParentTypes['UploadImageFailure']> = ResolversObject<{
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
+export type UploadImageResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UploadImageResponse'] = ResolversParentTypes['UploadImageResponse']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'UploadImageSuccess' | 'UploadImageFailure', ParentType, ContextType>
 }>;
 
 export type BaseUserResolvers<ContextType = any, ParentType extends ResolversParentTypes['BaseUser'] = ResolversParentTypes['BaseUser']> = ResolversObject<{
@@ -1066,10 +1117,14 @@ export type RemoveUserFromGameResponseResolvers<ContextType = any, ParentType ex
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
+  Upload?: GraphQLScalarType,
   Query?: QueryResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   MutationResponse?: MutationResponseResolvers,
   UnauthorizedResponse?: UnauthorizedResponseResolvers<ContextType>,
+  UploadImageSuccess?: UploadImageSuccessResolvers<ContextType>,
+  UploadImageFailure?: UploadImageFailureResolvers<ContextType>,
+  UploadImageResponse?: UploadImageResponseResolvers,
   BaseUser?: BaseUserResolvers,
   User?: UserResolvers<ContextType>,
   Me?: MeResolvers<ContextType>,

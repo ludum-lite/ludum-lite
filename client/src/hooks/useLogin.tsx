@@ -8,7 +8,6 @@ import {
   useLoginMutation,
   useGlobalIsLoggedInQuery,
 } from '__generated__/client-types'
-import styled from 'styled-components/macro'
 
 type UseLoginReturnType = {
   login: ({
@@ -41,8 +40,6 @@ export const useLogin = singletonHook(init, () => {
       if (login.__typename === 'LoginSuccess') {
         const { token } = login
         localStorage.setItem('token', token)
-        // setIsPromptingLogin(false)
-        // isLoggedInVar(true)
         window.location.reload()
       } else if (login.__typename === 'LoginFailure') {
         setError(login.message)

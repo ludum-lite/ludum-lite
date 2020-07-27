@@ -1,6 +1,8 @@
 import { gql } from 'apollo-server'
 
 export const typeDefs = gql`
+  scalar Upload
+
   type Query {
     me: MeResponse!
     post(input: IdInput!): Post!
@@ -32,6 +34,7 @@ export const typeDefs = gql`
     removeUserFromGame(
       input: RemoveUserFromGameInput!
     ): RemoveUserFromGameResponse!
+    uploadImage(file: Upload!): UploadImageResponse!
   }
 
   #########
@@ -49,6 +52,18 @@ export const typeDefs = gql`
   input IdInput {
     id: Int!
   }
+
+  type UploadImageSuccess implements MutationResponse {
+    success: Boolean!
+    path: String!
+  }
+
+  type UploadImageFailure implements MutationResponse {
+    success: Boolean!
+    message: String!
+  }
+
+  union UploadImageResponse = UploadImageSuccess | UploadImageFailure
 
   ######
   # User

@@ -5,24 +5,26 @@ import {
   RequestOptions,
 } from 'apollo-datasource-rest'
 import { Context } from './context'
-import config from '../config'
 import qs from 'qs'
+import FormData from 'form-data'
 
 export default class BaseAPI extends RESTDataSource<Context> {
   constructor() {
     super()
-    this.baseURL = config.baseURL
+    this.baseURL = process.env.BASE_URL
   }
 
   willSendRequest(request: RequestOptions) {
     if (this.context.authToken) {
       request.headers.set(
         'cookie',
-        `${config.authKey}=${this.context.authToken}`
+        `${process.env.AUTH_KEY}=${this.context.authToken}`
       )
     }
 
-    if (request.method === 'POST') {
+    if (request.body instanceof FormData) {
+      // Do nothing
+    } else if (request.method === 'POST') {
       /***
        * Ld uses this content-type so use qs to stringify objects during POST
        * for better dev UX

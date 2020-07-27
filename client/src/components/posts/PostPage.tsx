@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { gql } from '@apollo/client'
 import _ from 'lodash'
 
@@ -39,7 +39,6 @@ import Icon from 'components/common/mui/Icon'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import useEditablePreviewActionRow from 'hooks/useEditablePreviewActionRow'
 import { useForm, Controller } from 'react-hook-form'
-import MultilineTextField from 'components/common/MultilineTextField'
 import { useSnackbar } from 'notistack'
 import { useMinLoadingTime } from 'hooks/useMinLoadingTime'
 import {
@@ -48,6 +47,8 @@ import {
   bindMenu,
 } from 'material-ui-popup-state/hooks'
 import Tag from 'components/common/Tag'
+import { useDropzone } from 'react-dropzone'
+import MarkdownInput from 'components/common/MarkdownInput'
 
 enum CommentSortBy {
   DatePostedNewest = 'datePosted_newest',
@@ -141,7 +142,7 @@ const TitleInputError = styled(Typography)`
   margin-bottom: ${({ theme }) => theme.spacing(1)}px;
 `
 
-const StyledBodyInput = styled(MultilineTextField)`
+const StyledMarkdownInput = styled(MarkdownInput)`
   margin-bottom: ${({ theme }) => theme.spacing(3)}px;
 `
 
@@ -218,6 +219,16 @@ export default function PostPage({ isEditing }: PostPageProps) {
   const post = data?.post
   const me = data?.me
   const isMyPost = me?.__typename === 'Me' && me?.id === post?.authorId
+  const isNotMyPost =
+    Boolean(me?.__typename) &&
+    (me?.__typename === 'UnauthorizedResponse' ||
+      (me?.__typename === 'Me' && me?.id !== post?.authorId))
+
+  React.useEffect(() => {
+    if (isNotMyPost && isEditing) {
+      stopEditing()
+    }
+  }, [isNotMyPost, isEditing, stopEditing])
 
   const comments = post?.comments
 
@@ -419,7 +430,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
             </Header>
             {isEditing && state === 'write' ? (
               <Controller
-                as={StyledBodyInput}
+                as={StyledMarkdownInput}
                 name="body"
                 placeholder="Body"
                 control={control}

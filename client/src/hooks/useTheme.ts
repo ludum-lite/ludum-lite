@@ -54,6 +54,10 @@ export type ThemeColors = {
       white: ButtonThemeColors
     }
   }
+  dropOverlay: {
+    borderColor: string
+    backgroundColor: string
+  }
   tag: {
     primaryBackground: string
     primaryColor: string
@@ -140,6 +144,13 @@ const fadedWhite = 'rgba(255,255,255,0.9)'
 const fadedBlack = 'rgba(0, 0, 0, 0.38)'
 const textBlack = 'rgba(0, 0, 0, 0.87)'
 
+const commonTheme = {
+  dropOverlay: {
+    borderColor: 'rgb(32, 208, 0)',
+    backgroundColor: 'rgba(72, 208, 15, 0.12)',
+  },
+} as const
+
 // https://coolors.co/13293d-006494-058ed9-3fa6de-6ab8e2-004567-eaebed-f9f9ff-fdffff
 const styleVariables = {
   prussianBlue: 'rgb(19, 41, 61)',
@@ -159,6 +170,7 @@ const styleVariables = {
 } as const
 
 const lightTheme: ThemeColors = {
+  ...commonTheme,
   background: styleVariables.aliceBlue,
   globalNavBackground: styleVariables.sapphireBlue,
   contextualNavBackground: styleVariables.greenBlue,
@@ -306,6 +318,7 @@ const ldStyleVariables = {
 } as const
 
 const darkTheme: ThemeColors = {
+  ...commonTheme,
   background: ldStyleVariables.slateGray,
   globalNavBackground: ldStyleVariables.portlandOrange,
   contextualNavBackground: ldStyleVariables.raisinBlack,

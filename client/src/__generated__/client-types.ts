@@ -10,6 +10,7 @@ export type Scalars = {
   Boolean: boolean
   Int: number
   Float: number
+  Upload: any
 }
 
 export type Query = {
@@ -55,6 +56,7 @@ export type Mutation = {
   addFriendAndAddToGame: AddFriendAndAddToGameResponse
   addUserToGame: AddUserToGameResponse
   removeUserFromGame: RemoveUserFromGameResponse
+  uploadImage: UploadImageResponse
 }
 
 export type MutationLoginArgs = {
@@ -117,6 +119,10 @@ export type MutationRemoveUserFromGameArgs = {
   input: RemoveUserFromGameInput
 }
 
+export type MutationUploadImageArgs = {
+  file: Scalars['Upload']
+}
+
 export type MutationResponse = {
   success: Scalars['Boolean']
 }
@@ -129,6 +135,20 @@ export type UnauthorizedResponse = {
 export type IdInput = {
   id: Scalars['Int']
 }
+
+export type UploadImageSuccess = MutationResponse & {
+  __typename: 'UploadImageSuccess'
+  success: Scalars['Boolean']
+  path: Scalars['String']
+}
+
+export type UploadImageFailure = MutationResponse & {
+  __typename: 'UploadImageFailure'
+  success: Scalars['Boolean']
+  message: Scalars['String']
+}
+
+export type UploadImageResponse = UploadImageSuccess | UploadImageFailure
 
 export type BaseUser = {
   avatarPath?: Maybe<Scalars['String']>
@@ -490,6 +510,19 @@ export type RemoveUserFromGameSuccess = MutationResponse & {
 export type RemoveUserFromGameResponse =
   | RemoveUserFromGameSuccess
   | UnauthorizedResponse
+
+export type UploadImageMutationVariables = Exact<{
+  file: Scalars['Upload']
+}>
+
+export type UploadImageMutation = { __typename: 'Mutation' } & {
+  uploadImage:
+    | ({ __typename: 'UploadImageSuccess' } & Pick<UploadImageSuccess, 'path'>)
+    | ({ __typename: 'UploadImageFailure' } & Pick<
+        UploadImageFailure,
+        'message'
+      >)
+}
 
 export type GameWidgetDataQueryVariables = Exact<{ [key: string]: never }>
 
@@ -1186,6 +1219,61 @@ export const TeamWidget_TeamUserFragmentDoc = gql`
     avatarPath
   }
 `
+export const UploadImageDocument = gql`
+  mutation UploadImage($file: Upload!) {
+    uploadImage(file: $file) {
+      ... on UploadImageSuccess {
+        path
+      }
+      ... on UploadImageFailure {
+        message
+      }
+    }
+  }
+`
+export type UploadImageMutationFn = ApolloReactCommon.MutationFunction<
+  UploadImageMutation,
+  UploadImageMutationVariables
+>
+
+/**
+ * __useUploadImageMutation__
+ *
+ * To run a mutation, you first call `useUploadImageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadImageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadImageMutation, { data, loading, error }] = useUploadImageMutation({
+ *   variables: {
+ *      file: // value for 'file'
+ *   },
+ * });
+ */
+export function useUploadImageMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    UploadImageMutation,
+    UploadImageMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    UploadImageMutation,
+    UploadImageMutationVariables
+  >(UploadImageDocument, baseOptions)
+}
+export type UploadImageMutationHookResult = ReturnType<
+  typeof useUploadImageMutation
+>
+export type UploadImageMutationResult = ApolloReactCommon.MutationResult<
+  UploadImageMutation
+>
+export type UploadImageMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UploadImageMutation,
+  UploadImageMutationVariables
+>
 export const GameWidgetDataDocument = gql`
   query GameWidgetData {
     featuredEvent {
@@ -2899,6 +2987,12 @@ const result: IntrospectionResultData = {
         name: 'MutationResponse',
         possibleTypes: [
           {
+            name: 'UploadImageSuccess',
+          },
+          {
+            name: 'UploadImageFailure',
+          },
+          {
             name: 'LoginFailure',
           },
           {
@@ -2954,6 +3048,18 @@ const result: IntrospectionResultData = {
           },
           {
             name: 'RemoveUserFromGameSuccess',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'UploadImageResponse',
+        possibleTypes: [
+          {
+            name: 'UploadImageSuccess',
+          },
+          {
+            name: 'UploadImageFailure',
           },
         ],
       },

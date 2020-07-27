@@ -4,6 +4,7 @@ import CommentAPI from './comment-api'
 import UserAPI from './user-api'
 import EventAPI from './event-api'
 import GameAPI from './game-api'
+import ImageAPI from './image-api'
 import { Post, User, Comment, Event, Game } from '../__generated__/schema-types'
 
 export type Context = {
@@ -14,6 +15,7 @@ export type Context = {
     userApi: UserAPI
     eventApi: EventAPI
     gameApi: GameAPI
+    imageApi: ImageAPI
   }
   loaders: {
     postLoader: DataLoader<number, Post>

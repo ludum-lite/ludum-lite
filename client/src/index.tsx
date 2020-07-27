@@ -3,16 +3,11 @@ import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 import { SnackbarProvider } from 'notistack'
 
-// import { BatchHttpLink } from '@apollo/link-batch-http'
-// import { onError } from '@apollo/link-error'
 import { SingletonHooksContainer } from 'react-singleton-hook'
 import { setContext } from '@apollo/link-context'
-import {
-  ApolloClient,
-  ApolloProvider,
-  ApolloLink,
-  HttpLink,
-} from '@apollo/client'
+import { ApolloClient, ApolloProvider, ApolloLink } from '@apollo/client'
+import { createUploadLink } from 'apollo-upload-client'
+
 import { cache, resolvers, typeDefs } from './resolvers'
 
 import App from 'components/App'
@@ -54,12 +49,12 @@ const authLink = setContext((_, { headers }) => {
   }
 })
 
-const batchHttpLink = new HttpLink({
-  uri: 'http://localhost:4000/',
+const uploadLink = createUploadLink({
+  uri: 'http://localhost:4000',
 })
 
 // @ts-ignore
-const link = ApolloLink.from([authLink, batchHttpLink])
+const link = ApolloLink.from([authLink, uploadLink])
 
 const client = new ApolloClient({
   cache,

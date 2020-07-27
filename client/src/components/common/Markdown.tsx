@@ -23,7 +23,7 @@ const Root = styled.div`
 `
 
 const Image = styled.img`
-  max-width: 400px;
+  max-width: 100%;
   border-radius: 4px;
   /* // border: '1px solid rgba(0, 0, 0, 0.23)', */
   display: block;

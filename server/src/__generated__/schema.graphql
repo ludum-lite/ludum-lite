@@ -1,3 +1,5 @@
+scalar Upload
+
 type Query {
   me: MeResponse!
   post(input: IdInput!): Post!
@@ -23,6 +25,7 @@ type Mutation {
   addFriendAndAddToGame(input: IdInput!): AddFriendAndAddToGameResponse!
   addUserToGame(input: AddUserToGameInput!): AddUserToGameResponse!
   removeUserFromGame(input: RemoveUserFromGameInput!): RemoveUserFromGameResponse!
+  uploadImage(file: Upload!): UploadImageResponse!
 }
 
 interface MutationResponse {
@@ -36,6 +39,18 @@ type UnauthorizedResponse {
 input IdInput {
   id: Int!
 }
+
+type UploadImageSuccess implements MutationResponse {
+  success: Boolean!
+  path: String!
+}
+
+type UploadImageFailure implements MutationResponse {
+  success: Boolean!
+  message: String!
+}
+
+union UploadImageResponse = UploadImageSuccess | UploadImageFailure
 
 interface BaseUser {
   avatarPath: String

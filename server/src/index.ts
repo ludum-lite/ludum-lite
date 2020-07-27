@@ -7,6 +7,7 @@ import PostAPI from './data-sources/post-api'
 import UserAPI from './data-sources/user-api'
 import { typeDefs } from './schema'
 import { Resolvers } from './__generated__/schema-types'
+import ImageAPI from './data-sources/image-api'
 
 const resolvers: Resolvers<Context> = {
   Query: {
@@ -74,6 +75,9 @@ const resolvers: Resolvers<Context> = {
     },
     removeUserFromGame(_, { input }, context) {
       return context.dataSources.gameApi.removeUserFromGame(input)
+    },
+    async uploadImage(_, { file }, context) {
+      return context.dataSources.imageApi.uploadImage(file)
     },
   },
   Post: {
@@ -226,6 +230,7 @@ new ApolloServer({
     userApi: new UserAPI(),
     eventApi: new EventAPI(),
     gameApi: new GameAPI(),
+    imageApi: new ImageAPI(),
   }),
   engine: {
     apiKey: 'service:ldjam:S8IzjK8QYWQyOeLhjtuFvA',
@@ -233,5 +238,5 @@ new ApolloServer({
 })
   .listen()
   .then(({ url }) => {
-    console.log(`Server ready at ${url}`)
+    console.log(`\nServer ready at ${url}`)
   })

@@ -36,7 +36,7 @@ const Posts = styled.div`
 `
 
 const MoreButton = styled(Button)`
-  padding: ${({ theme }) => theme.spacing(5)}px 0;
+  height: 112px;
   background-color: ${({ theme }) => theme.themeColors.moreButton.background};
 
   &:hover {

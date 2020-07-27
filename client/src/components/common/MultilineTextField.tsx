@@ -3,10 +3,12 @@ import React, { useRef, useEffect } from 'react'
 
 import TextField, { TextFieldProps } from '@material-ui/core/TextField'
 
+interface Props {}
+export type MutlilineTextFieldProps = Props & TextFieldProps
 export default function MultilineTextField({
   onChange,
   ...others
-}: TextFieldProps) {
+}: MutlilineTextFieldProps) {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const updateHeight = () => {

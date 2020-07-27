@@ -20,8 +20,6 @@ import {
   EditPostFieldErrorFields,
 } from '../__generated__/schema-types'
 import { unauthorizedResponse } from './const'
-import { delegateToSchema } from 'apollo-server'
-import { sleep } from './utils'
 
 export type ApiPostDto = {
   id: number
