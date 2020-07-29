@@ -3075,6 +3075,11 @@
   resolved "https://registry.yarnpkg.com/@types/html-minifier-terser/-/html-minifier-terser-5.1.0.tgz#551a4589b6ee2cc9c1dff08056128aec29b94880"
   integrity sha512-iYCgjm1dGPRuo12+BStjd1HiVQqhlRhWDOQigNxn023HcjnhsiFz9pc6CzJj4HwDCSQca9bxTL4PxJDbkdm3PA==
 
+"@types/insert-text-at-cursor@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@types/insert-text-at-cursor/-/insert-text-at-cursor-0.3.0.tgz#c7fafad758e26cd7f6bd82c46bf3601fec7afc3e"
+  integrity sha512-58a+1l6hz5DQ25NjODvZEYmJUWA1ALbUxcf/GHjMfh92r41lZkI6buNN0NwxIvJQDkTFNqL73G2Fduu5ctHVhA==
+
 "@types/is-function@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/is-function/-/is-function-1.0.0.tgz#1b0b819b1636c7baf0d6785d030d12edf70c3e83"
@@ -8722,6 +8727,11 @@ inquirer@7.1.0, inquirer@^7.0.0:
     string-width "^4.1.0"
     strip-ansi "^6.0.0"
     through "^2.3.6"
+
+insert-text-at-cursor@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/insert-text-at-cursor/-/insert-text-at-cursor-0.3.0.tgz#1819607680ec1570618347c4cd475e791faa25da"
+  integrity sha512-/nPtyeX9xPUvxZf+r0518B7uqNKlP+LqNJqSiXFEaa2T71rWIwTVXGH7hB9xO/EVdwa5/pWlFCPwShOW81XIxQ==
 
 internal-ip@^4.3.0:
   version "4.3.0"

@@ -55,6 +55,7 @@ export const typeDefs = gql`
 
   type UploadImageSuccess implements MutationResponse {
     success: Boolean!
+    name: String!
     path: String!
   }
 

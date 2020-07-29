@@ -31,6 +31,10 @@ const Image = styled.img`
   &:not(:first-child) {
     margin-top: 1em;
   }
+
+  &:not(:last-child) {
+    margin-bottom: 1em;
+  }
 `
 
 const LinkContainer = styled.p`
@@ -109,12 +113,18 @@ export default function Markdown({ source, removeHrefs, ...props }: Props) {
     )
   }
 
+  // @ts-ignore
+  const textRenderer = (props) => {
+    return <span {...props} />
+  }
+
   renderers.root = rootRenderer
   renderers.image = imageRenderer
   // @ts-ignore
   renderers.link = linkRenderer
   // @ts-ignore
   renderers.paragraph = paragraphRenderer
+  renderers.text = textRenderer
 
   return (
     <Typography variant="body2" component="div">

@@ -156,6 +156,7 @@ export type IdInput = {
 export type UploadImageSuccess = MutationResponse & {
    __typename: 'UploadImageSuccess';
   success: Scalars['Boolean'];
+  name: Scalars['String'];
   path: Scalars['String'];
 };
 
@@ -778,6 +779,7 @@ export type UnauthorizedResponseResolvers<ContextType = any, ParentType extends 
 
 export type UploadImageSuccessResolvers<ContextType = any, ParentType extends ResolversParentTypes['UploadImageSuccess'] = ResolversParentTypes['UploadImageSuccess']> = ResolversObject<{
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   path?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;

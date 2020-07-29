@@ -16,7 +16,6 @@ import {
 import PopupPage from './PopupPage'
 import UserPostedHeader from './UserPostedHeader'
 import { useParams, useNavigate } from 'react-router'
-import Markdown from 'components/common/Markdown'
 import PostLoveButton from './post-buttons/PostLoveButton'
 import PostBookmarkButton from './post-buttons/PostBookmarkButton'
 import { filter } from 'graphql-anywhere'
@@ -47,8 +46,8 @@ import {
   bindMenu,
 } from 'material-ui-popup-state/hooks'
 import Tag from 'components/common/Tag'
-import { useDropzone } from 'react-dropzone'
 import MarkdownInput from 'components/common/MarkdownInput'
+import PreviewableMarkdownInput from 'components/common/PreviewableMarkdownInput'
 
 enum CommentSortBy {
   DatePostedNewest = 'datePosted_newest',
@@ -142,7 +141,7 @@ const TitleInputError = styled(Typography)`
   margin-bottom: ${({ theme }) => theme.spacing(1)}px;
 `
 
-const StyledMarkdownInput = styled(MarkdownInput)`
+const StyledPreviewableMarkdownInput = styled(PreviewableMarkdownInput)`
   margin-bottom: ${({ theme }) => theme.spacing(3)}px;
 `
 
@@ -167,7 +166,9 @@ export default function PostPage({ isEditing }: PostPageProps) {
     errors,
     setError,
     clearErrors,
+    reset,
   } = useForm<FormInputs>()
+
   const [commentSortBy, setSortBy] = useLocalStorage(
     'comments_sortBy',
     CommentSortBy.DatePostedNewest
@@ -183,7 +184,8 @@ export default function PostPage({ isEditing }: PostPageProps) {
       replace: true,
     })
     clearErrors()
-  }, [clearErrors, navigate, postId])
+    reset()
+  }, [clearErrors, navigate, reset, postId])
 
   const onChangeSortBy = React.useCallback(
     (sortBy: CommentSortBy) => {
@@ -428,17 +430,13 @@ export default function PostPage({ isEditing }: PostPageProps) {
                 )}
               </HeaderContent>
             </Header>
-            {isEditing && state === 'write' ? (
-              <Controller
-                as={StyledMarkdownInput}
-                name="body"
-                placeholder="Body"
-                control={control}
-                defaultValue={post.body || ''}
-              />
-            ) : (
-              <Markdown source={post.body || '-- No Body --'} />
-            )}
+            <Controller
+              as={StyledPreviewableMarkdownInput}
+              name="body"
+              control={control}
+              state={isEditing ? state : 'preview'}
+              defaultValue={post.body || ''}
+            />
           </Article>
           {!isEditing && (
             <Fragment>

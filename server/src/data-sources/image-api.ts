@@ -25,9 +25,12 @@ export default class ImageAPI extends BaseAPI {
 
       const response = await this.post('vx/asset/upload/9', formData)
 
+      console.log(response)
+
       return {
         __typename: 'UploadImageSuccess',
         success: true,
+        name: response.name,
         path: response.path,
       }
     } catch (e) {

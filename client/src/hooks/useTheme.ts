@@ -45,6 +45,7 @@ export type ThemeColors = {
   input: {
     background: string
     hoverOutlineColor: string
+    dividerColor: string
   }
   button: {
     background: {
@@ -197,6 +198,7 @@ const lightTheme: ThemeColors = {
   input: {
     background: 'rgba(75, 80, 97, 0.17)',
     hoverOutlineColor: styleVariables.greenBlue,
+    dividerColor: styleVariables.white,
   },
   button: {
     background: {
@@ -345,6 +347,7 @@ const darkTheme: ThemeColors = {
   input: {
     background: 'white',
     hoverOutlineColor: ldStyleVariables.portlandOrange,
+    dividerColor: ldStyleVariables.lightGray,
   },
   button: {
     background: {

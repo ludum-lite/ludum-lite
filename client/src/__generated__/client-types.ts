@@ -139,6 +139,7 @@ export type IdInput = {
 export type UploadImageSuccess = MutationResponse & {
   __typename: 'UploadImageSuccess'
   success: Scalars['Boolean']
+  name: Scalars['String']
   path: Scalars['String']
 }
 
@@ -517,7 +518,10 @@ export type UploadImageMutationVariables = Exact<{
 
 export type UploadImageMutation = { __typename: 'Mutation' } & {
   uploadImage:
-    | ({ __typename: 'UploadImageSuccess' } & Pick<UploadImageSuccess, 'path'>)
+    | ({ __typename: 'UploadImageSuccess' } & Pick<
+        UploadImageSuccess,
+        'path' | 'name'
+      >)
     | ({ __typename: 'UploadImageFailure' } & Pick<
         UploadImageFailure,
         'message'
@@ -1224,6 +1228,7 @@ export const UploadImageDocument = gql`
     uploadImage(file: $file) {
       ... on UploadImageSuccess {
         path
+        name
       }
       ... on UploadImageFailure {
         message
