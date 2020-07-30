@@ -6,6 +6,7 @@ import Icon from 'components/common/mui/Icon'
 import { IconButton } from '@material-ui/core'
 import { useHasNavigatedWithin } from 'hooks/useHasNavigatedWithin'
 import { useNavigate } from 'react-router'
+import Link from 'components/common/mui/Link'
 
 const CARD_MARGIN = 32
 const BORDER_RADIUS = 8
@@ -118,8 +119,9 @@ export default function PopupPage({
               <ActionRow>
                 {previousPath && (
                   <IconButton
-                    href={previousPath}
-                    onClick={(e) => {
+                    component={Link}
+                    to={previousPath}
+                    onClick={(e: any) => {
                       if (hasNavigatedWithin) {
                         e.preventDefault()
                         navigate(-1)

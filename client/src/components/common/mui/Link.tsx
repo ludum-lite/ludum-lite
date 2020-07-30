@@ -5,6 +5,9 @@ import {
   LinkProps as RouterLinkProps,
 } from 'react-router-dom'
 
-export default function Link(props: MuiLinkProps & RouterLinkProps) {
-  return <MuiLink component={RouterLink} {...props} />
-}
+export default React.forwardRef<
+  HTMLAnchorElement,
+  MuiLinkProps & RouterLinkProps
+>((props, ref) => {
+  return <MuiLink component={RouterLink} ref={ref} {...props} />
+})

@@ -80,7 +80,6 @@ declare global {
 const Root = () => {
   return (
     <ApolloProvider client={client}>
-      <SingletonHooksContainer />
       <StylesProvider>
         <SnackbarProvider
           anchorOrigin={{
@@ -89,6 +88,7 @@ const Root = () => {
           }}
         >
           <BrowserRouter>
+            <SingletonHooksContainer />
             <App />
           </BrowserRouter>
         </SnackbarProvider>

@@ -1,32 +1,19 @@
 import React from 'react'
+import { useLocation } from 'react-router'
 import { singletonHook } from 'react-singleton-hook'
 
 const init = [false, () => {}] as const
 
 export const useHasNavigatedWithin = singletonHook(init, () => {
+  const location = useLocation()
+  const initialPathname = React.useRef(location.pathname)
   const [hasNavigatedWithin, setHasNavigatedWithin] = React.useState(false)
 
   React.useEffect(() => {
-    document.body.onclick = function (e) {
-      let node: HTMLElement | null = e.target as HTMLElement
-      let linkElement: HTMLAnchorElement | null = null
-
-      while (node) {
-        if (node.localName === 'a') {
-          linkElement = node as HTMLAnchorElement
-          node = null
-        } else {
-          node = node.parentNode as HTMLElement
-        }
-      }
-
-      if (linkElement) {
-        setHasNavigatedWithin(true)
-      }
-
-      return true // handle other clicks
+    if (location.pathname !== initialPathname.current) {
+      setHasNavigatedWithin(true)
     }
-  }, [])
+  }, [location.pathname])
 
   return [hasNavigatedWithin, setHasNavigatedWithin] as const
 })

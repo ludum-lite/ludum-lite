@@ -70,12 +70,16 @@ export default function UserPostedHeader({
         linkPath={userProfilePath || ''}
         size={30}
       />
-      <UserLink
-        to={userProfilePath || ''}
-        color="textSecondary"
-        variant="caption"
-        highlightUserLink={highlightUserLink}
-      >{`u/${userName}`}</UserLink>
+      {userName ? (
+        <UserLink
+          to={userProfilePath || ''}
+          color="textSecondary"
+          variant="caption"
+          highlightUserLink={highlightUserLink}
+        >{`u/${userName}`}</UserLink>
+      ) : (
+        'User not available'
+      )}
       <Typography variant="caption" color="textPrimary">
         {postedDateComponent}
       </Typography>

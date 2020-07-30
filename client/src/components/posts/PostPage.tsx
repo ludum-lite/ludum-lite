@@ -417,9 +417,9 @@ export default function PostPage({ isEditing }: PostPageProps) {
                 {!isEditing && (
                   <HeaderUserContainer>
                     <UserPostedHeader
-                      userProfilePath={post.author?.profilePath || 'N/A'}
-                      userAvatarPath={post.author?.avatarPath || 'N/A'}
-                      userName={post.author?.name || 'N/A'}
+                      userProfilePath={post.author?.profilePath}
+                      userAvatarPath={post.author?.avatarPath}
+                      userName={post.author?.name}
                       postedDate={
                         post.publishedDate || (
                           <Tag variant="primary">Unpublished</Tag>

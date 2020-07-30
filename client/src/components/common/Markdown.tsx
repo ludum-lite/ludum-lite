@@ -114,7 +114,7 @@ export default function Markdown({ source, removeHrefs, ...props }: Props) {
   }
 
   // @ts-ignore
-  const textRenderer = (props) => {
+  const textRenderer = ({ nodeKey, ...props }) => {
     return <span {...props} />
   }
 

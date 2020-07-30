@@ -40,6 +40,8 @@ export type Event = {
   timeline: Timeline
 }
 
+// I'm just winging the theme submission and voting rounds. I can't find an exact date in the
+// source code.
 // prettier-ignore
 export const events: Event[] = [
   {
@@ -73,15 +75,15 @@ export const events: Event[] = [
   {
     eventNumber: 47,
     timeline: generateTimeline({
-      [EventPhase.ThemeSubmission]:   moment.utc('2020-10-04T22:00:00'),
-      [EventPhase.ThemeVotingRound1]: moment.utc('2020-10-18T22:00:00'),
-      [EventPhase.ThemeVotingRound2]: moment.utc('2020-10-21T22:00:00'),
-      [EventPhase.ThemeVotingRound3]: moment.utc('2020-10-24T22:00:00'),
-      [EventPhase.ThemeReveal]:       moment.utc('2020-10-25T22:00:00'),
-      [EventPhase.CompoEnd]:          moment.utc('2020-10-27T22:00:00'),
-      [EventPhase.JamEnd]:            moment.utc('2020-10-28T22:00:00'),
-      [EventPhase.VotingEnds]:        moment.utc('2020-11-28T20:00:00'),
-      [EventPhase.Results]:           moment.utc('2020-11-28T24:00:00'),
+      [EventPhase.ThemeSubmission]:   moment.utc('2020-09-11T22:00:00'),
+      [EventPhase.ThemeVotingRound1]: moment.utc('2020-09-21T22:00:00'),
+      [EventPhase.ThemeVotingRound2]: moment.utc('2020-09-25T22:00:00'),
+      [EventPhase.ThemeVotingRound3]: moment.utc('2020-10-01T22:00:00'),
+      [EventPhase.ThemeReveal]:       moment.utc('2020-10-02T22:00:00'),
+      [EventPhase.CompoEnd]:          moment.utc('2020-10-03T22:00:00'),
+      [EventPhase.JamEnd]:            moment.utc('2020-10-04T22:00:00'),
+      [EventPhase.VotingEnds]:        moment.utc('2020-11-27T20:00:00'),
+      [EventPhase.Results]:           moment.utc('2020-11-27T24:00:00'),
     }),
   },
 ]
