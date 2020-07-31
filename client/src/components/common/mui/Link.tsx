@@ -4,10 +4,18 @@ import {
   Link as RouterLink,
   LinkProps as RouterLinkProps,
 } from 'react-router-dom'
+import { To } from 'history'
 
 export default React.forwardRef<
-  HTMLAnchorElement,
-  MuiLinkProps & RouterLinkProps
->((props, ref) => {
-  return <MuiLink component={RouterLink} ref={ref} {...props} />
+  any,
+  MuiLinkProps &
+    Omit<RouterLinkProps, 'to'> & {
+      to?: To
+    }
+>(({ to, ...others }, ref) => {
+  if (to) {
+    return <MuiLink component={RouterLink} ref={ref} to={to} {...others} />
+  } else {
+    return <MuiLink ref={ref} {...others} />
+  }
 })

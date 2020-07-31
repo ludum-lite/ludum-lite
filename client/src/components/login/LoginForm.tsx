@@ -3,6 +3,7 @@ import styled from 'styled-components/macro'
 import { useForm } from 'react-hook-form'
 import Button from 'components/common/mui/Button'
 import { TextField as MuiTextField, Typography } from '@material-ui/core'
+import Link from 'components/common/mui/Link'
 
 const Root = styled.div`
   display: flex;
@@ -34,6 +35,13 @@ const Error = styled.div`
 
 const TextField = styled(MuiTextField)`
   margin-bottom: ${({ theme }) => theme.spacing(2)}px;
+`
+
+const ActionRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-self: stretch;
+  align-items: flex-end;
 `
 
 type Inputs = {
@@ -81,14 +89,23 @@ export default function LoginForm({ login, error }: Props) {
           inputRef={register}
           fullWidth
         />
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          disableElevation
-        >
-          Login
-        </Button>
+        <ActionRow>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            disableElevation
+          >
+            Login
+          </Button>
+          <Link
+            href={`${process.env.REACT_APP_LUDUMDARE_DOMAIN}#user-register`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Register
+          </Link>
+        </ActionRow>
       </Form>
     </Root>
   )
