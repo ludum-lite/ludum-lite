@@ -24,8 +24,19 @@ const StyledIconButton = styled(MuiIconButton).withConfig({
   }}
 `
 
+/**
+ * Note: the `component` prop doesn't work correctly with typing so you'll need to @ts-ignore
+ * props from the new component when using `component`. Eg:
+ * <IconButton
+ *   component={Link}
+ *   // @ts-ignore
+ *   to="somewhere"
+ * >...</IconButton>
+ */
+
 export interface Props {
   background?: Background
+  component?: React.ElementType
 }
 const IconButton = React.forwardRef<
   HTMLButtonElement,

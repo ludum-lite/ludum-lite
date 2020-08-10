@@ -9,6 +9,7 @@ import { useFeaturedEvent } from 'hooks/useFeaturedEvent'
 import { EventPhase as ServerEventPhase } from '__generated__/client-types'
 import moment from 'moment'
 import { borderRadius } from 'polished'
+import Link from 'components/common/mui/Link'
 
 const Root = styled.div`
   background: ${({ theme }) => theme.themeColors.globalNavBackground};
@@ -99,7 +100,12 @@ export default function NotificationBar({}: Props) {
       return null
     } else {
       return (
-        <IconButton background="globalNav">
+        <IconButton
+          background="globalNav"
+          component={Link}
+          // @ts-ignore
+          to={`events/${featuredEvent?.id}/theme`}
+        >
           <Icon icon={ForwardIcon} />
         </IconButton>
       )

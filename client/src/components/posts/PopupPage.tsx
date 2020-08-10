@@ -3,7 +3,7 @@ import styled from 'styled-components/macro'
 import { usePostOverlayed } from 'hooks/usePostOverlay'
 import ChevronLeft from '@material-ui/icons/ChevronLeft'
 import Icon from 'components/common/mui/Icon'
-import { IconButton } from '@material-ui/core'
+import IconButton from 'components/common/mui/IconButton'
 import { useHasNavigatedWithin } from 'hooks/useHasNavigatedWithin'
 import { useNavigate } from 'react-router'
 import Link from 'components/common/mui/Link'
@@ -120,6 +120,7 @@ export default function PopupPage({
                 {previousPath && (
                   <IconButton
                     component={Link}
+                    // @ts-ignore
                     to={previousPath}
                     onClick={(e: any) => {
                       if (hasNavigatedWithin) {

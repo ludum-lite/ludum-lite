@@ -6,11 +6,14 @@ import {
 } from 'react-router-dom'
 import { To } from 'history'
 import styled, { css } from 'styled-components/macro'
+import { ignoreProps } from 'utils'
 
 interface StyledLinkProps {
   overlay?: boolean
 }
-const StyledLink = styled(MuiLink)<StyledLinkProps>`
+const StyledLink = styled(MuiLink).withConfig({
+  shouldForwardProp: ignoreProps(['overlay']),
+})<StyledLinkProps>`
   z-index: 2;
 
   ${({ overlay }) =>
@@ -27,15 +30,16 @@ const StyledLink = styled(MuiLink)<StyledLinkProps>`
 
 interface LinkProps {
   overlay?: boolean
+  component?: React.ElementType
+  to?: To
+  children?: React.ReactNode
 }
 export default React.forwardRef<
   any,
   LinkProps &
-    MuiLinkProps &
-    Omit<RouterLinkProps, 'to'> & {
-      to?: To
-    }
->(({ to, ...others }, ref) => {
+    Omit<MuiLinkProps, 'children'> &
+    Omit<RouterLinkProps, 'to' | 'component' | 'children'>
+>(({ to, children, overlay, ...others }, ref) => {
   if (to) {
     return (
       <MuiLink
@@ -43,10 +47,14 @@ export default React.forwardRef<
         as={RouterLink}
         ref={ref}
         to={to}
+        overlay={overlay}
+        children={overlay ? '' : children}
         {...others}
       />
     )
   } else {
-    return <StyledLink ref={ref} {...others} />
+    return (
+      <StyledLink ref={ref} overlay={overlay} children={children} {...others} />
+    )
   }
 })
