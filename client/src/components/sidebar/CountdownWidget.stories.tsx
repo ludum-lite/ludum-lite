@@ -22,21 +22,23 @@ const BasicRoot = styled.div`
 
 export const Basic = () => {
   const event = React.useMemo<Event>(() => {
-    const eventDate = moment.utc().add(40, 'days')
+    const themeRevealDate = moment.utc().add(50, 'days')
 
     // prettier-ignore
     return {
       eventNumber: 1,
       timeline: generateTimeline({
-        [EventPhase.ThemeSubmission]:   eventDate.clone(),
-        [EventPhase.ThemeVotingRound1]: eventDate.add(2, 'weeks').clone(),
-        [EventPhase.ThemeVotingRound2]: eventDate.add(3, 'days').clone(),
-        [EventPhase.ThemeVotingRound3]: eventDate.add(3, 'days').clone(),
-        [EventPhase.ThemeReveal]:       eventDate.add(1, 'day').clone(),
-        [EventPhase.CompoEnd]:          eventDate.add(48, 'hours').clone(),
-        [EventPhase.JamEnd]:            eventDate.add(24, 'hours').clone(),
-        [EventPhase.VotingEnds]:        eventDate.add(2, 'weeks').clone(),
-        [EventPhase.Results]:           eventDate.add(4, 'hours').clone(),
+        [EventPhase.ThemeSubmission]:   themeRevealDate.clone().subtract(5, 'weeks'),
+        [EventPhase.ThemeSlaughter]:    themeRevealDate.clone().subtract(2, 'weeks'),
+        [EventPhase.ThemeVotingRound1]: themeRevealDate.clone().subtract(7, 'days'),
+        [EventPhase.ThemeVotingRound2]: themeRevealDate.clone().subtract(5, 'days'),
+        [EventPhase.ThemeVotingRound3]: themeRevealDate.clone().subtract(3, 'days'),
+        [EventPhase.ThemeVotingFinal]:  themeRevealDate.clone().subtract(2, 'days'),
+        [EventPhase.ThemeReveal]:       themeRevealDate.clone(),
+        [EventPhase.CompoEnd]:          themeRevealDate.clone().add(48, 'hours'),
+        [EventPhase.JamEnd]:            themeRevealDate.clone().add(72, 'hours'),
+        [EventPhase.VotingEnds]:        themeRevealDate.clone().add(2, 'weeks'),
+        [EventPhase.Results]:           themeRevealDate.clone().add(2, 'weeks').add(4, 'hours'),
       })
     }
   }, [])
@@ -50,21 +52,23 @@ export const Basic = () => {
 
 export const ThemeRevealNext = () => {
   const event = React.useMemo<Event>(() => {
-    const eventDate = moment.utc().subtract(40, 'days')
+    const themeRevealDate = moment.utc().add(50, 'days')
 
     // prettier-ignore
     return {
       eventNumber: 1,
       timeline: generateTimeline({
-        [EventPhase.ThemeSubmission]:   eventDate.clone(),
-        [EventPhase.ThemeVotingRound1]: eventDate.add(20, 'days').clone(),
-        [EventPhase.ThemeVotingRound2]: eventDate.add(3, 'days').clone(),
-        [EventPhase.ThemeVotingRound3]: eventDate.add(3, 'days').clone(),
-        [EventPhase.ThemeReveal]:       eventDate.add(21, 'days').clone(),
-        [EventPhase.CompoEnd]:          eventDate.add(48, 'hours').clone(),
-        [EventPhase.JamEnd]:            eventDate.add(24, 'hours').clone(),
-        [EventPhase.VotingEnds]:        eventDate.add(2, 'weeks').clone(),
-        [EventPhase.Results]:           eventDate.add(4, 'hours').clone(),
+        [EventPhase.ThemeSubmission]:   themeRevealDate.clone().subtract(5, 'weeks'),
+        [EventPhase.ThemeSlaughter]:    themeRevealDate.clone().subtract(2, 'weeks'),
+        [EventPhase.ThemeVotingRound1]: themeRevealDate.clone().subtract(7, 'days'),
+        [EventPhase.ThemeVotingRound2]: themeRevealDate.clone().subtract(5, 'days'),
+        [EventPhase.ThemeVotingRound3]: themeRevealDate.clone().subtract(3, 'days'),
+        [EventPhase.ThemeVotingFinal]:  themeRevealDate.clone().subtract(2, 'days'),
+        [EventPhase.ThemeReveal]:       themeRevealDate.clone(),
+        [EventPhase.CompoEnd]:          themeRevealDate.clone().add(48, 'hours'),
+        [EventPhase.JamEnd]:            themeRevealDate.clone().add(72, 'hours'),
+        [EventPhase.VotingEnds]:        themeRevealDate.clone().add(2, 'weeks'),
+        [EventPhase.Results]:           themeRevealDate.clone().add(2, 'weeks').add(4, 'hours'),
       })
     }
   }, [])
@@ -78,21 +82,23 @@ export const ThemeRevealNext = () => {
 
 export const EventRunning = () => {
   const event = React.useMemo<Event>(() => {
-    const eventDate = moment.utc().subtract(5, 'days')
+    const themeRevealDate = moment.utc()
 
     // prettier-ignore
     return {
       eventNumber: 1,
       timeline: generateTimeline({
-        [EventPhase.ThemeSubmission]:   eventDate.clone(),
-        [EventPhase.ThemeVotingRound1]: eventDate.add(1, 'days').clone(),
-        [EventPhase.ThemeVotingRound2]: eventDate.add(1, 'days').clone(),
-        [EventPhase.ThemeVotingRound3]: eventDate.add(1, 'days').clone(),
-        [EventPhase.ThemeReveal]:       eventDate.add(1, 'days').clone(),
-        [EventPhase.CompoEnd]:          eventDate.add(48, 'hours').clone(),
-        [EventPhase.JamEnd]:            eventDate.add(24, 'hours').clone(),
-        [EventPhase.VotingEnds]:        eventDate.add(2, 'weeks').clone(),
-        [EventPhase.Results]:           eventDate.add(4, 'hours').clone(),
+        [EventPhase.ThemeSubmission]:   themeRevealDate.clone().subtract(5, 'weeks'),
+        [EventPhase.ThemeSlaughter]:    themeRevealDate.clone().subtract(2, 'weeks'),
+        [EventPhase.ThemeVotingRound1]: themeRevealDate.clone().subtract(7, 'days'),
+        [EventPhase.ThemeVotingRound2]: themeRevealDate.clone().subtract(5, 'days'),
+        [EventPhase.ThemeVotingRound3]: themeRevealDate.clone().subtract(3, 'days'),
+        [EventPhase.ThemeVotingFinal]:  themeRevealDate.clone().subtract(2, 'days'),
+        [EventPhase.ThemeReveal]:       themeRevealDate.clone(),
+        [EventPhase.CompoEnd]:          themeRevealDate.clone().add(48, 'hours'),
+        [EventPhase.JamEnd]:            themeRevealDate.clone().add(72, 'hours'),
+        [EventPhase.VotingEnds]:        themeRevealDate.clone().add(2, 'weeks'),
+        [EventPhase.Results]:           themeRevealDate.clone().add(2, 'weeks').add(4, 'hours'),
       })
     }
   }, [])

@@ -3,9 +3,11 @@ import _ from 'lodash'
 
 export enum EventPhase {
   ThemeSubmission = 'ThemeSubmission',
+  ThemeSlaughter = 'ThemeSlaughter',
   ThemeVotingRound1 = 'ThemeVotingRound1',
   ThemeVotingRound2 = 'ThemeVotingRound2',
   ThemeVotingRound3 = 'ThemeVotingRound3',
+  ThemeVotingFinal = 'ThemeVotingFinal',
   ThemeReveal = 'ThemeReveal',
   CompoEnd = 'CompoEnd',
   CompoSubmissionHourEnd = 'CompoSubmissionHourEnd',
@@ -19,9 +21,11 @@ export const EventPhaseToLabel: {
   [key in EventPhase]: string
 } = {
   [EventPhase.ThemeSubmission]: 'Theme Submission',
+  [EventPhase.ThemeSlaughter]: 'Theme Slaughter',
   [EventPhase.ThemeVotingRound1]: 'Theme Voting - Round 1',
   [EventPhase.ThemeVotingRound2]: 'Theme Voting - Round 2',
   [EventPhase.ThemeVotingRound3]: 'Theme Voting - Round 3',
+  [EventPhase.ThemeVotingFinal]: 'Theme Voting - Final Round',
   [EventPhase.ThemeReveal]: 'Theme Reveal',
   [EventPhase.CompoEnd]: 'Compo End',
   [EventPhase.CompoSubmissionHourEnd]: 'Submission Hour End',
@@ -47,10 +51,12 @@ export const events: Event[] = [
   {
     eventNumber: 45,
     timeline: generateTimeline({
-      [EventPhase.ThemeSubmission]:   moment.utc('2019-08-19T22:00:00'),
-      [EventPhase.ThemeVotingRound1]: moment.utc('2019-08-26T22:00:00'),
-      [EventPhase.ThemeVotingRound2]: moment.utc('2019-08-29T22:00:00'),
+      [EventPhase.ThemeSubmission]:   moment.utc('2019-07-31T22:00:00'),
+      [EventPhase.ThemeSlaughter]:    moment.utc('2019-08-21T22:00:00'),
+      [EventPhase.ThemeVotingRound1]: moment.utc('2019-08-28T22:00:00'),
+      [EventPhase.ThemeVotingRound2]: moment.utc('2019-08-30T22:00:00'),
       [EventPhase.ThemeVotingRound3]: moment.utc('2019-09-01T22:00:00'),
+      [EventPhase.ThemeVotingFinal]:  moment.utc('2019-09-02T22:00:00'),
       [EventPhase.ThemeReveal]:       moment.utc('2019-09-04T22:00:00'),
       [EventPhase.CompoEnd]:          moment.utc('2019-09-06T22:00:00'),
       [EventPhase.JamEnd]:            moment.utc('2019-09-07T22:00:00'),
@@ -61,10 +67,12 @@ export const events: Event[] = [
   {
     eventNumber: 46,
     timeline: generateTimeline({
-      [EventPhase.ThemeSubmission]:   moment.utc('2020-03-01T01:00:00'),
+      [EventPhase.ThemeSubmission]:   moment.utc('2020-02-12T01:00:00'),
+      [EventPhase.ThemeSlaughter]:    moment.utc('2020-03-04T01:00:00'),
       [EventPhase.ThemeVotingRound1]: moment.utc('2020-03-11T01:00:00'),
-      [EventPhase.ThemeVotingRound2]: moment.utc('2020-03-14T01:00:00'),
-      [EventPhase.ThemeVotingRound3]: moment.utc('2020-03-17T01:00:00'),
+      [EventPhase.ThemeVotingRound2]: moment.utc('2020-03-13T01:00:00'),
+      [EventPhase.ThemeVotingRound3]: moment.utc('2020-03-15T01:00:00'),
+      [EventPhase.ThemeVotingFinal]:  moment.utc('2020-03-16T01:00:00'),
       [EventPhase.ThemeReveal]:       moment.utc('2020-03-18T01:00:00'),
       [EventPhase.CompoEnd]:          moment.utc('2020-03-20T01:00:00'),
       [EventPhase.JamEnd]:            moment.utc('2020-03-21T01:00:00'),
@@ -75,10 +83,12 @@ export const events: Event[] = [
   {
     eventNumber: 47,
     timeline: generateTimeline({
-      [EventPhase.ThemeSubmission]:   moment.utc('2020-09-11T22:00:00'),
-      [EventPhase.ThemeVotingRound1]: moment.utc('2020-09-21T22:00:00'),
-      [EventPhase.ThemeVotingRound2]: moment.utc('2020-09-25T22:00:00'),
-      [EventPhase.ThemeVotingRound3]: moment.utc('2020-10-01T22:00:00'),
+      [EventPhase.ThemeSubmission]:   moment.utc('2020-08-28T22:00:00'),
+      [EventPhase.ThemeSlaughter]:    moment.utc('2020-09-18T22:00:00'),
+      [EventPhase.ThemeVotingRound1]: moment.utc('2020-09-25T22:00:00'),
+      [EventPhase.ThemeVotingRound2]: moment.utc('2020-09-27T22:00:00'),
+      [EventPhase.ThemeVotingRound3]: moment.utc('2020-09-29T22:00:00'),
+      [EventPhase.ThemeVotingFinal]:  moment.utc('2020-09-30T22:00:00'),
       [EventPhase.ThemeReveal]:       moment.utc('2020-10-02T22:00:00'),
       [EventPhase.CompoEnd]:          moment.utc('2020-10-03T22:00:00'),
       [EventPhase.JamEnd]:            moment.utc('2020-10-04T22:00:00'),
@@ -124,9 +134,22 @@ export function mapTimeline<T extends any>(
   ).map(([eventPhase, date]) => fn(eventPhase as EventPhase, date))
 }
 
+export function findCurrentPhase(timeline: Timeline): EventPhase | undefined {
+  const now = moment()
+  const entry = Object.entries(timeline).find(([_, _date]) =>
+    now.isAfter(_date)
+  )
+
+  if (entry) {
+    return entry[0] as EventPhase
+  }
+
+  return undefined
+}
+
 export function findNextPhase(
   timeline: Timeline,
-  date: Moment
+  date: Moment = moment()
 ): { eventPhase: EventPhase; date: Moment } | undefined {
   const entry = Object.entries(timeline).find(([_, _date]) =>
     date.isBefore(_date)

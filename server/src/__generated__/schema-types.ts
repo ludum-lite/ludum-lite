@@ -430,6 +430,7 @@ export type Event = {
   name: Scalars['String'];
   body: Scalars['String'];
   slug: Scalars['String'];
+  theme?: Maybe<Scalars['String']>;
   createdDate: Scalars['String'];
   currentUserGameId?: Maybe<Scalars['Int']>;
   currentUserGame?: Maybe<Game>;
@@ -437,7 +438,7 @@ export type Event = {
 };
 
 export enum EventPhase {
-  ThemeSelection = 1,
+  ThemeSubmission = 1,
   ThemeSlaughter = 2,
   ThemeVoting = 4,
   EventRunning = 5,
@@ -1045,6 +1046,7 @@ export type EventResolvers<ContextType = any, ParentType extends ResolversParent
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   body?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  theme?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   createdDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   currentUserGameId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>,
   currentUserGame?: Resolver<Maybe<ResolversTypes['Game']>, ParentType, ContextType>,

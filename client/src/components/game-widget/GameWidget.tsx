@@ -180,7 +180,7 @@ export default function GameWidget({ className }: Props) {
           const featuredEvent = data.featuredEvent
 
           const joinableEventPhases = [
-            EventPhase.ThemeSelection,
+            EventPhase.ThemeSubmission,
             EventPhase.ThemeSlaughter,
             EventPhase.ThemeVoting,
             EventPhase.EventRunning,

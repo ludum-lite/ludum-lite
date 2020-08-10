@@ -16,6 +16,7 @@ export type ApiEventDto = {
   created: string
   meta: {
     'theme-mode': string
+    'event-theme': string
   }
 }
 
@@ -26,6 +27,7 @@ function apiEventToEvent(event: ApiEventDto): Event {
     name: event.name,
     body: event.body,
     slug: event.slug,
+    theme: event.meta['event-theme'],
     createdDate: event.created,
     eventPhase: parseInt(event.meta['theme-mode']) as EventPhase,
   }

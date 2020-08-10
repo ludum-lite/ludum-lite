@@ -27,6 +27,8 @@ gql`
       ... on Event {
         id
         currentUserGameId
+        eventPhase
+        theme
       }
     }
   }

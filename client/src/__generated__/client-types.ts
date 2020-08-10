@@ -421,6 +421,7 @@ export type Event = {
   name: Scalars['String']
   body: Scalars['String']
   slug: Scalars['String']
+  theme?: Maybe<Scalars['String']>
   createdDate: Scalars['String']
   currentUserGameId?: Maybe<Scalars['Int']>
   currentUserGame?: Maybe<Game>
@@ -428,7 +429,7 @@ export type Event = {
 }
 
 export enum EventPhase {
-  ThemeSelection = 'ThemeSelection',
+  ThemeSubmission = 'ThemeSubmission',
   ThemeSlaughter = 'ThemeSlaughter',
   ThemeVoting = 'ThemeVoting',
   EventRunning = 'EventRunning',
@@ -1038,7 +1039,7 @@ export type GetFeaturedEventDataQueryVariables = Exact<{ [key: string]: never }>
 export type GetFeaturedEventDataQuery = { __typename: 'Query' } & {
   featuredEvent: { __typename: 'Event' } & Pick<
     Event,
-    'id' | 'currentUserGameId'
+    'id' | 'currentUserGameId' | 'eventPhase' | 'theme'
   >
 }
 
@@ -2758,6 +2759,8 @@ export const GetFeaturedEventDataDocument = gql`
       ... on Event {
         id
         currentUserGameId
+        eventPhase
+        theme
       }
     }
   }

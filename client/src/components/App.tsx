@@ -27,6 +27,8 @@ import useLocalStorage from 'hooks/useLocalStorage'
 import Icon from './common/mui/Icon'
 import { borderRadius } from 'polished'
 import { useFeaturedEvent } from 'hooks/useFeaturedEvent'
+import Typography from './common/mui/Typography'
+import NotificationBar from './notification-bar/NotificationBar'
 
 const Root = styled.div`
   min-height: 100vh;
@@ -157,15 +159,6 @@ const WidgetsContainer = styled.div`
   }
 `
 
-// const NotificationBar = styled.div`
-//   background: ${({ theme }) => theme.themeColors.globalNavBackground};
-//   display: flex;
-//   align-items: center;
-//   padding: 0 ${({ theme }) => theme.spacing(2)}px;
-//   height: ${({ theme }) => theme.spacing(8)}px;
-//   color: white;
-// `
-
 type SelectableWidgets = 'countdown' | 'game' | 'team'
 
 interface Props {}
@@ -219,9 +212,7 @@ export default function App({}: Props) {
             <Route path="/:basePath*" element={<Sidebar />} />
           </Routes>
           <AppContent>
-            {/* <NotificationBar>
-              <Typography variant="h6">Theme Suggestions are open!</Typography>
-            </NotificationBar> */}
+            <NotificationBar />
             <RoutesWithFallback>
               <Route path="/posts" element={<PostsPage />} />
               {postOverlayed ? (

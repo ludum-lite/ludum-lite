@@ -334,6 +334,7 @@ export const typeDefs = gql`
     name: String!
     body: String!
     slug: String!
+    theme: String
     createdDate: String!
     currentUserGameId: Int
     currentUserGame: Game
@@ -341,7 +342,7 @@ export const typeDefs = gql`
   }
 
   enum EventPhase {
-    ThemeSelection
+    ThemeSubmission
     ThemeSlaughter
     ThemeVoting
     EventRunning

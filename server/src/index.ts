@@ -198,7 +198,7 @@ const resolvers: Resolvers<Context> = {
     },
   },
   EventPhase: {
-    ThemeSelection: 1,
+    ThemeSubmission: 1,
     ThemeSlaughter: 2,
     ThemeVoting: 4,
     EventRunning: 5,
