@@ -5,17 +5,48 @@ import {
   LinkProps as RouterLinkProps,
 } from 'react-router-dom'
 import { To } from 'history'
+import styled, { css } from 'styled-components/macro'
 
+interface StyledLinkProps {
+  overlay?: boolean
+}
+const StyledLink = styled(MuiLink)<StyledLinkProps>`
+  z-index: 2;
+
+  ${({ overlay }) =>
+    overlay &&
+    css`
+      z-index: 1;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    `};
+`
+
+interface LinkProps {
+  overlay?: boolean
+}
 export default React.forwardRef<
   any,
-  MuiLinkProps &
+  LinkProps &
+    MuiLinkProps &
     Omit<RouterLinkProps, 'to'> & {
       to?: To
     }
 >(({ to, ...others }, ref) => {
   if (to) {
-    return <MuiLink component={RouterLink} ref={ref} to={to} {...others} />
+    return (
+      <MuiLink
+        component={StyledLink}
+        as={RouterLink}
+        ref={ref}
+        to={to}
+        {...others}
+      />
+    )
   } else {
-    return <MuiLink ref={ref} {...others} />
+    return <StyledLink ref={ref} {...others} />
   }
 })

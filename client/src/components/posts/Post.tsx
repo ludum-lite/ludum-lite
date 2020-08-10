@@ -2,7 +2,6 @@ import React from 'react'
 import styled, { css, keyframes } from 'styled-components/macro'
 import { gql } from '@apollo/client'
 import { filter } from 'graphql-anywhere'
-import { useNavigate } from 'react-router-dom'
 
 import PostDetails from './PostDetails'
 import ButtonGroup from 'components/common/mui/ButtonGroup'
@@ -22,6 +21,7 @@ import {
   PostLoveButton_PostFragmentDoc,
   PostCommentButton_PostFragmentDoc,
 } from '__generated__/client-types'
+import Link from 'components/common/mui/Link'
 
 const activeBoxShadowKeyFrames = (color: string) => keyframes`
   0% {
@@ -39,6 +39,7 @@ interface RootProps {
 const Root = styled(Card).withConfig({
   shouldForwardProp: ignoreProps(['active']),
 })<RootProps>`
+  position: relative;
   display: flex;
   flex-direction: column;
   background: ${({ theme }) => theme.themeColors.post.backgroundColor};
@@ -109,16 +110,14 @@ interface Props {
   me: Post_MeFragment
 }
 export default function Post({ post, me }: Props) {
-  const navigate = useNavigate()
   const [, setPostOverlayed] = usePostOverlayed()
   const { activePostId } = useActivePostId()
 
   const onClickCard = React.useCallback(
     (id) => {
       setPostOverlayed(true)
-      navigate(`/posts/${id}`)
     },
-    [navigate, setPostOverlayed]
+    [setPostOverlayed]
   )
 
   if (!post) return null
@@ -129,6 +128,7 @@ export default function Post({ post, me }: Props) {
       clickable
       active={activePostId === post.id}
     >
+      <Link to={`/posts/${post.id}`} overlay />
       <PostDetails post={filter(PostDetails_PostFragmentDoc, post)} />
       <ActionRow>
         <StyledButtonGroup>
