@@ -45,6 +45,7 @@ export default function CommentLoveButton({ comment, post }: Props) {
       color={theme.themeColors.loveButton.activeColor}
       activeIcon={FavoriteIcon}
       defaultIcon={FavoriteBorderIcon}
+      background="white"
       onClick={(e) => {
         if (isLoggedIn) {
           if (hasLovedPost) {

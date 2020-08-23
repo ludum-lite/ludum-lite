@@ -135,12 +135,14 @@ export default function Post({ post, me }: Props) {
           <PostLoveButton
             post={filter(PostLoveButton_PostFragmentDoc, post)}
             me={filter(PostLoveButton_MeFragmentDoc, me)}
+            background="white"
           />
           <PostCommentButton
             post={filter(PostCommentButton_PostFragmentDoc, post)}
+            background="white"
           />
           <Separator />
-          <PostBookmarkButton postId={post.id} />
+          <PostBookmarkButton postId={post.id} background="white" />
         </StyledButtonGroup>
       </ActionRow>
     </Root>

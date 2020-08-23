@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { css } from 'styled-components/macro'
 
-import Button from 'components/common/mui/Button'
+import Button, { Background } from 'components/common/mui/Button'
 import { ignoreProps } from 'utils'
 import { ButtonProps } from '@material-ui/core'
 import Icon from './mui/Icon'
@@ -48,6 +48,7 @@ interface Props {
   active?: boolean
   defaultIcon: React.FunctionComponent
   activeIcon: React.FunctionComponent
+  background: Background
 }
 export default function ToggleButton({
   color,
@@ -57,6 +58,7 @@ export default function ToggleButton({
   children,
   onClick,
   size = 'medium',
+  background,
   ...others
 }: Props & Omit<ButtonProps, 'color'>) {
   const [isHovering, setIsHovering] = React.useState(false)
@@ -81,6 +83,7 @@ export default function ToggleButton({
     <StyledButton
       active={active}
       activeColor={color}
+      background={background}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       size={size}

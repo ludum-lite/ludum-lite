@@ -10,6 +10,7 @@ import { ignoreProps } from 'utils'
 
 interface StyledLinkProps {
   overlay?: boolean
+  noUnderline?: boolean
 }
 const StyledLink = styled(MuiLink).withConfig({
   shouldForwardProp: ignoreProps(['overlay']),
@@ -26,6 +27,14 @@ const StyledLink = styled(MuiLink).withConfig({
       left: 0;
       right: 0;
     `};
+
+  ${({ noUnderline }) =>
+    noUnderline &&
+    css`
+      &:hover {
+        text-decoration: none;
+      }
+    `}
 `
 
 interface LinkProps {
@@ -33,6 +42,7 @@ interface LinkProps {
   component?: React.ElementType
   to?: To
   children?: React.ReactNode
+  noUnderline?: boolean
 }
 export default React.forwardRef<
   any,

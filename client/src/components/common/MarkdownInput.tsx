@@ -12,7 +12,7 @@ import insertTextAtCursor from 'insert-text-at-cursor'
 
 const Root = styled.div`
   position: relative;
-  margin-bottom: ${({ theme }) => theme.spacing(3)}px;
+  /* margin-bottom: ${({ theme }) => theme.spacing(3)}px; */
 `
 
 interface DropOverlayProps {

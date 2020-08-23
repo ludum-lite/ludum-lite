@@ -96,8 +96,12 @@ export type ThemeColors = {
     backgroundColor: string
     color: string
   }
+  breadcrumbs: {
+    color: string
+  }
   popupPage: {
     background: string
+    actionsBackground: string
   }
   addCommentForm: {
     background: string
@@ -232,13 +236,13 @@ const lightTheme: ThemeColors = {
   },
   tag: {
     primaryBackground: styleVariables.greenBlue,
-    primaryColor: 'white',
+    primaryColor: styleVariables.white,
     secondaryBackground: styleVariables.bittersweet,
     secondaryColor: textBlack,
   },
   dialog: {
     titleBackground: styleVariables.greenBlue,
-    titleColor: 'white',
+    titleColor: styleVariables.white,
   },
   postsPage: {
     toggleButtons: {
@@ -261,14 +265,18 @@ const lightTheme: ThemeColors = {
   },
   friendAddedBadge: {
     backgroundColor: styleVariables.bittersweet,
-    color: 'white',
+    color: styleVariables.white,
   },
   moreButton: {
     background: styleVariables.white,
     hoverBackground: styleVariables.cultured,
   },
+  breadcrumbs: {
+    color: styleVariables.white,
+  },
   popupPage: {
     background: styleVariables.white,
+    actionsBackground: styleVariables.white,
   },
   addCommentForm: {
     background: styleVariables.greenBlue,
@@ -282,7 +290,7 @@ const lightTheme: ThemeColors = {
     postAuthorLinkColor: styleVariables.greenBlue,
   },
   countdown: {
-    titleColor: 'white',
+    titleColor: styleVariables.white,
     fadedTextColor: 'rgba(255,255,255,0.9)',
     dateTextColor: 'rgba(255,255,255,0.65)',
   },
@@ -345,7 +353,7 @@ const darkTheme: ThemeColors = {
     background: styleVariables.bittersweet,
   },
   input: {
-    background: 'white',
+    background: ldStyleVariables.white,
     hoverOutlineColor: ldStyleVariables.portlandOrange,
     dividerColor: ldStyleVariables.lightGray,
   },
@@ -397,13 +405,13 @@ const darkTheme: ThemeColors = {
   },
   tag: {
     primaryBackground: ldStyleVariables.portlandOrange,
-    primaryColor: 'white',
+    primaryColor: ldStyleVariables.white,
     secondaryBackground: ldStyleVariables.darkOrange,
     secondaryColor: textBlack,
   },
   dialog: {
     titleBackground: ldStyleVariables.darkOrange,
-    titleColor: 'white',
+    titleColor: ldStyleVariables.white,
   },
   postsPage: {
     toggleButtons: {
@@ -430,10 +438,14 @@ const darkTheme: ThemeColors = {
   },
   friendAddedBadge: {
     backgroundColor: ldStyleVariables.portlandOrange,
-    color: 'white',
+    color: ldStyleVariables.white,
+  },
+  breadcrumbs: {
+    color: styleVariables.white,
   },
   popupPage: {
     background: ldStyleVariables.cultured,
+    actionsBackground: ldStyleVariables.cultured,
   },
   addCommentForm: {
     background: ldStyleVariables.portlandOrange,
@@ -576,6 +588,11 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       MuiToggleButton: {
         root: {
           textTransform: 'none',
+        },
+      },
+      MuiBreadcrumbs: {
+        root: {
+          color: selectedThemeColors.breadcrumbs.color,
         },
       },
       MuiDialogTitle: {

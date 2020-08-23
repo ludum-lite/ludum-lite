@@ -12,6 +12,7 @@ import {
   Select,
   FilledInput,
   Menu,
+  Breadcrumbs,
 } from '@material-ui/core'
 import PopupPage from './PopupPage'
 import UserPostedHeader from './UserPostedHeader'
@@ -46,8 +47,8 @@ import {
   bindMenu,
 } from 'material-ui-popup-state/hooks'
 import Tag from 'components/common/Tag'
-import MarkdownInput from 'components/common/MarkdownInput'
 import PreviewableMarkdownInput from 'components/common/PreviewableMarkdownInput'
+import Breadcrumb from 'components/common/Breadcrumb'
 
 enum CommentSortBy {
   DatePostedNewest = 'datePosted_newest',
@@ -70,6 +71,7 @@ const HeaderContent = styled.div`
   display: flex;
   flex: 1 1 0px;
   flex-direction: column;
+  max-width: 100%;
 `
 
 const HeaderUserContainer = styled.div``
@@ -84,19 +86,19 @@ const Body = styled.div`
 `
 
 const Article = styled.div`
-  padding: 0 ${({ theme }) => theme.spacing(3)}px;
+  padding: ${({ theme }) => `${theme.spacing(3)}px`};
 `
 
 const TitleText = styled(Typography)`
   font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 
 const ActionRow = styled.div`
-  flex: 1 1 0px;
   display: flex;
-  justify-content: flex-end;
 
-  & > * {
+  & > *:not(:first-child) {
     margin-left: ${({ theme }) => theme.spacing(1)}px;
   }
 `
@@ -129,7 +131,7 @@ const CommentsTitle = styled(Typography)`
 
 const EditActionRow = styled.div`
   padding: ${({ theme }) => theme.spacing(1)}px;
-  margin-bottom: ${({ theme }) => theme.spacing(3)}px;
+  margin-top: ${({ theme }) => theme.spacing(1)}px;
   background: ${({ theme }) => theme.themeColors.post.editActionRowBackground};
 `
 
@@ -142,7 +144,13 @@ const TitleInputError = styled(Typography)`
 `
 
 const StyledPreviewableMarkdownInput = styled(PreviewableMarkdownInput)`
-  margin-bottom: ${({ theme }) => theme.spacing(3)}px;
+  /* margin-bottom: ${({ theme }) => theme.spacing(3)}px; */
+`
+
+const MenuButton = styled(IconButton)`
+  width: 36px;
+  height: 36px;
+  padding: 0;
 `
 
 type FormInputs = {
@@ -363,9 +371,9 @@ export default function PostPage({ isEditing }: PostPageProps) {
     if (menuItems.length) {
       return (
         <Fragment>
-          <IconButton background="white" {...bindTrigger(popupState)}>
+          <MenuButton background="white" {...bindTrigger(popupState)}>
             <Icon icon={MoreHorizIcon} />
-          </IconButton>
+          </MenuButton>
           <Menu {...bindMenu(popupState)}>{menuItems}</Menu>
         </Fragment>
       )
@@ -499,17 +507,32 @@ export default function PostPage({ isEditing }: PostPageProps) {
     onChangeSortBy,
   ])
 
+  const breadcrumbs = React.useMemo(() => {
+    if (post) {
+      return (
+        <Breadcrumbs>
+          <Breadcrumb to="/posts">Posts</Breadcrumb>
+          <Breadcrumb to={`/posts/${post.id}`}>{post.name}</Breadcrumb>
+          {isEditing && <Breadcrumb>Edit</Breadcrumb>}
+        </Breadcrumbs>
+      )
+    }
+
+    return null
+  }, [post, isEditing])
+
   const actionRow = React.useMemo(() => {
-    if (!loading && !isEditing) {
+    if (!loading && !isEditing && post) {
       return (
         <ActionRow>
           {post && me && (
             <PostLoveButton
               post={filter(PostLoveButton_PostFragmentDoc, post)}
               me={filter(PostLoveButton_MeFragmentDoc, me)}
+              background="white"
             />
           )}
-          {post && <PostBookmarkButton postId={post.id} />}
+          {post && <PostBookmarkButton postId={post.id} background="white" />}
           {menu}
         </ActionRow>
       )
@@ -520,9 +543,9 @@ export default function PostPage({ isEditing }: PostPageProps) {
 
   return (
     <PopupPage
+      breadcrumbs={breadcrumbs}
       hideActionRow={isEditing}
       actionRow={actionRow}
-      previousPath="/posts"
     >
       {body}
     </PopupPage>

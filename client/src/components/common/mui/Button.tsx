@@ -10,6 +10,7 @@ export type Background = 'globalNav' | 'contextualNav' | 'page' | 'white'
 
 interface StyledButtonProps {
   background: Background
+  isBreadcrumb: Boolean
 }
 
 const StyledButton = styled(MuiButton).withConfig({
@@ -34,6 +35,13 @@ const StyledButton = styled(MuiButton).withConfig({
       }
     `
   }}
+
+  ${({ isBreadcrumb }) =>
+    isBreadcrumb &&
+    css`
+      padding: 3px 12px;
+      min-width: 0;
+    `}
 `
 
 interface Props {
@@ -41,6 +49,7 @@ interface Props {
   color?: MuiButtonProps['color']
   variant?: MuiButtonProps['variant']
   loading?: Boolean
+  isBreadcrumb?: Boolean
 }
 export type ButtonProps = Props & Omit<MuiButtonProps, keyof Props>
 const Button = React.forwardRef(
@@ -53,6 +62,7 @@ const Button = React.forwardRef(
       disabled,
       children,
       onClick,
+      isBreadcrumb = false,
       ...others
     }: ButtonProps,
     ref
@@ -66,6 +76,7 @@ const Button = React.forwardRef(
         endIcon={loading && <CircularProgress size={20} color="inherit" />}
         children={children}
         onClick={loading ? undefined : onClick}
+        isBreadcrumb={isBreadcrumb}
         {...others}
       />
     )
