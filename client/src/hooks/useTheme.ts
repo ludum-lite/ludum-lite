@@ -99,7 +99,7 @@ export type ThemeColors = {
   breadcrumbs: {
     color: string
   }
-  popupPage: {
+  page: {
     background: string
     actionsBackground: string
   }
@@ -274,7 +274,7 @@ const lightTheme: ThemeColors = {
   breadcrumbs: {
     color: styleVariables.white,
   },
-  popupPage: {
+  page: {
     background: styleVariables.white,
     actionsBackground: styleVariables.white,
   },
@@ -443,7 +443,7 @@ const darkTheme: ThemeColors = {
   breadcrumbs: {
     color: styleVariables.white,
   },
-  popupPage: {
+  page: {
     background: ldStyleVariables.cultured,
     actionsBackground: ldStyleVariables.cultured,
   },

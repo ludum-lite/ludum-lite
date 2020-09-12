@@ -8,7 +8,7 @@ const Root = styled.div<RootProps>`
   display: flex;
   margin-bottom: ${({ theme }) => theme.spacing(2)}px;
   padding: ${({ theme }) => theme.spacing(2)}px;
-  background: ${({ theme }) => theme.themeColors.popupPage.background};
+  background: ${({ theme }) => theme.themeColors.page.background};
 
   ${({ layout }) =>
     layout === 'row' &&

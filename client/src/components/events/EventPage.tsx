@@ -3,7 +3,7 @@ import styled from 'styled-components/macro'
 import { gql } from '@apollo/client'
 
 import { Typography, LinearProgress, Breadcrumbs } from '@material-ui/core'
-import PopupPage from 'components/common/PopupPage'
+import Page from 'components/common/Page'
 import { useParams } from 'react-router'
 import { useGetEventPageDataQuery } from '__generated__/client-types'
 import Breadcrumb from 'components/common/Breadcrumb'
@@ -100,7 +100,7 @@ export default function EventPage(props: EventPageProps) {
     return null
   }, [event])
 
-  return <PopupPage breadcrumbs={breadcrumbs}>{body}</PopupPage>
+  return <Page breadcrumbs={breadcrumbs}>{body}</Page>
 }
 
 gql`

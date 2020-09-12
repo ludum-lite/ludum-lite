@@ -40,7 +40,7 @@ const ActionRow = styled.div`
   background: white;
   /* margin-bottom: ${({ theme }) => -theme.shape.borderRadius}px; */
   /* padding-bottom: ${({ theme }) => theme.shape.borderRadius}px; */
-  background: ${({ theme }) => theme.themeColors.popupPage.actionsBackground};
+  background: ${({ theme }) => theme.themeColors.page.actionsBackground};
   box-shadow: inset 0 -9px 8px -8px rgb(0, 0, 0, 0.22);
 `
 
@@ -53,7 +53,7 @@ const Card = styled.div<CardProps>`
   display: flex;
   flex-direction: column;
   z-index: 1;
-  background: ${({ theme }) => theme.themeColors.popupPage.background};
+  background: ${({ theme }) => theme.themeColors.page.background};
   border-radius: ${({ theme }) => theme.spacing(1)}px;
 
   ${({ hasActionRow }) =>
@@ -67,7 +67,7 @@ interface Props {
   actionRow?: React.ReactNode
   breadcrumbs?: React.ReactNode
 }
-export default function PopupPage({ children, actionRow, breadcrumbs }: Props) {
+export default function Page({ children, actionRow, breadcrumbs }: Props) {
   const [postOverlayed, setUsePostOverlay] = usePostOverlayed()
 
   useEffect(() => {

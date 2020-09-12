@@ -14,7 +14,7 @@ import {
   Menu,
   Breadcrumbs,
 } from '@material-ui/core'
-import PopupPage from '../common/PopupPage'
+import Page from 'components/common/Page'
 import UserPostedHeader from './UserPostedHeader'
 import { useParams, useNavigate } from 'react-router'
 import PostLoveButton from './post-buttons/PostLoveButton'
@@ -541,9 +541,9 @@ export default function PostPage({ isEditing }: PostPageProps) {
   }, [loading, isEditing, post, me, menu])
 
   return (
-    <PopupPage breadcrumbs={breadcrumbs} actionRow={actionRow}>
+    <Page breadcrumbs={breadcrumbs} actionRow={actionRow}>
       {body}
-    </PopupPage>
+    </Page>
   )
 }
 
