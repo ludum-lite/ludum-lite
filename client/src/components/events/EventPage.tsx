@@ -40,8 +40,7 @@ const TitleText = styled(Typography)`
 `
 
 const StyledLinearProgress = styled(LinearProgress)`
-  margin: 0 ${({ theme }) => theme.spacing(3)}px
-    ${({ theme }) => theme.spacing(3)}px;
+  margin: ${({ theme }) => theme.spacing(3)}px;
 `
 
 type FormInputs = {
