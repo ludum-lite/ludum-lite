@@ -26,6 +26,9 @@ const resolvers: Resolvers<Context> = {
     featuredEvent(_, __, context) {
       return context.dataSources.eventApi.getFeaturedEvent()
     },
+    event(_, { input: { id } }, context) {
+      return context.dataSources.eventApi.getEvent(id)
+    },
   },
   Mutation: {
     login(_, { input: { email, password } }, context) {

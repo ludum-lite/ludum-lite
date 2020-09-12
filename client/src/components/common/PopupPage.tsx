@@ -1,13 +1,7 @@
-import React, { useEffect, Fragment } from 'react'
+import React, { useEffect } from 'react'
 import styled, { css } from 'styled-components/macro'
 import { usePostOverlayed } from 'hooks/usePostOverlay'
 import { borderRadius } from 'polished'
-
-const BORDER_RADIUS = 8
-const ACTION_ROW_INNER_HEIGHT = 48
-const ACTION_ROW_PADDING = 8
-const ACTION_ROW_HEIGHT = ACTION_ROW_INNER_HEIGHT + ACTION_ROW_PADDING * 2
-const SHADOW_HEIGHT = 14
 
 interface RootProps {
   postOverlayed: boolean
@@ -60,7 +54,7 @@ const Card = styled.div<CardProps>`
   flex-direction: column;
   z-index: 1;
   background: ${({ theme }) => theme.themeColors.popupPage.background};
-  border-radius: ${BORDER_RADIUS}px;
+  border-radius: ${({ theme }) => theme.spacing(1)}px;
 
   ${({ hasActionRow }) =>
     hasActionRow &&
@@ -68,74 +62,12 @@ const Card = styled.div<CardProps>`
       border-top-right-radius: 0;
     `};
 `
-
-// interface ActionRowTopProps {
-//   hideActionRow: boolean
-// }
-// const ActionRowTop = styled.div<ActionRowTopProps>`
-//   position: sticky;
-//   top: ${({ hideActionRow }) => !hideActionRow && `-${BORDER_RADIUS}px`};
-//   background: ${({ theme }) => theme.themeColors.popupPage.background};
-//   padding: ${({ hideActionRow }) =>
-//     hideActionRow ? `${BORDER_RADIUS}px 0 0` : `${BORDER_RADIUS}px 0`};
-//   margin-bottom: ${({ hideActionRow }) =>
-//     !hideActionRow && `-${BORDER_RADIUS}px`};
-//   border-radius: ${BORDER_RADIUS}px ${BORDER_RADIUS}px 0 0;
-//   z-index: 3;
-// `
-
-// const ActionRow = styled.div`
-//   position: sticky;
-//   top: ${BORDER_RADIUS}px;
-//   background: ${({ theme }) => theme.themeColors.popupPage.background};
-//   display: flex;
-//   align-items: stretch;
-//   z-index: 3;
-//   min-height: ${ACTION_ROW_INNER_HEIGHT + ACTION_ROW_PADDING}px;
-// `
-
-// const ActionRow = styled.div`
-//   flex: 1 1 0px;
-//   display: flex;
-//   align-items: center;
-//   padding-bottom: ${ACTION_ROW_PADDING}px;
-// `
-
-// const ActionRowShadow = styled.div`
-//   position: sticky;
-//   top: ${ACTION_ROW_HEIGHT + 14}px;
-
-//   &:after {
-//     content: '';
-//     position: absolute;
-//     top: -${SHADOW_HEIGHT}px;
-//     left: 0;
-//     right: 0;
-//     height: ${SHADOW_HEIGHT}px;
-//     box-shadow: inset 0px 10px ${SHADOW_HEIGHT}px -10px rgba(0, 0, 0, 0.15);
-//   }
-// `
-
-// const Content = styled.div`
-//   flex: 1 1 0px;
-//   /* padding: ${({ theme }) =>
-//     `0 ${theme.spacing(2)}px ${theme.spacing(2)}px 26px`}; */
-//   background: ${({ theme }) => theme.themeColors.popupPage.background};
-//   border-radius: 0 0 ${BORDER_RADIUS}px ${BORDER_RADIUS}px;
-// `
-
 interface Props {
   children: React.ReactNode
   actionRow?: React.ReactNode
   breadcrumbs?: React.ReactNode
-  hideActionRow?: boolean
 }
-export default function PopupPage({
-  children,
-  actionRow,
-  breadcrumbs,
-  hideActionRow = false,
-}: Props) {
+export default function PopupPage({ children, actionRow, breadcrumbs }: Props) {
   const [postOverlayed, setUsePostOverlay] = usePostOverlayed()
 
   useEffect(() => {

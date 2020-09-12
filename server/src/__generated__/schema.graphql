@@ -6,6 +6,7 @@ type Query {
   searchPosts(filters: SearchPostsFiltersInput!, limit: Int!, page: Int!): SearchPostResponse!
   user(input: IdInput!): User!
   featuredEvent: Event!
+  event(input: IdInput!): Event!
 }
 
 type Mutation {

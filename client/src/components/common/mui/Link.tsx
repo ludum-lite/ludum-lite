@@ -13,7 +13,7 @@ interface StyledLinkProps {
   noUnderline?: boolean
 }
 const StyledLink = styled(MuiLink).withConfig({
-  shouldForwardProp: ignoreProps(['overlay']),
+  shouldForwardProp: ignoreProps(['overlay', 'noUnderline']),
 })<StyledLinkProps>`
   z-index: 2;
 

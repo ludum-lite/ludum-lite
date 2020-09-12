@@ -29,6 +29,7 @@ import { borderRadius } from 'polished'
 import { useFeaturedEvent } from 'hooks/useFeaturedEvent'
 import Typography from './common/mui/Typography'
 import NotificationBar from './notification-bar/NotificationBar'
+import EventPage from './events/EventPage'
 
 const Root = styled.div`
   min-height: 100vh;
@@ -214,6 +215,7 @@ export default function App({}: Props) {
           <AppContent>
             <NotificationBar />
             <RoutesWithFallback>
+              <Route path="/events/:id/*" element={<EventPage />} />
               <Route path="/posts" element={<PostsPage />} />
               {postOverlayed ? (
                 <Route

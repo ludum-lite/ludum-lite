@@ -20,6 +20,7 @@ export type Query = {
   searchPosts: SearchPostResponse;
   user: User;
   featuredEvent: Event;
+  event: Event;
 };
 
 
@@ -36,6 +37,11 @@ export type QuerySearchPostsArgs = {
 
 
 export type QueryUserArgs = {
+  input: IdInput;
+};
+
+
+export type QueryEventArgs = {
   input: IdInput;
 };
 
@@ -746,6 +752,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   searchPosts?: Resolver<ResolversTypes['SearchPostResponse'], ParentType, ContextType, RequireFields<QuerySearchPostsArgs, 'filters' | 'limit' | 'page'>>,
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'input'>>,
   featuredEvent?: Resolver<ResolversTypes['Event'], ParentType, ContextType>,
+  event?: Resolver<ResolversTypes['Event'], ParentType, ContextType, RequireFields<QueryEventArgs, 'input'>>,
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{

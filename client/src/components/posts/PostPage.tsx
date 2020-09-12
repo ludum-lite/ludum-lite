@@ -14,7 +14,7 @@ import {
   Menu,
   Breadcrumbs,
 } from '@material-ui/core'
-import PopupPage from './PopupPage'
+import PopupPage from '../common/PopupPage'
 import UserPostedHeader from './UserPostedHeader'
 import { useParams, useNavigate } from 'react-router'
 import PostLoveButton from './post-buttons/PostLoveButton'
@@ -104,8 +104,7 @@ const ActionRow = styled.div`
 `
 
 const StyledLinearProgress = styled(LinearProgress)`
-  margin: 0 ${({ theme }) => theme.spacing(3)}px
-    ${({ theme }) => theme.spacing(3)}px;
+  margin: ${({ theme }) => theme.spacing(3)}px;
 `
 
 const StyledAddCommentForm = styled(AddCommentForm)`
@@ -113,7 +112,7 @@ const StyledAddCommentForm = styled(AddCommentForm)`
     ${({ theme }) => theme.spacing(3)}px;
 `
 
-const CommentsContained = styled.div`
+const CommentsContainer = styled.div`
   padding: 0 ${({ theme }) => theme.spacing(3)}px;
 `
 
@@ -216,7 +215,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
     return () => {
       setActivePostId(parseInt(postId))
     }
-  })
+  }, [postId, setActivePostId])
 
   const { data, loading } = useGetPostOverlayPageDataQuery({
     variables: {
@@ -449,7 +448,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
           {!isEditing && (
             <Fragment>
               <StyledAddCommentForm postId={post.id} />
-              <CommentsContained>
+              <CommentsContainer>
                 <CommentsTitleContainer>
                   <CommentsTitle variant="h5">Comments</CommentsTitle>
                   <FormControl variant="filled">
@@ -485,7 +484,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
                     post={filter(Comments_PostFragmentDoc, post)}
                   />
                 )}
-              </CommentsContained>
+              </CommentsContainer>
             </Fragment>
           )}
         </Body>
@@ -542,11 +541,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
   }, [loading, isEditing, post, me, menu])
 
   return (
-    <PopupPage
-      breadcrumbs={breadcrumbs}
-      hideActionRow={isEditing}
-      actionRow={actionRow}
-    >
+    <PopupPage breadcrumbs={breadcrumbs} actionRow={actionRow}>
       {body}
     </PopupPage>
   )

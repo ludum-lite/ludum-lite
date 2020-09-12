@@ -13,6 +13,7 @@ export const typeDefs = gql`
     ): SearchPostResponse!
     user(input: IdInput!): User!
     featuredEvent: Event!
+    event(input: IdInput!): Event!
   }
 
   type Mutation {

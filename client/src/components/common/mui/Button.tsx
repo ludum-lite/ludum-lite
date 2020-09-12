@@ -14,7 +14,7 @@ interface StyledButtonProps {
 }
 
 const StyledButton = styled(MuiButton).withConfig({
-  shouldForwardProp: (prop) => !['background'].includes(prop),
+  shouldForwardProp: (prop) => !['background', 'isBreadcrumb'].includes(prop),
 })<StyledButtonProps>`
   ${({ background, color, variant, theme }) => {
     const colors = theme.themeColors.button.background[background]

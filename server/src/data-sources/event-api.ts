@@ -1,4 +1,8 @@
+import DataLoader from 'dataloader'
+import { DataSourceConfig } from 'apollo-datasource'
+import sort from 'dataloader-sort'
 import BaseAPI from './base-api'
+import { Context } from './context'
 import { maxBy } from 'lodash'
 import {
   Event,
@@ -38,13 +42,27 @@ export default class EventAPI extends BaseAPI {
     super()
   }
 
+  initialize(config: DataSourceConfig<Context>) {
+    super.initialize(config)
+
+    if (!config.context.loaders.eventLoader) {
+      config.context.loaders.eventLoader = new DataLoader(async (keys) => {
+        const results = await this.get(`vx/node2/get/${keys.join('+')}`)
+
+        return sort(keys, results.node.map(apiEventToEvent))
+      })
+    }
+  }
+
   async getFeaturedEvent(): Promise<Event> {
     const rootNodeResponse = await this.get(`vx/node2/get/1`)
     const eventId = parseInt(rootNodeResponse.node[0].meta.featured)
-    const eventResponse = await this.get(`vx/node2/get/${eventId}`)
-    const event = apiEventToEvent(eventResponse.node[0])
 
-    return event
+    return this.context.loaders.eventLoader.load(eventId)
+  }
+
+  async getEvent(id: number): Promise<Event> {
+    return this.context.loaders.eventLoader.load(id)
   }
 
   async joinEvent(): Promise<JoinEventResponse> {

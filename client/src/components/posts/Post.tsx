@@ -75,6 +75,8 @@ const Separator = styled.div`
 const ActionRow = styled.div`
   display: flex;
   padding-top: ${({ theme }) => theme.spacing(1)}px;
+  /* Raise above the card link */
+  z-index: 1;
 `
 
 // const PlaceholderContainer = styled.div`

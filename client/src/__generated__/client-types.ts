@@ -15,6 +15,7 @@ export type Scalars = {
 
 export type Query = {
   __typename: 'Query'
+  event: Event
   favoritedIds: Array<Scalars['Int']>
   featuredEvent: Event
   isLoggedIn: Scalars['Boolean']
@@ -22,6 +23,10 @@ export type Query = {
   post: Post
   searchPosts: SearchPostResponse
   user: User
+}
+
+export type QueryEventArgs = {
+  input: IdInput
 }
 
 export type QueryPostArgs = {
@@ -528,6 +533,19 @@ export type UploadImageMutation = { __typename: 'Mutation' } & {
         'message'
       >)
 }
+
+export type GetEventPageDataQueryVariables = Exact<{
+  input: IdInput
+}>
+
+export type GetEventPageDataQuery = { __typename: 'Query' } & {
+  event: { __typename: 'Event' } & EventPage_EventFragment
+}
+
+export type EventPage_EventFragment = { __typename: 'Event' } & Pick<
+  Event,
+  'id' | 'name' | 'body'
+>
 
 export type GameWidgetDataQueryVariables = Exact<{ [key: string]: never }>
 
@@ -1068,6 +1086,13 @@ export type GetMeDataQuery = { __typename: 'Query' } & {
     | { __typename: 'UnauthorizedResponse' }
 }
 
+export const EventPage_EventFragmentDoc = gql`
+  fragment EventPage_event on Event {
+    id
+    name
+    body
+  }
+`
 export const AddCommentForm_PostFragmentDoc = gql`
   fragment AddCommentForm_post on Post {
     id
@@ -1279,6 +1304,63 @@ export type UploadImageMutationResult = ApolloReactCommon.MutationResult<
 export type UploadImageMutationOptions = ApolloReactCommon.BaseMutationOptions<
   UploadImageMutation,
   UploadImageMutationVariables
+>
+export const GetEventPageDataDocument = gql`
+  query GetEventPageData($input: IdInput!) {
+    event(input: $input) {
+      ...EventPage_event
+    }
+  }
+  ${EventPage_EventFragmentDoc}
+`
+
+/**
+ * __useGetEventPageDataQuery__
+ *
+ * To run a query within a React component, call `useGetEventPageDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetEventPageDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetEventPageDataQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetEventPageDataQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GetEventPageDataQuery,
+    GetEventPageDataQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<
+    GetEventPageDataQuery,
+    GetEventPageDataQueryVariables
+  >(GetEventPageDataDocument, baseOptions)
+}
+export function useGetEventPageDataLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetEventPageDataQuery,
+    GetEventPageDataQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    GetEventPageDataQuery,
+    GetEventPageDataQueryVariables
+  >(GetEventPageDataDocument, baseOptions)
+}
+export type GetEventPageDataQueryHookResult = ReturnType<
+  typeof useGetEventPageDataQuery
+>
+export type GetEventPageDataLazyQueryHookResult = ReturnType<
+  typeof useGetEventPageDataLazyQuery
+>
+export type GetEventPageDataQueryResult = ApolloReactCommon.QueryResult<
+  GetEventPageDataQuery,
+  GetEventPageDataQueryVariables
 >
 export const GameWidgetDataDocument = gql`
   query GameWidgetData {
