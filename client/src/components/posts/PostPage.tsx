@@ -25,7 +25,7 @@ import AddCommentForm from './AddCommentForm'
 import Comments from './Comments'
 import { sortBy } from 'lodash'
 import {
-  useGetPostOverlayPageDataQuery,
+  useGetPostPageDataQuery,
   Comments_CommentFragmentDoc,
   Comments_PostFragmentDoc,
   PostLoveButton_MeFragmentDoc,
@@ -217,7 +217,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
     }
   }, [postId, setActivePostId])
 
-  const { data, loading } = useGetPostOverlayPageDataQuery({
+  const { data, loading } = useGetPostPageDataQuery({
     variables: {
       input: {
         id: parseInt(postId),
@@ -548,7 +548,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
 }
 
 gql`
-  query GetPostOverlayPageData($input: IdInput!) {
+  query GetPostPageData($input: IdInput!) {
     post(input: $input) {
       ...PostPage_post
     }

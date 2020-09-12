@@ -697,11 +697,11 @@ export type PostDetails_PostFragment = { __typename: 'Post' } & Pick<
     >
   }
 
-export type GetPostOverlayPageDataQueryVariables = Exact<{
+export type GetPostPageDataQueryVariables = Exact<{
   input: IdInput
 }>
 
-export type GetPostOverlayPageDataQuery = { __typename: 'Query' } & {
+export type GetPostPageDataQuery = { __typename: 'Query' } & {
   post: { __typename: 'Post' } & PostPage_PostFragment
   me:
     | ({ __typename: 'Me' } & PostLoveButton_Me_Me_Fragment)
@@ -1651,8 +1651,8 @@ export type EditCommentMutationOptions = ApolloReactCommon.BaseMutationOptions<
   EditCommentMutation,
   EditCommentMutationVariables
 >
-export const GetPostOverlayPageDataDocument = gql`
-  query GetPostOverlayPageData($input: IdInput!) {
+export const GetPostPageDataDocument = gql`
+  query GetPostPageData($input: IdInput!) {
     post(input: $input) {
       ...PostPage_post
     }
@@ -1665,52 +1665,52 @@ export const GetPostOverlayPageDataDocument = gql`
 `
 
 /**
- * __useGetPostOverlayPageDataQuery__
+ * __useGetPostPageDataQuery__
  *
- * To run a query within a React component, call `useGetPostOverlayPageDataQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPostOverlayPageDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetPostPageDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPostPageDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetPostOverlayPageDataQuery({
+ * const { data, loading, error } = useGetPostPageDataQuery({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useGetPostOverlayPageDataQuery(
+export function useGetPostPageDataQuery(
   baseOptions?: ApolloReactHooks.QueryHookOptions<
-    GetPostOverlayPageDataQuery,
-    GetPostOverlayPageDataQueryVariables
+    GetPostPageDataQuery,
+    GetPostPageDataQueryVariables
   >
 ) {
   return ApolloReactHooks.useQuery<
-    GetPostOverlayPageDataQuery,
-    GetPostOverlayPageDataQueryVariables
-  >(GetPostOverlayPageDataDocument, baseOptions)
+    GetPostPageDataQuery,
+    GetPostPageDataQueryVariables
+  >(GetPostPageDataDocument, baseOptions)
 }
-export function useGetPostOverlayPageDataLazyQuery(
+export function useGetPostPageDataLazyQuery(
   baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    GetPostOverlayPageDataQuery,
-    GetPostOverlayPageDataQueryVariables
+    GetPostPageDataQuery,
+    GetPostPageDataQueryVariables
   >
 ) {
   return ApolloReactHooks.useLazyQuery<
-    GetPostOverlayPageDataQuery,
-    GetPostOverlayPageDataQueryVariables
-  >(GetPostOverlayPageDataDocument, baseOptions)
+    GetPostPageDataQuery,
+    GetPostPageDataQueryVariables
+  >(GetPostPageDataDocument, baseOptions)
 }
-export type GetPostOverlayPageDataQueryHookResult = ReturnType<
-  typeof useGetPostOverlayPageDataQuery
+export type GetPostPageDataQueryHookResult = ReturnType<
+  typeof useGetPostPageDataQuery
 >
-export type GetPostOverlayPageDataLazyQueryHookResult = ReturnType<
-  typeof useGetPostOverlayPageDataLazyQuery
+export type GetPostPageDataLazyQueryHookResult = ReturnType<
+  typeof useGetPostPageDataLazyQuery
 >
-export type GetPostOverlayPageDataQueryResult = ApolloReactCommon.QueryResult<
-  GetPostOverlayPageDataQuery,
-  GetPostOverlayPageDataQueryVariables
+export type GetPostPageDataQueryResult = ApolloReactCommon.QueryResult<
+  GetPostPageDataQuery,
+  GetPostPageDataQueryVariables
 >
 export const EditPostDocument = gql`
   mutation EditPost($input: EditPostInput!) {
