@@ -21,6 +21,8 @@ export type ApiEventDto = {
   meta: {
     'theme-mode': string
     'event-theme': string
+    'event-start': string
+    'event-end': string
   }
 }
 
@@ -34,6 +36,8 @@ function apiEventToEvent(event: ApiEventDto): Event {
     theme: event.meta['event-theme'],
     createdDate: event.created,
     eventPhase: parseInt(event.meta['theme-mode']) as EventPhase,
+    startDate: event.meta['event-start'],
+    endDate: event.meta['event-end'],
   }
 }
 

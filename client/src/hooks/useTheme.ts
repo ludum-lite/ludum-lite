@@ -762,7 +762,7 @@ declare module 'styled-components' {
   export interface DefaultTheme extends ScThemeType {}
 }
 
-const ICON_SCALING = [
+export const ICON_SCALING = [
   {
     name: 'EditIcon',
     base: 0.86,
@@ -813,6 +813,14 @@ const ICON_SCALING = [
   },
   {
     name: 'RadioButtonCheckedIcon',
+    base: 0.8,
+  },
+  {
+    name: 'EventIcon',
+    base: 0.85,
+  },
+  {
+    name: 'ScheduleIcon',
     base: 0.8,
   },
 ]

@@ -340,6 +340,8 @@ export const typeDefs = gql`
     currentUserGameId: Int
     currentUserGame: Game
     eventPhase: EventPhase!
+    startDate: String!
+    endDate: String!
   }
 
   enum EventPhase {

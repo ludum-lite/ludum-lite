@@ -431,6 +431,8 @@ export type Event = {
   currentUserGameId?: Maybe<Scalars['Int']>
   currentUserGame?: Maybe<Game>
   eventPhase: EventPhase
+  startDate: Scalars['String']
+  endDate: Scalars['String']
 }
 
 export enum EventPhase {
@@ -544,7 +546,7 @@ export type GetEventPageDataQuery = { __typename: 'Query' } & {
 
 export type EventPage_EventFragment = { __typename: 'Event' } & Pick<
   Event,
-  'id' | 'name' | 'body'
+  'id' | 'name' | 'body' | 'startDate' | 'endDate'
 >
 
 export type GameWidgetDataQueryVariables = Exact<{ [key: string]: never }>
@@ -1091,6 +1093,8 @@ export const EventPage_EventFragmentDoc = gql`
     id
     name
     body
+    startDate
+    endDate
   }
 `
 export const AddCommentForm_PostFragmentDoc = gql`

@@ -80,7 +80,7 @@ const Title = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing(1)}px;
 `
 
-const Body = styled.div`
+const PageContent = styled.div`
   display: flex;
   flex-direction: column;
 `
@@ -387,10 +387,10 @@ export default function PostPage({ isEditing }: PostPageProps) {
     startEditing,
   ])
 
-  const body = React.useMemo(() => {
+  const pageContent = React.useMemo(() => {
     if (!loading && post) {
       return (
-        <Body>
+        <PageContent>
           {isEditing && <EditActionRow>{editActionRow}</EditActionRow>}
           <Article>
             <Header>
@@ -487,7 +487,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
               </CommentsContainer>
             </Fragment>
           )}
-        </Body>
+        </PageContent>
       )
     }
 
@@ -542,7 +542,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
 
   return (
     <Page breadcrumbs={breadcrumbs} actionRow={actionRow}>
-      {body}
+      {pageContent}
     </Page>
   )
 }

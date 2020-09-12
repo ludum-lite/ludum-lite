@@ -441,6 +441,8 @@ export type Event = {
   currentUserGameId?: Maybe<Scalars['Int']>;
   currentUserGame?: Maybe<Game>;
   eventPhase: EventPhase;
+  startDate: Scalars['String'];
+  endDate: Scalars['String'];
 };
 
 export enum EventPhase {
@@ -1058,6 +1060,8 @@ export type EventResolvers<ContextType = any, ParentType extends ResolversParent
   currentUserGameId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>,
   currentUserGame?: Resolver<Maybe<ResolversTypes['Game']>, ParentType, ContextType>,
   eventPhase?: Resolver<ResolversTypes['EventPhase'], ParentType, ContextType>,
+  startDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  endDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;
 

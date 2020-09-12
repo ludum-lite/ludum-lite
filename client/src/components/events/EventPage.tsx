@@ -1,12 +1,16 @@
 import React from 'react'
 import styled from 'styled-components/macro'
 import { gql } from '@apollo/client'
+import moment from 'moment'
 
 import { Typography, LinearProgress, Breadcrumbs } from '@material-ui/core'
 import Page from 'components/common/Page'
 import { useParams } from 'react-router'
 import { useGetEventPageDataQuery } from '__generated__/client-types'
 import Breadcrumb from 'components/common/Breadcrumb'
+import Icon from 'components/common/mui/Icon'
+import EventIcon from '@material-ui/icons/Event'
+import ScheduleIcon from '@material-ui/icons/Schedule'
 
 const Header = styled.div`
   display: flex;
@@ -21,15 +25,12 @@ const HeaderContent = styled.div`
 `
 
 const Title = styled.div`
-  margin-bottom: ${({ theme }) => theme.spacing(1)}px;
+  margin-bottom: ${({ theme }) => theme.spacing(2)}px;
 `
 
 const Body = styled.div`
   display: flex;
   flex-direction: column;
-`
-
-const Article = styled.div`
   padding: ${({ theme }) => `${theme.spacing(3)}px`};
 `
 
@@ -43,10 +44,20 @@ const StyledLinearProgress = styled(LinearProgress)`
   margin: ${({ theme }) => theme.spacing(3)}px;
 `
 
-type FormInputs = {
-  title: string
-  body: string
-}
+const EventDetail = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+const EventDetails = styled.div`
+  ${EventDetail}:not(:last-child) {
+    margin-bottom: ${({ theme }) => theme.spacing(0.5)}px;
+  }
+`
+
+const EventDetailIcon = styled(Icon)`
+  margin-right: ${({ theme }) => theme.spacing(0.5)}px;
+`
 
 interface EventPageProps {}
 
@@ -65,20 +76,39 @@ export default function EventPage(props: EventPageProps) {
 
   const body = React.useMemo(() => {
     if (!loading && event) {
+      const startDate = moment.utc(event.startDate).local()
+      const endDate = moment.utc(event.endDate).local()
+
+      console.log(startDate.format())
+      console.log(endDate.format())
+
       return (
         <Body>
-          <Article>
-            <Header>
-              <HeaderContent>
-                <Title>
-                  <TitleText variant="h5">
-                    {event.name || '-- No Title  --'}
-                  </TitleText>
-                </Title>
-                Need date
-              </HeaderContent>
-            </Header>
-          </Article>
+          <Header>
+            <HeaderContent>
+              <Title>
+                <TitleText variant="h5">
+                  {event.name || '-- No Title  --'}
+                </TitleText>
+              </Title>
+              <EventDetails>
+                <EventDetail>
+                  <EventDetailIcon icon={EventIcon} />
+                  <Typography variant="body1">
+                    {`${startDate.format('dddd MMMM Do')} to ${endDate.format(
+                      'dddd MMMM Do, YYYY'
+                    )}`}
+                  </Typography>
+                </EventDetail>
+                <EventDetail>
+                  <EventDetailIcon icon={ScheduleIcon} />
+                  <Typography variant="body1">
+                    {`Starts at ${startDate.format('h:mm A')}`}
+                  </Typography>
+                </EventDetail>
+              </EventDetails>
+            </HeaderContent>
+          </Header>
         </Body>
       )
     }
@@ -113,5 +143,7 @@ gql`
     id
     name
     body
+    startDate
+    endDate
   }
 `
