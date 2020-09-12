@@ -3,10 +3,7 @@ import styled, { css } from 'styled-components/macro'
 import { usePostOverlayed } from 'hooks/usePostOverlay'
 import { borderRadius } from 'polished'
 
-interface RootProps {
-  postOverlayed: boolean
-}
-const Root = styled.div<RootProps>`
+const Root = styled.div`
   display: flex;
   flex-direction: column;
   z-index: 200;
@@ -68,7 +65,7 @@ interface Props {
   breadcrumbs?: React.ReactNode
 }
 export default function Page({ children, actionRow, breadcrumbs }: Props) {
-  const [postOverlayed, setUsePostOverlay] = usePostOverlayed()
+  const [, setUsePostOverlay] = usePostOverlayed()
 
   useEffect(() => {
     return () => {
@@ -77,7 +74,7 @@ export default function Page({ children, actionRow, breadcrumbs }: Props) {
   }, [setUsePostOverlay])
 
   return (
-    <Root postOverlayed={postOverlayed}>
+    <Root>
       <TopRow>
         <BreadcrumbContainer>{breadcrumbs}</BreadcrumbContainer>
         {actionRow && (
