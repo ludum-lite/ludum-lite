@@ -28,8 +28,6 @@ const EventTab = {
   Stats: 'stats',
 }
 
-const DefaultEventTab = EventTab.Games
-
 const Header = styled.div`
   display: flex;
   align-items: center;
@@ -82,6 +80,11 @@ const TabbedContent = styled.div`
   flex-direction: column;
 `
 
+const ThemeText = styled(Typography)`
+  font-weight: 700;
+  margin-left: 4px;
+`
+
 interface EventPageProps {}
 
 export default function EventPage(props: EventPageProps) {
@@ -123,12 +126,13 @@ export default function EventPage(props: EventPageProps) {
                 {event.theme && (
                   <EventDetail>
                     <EventDetailIcon icon={EmojiObjectsIcon} />
-                    <Typography variant="body1">{event.theme}</Typography>
+                    <Typography>Theme:</Typography>
+                    <ThemeText>{event.theme}</ThemeText>
                   </EventDetail>
                 )}
                 <EventDetail>
                   <EventDetailIcon icon={EventIcon} />
-                  <Typography variant="body1">
+                  <Typography>
                     {`${startDate.format('dddd MMMM Do')} to ${endDate.format(
                       'dddd MMMM Do, YYYY'
                     )}`}
@@ -136,7 +140,7 @@ export default function EventPage(props: EventPageProps) {
                 </EventDetail>
                 <EventDetail>
                   <EventDetailIcon icon={ScheduleIcon} />
-                  <Typography variant="body1">
+                  <Typography>
                     {`Starts at ${startDate.format('h:mm A')}`}
                   </Typography>
                 </EventDetail>
