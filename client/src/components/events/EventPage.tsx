@@ -1,16 +1,33 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components/macro'
 import { gql } from '@apollo/client'
 import moment from 'moment'
 
 import { Typography, LinearProgress, Breadcrumbs } from '@material-ui/core'
 import Page from 'components/common/Page'
-import { useParams } from 'react-router'
-import { useGetEventPageDataQuery } from '__generated__/client-types'
+import { useLocation, useNavigate } from 'react-router'
+import {
+  useGetEventPageDataQuery,
+  EventThemePage_EventFragmentDoc,
+} from '__generated__/client-types'
 import Breadcrumb from 'components/common/Breadcrumb'
 import Icon from 'components/common/mui/Icon'
 import EventIcon from '@material-ui/icons/Event'
 import ScheduleIcon from '@material-ui/icons/Schedule'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
+import Link from 'components/common/mui/Link'
+import { ROUTES } from 'components/routes/routes'
+import { filter } from 'graphql-anywhere'
+import EventThemePage from './EventThemePage'
+
+const EventTab = {
+  Games: 'games',
+  Theme: 'theme',
+  Stats: 'stats',
+}
+
+const DefaultEventTab = EventTab.Games
 
 const Header = styled.div`
   display: flex;
@@ -59,10 +76,23 @@ const EventDetailIcon = styled(Icon)`
   margin-right: ${({ theme }) => theme.spacing(0.5)}px;
 `
 
+const TabbedContent = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
 interface EventPageProps {}
 
 export default function EventPage(props: EventPageProps) {
-  const { id: eventId } = useParams()
+  const { id: eventId, subPage } = ROUTES.EVENT.useSingleParams()
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!subPage) {
+      navigate(ROUTES.EVENT.getEventRoute(eventId))
+    }
+  }, [subPage, location, navigate, eventId])
 
   const { data, loading } = useGetEventPageDataQuery({
     variables: {
@@ -78,9 +108,6 @@ export default function EventPage(props: EventPageProps) {
     if (!loading && event) {
       const startDate = moment.utc(event.startDate).local()
       const endDate = moment.utc(event.endDate).local()
-
-      console.log(startDate.format())
-      console.log(endDate.format())
 
       return (
         <Body>
@@ -116,28 +143,79 @@ export default function EventPage(props: EventPageProps) {
     return <StyledLinearProgress />
   }, [loading, event])
 
+  const tabbedContent = React.useMemo(() => {
+    if (!loading && event && subPage) {
+      return (
+        <TabbedContent>
+          <Tabs value={subPage}>
+            <Tab
+              component={Link}
+              to={ROUTES.EVENT.getEventRoute(eventId, 'games')}
+              noUnderline
+              value={EventTab.Games}
+              label="Games"
+            />
+            <Tab
+              component={Link}
+              to={ROUTES.EVENT.getEventRoute(eventId, 'theme')}
+              noUnderline
+              value={EventTab.Theme}
+              label="Theme"
+            />
+            <Tab
+              component={Link}
+              to={ROUTES.EVENT.getEventRoute(eventId, 'stats')}
+              noUnderline
+              value={EventTab.Stats}
+              label="Stats"
+            />
+          </Tabs>
+        </TabbedContent>
+      )
+    }
+  }, [loading, event, subPage, eventId])
+
   const breadcrumbs = React.useMemo(() => {
     if (event) {
       return (
         <Breadcrumbs>
-          <Breadcrumb to="/events">Events</Breadcrumb>
-          <Breadcrumb to={`/events/${event.id}`}>{event.name}</Breadcrumb>
+          <Breadcrumb to={ROUTES.EVENT.LIST}>Events</Breadcrumb>
+          <Breadcrumb to={ROUTES.EVENT.getEventRoute(eventId)}>
+            {event.name}
+          </Breadcrumb>
         </Breadcrumbs>
       )
     }
 
     return null
-  }, [event])
+  }, [event, eventId])
 
-  return <Page breadcrumbs={breadcrumbs}>{body}</Page>
+  if (!event) return null
+
+  return (
+    <Page breadcrumbs={breadcrumbs}>
+      {body}
+      {tabbedContent}
+      {subPage === 'games' && <div>games</div>}
+      {subPage === 'theme' && (
+        <EventThemePage
+          event={filter(EventThemePage_EventFragmentDoc, event)}
+        />
+      )}
+      {subPage === 'stats' && <div>stats</div>}
+    </Page>
+  )
 }
 
 gql`
   query GetEventPageData($input: IdInput!) {
     event(input: $input) {
       ...EventPage_event
+      ...EventThemePage_event
     }
   }
+
+  ${EventThemePage_EventFragmentDoc}
 
   fragment EventPage_event on Event {
     id

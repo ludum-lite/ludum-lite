@@ -62,6 +62,9 @@ const client = new ApolloClient({
   typeDefs,
   resolvers,
   defaultOptions: {
+    watchQuery: {
+      errorPolicy: 'all',
+    },
     query: {
       errorPolicy: 'all',
     },

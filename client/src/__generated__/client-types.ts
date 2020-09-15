@@ -56,6 +56,9 @@ export type Mutation = {
   addComment: AddCommentResponse
   editComment: EditCommentResponse
   joinEvent: JoinEventResponse
+  addEventIdea: AddEventIdeaResponse
+  deleteEventIdea: DeleteEventIdeaResponse
+  editEventIdea: EditEventIdeaResponse
   editGame: EditGameResponse
   addFriend: AddFriendResponse
   addFriendAndAddToGame: AddFriendAndAddToGameResponse
@@ -102,6 +105,18 @@ export type MutationAddCommentArgs = {
 
 export type MutationEditCommentArgs = {
   input: EditCommentInput
+}
+
+export type MutationAddEventIdeaArgs = {
+  input: AddEventIdeaInput
+}
+
+export type MutationDeleteEventIdeaArgs = {
+  input: DeleteEventIdeaInput
+}
+
+export type MutationEditEventIdeaArgs = {
+  input: EditEventIdeaInput
 }
 
 export type MutationEditGameArgs = {
@@ -433,6 +448,7 @@ export type Event = {
   eventPhase: EventPhase
   startDate: Scalars['String']
   endDate: Scalars['String']
+  eventIdeas?: Maybe<Array<EventIdea>>
 }
 
 export enum EventPhase {
@@ -452,6 +468,57 @@ export type JoinEventSuccess = MutationResponse & {
 }
 
 export type JoinEventResponse = JoinEventSuccess | UnauthorizedResponse
+
+export type EventIdea = {
+  __typename: 'EventIdea'
+  id: Scalars['Int']
+  name: Scalars['String']
+}
+
+export type AddEventIdeaInput = {
+  eventId: Scalars['Int']
+  name: Scalars['String']
+}
+
+export type AddEventIdeaSuccess = MutationResponse & {
+  __typename: 'AddEventIdeaSuccess'
+  success: Scalars['Boolean']
+  eventIdea: EventIdea
+}
+
+export type AddEventIdeaResponse = AddEventIdeaSuccess | UnauthorizedResponse
+
+export type DeleteEventIdeaInput = {
+  eventId: Scalars['Int']
+  eventIdeaId: Scalars['Int']
+}
+
+export type DeleteEventIdeaSuccess = MutationResponse & {
+  __typename: 'DeleteEventIdeaSuccess'
+  success: Scalars['Boolean']
+  eventId: Scalars['Int']
+  eventIdeaId: Scalars['Int']
+  eventIdea: EventIdea
+}
+
+export type DeleteEventIdeaResponse =
+  | DeleteEventIdeaSuccess
+  | UnauthorizedResponse
+
+export type EditEventIdeaInput = {
+  id: Scalars['Int']
+  eventId: Scalars['Int']
+  name: Scalars['String']
+}
+
+export type EditEventIdeaSuccess = MutationResponse & {
+  __typename: 'EditEventIdeaSuccess'
+  success: Scalars['Boolean']
+  eventIdeaId: Scalars['Int']
+  eventIdea: EventIdea
+}
+
+export type EditEventIdeaResponse = EditEventIdeaSuccess | UnauthorizedResponse
 
 export type Game = {
   __typename: 'Game'
@@ -541,13 +608,65 @@ export type GetEventPageDataQueryVariables = Exact<{
 }>
 
 export type GetEventPageDataQuery = { __typename: 'Query' } & {
-  event: { __typename: 'Event' } & EventPage_EventFragment
+  event: { __typename: 'Event' } & EventPage_EventFragment &
+    EventThemePage_EventFragment
 }
 
 export type EventPage_EventFragment = { __typename: 'Event' } & Pick<
   Event,
   'id' | 'name' | 'body' | 'startDate' | 'endDate'
 >
+
+export type EventThemePage_EventFragment = { __typename: 'Event' } & Pick<
+  Event,
+  'id' | 'eventPhase'
+> &
+  ThemeSubmissionForm_EventFragment
+
+export type AddEventIdeaMutationVariables = Exact<{
+  input: AddEventIdeaInput
+}>
+
+export type AddEventIdeaMutation = { __typename: 'Mutation' } & {
+  addEventIdea:
+    | ({ __typename: 'AddEventIdeaSuccess' } & {
+        eventIdea: { __typename: 'EventIdea' } & Pick<EventIdea, 'id' | 'name'>
+      })
+    | { __typename: 'UnauthorizedResponse' }
+}
+
+export type EditEventIdeaMutationVariables = Exact<{
+  input: EditEventIdeaInput
+}>
+
+export type EditEventIdeaMutation = { __typename: 'Mutation' } & {
+  editEventIdea:
+    | ({ __typename: 'EditEventIdeaSuccess' } & {
+        eventIdea: { __typename: 'EventIdea' } & Pick<EventIdea, 'id' | 'name'>
+      })
+    | { __typename: 'UnauthorizedResponse' }
+}
+
+export type DeletEventIdeaMutationVariables = Exact<{
+  input: DeleteEventIdeaInput
+}>
+
+export type DeletEventIdeaMutation = { __typename: 'Mutation' } & {
+  deleteEventIdea:
+    | ({ __typename: 'DeleteEventIdeaSuccess' } & {
+        eventIdea: { __typename: 'EventIdea' } & Pick<EventIdea, 'id' | 'name'>
+      })
+    | { __typename: 'UnauthorizedResponse' }
+}
+
+export type ThemeSubmissionForm_EventFragment = { __typename: 'Event' } & Pick<
+  Event,
+  'id' | 'eventPhase'
+> & {
+    eventIdeas?: Maybe<
+      Array<{ __typename: 'EventIdea' } & Pick<EventIdea, 'id' | 'name'>>
+    >
+  }
 
 export type GameWidgetDataQueryVariables = Exact<{ [key: string]: never }>
 
@@ -1097,6 +1216,24 @@ export const EventPage_EventFragmentDoc = gql`
     endDate
   }
 `
+export const ThemeSubmissionForm_EventFragmentDoc = gql`
+  fragment ThemeSubmissionForm_event on Event {
+    id
+    eventPhase
+    eventIdeas {
+      id
+      name
+    }
+  }
+`
+export const EventThemePage_EventFragmentDoc = gql`
+  fragment EventThemePage_event on Event {
+    id
+    eventPhase
+    ...ThemeSubmissionForm_event
+  }
+  ${ThemeSubmissionForm_EventFragmentDoc}
+`
 export const AddCommentForm_PostFragmentDoc = gql`
   fragment AddCommentForm_post on Post {
     id
@@ -1313,9 +1450,11 @@ export const GetEventPageDataDocument = gql`
   query GetEventPageData($input: IdInput!) {
     event(input: $input) {
       ...EventPage_event
+      ...EventThemePage_event
     }
   }
   ${EventPage_EventFragmentDoc}
+  ${EventThemePage_EventFragmentDoc}
 `
 
 /**
@@ -1365,6 +1504,171 @@ export type GetEventPageDataLazyQueryHookResult = ReturnType<
 export type GetEventPageDataQueryResult = ApolloReactCommon.QueryResult<
   GetEventPageDataQuery,
   GetEventPageDataQueryVariables
+>
+export const AddEventIdeaDocument = gql`
+  mutation AddEventIdea($input: AddEventIdeaInput!) {
+    addEventIdea(input: $input) {
+      ... on AddEventIdeaSuccess {
+        eventIdea {
+          id
+          name
+        }
+      }
+    }
+  }
+`
+export type AddEventIdeaMutationFn = ApolloReactCommon.MutationFunction<
+  AddEventIdeaMutation,
+  AddEventIdeaMutationVariables
+>
+
+/**
+ * __useAddEventIdeaMutation__
+ *
+ * To run a mutation, you first call `useAddEventIdeaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddEventIdeaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addEventIdeaMutation, { data, loading, error }] = useAddEventIdeaMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddEventIdeaMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    AddEventIdeaMutation,
+    AddEventIdeaMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    AddEventIdeaMutation,
+    AddEventIdeaMutationVariables
+  >(AddEventIdeaDocument, baseOptions)
+}
+export type AddEventIdeaMutationHookResult = ReturnType<
+  typeof useAddEventIdeaMutation
+>
+export type AddEventIdeaMutationResult = ApolloReactCommon.MutationResult<
+  AddEventIdeaMutation
+>
+export type AddEventIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  AddEventIdeaMutation,
+  AddEventIdeaMutationVariables
+>
+export const EditEventIdeaDocument = gql`
+  mutation EditEventIdea($input: EditEventIdeaInput!) {
+    editEventIdea(input: $input) {
+      ... on EditEventIdeaSuccess {
+        eventIdea {
+          id
+          name
+        }
+      }
+    }
+  }
+`
+export type EditEventIdeaMutationFn = ApolloReactCommon.MutationFunction<
+  EditEventIdeaMutation,
+  EditEventIdeaMutationVariables
+>
+
+/**
+ * __useEditEventIdeaMutation__
+ *
+ * To run a mutation, you first call `useEditEventIdeaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditEventIdeaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editEventIdeaMutation, { data, loading, error }] = useEditEventIdeaMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useEditEventIdeaMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    EditEventIdeaMutation,
+    EditEventIdeaMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    EditEventIdeaMutation,
+    EditEventIdeaMutationVariables
+  >(EditEventIdeaDocument, baseOptions)
+}
+export type EditEventIdeaMutationHookResult = ReturnType<
+  typeof useEditEventIdeaMutation
+>
+export type EditEventIdeaMutationResult = ApolloReactCommon.MutationResult<
+  EditEventIdeaMutation
+>
+export type EditEventIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  EditEventIdeaMutation,
+  EditEventIdeaMutationVariables
+>
+export const DeletEventIdeaDocument = gql`
+  mutation DeletEventIdea($input: DeleteEventIdeaInput!) {
+    deleteEventIdea(input: $input) {
+      ... on DeleteEventIdeaSuccess {
+        eventIdea {
+          id
+          name
+        }
+      }
+    }
+  }
+`
+export type DeletEventIdeaMutationFn = ApolloReactCommon.MutationFunction<
+  DeletEventIdeaMutation,
+  DeletEventIdeaMutationVariables
+>
+
+/**
+ * __useDeletEventIdeaMutation__
+ *
+ * To run a mutation, you first call `useDeletEventIdeaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletEventIdeaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deletEventIdeaMutation, { data, loading, error }] = useDeletEventIdeaMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeletEventIdeaMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    DeletEventIdeaMutation,
+    DeletEventIdeaMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    DeletEventIdeaMutation,
+    DeletEventIdeaMutationVariables
+  >(DeletEventIdeaDocument, baseOptions)
+}
+export type DeletEventIdeaMutationHookResult = ReturnType<
+  typeof useDeletEventIdeaMutation
+>
+export type DeletEventIdeaMutationResult = ApolloReactCommon.MutationResult<
+  DeletEventIdeaMutation
+>
+export type DeletEventIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  DeletEventIdeaMutation,
+  DeletEventIdeaMutationVariables
 >
 export const GameWidgetDataDocument = gql`
   query GameWidgetData {
@@ -3135,6 +3439,15 @@ const result: IntrospectionResultData = {
             name: 'JoinEventSuccess',
           },
           {
+            name: 'AddEventIdeaSuccess',
+          },
+          {
+            name: 'DeleteEventIdeaSuccess',
+          },
+          {
+            name: 'EditEventIdeaSuccess',
+          },
+          {
             name: 'EditGameSuccess',
           },
           {
@@ -3337,6 +3650,42 @@ const result: IntrospectionResultData = {
         possibleTypes: [
           {
             name: 'JoinEventSuccess',
+          },
+          {
+            name: 'UnauthorizedResponse',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'AddEventIdeaResponse',
+        possibleTypes: [
+          {
+            name: 'AddEventIdeaSuccess',
+          },
+          {
+            name: 'UnauthorizedResponse',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'DeleteEventIdeaResponse',
+        possibleTypes: [
+          {
+            name: 'DeleteEventIdeaSuccess',
+          },
+          {
+            name: 'UnauthorizedResponse',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'EditEventIdeaResponse',
+        possibleTypes: [
+          {
+            name: 'EditEventIdeaSuccess',
           },
           {
             name: 'UnauthorizedResponse',

@@ -2,6 +2,7 @@ import { ApolloServer, makeExecutableSchema } from 'apollo-server'
 import { Context } from './data-sources/context'
 import CommentAPI from './data-sources/comment-api'
 import EventAPI from './data-sources/event-api'
+import EventIdeaAPI from './data-sources/event-idea-api'
 import GameAPI from './data-sources/game-api'
 import PostAPI from './data-sources/post-api'
 import UserAPI from './data-sources/user-api'
@@ -64,6 +65,15 @@ const resolvers: Resolvers<Context> = {
     joinEvent(_, __, context) {
       return context.dataSources.eventApi.joinEvent()
     },
+    addEventIdea(_, { input }, context) {
+      return context.dataSources.eventIdeaApi.addEventIdea(input)
+    },
+    deleteEventIdea(_, { input }, context) {
+      return context.dataSources.eventIdeaApi.deleteEventIdea(input)
+    },
+    editEventIdea(_, { input }, context) {
+      return context.dataSources.eventIdeaApi.editEventIdea(input)
+    },
     editGame(_, { input }, context) {
       return context.dataSources.gameApi.editGame(input)
     },
@@ -112,6 +122,9 @@ const resolvers: Resolvers<Context> = {
       }
 
       return null
+    },
+    eventIdeas(event, __, context) {
+      return context.dataSources.eventIdeaApi.getEventIdeas(event.id)
     },
   },
   Me: {
@@ -200,6 +213,16 @@ const resolvers: Resolvers<Context> = {
       return context.dataSources.eventApi.getFeaturedEvent()
     },
   },
+  // DeleteEventIdeaSuccess: {
+  //   async eventIdea(response, __, context) {
+  //     const eventIdea = await context.dataSources.eventIdeaApi.getEventIdea({
+  //       eventId: response.eventId,
+  //       id: response.eventIdeaId,
+  //     })
+
+  //     return eventIdea ||
+  //   },
+  // },
   EventPhase: {
     ThemeSubmission: 1,
     ThemeSlaughter: 2,
@@ -232,6 +255,7 @@ new ApolloServer({
     commentApi: new CommentAPI(),
     userApi: new UserAPI(),
     eventApi: new EventAPI(),
+    eventIdeaApi: new EventIdeaAPI(),
     gameApi: new GameAPI(),
     imageApi: new ImageAPI(),
   }),

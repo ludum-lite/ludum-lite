@@ -28,6 +28,9 @@ export const typeDefs = gql`
     addComment(input: AddCommentInput!): AddCommentResponse!
     editComment(input: EditCommentInput!): EditCommentResponse!
     joinEvent: JoinEventResponse!
+    addEventIdea(input: AddEventIdeaInput!): AddEventIdeaResponse!
+    deleteEventIdea(input: DeleteEventIdeaInput!): DeleteEventIdeaResponse!
+    editEventIdea(input: EditEventIdeaInput!): EditEventIdeaResponse!
     editGame(input: EditGameInput!): EditGameResponse!
     addFriend(input: IdInput!): AddFriendResponse!
     addFriendAndAddToGame(input: IdInput!): AddFriendAndAddToGameResponse!
@@ -342,6 +345,7 @@ export const typeDefs = gql`
     eventPhase: EventPhase!
     startDate: String!
     endDate: String!
+    eventIdeas: [EventIdea!]
   }
 
   enum EventPhase {
@@ -360,6 +364,57 @@ export const typeDefs = gql`
   }
 
   union JoinEventResponse = JoinEventSuccess | UnauthorizedResponse
+
+  #########
+  # Event Idea
+  #########
+
+  type EventIdea {
+    id: Int!
+    name: String!
+  }
+
+  # Add event idea
+  input AddEventIdeaInput {
+    eventId: Int!
+    name: String!
+  }
+
+  type AddEventIdeaSuccess implements MutationResponse {
+    success: Boolean!
+    eventIdea: EventIdea!
+  }
+
+  union AddEventIdeaResponse = AddEventIdeaSuccess | UnauthorizedResponse
+
+  # Delete event idea
+  input DeleteEventIdeaInput {
+    eventId: Int!
+    eventIdeaId: Int!
+  }
+
+  type DeleteEventIdeaSuccess implements MutationResponse {
+    success: Boolean!
+    eventId: Int!
+    eventIdeaId: Int!
+  }
+
+  union DeleteEventIdeaResponse = DeleteEventIdeaSuccess | UnauthorizedResponse
+
+  # Edit event idea
+  input EditEventIdeaInput {
+    id: Int!
+    eventId: Int!
+    name: String!
+  }
+
+  type EditEventIdeaSuccess implements MutationResponse {
+    success: Boolean!
+    eventIdeaId: Int!
+    eventIdea: EventIdea!
+  }
+
+  union EditEventIdeaResponse = EditEventIdeaSuccess | UnauthorizedResponse
 
   #########
   # Game

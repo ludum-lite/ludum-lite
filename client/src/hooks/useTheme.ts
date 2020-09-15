@@ -611,6 +611,25 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
           background: selectedThemeColors.pageBackground,
         },
       },
+      MuiTab: {
+        root: {
+          textTransform: 'none',
+        },
+        textColorInherit: {
+          opacity: 1,
+        },
+      },
+      MuiTabs: {
+        root: {
+          boxShadow: '0 2px 3px 0px #0000001f',
+          // borderBottom: '1px solid #0000001f',
+        },
+        indicator: {
+          height: 3,
+          borderTopLeftRadius: 3,
+          borderTopRightRadius: 3,
+        },
+      },
       MuiIconButton: {
         root: {
           transition: 'none',

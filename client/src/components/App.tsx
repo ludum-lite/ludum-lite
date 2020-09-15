@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import styled, { css } from 'styled-components/macro'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate, useParams } from 'react-router-dom'
 import Sidebar from './sidebar/Sidebar'
 import RoutesWithFallback from './common/RoutesWithFallback'
 import PostsPage from 'components/posts/PostsPage'
@@ -30,6 +30,7 @@ import { useFeaturedEvent } from 'hooks/useFeaturedEvent'
 import Typography from './common/mui/Typography'
 import NotificationBar from './notification-bar/NotificationBar'
 import EventPage from './events/EventPage'
+import { ROUTES } from './routes/routes'
 
 const Root = styled.div`
   min-height: 100vh;
@@ -215,7 +216,8 @@ export default function App({}: Props) {
           <AppContent>
             <NotificationBar />
             <RoutesWithFallback>
-              <Route path="/events/:id/*" element={<EventPage />} />
+              <Route path={ROUTES.EVENT.SINGLE_BASE} element={<EventPage />} />
+              <Route path={ROUTES.EVENT.SINGLE} element={<EventPage />} />
               <Route path="/posts" element={<PostsPage />} />
               {postOverlayed ? (
                 <Route
