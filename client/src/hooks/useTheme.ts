@@ -842,6 +842,10 @@ export const ICON_SCALING = [
     name: 'ScheduleIcon',
     base: 0.8,
   },
+  {
+    name: 'EmojiObjectsOutlinedIcon',
+    base: 1,
+  },
 ]
 
 const globalStyleGenerator = ({

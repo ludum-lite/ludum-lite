@@ -14,6 +14,7 @@ import Breadcrumb from 'components/common/Breadcrumb'
 import Icon from 'components/common/mui/Icon'
 import EventIcon from '@material-ui/icons/Event'
 import ScheduleIcon from '@material-ui/icons/Schedule'
+import EmojiObjectsIcon from '@material-ui/icons/EmojiObjectsOutlined'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Link from 'components/common/mui/Link'
@@ -119,6 +120,12 @@ export default function EventPage(props: EventPageProps) {
                 </TitleText>
               </Title>
               <EventDetails>
+                {event.theme && (
+                  <EventDetail>
+                    <EventDetailIcon icon={EmojiObjectsIcon} />
+                    <Typography variant="body1">{event.theme}</Typography>
+                  </EventDetail>
+                )}
                 <EventDetail>
                   <EventDetailIcon icon={EventIcon} />
                   <Typography variant="body1">
@@ -221,6 +228,7 @@ gql`
     id
     name
     body
+    theme
     startDate
     endDate
   }

@@ -39,10 +39,7 @@ gql`
   mutation DeletEventIdea($input: DeleteEventIdeaInput!) {
     deleteEventIdea(input: $input) {
       ... on DeleteEventIdeaSuccess {
-        eventIdea {
-          id
-          name
-        }
+        eventId
       }
     }
   }

@@ -30,7 +30,7 @@ export const Basic = () => {
   return (
     <BasicRoot>
       {usedIcons.map(([iconName, icon]) => (
-        <Icon icon={icon} />
+        <Icon key={iconName} icon={icon} />
       ))}
     </BasicRoot>
   )

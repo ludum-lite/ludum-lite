@@ -498,7 +498,6 @@ export type DeleteEventIdeaSuccess = MutationResponse & {
   success: Scalars['Boolean']
   eventId: Scalars['Int']
   eventIdeaId: Scalars['Int']
-  eventIdea: EventIdea
 }
 
 export type DeleteEventIdeaResponse =
@@ -614,7 +613,7 @@ export type GetEventPageDataQuery = { __typename: 'Query' } & {
 
 export type EventPage_EventFragment = { __typename: 'Event' } & Pick<
   Event,
-  'id' | 'name' | 'body' | 'startDate' | 'endDate'
+  'id' | 'name' | 'body' | 'theme' | 'startDate' | 'endDate'
 >
 
 export type EventThemePage_EventFragment = { __typename: 'Event' } & Pick<
@@ -653,9 +652,10 @@ export type DeletEventIdeaMutationVariables = Exact<{
 
 export type DeletEventIdeaMutation = { __typename: 'Mutation' } & {
   deleteEventIdea:
-    | ({ __typename: 'DeleteEventIdeaSuccess' } & {
-        eventIdea: { __typename: 'EventIdea' } & Pick<EventIdea, 'id' | 'name'>
-      })
+    | ({ __typename: 'DeleteEventIdeaSuccess' } & Pick<
+        DeleteEventIdeaSuccess,
+        'eventId'
+      >)
     | { __typename: 'UnauthorizedResponse' }
 }
 
@@ -1212,6 +1212,7 @@ export const EventPage_EventFragmentDoc = gql`
     id
     name
     body
+    theme
     startDate
     endDate
   }
@@ -1619,10 +1620,7 @@ export const DeletEventIdeaDocument = gql`
   mutation DeletEventIdea($input: DeleteEventIdeaInput!) {
     deleteEventIdea(input: $input) {
       ... on DeleteEventIdeaSuccess {
-        eventIdea {
-          id
-          name
-        }
+        eventId
       }
     }
   }
