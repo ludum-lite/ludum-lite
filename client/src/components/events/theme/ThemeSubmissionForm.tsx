@@ -46,7 +46,7 @@ interface IdeaFormProps {
   hasSuggestions: boolean
 }
 
-const IdeaForm = styled.div<IdeaFormProps>`
+const IdeaForm = styled.form<IdeaFormProps>`
   display: flex;
   flex-direction: column;
   margin-top: ${({ theme, hasSuggestions }) =>
@@ -73,7 +73,6 @@ interface Props {
   event: ThemeSubmissionForm_EventFragment
 }
 export default function ThemeSubmissionForm({ event }: Props) {
-  console.log(event)
   const {
     register,
     handleSubmit,
@@ -97,7 +96,6 @@ export default function ThemeSubmissionForm({ event }: Props) {
 
   const onSave = React.useMemo(() => {
     return handleSubmit(async (data) => {
-      console.log(event.eventIdeas, data.name)
       if (
         event.eventIdeas &&
         event.eventIdeas.some(
@@ -128,7 +126,6 @@ export default function ThemeSubmissionForm({ event }: Props) {
               id: `Event:${event.id}`,
               fields: {
                 eventIdeas(cachedEventIdeasRef) {
-                  console.log(cachedEventIdeasRef, eventIdea)
                   return [...cachedEventIdeasRef, eventIdea]
                 },
               },
@@ -155,7 +152,7 @@ export default function ThemeSubmissionForm({ event }: Props) {
                     eventIdeaId: eventIdea.id,
                   },
                 },
-                update(cache, { data, ...others }) {
+                update(cache, { data }) {
                   if (
                     data?.deleteEventIdea.__typename ===
                     'DeleteEventIdeaSuccess'
@@ -193,7 +190,7 @@ export default function ThemeSubmissionForm({ event }: Props) {
     <Root>
       {suggestions && <Suggestions>{suggestions}</Suggestions>}
       {numEventIdeas < event.eventIdeaLimit && (
-        <IdeaForm hasSuggestions={Boolean(suggestions)}>
+        <IdeaForm hasSuggestions={Boolean(suggestions)} onSubmit={onSave}>
           <InputRow>
             <Input
               placeholder="Suggest a theme..."
@@ -208,7 +205,7 @@ export default function ThemeSubmissionForm({ event }: Props) {
               background="white"
               variant="contained"
               color="secondary"
-              onClick={onSave}
+              type="submit"
             >
               Submit
             </SubmitButton>
