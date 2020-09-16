@@ -10,7 +10,6 @@ import {
 } from '__generated__/client-types'
 import Button from 'components/common/mui/Button'
 import {
-  Typography,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -23,6 +22,7 @@ import GameDetailListItem from './GameDetailListItem'
 import Input from 'components/common/mui/Input'
 import { useSnackbar } from 'notistack'
 import { useMinLoadingTime } from 'hooks/useMinLoadingTime'
+import Typography from 'components/common/mui/Typography'
 
 const Root = styled.div`
   display: flex;
@@ -41,7 +41,7 @@ const TopRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: ${({ theme }) => theme.spacing(3)}px;
+  margin-bottom: ${({ theme }) => theme.spacing(2)}px;
   min-height: 40px;
 `
 
@@ -120,7 +120,9 @@ export default function GameWidget({ className }: Props) {
           return (
             <GameDetails>
               <TopRow>
-                <Typography variant="h6">My Game</Typography>
+                <Typography variant="h4" bold>
+                  My Game
+                </Typography>
                 {/* <IconButton background="contextualNav" size="small">
                   <Icon icon={MoreHorizIcon} />
                 </IconButton> */}
@@ -194,7 +196,7 @@ export default function GameWidget({ className }: Props) {
                 background="contextualNav"
                 onClick={() => setShowJoinEventDialog(true)}
               >
-                <Typography variant="h6">Join Event!</Typography>
+                <Typography variant="h4">Join Event!</Typography>
               </JoinButton>
             )
           )

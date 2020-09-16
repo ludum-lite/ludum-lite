@@ -2,6 +2,7 @@ import React from 'react'
 import { gql } from '@apollo/client'
 import styled from 'styled-components/macro'
 import { ThemeSubmissionForm_EventFragment } from '__generated__/client-types'
+import Input from 'components/common/mui/Input'
 
 const Root = styled.div``
 
@@ -10,7 +11,11 @@ interface Props {
 }
 export default function ThemeSubmissionForm({ event }: Props) {
   console.log(event)
-  return <Root />
+  return (
+    <Root>
+      <Input placeholder="Submit a theme..." />
+    </Root>
+  )
 }
 
 gql`

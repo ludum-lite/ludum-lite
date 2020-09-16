@@ -105,7 +105,7 @@ export default function ConfirmInviteAndAddToTeamPage({}: Props) {
         defaultToProfileImage
         size={140}
       />
-      <UserTitle variant="h5">{data.user.name}</UserTitle>
+      <UserTitle variant="h4">{data.user.name}</UserTitle>
       <SubTitle color="textSecondary" variant="body1">
         has accepted your invitation to join your team for Ludum Dare{' '}
         {event?.eventNumber}!

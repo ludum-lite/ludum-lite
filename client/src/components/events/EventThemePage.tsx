@@ -10,6 +10,7 @@ import { filter } from 'graphql-anywhere'
 import ThemeSubmissionForm from './theme/ThemeSubmissionForm'
 import { useMe } from 'hooks/useMe'
 import { Typography } from '@material-ui/core'
+import ThemeSubPage from './theme/ThemeSubPage'
 
 const LoginMessage = styled.div`
   display: flex;
@@ -26,7 +27,7 @@ export default function EventThemePage({ event }: Props) {
   if (!me && hasLoaded) {
     return (
       <LoginMessage>
-        <Typography variant="h6" color="textSecondary">
+        <Typography variant="h5" color="textSecondary">
           Please log in
         </Typography>
       </LoginMessage>
@@ -36,9 +37,11 @@ export default function EventThemePage({ event }: Props) {
   if (event) {
     if (event.eventPhase === EventPhase.ThemeSubmission) {
       return (
-        <ThemeSubmissionForm
-          event={filter(ThemeSubmissionForm_EventFragmentDoc, event)}
-        />
+        <ThemeSubPage title="Theme Suggestion Round">
+          <ThemeSubmissionForm
+            event={filter(ThemeSubmissionForm_EventFragmentDoc, event)}
+          />
+        </ThemeSubPage>
       )
     } else if (event.eventPhase === EventPhase.ThemeSlaughter) {
       return <div />

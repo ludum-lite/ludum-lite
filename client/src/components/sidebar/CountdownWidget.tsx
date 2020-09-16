@@ -4,7 +4,6 @@ import styled, { css } from 'styled-components/macro'
 import Countdown from './Countdown'
 import moment from 'moment'
 import {
-  Typography,
   List,
   ListItem,
   ListItemText,
@@ -29,6 +28,7 @@ import {
   EventPhase,
 } from 'utils/timeline'
 import { ignoreProps } from 'utils'
+import Typography from 'components/common/mui/Typography'
 
 // const selectedTimeline = testTimeline
 
@@ -44,10 +44,6 @@ const TitleButton = styled(Button)`
   color: ${({ theme }) => theme.themeColors.countdown.titleColor};
   margin: ${({ theme }) =>
     `${theme.spacing(2)}px ${theme.spacing(2)}px ${theme.spacing(1)}px`};
-`
-
-const Title = styled(Typography)`
-  font-weight: bold;
 `
 
 const Subtitle = styled(Typography)`
@@ -264,7 +260,9 @@ export default function CountdownWidget({ events, className }: Props) {
         background="contextualNav"
         onClick={handleClick}
       >
-        <Title variant="h6">Ludum Dare {selectedEvent?.eventNumber}</Title>
+        <Typography variant="h4" bold>
+          Ludum Dare {selectedEvent?.eventNumber}
+        </Typography>
       </TitleButton>
       {(nextPhase?.eventPhase === EventPhase.CompoEnd ||
         nextPhase?.eventPhase === EventPhase.CompoSubmissionHourEnd) &&

@@ -411,7 +411,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
                   </Fragment>
                 ) : (
                   <Title>
-                    <TitleText variant="h5">
+                    <TitleText variant="h4">
                       {post.name || '-- No Title  --'}
                     </TitleText>
                     {errors.title && (
@@ -450,7 +450,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
               <StyledAddCommentForm postId={post.id} />
               <CommentsContainer>
                 <CommentsTitleContainer>
-                  <CommentsTitle variant="h5">Comments</CommentsTitle>
+                  <CommentsTitle variant="h4">Comments</CommentsTitle>
                   <FormControl variant="filled">
                     <InputLabel id="demo-simple-select-filled-label">
                       Sort By

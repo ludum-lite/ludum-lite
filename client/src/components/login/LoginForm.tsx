@@ -66,7 +66,7 @@ export default function LoginForm({ login, error }: Props) {
   return (
     <Root>
       <Form onSubmit={onSubmit}>
-        <Title variant="h5">Login</Title>
+        <Title variant="h4">Login</Title>
         {error && (
           <Error>
             <Typography variant="body2">{error}</Typography>

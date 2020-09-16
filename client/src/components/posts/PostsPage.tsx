@@ -82,7 +82,7 @@ const NoItemsContainerRoot = styled.div`
 
 const NoItemsContainer = () => (
   <NoItemsContainerRoot>
-    <Typography variant="h5" color="textSecondary">
+    <Typography variant="h4" color="textSecondary">
       No Posts :(
     </Typography>
   </NoItemsContainerRoot>
@@ -167,7 +167,7 @@ export default function PostsPage() {
           })
         }}
       >
-        <Typography variant="h5">Load More</Typography>
+        <Typography variant="h4">Load More</Typography>
       </MoreButton>
     )
   }, [loading, networkStatus, data, fetchMore, hasPosts])

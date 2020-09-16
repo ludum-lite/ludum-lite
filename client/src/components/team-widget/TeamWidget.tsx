@@ -8,9 +8,7 @@ import {
   useRemoveUserFromGameMutation,
 } from '__generated__/client-types'
 import {
-  Typography,
   Dialog,
-  DialogTitle,
   Tooltip,
   List,
   ListItem,
@@ -37,6 +35,8 @@ import {
   bindTrigger,
   bindMenu,
 } from 'material-ui-popup-state/hooks'
+import Typography from 'components/common/mui/Typography'
+import DialogTitle from 'components/common/mui/DialogTitle'
 
 const Root = styled.div`
   display: flex;
@@ -76,6 +76,7 @@ const InviteLinkContainer = styled.div`
 
 const InviteButton = styled(ClickToCopyButton)`
   font-family: 'Oxygen Mono';
+  padding: ${({ theme }) => `${theme.spacing(1)}px ${theme.spacing(4)}px`};
 `
 
 const InviteText = styled(Typography)`
@@ -262,7 +263,9 @@ export default function GameWidget({ className }: Props) {
         return (
           <Root className={className}>
             <TopRow>
-              <Typography variant="h6">My Team</Typography>
+              <Typography variant="h4" bold>
+                My Team
+              </Typography>
               <IconButton
                 background="globalNav"
                 size="small"
@@ -385,7 +388,7 @@ export default function GameWidget({ className }: Props) {
                   {inviteLink}
                 </InviteButton>
                 <InviteText variant="caption" color="textSecondary">
-                  {`Don't see your friend listed? Send this link to your friend!
+                  {`Don't see your friend listed? Send them this link!
 They'll get a confirmation link to send back to you.`}
                 </InviteText>
               </InviteLinkContainer>

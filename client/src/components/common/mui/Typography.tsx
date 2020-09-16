@@ -13,17 +13,20 @@ const TEXT_COLOR_TO_RGBA: {
 
 interface StyledTypographyProps {
   textColor?: TextColor
+  bold?: boolean
 }
 
 const StyledTypography = styled(MuiTypography).withConfig({
-  shouldForwardProp: (prop) => !['textColor'].includes(prop),
+  shouldForwardProp: (prop) => !['textColor', 'bold'].includes(prop),
 })<StyledTypographyProps>`
   color: ${({ textColor }) =>
     textColor ? TEXT_COLOR_TO_RGBA[textColor] : undefined};
+  font-weight: ${({ bold }) => (bold ? 700 : 400)};
 `
 
 interface Props {
   textColor?: TextColor
+  bold?: boolean
 }
 
 export default function Typography({

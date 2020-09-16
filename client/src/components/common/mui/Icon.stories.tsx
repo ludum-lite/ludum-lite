@@ -21,8 +21,6 @@ export const Basic = () => {
   //   ([name]) => !suffixes.some((suffix) => name.includes(suffix))
   // )
 
-  console.log(icons)
-
   const usedIcons = icons.filter(([name1]) =>
     ICON_SCALING.some(({ name: name2 }) => name1 === name2.replace('Icon', ''))
   )

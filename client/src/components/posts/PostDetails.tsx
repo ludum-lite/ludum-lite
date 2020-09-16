@@ -108,7 +108,7 @@ export default function PostDetails({ post, forceExpand }: Props) {
       <Header>
         <HeaderContent>
           <Title>
-            <TitleText variant="h5">{post.name}</TitleText>
+            <TitleText variant="h4">{post.name}</TitleText>
           </Title>
           <HeaderUserContainer>
             <UserPostedHeader

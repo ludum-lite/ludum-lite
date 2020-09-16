@@ -3,7 +3,7 @@ import styled from 'styled-components/macro'
 import { gql } from '@apollo/client'
 import moment from 'moment'
 
-import { Typography, LinearProgress, Breadcrumbs } from '@material-ui/core'
+import { LinearProgress, Breadcrumbs } from '@material-ui/core'
 import Page from 'components/common/Page'
 import { useLocation, useNavigate } from 'react-router'
 import {
@@ -21,6 +21,7 @@ import Link from 'components/common/mui/Link'
 import { ROUTES } from 'components/routes/routes'
 import { filter } from 'graphql-anywhere'
 import EventThemePage from './EventThemePage'
+import Typography from 'components/common/mui/Typography'
 
 const EventTab = {
   Games: 'games',
@@ -51,7 +52,6 @@ const Body = styled.div`
 `
 
 const TitleText = styled(Typography)`
-  font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
 `
@@ -118,7 +118,7 @@ export default function EventPage(props: EventPageProps) {
           <Header>
             <HeaderContent>
               <Title>
-                <TitleText variant="h5">
+                <TitleText variant="h3">
                   {event.name || '-- No Title  --'}
                 </TitleText>
               </Title>

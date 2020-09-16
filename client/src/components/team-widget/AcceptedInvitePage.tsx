@@ -47,7 +47,7 @@ export default function AcceptedInvitePage({}: Props) {
 
   return (
     <Root>
-      <Title variant="h5">Invite Accepted!</Title>
+      <Title variant="h4">Invite Accepted!</Title>
       <SubTitle color="textSecondary" variant="body1">
         Please send this link to your team leader, {data.user.name}.
       </SubTitle>
