@@ -305,6 +305,7 @@ type Event {
   startDate: String!
   endDate: String!
   eventIdeas: [EventIdea!]
+  eventIdeaLimit: Int!
 }
 
 enum EventPhase {

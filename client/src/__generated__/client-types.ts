@@ -449,6 +449,7 @@ export type Event = {
   startDate: Scalars['String']
   endDate: Scalars['String']
   eventIdeas?: Maybe<Array<EventIdea>>
+  eventIdeaLimit: Scalars['Int']
 }
 
 export enum EventPhase {
@@ -646,11 +647,11 @@ export type EditEventIdeaMutation = { __typename: 'Mutation' } & {
     | { __typename: 'UnauthorizedResponse' }
 }
 
-export type DeletEventIdeaMutationVariables = Exact<{
+export type DeleteEventIdeaMutationVariables = Exact<{
   input: DeleteEventIdeaInput
 }>
 
-export type DeletEventIdeaMutation = { __typename: 'Mutation' } & {
+export type DeleteEventIdeaMutation = { __typename: 'Mutation' } & {
   deleteEventIdea:
     | ({ __typename: 'DeleteEventIdeaSuccess' } & Pick<
         DeleteEventIdeaSuccess,
@@ -661,7 +662,7 @@ export type DeletEventIdeaMutation = { __typename: 'Mutation' } & {
 
 export type ThemeSubmissionForm_EventFragment = { __typename: 'Event' } & Pick<
   Event,
-  'id' | 'eventPhase'
+  'id' | 'eventPhase' | 'eventIdeaLimit'
 > & {
     eventIdeas?: Maybe<
       Array<{ __typename: 'EventIdea' } & Pick<EventIdea, 'id' | 'name'>>
@@ -1225,6 +1226,7 @@ export const ThemeSubmissionForm_EventFragmentDoc = gql`
       id
       name
     }
+    eventIdeaLimit
   }
 `
 export const EventThemePage_EventFragmentDoc = gql`
@@ -1616,8 +1618,8 @@ export type EditEventIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions
   EditEventIdeaMutation,
   EditEventIdeaMutationVariables
 >
-export const DeletEventIdeaDocument = gql`
-  mutation DeletEventIdea($input: DeleteEventIdeaInput!) {
+export const DeleteEventIdeaDocument = gql`
+  mutation DeleteEventIdea($input: DeleteEventIdeaInput!) {
     deleteEventIdea(input: $input) {
       ... on DeleteEventIdeaSuccess {
         eventId
@@ -1625,48 +1627,48 @@ export const DeletEventIdeaDocument = gql`
     }
   }
 `
-export type DeletEventIdeaMutationFn = ApolloReactCommon.MutationFunction<
-  DeletEventIdeaMutation,
-  DeletEventIdeaMutationVariables
+export type DeleteEventIdeaMutationFn = ApolloReactCommon.MutationFunction<
+  DeleteEventIdeaMutation,
+  DeleteEventIdeaMutationVariables
 >
 
 /**
- * __useDeletEventIdeaMutation__
+ * __useDeleteEventIdeaMutation__
  *
- * To run a mutation, you first call `useDeletEventIdeaMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeletEventIdeaMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useDeleteEventIdeaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteEventIdeaMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [deletEventIdeaMutation, { data, loading, error }] = useDeletEventIdeaMutation({
+ * const [deleteEventIdeaMutation, { data, loading, error }] = useDeleteEventIdeaMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useDeletEventIdeaMutation(
+export function useDeleteEventIdeaMutation(
   baseOptions?: ApolloReactHooks.MutationHookOptions<
-    DeletEventIdeaMutation,
-    DeletEventIdeaMutationVariables
+    DeleteEventIdeaMutation,
+    DeleteEventIdeaMutationVariables
   >
 ) {
   return ApolloReactHooks.useMutation<
-    DeletEventIdeaMutation,
-    DeletEventIdeaMutationVariables
-  >(DeletEventIdeaDocument, baseOptions)
+    DeleteEventIdeaMutation,
+    DeleteEventIdeaMutationVariables
+  >(DeleteEventIdeaDocument, baseOptions)
 }
-export type DeletEventIdeaMutationHookResult = ReturnType<
-  typeof useDeletEventIdeaMutation
+export type DeleteEventIdeaMutationHookResult = ReturnType<
+  typeof useDeleteEventIdeaMutation
 >
-export type DeletEventIdeaMutationResult = ApolloReactCommon.MutationResult<
-  DeletEventIdeaMutation
+export type DeleteEventIdeaMutationResult = ApolloReactCommon.MutationResult<
+  DeleteEventIdeaMutation
 >
-export type DeletEventIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  DeletEventIdeaMutation,
-  DeletEventIdeaMutationVariables
+export type DeleteEventIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  DeleteEventIdeaMutation,
+  DeleteEventIdeaMutationVariables
 >
 export const GameWidgetDataDocument = gql`
   query GameWidgetData {

@@ -146,7 +146,7 @@ const buttonLightBackgroundHoverColor = 'rgba(255,255,255,0.2)'
 const buttonContainedColor = 'rgba(0, 0, 0, 0.87)'
 const cardBoxShadow = '0 0 6px 0px rgba(0,0,0,0.04)'
 const fadedWhite = 'rgba(255,255,255,0.9)'
-const fadedBlack = 'rgba(0, 0, 0, 0.38)'
+const fadedBlack = 'rgba(0, 0, 0, 0.44)'
 const textBlack = 'rgba(0, 0, 0, 0.87)'
 
 const commonTheme = {
@@ -272,7 +272,7 @@ const lightTheme: ThemeColors = {
     hoverBackground: styleVariables.cultured,
   },
   breadcrumbs: {
-    color: styleVariables.white,
+    color: textBlack,
   },
   page: {
     background: styleVariables.white,
@@ -640,7 +640,7 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       MuiTabs: {
         root: {
           boxShadow: '0 2px 3px 0px #0000001f',
-          // borderBottom: '1px solid #0000001f',
+          borderBottom: '1px solid #00000021',
         },
         indicator: {
           height: 3,
@@ -862,6 +862,10 @@ export const ICON_SCALING = [
   },
   {
     name: 'EmojiObjectsOutlinedIcon',
+    base: 1,
+  },
+  {
+    name: 'CloseIcon',
     base: 1,
   },
 ]

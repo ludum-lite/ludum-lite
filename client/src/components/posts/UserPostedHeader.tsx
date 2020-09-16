@@ -25,7 +25,7 @@ interface UserLinkProps {
 const UserLink = styled(Link).withConfig({
   shouldForwardProp: ignoreProps(['highlightUserLink']),
 })<UserLinkProps>`
-  margin-right: 4px;
+  margin-right: ${({ theme }) => theme.spacing(1)}px;
   ${({ highlightUserLink }) =>
     highlightUserLink &&
     css`

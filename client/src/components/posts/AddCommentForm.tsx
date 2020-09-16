@@ -2,11 +2,7 @@ import React from 'react'
 
 import { gql } from '@apollo/client'
 import CommentForm from './CommentForm'
-import {
-  useAddCommentMutation,
-  AddCommentForm_PostFragment,
-  AddCommentForm_PostFragmentDoc,
-} from '__generated__/client-types'
+import { useAddCommentMutation } from '__generated__/client-types'
 
 interface Props {
   postId: number
@@ -25,23 +21,16 @@ export default function AddCommentForm({ className, postId }: Props) {
     onCompleted() {
       setBody('')
     },
-    update(store, { data }) {
-      const postCacheKey = `Post:${postId}`
-
+    update(cache, { data }) {
       if (data?.addComment.__typename === 'AddCommentSuccess') {
         const comment = data.addComment.comment
 
-        const readData = store.readFragment<AddCommentForm_PostFragment>({
-          id: postCacheKey,
-          fragment: AddCommentForm_PostFragmentDoc,
-        })
-
-        store.writeFragment({
-          id: postCacheKey,
-          fragment: AddCommentForm_PostFragmentDoc,
-          data: {
-            id: postId,
-            comments: [...(readData?.comments || []), comment],
+        cache.modify({
+          id: `Post:${postId}`,
+          fields: {
+            comments(cachedComments) {
+              return [...(cachedComments || []), comment]
+            },
           },
         })
       }

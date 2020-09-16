@@ -462,6 +462,7 @@ export type Event = {
   startDate: Scalars['String'];
   endDate: Scalars['String'];
   eventIdeas?: Maybe<Array<EventIdea>>;
+  eventIdeaLimit: Scalars['Int'];
 };
 
 export enum EventPhase {
@@ -1153,6 +1154,7 @@ export type EventResolvers<ContextType = any, ParentType extends ResolversParent
   startDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   endDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   eventIdeas?: Resolver<Maybe<Array<ResolversTypes['EventIdea']>>, ParentType, ContextType>,
+  eventIdeaLimit?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;
 

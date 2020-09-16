@@ -346,6 +346,7 @@ export const typeDefs = gql`
     startDate: String!
     endDate: String!
     eventIdeas: [EventIdea!]
+    eventIdeaLimit: Int!
   }
 
   enum EventPhase {

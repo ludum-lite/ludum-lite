@@ -45,7 +45,7 @@ export default function useEditablePreviewActionRow({
 }: {
   value: string
   isSaving?: boolean
-  onSubmit: () => void
+  onSubmit: Function
   onCancel?: () => void
 }) {
   const [state, setState] = React.useState<State>('write')
@@ -91,7 +91,7 @@ export default function useEditablePreviewActionRow({
             } catch (e) {}
           }}
         >
-          Submit
+          Save
         </Button>
       </ActionRow>
     )

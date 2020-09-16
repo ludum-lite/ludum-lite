@@ -23,6 +23,7 @@ export type ApiEventDto = {
     'event-theme': string
     'event-start': string
     'event-end': string
+    'theme-idea-limit': string
   }
 }
 
@@ -38,6 +39,7 @@ function apiEventToEvent(event: ApiEventDto): Event {
     eventPhase: parseInt(event.meta['theme-mode']) as EventPhase,
     startDate: event.meta['event-start'],
     endDate: event.meta['event-end'],
+    eventIdeaLimit: parseInt(event.meta['theme-idea-limit']),
   }
 }
 

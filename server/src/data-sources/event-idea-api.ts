@@ -3,7 +3,7 @@ import { DataSourceConfig } from 'apollo-datasource'
 import sort from 'dataloader-sort'
 import BaseAPI from './base-api'
 import { Context } from './context'
-import { maxBy } from 'lodash'
+import { maxBy, last } from 'lodash'
 import {
   EventIdea,
   JoinEventResponse,
@@ -54,8 +54,6 @@ export default class EventIdeaAPI extends BaseAPI {
 
     const ideas = apiEventIdeasToEventIdeas(response.ideas)
 
-    console.log('getEventIdeas', ideas)
-
     return ideas
   }
 
@@ -76,6 +74,10 @@ export default class EventIdeaAPI extends BaseAPI {
     eventId,
     name,
   }: AddEventIdeaInput): Promise<AddEventIdeaResponse> {
+    // TODO Get the event and make sure there aren't took many theme ideas already.
+    // The create endpoint simply returns the existing ideas without error even if
+    // you try to add too many. This isn't a problem now since the client can limit the number
+
     try {
       const response = await this.post(`vx/theme/idea/add/${eventId}`, {
         idea: name,
@@ -84,7 +86,7 @@ export default class EventIdeaAPI extends BaseAPI {
       return {
         __typename: 'AddEventIdeaSuccess',
         success: true,
-        eventIdea: apiEventIdeasToEventIdeas(response.ideas)[0],
+        eventIdea: last(apiEventIdeasToEventIdeas(response.ideas)) as EventIdea,
       }
     } catch (e) {
       console.error(e)
