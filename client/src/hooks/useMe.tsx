@@ -17,6 +17,7 @@ const init: UseMeReturnType = {
 export const useMe = singletonHook(init, () => {
   const { data, loading } = useGetMeDataQuery({
     onCompleted(data) {
+      console.log('got me')
       if (data.me.__typename === 'UnauthorizedResponse') {
         isLoggedInVar(false)
         localStorage.removeItem('token')

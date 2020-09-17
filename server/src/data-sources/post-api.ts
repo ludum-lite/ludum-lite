@@ -122,9 +122,9 @@ export default class PostAPI extends BaseAPI {
 
       const ids = sortedFavoriteIds?.slice(offset, offset + limit) || []
 
-      const posts = (await this.context.loaders.postLoader.loadMany(
-        ids
-      )) as Post[]
+      const posts = (
+        await this.context.loaders.postLoader.loadMany(ids)
+      ).filter(Boolean) as Post[]
 
       return {
         __typename: 'SearchPostResponse',

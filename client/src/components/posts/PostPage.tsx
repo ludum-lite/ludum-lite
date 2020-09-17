@@ -33,7 +33,7 @@ import {
   useEditPostMutation,
   usePublishPostMutation,
 } from '__generated__/client-types'
-import useLocalStorage from 'hooks/useLocalStorage'
+import useUserLocalStorage from 'hooks/useUserLocalStorage'
 import IconButton from 'components/common/mui/IconButton'
 import Icon from 'components/common/mui/Icon'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
@@ -176,7 +176,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
     reset,
   } = useForm<FormInputs>()
 
-  const [commentSortBy, setSortBy] = useLocalStorage(
+  const [commentSortBy, setSortBy] = useUserLocalStorage(
     'comments_sortBy',
     CommentSortBy.DatePostedNewest
   )
@@ -196,7 +196,6 @@ export default function PostPage({ isEditing }: PostPageProps) {
 
   const onChangeSortBy = React.useCallback(
     (sortBy: CommentSortBy) => {
-      localStorage.setItem('comments_sortBy', JSON.stringify(sortBy))
       setSortBy(sortBy)
     },
     [setSortBy]

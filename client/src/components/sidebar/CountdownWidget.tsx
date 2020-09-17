@@ -16,7 +16,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import CheckCircle from '@material-ui/icons/CheckCircle'
 import RadioButtonChecked from '@material-ui/icons/RadioButtonChecked'
-import useLocalStorage from 'hooks/useLocalStorage'
+import useUserLocalStorage from 'hooks/useUserLocalStorage'
 import RadioButtonUnchecked from '@material-ui/icons/RadioButtonUnchecked'
 import {
   EventPhaseToLabel,
@@ -133,11 +133,11 @@ export default function CountdownWidget({ events, className }: Props) {
     ? findNextPhase(selectedEvent.timeline, date)
     : undefined
   const isSelectedEventOver = !nextPhase
-  const [countdownWidgetExpanded, setCountdownWidgetExpanded] = useLocalStorage(
-    'countdownWidgetExpanded',
-    false
-  )
-  const [preferredEventType, setPreferredEventType] = useLocalStorage<
+  const [
+    countdownWidgetExpanded,
+    setCountdownWidgetExpanded,
+  ] = useUserLocalStorage('countdownWidgetExpanded', false)
+  const [preferredEventType, setPreferredEventType] = useUserLocalStorage<
     'compo' | 'jam'
   >('countDownPreferredEventType', 'compo')
   const forceShowJam =

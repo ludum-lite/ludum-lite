@@ -13,11 +13,12 @@ const init: UseMeReturnType = {
 }
 
 export const useFeaturedEvent = singletonHook(init, () => {
-  const { data } = useGetFeaturedEventDataQuery()
+  const { data, loading } = useGetFeaturedEventDataQuery()
 
   return {
     featuredEvent:
       data?.featuredEvent.__typename === 'Event' ? data.featuredEvent : null,
+    hasLoaded: !loading,
   }
 })
 

@@ -16,7 +16,7 @@ import {
   DialogContentText,
   DialogActions,
 } from '@material-ui/core'
-import useLocalStorage from 'hooks/useLocalStorage'
+import useUserLocalStorage from 'hooks/useUserLocalStorage'
 import { useLogin } from 'hooks/useLogin'
 import GameDetailListItem from './GameDetailListItem'
 import Input from 'components/common/mui/Input'
@@ -76,7 +76,7 @@ export default function GameWidget({ className }: Props) {
     },
   })
 
-  const [, setPreferredEventType] = useLocalStorage<'compo' | 'jam' | null>(
+  const [, setPreferredEventType] = useUserLocalStorage<'compo' | 'jam' | null>(
     'currentEventPreferredEventType',
     null
   )

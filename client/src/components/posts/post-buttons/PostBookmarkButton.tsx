@@ -7,6 +7,7 @@ import BookmarkIcon from '@material-ui/icons/Bookmark'
 import ToggleButton from 'components/common/ToggleButton'
 import { usePostBookmarkButton_GetFavoritedIdsQuery } from '__generated__/client-types'
 import { Background } from 'components/common/mui/Button'
+import useUserLocalStorage from 'hooks/useUserLocalStorage'
 
 interface Props {
   postId: number
@@ -14,6 +15,7 @@ interface Props {
 }
 export default function PostBookmarkButton({ postId, background }: Props) {
   const theme = useTheme()
+  const [, setFavoritedIds] = useUserLocalStorage<number[]>('favoritedIds', [])
   const { data: globalData } = usePostBookmarkButton_GetFavoritedIdsQuery()
   const favoritedIds = globalData?.favoritedIds
   const hasFavoritedPost = !!favoritedIds?.includes(postId)
@@ -37,10 +39,7 @@ export default function PostBookmarkButton({ postId, background }: Props) {
         }
 
         favoritedIdsVar(newFavoritedIds)
-        window.localStorage.setItem(
-          'favoritedIds',
-          JSON.stringify(newFavoritedIds)
-        )
+        setFavoritedIds(newFavoritedIds)
       }}
     />
   )

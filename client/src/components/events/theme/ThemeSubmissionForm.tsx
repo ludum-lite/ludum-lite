@@ -200,6 +200,8 @@ export default function ThemeSubmissionForm({ event }: Props) {
               fullWidth
               inputRef={register({ required: true })}
               name="name"
+              autoComplete="randomtstring"
+              autoCorrect="randomstring"
             />
             <SubmitButton
               background="white"

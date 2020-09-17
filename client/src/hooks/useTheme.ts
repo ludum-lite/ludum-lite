@@ -3,7 +3,7 @@ import { singletonHook } from 'react-singleton-hook'
 import { ThemeMode } from 'utils/types'
 import { createGlobalStyle, css } from 'styled-components/macro'
 import { createMuiTheme, Theme, fade } from '@material-ui/core'
-import useLocalStorage from './useLocalStorage'
+import useUserLocalStorage from './useUserLocalStorage'
 
 type ButtonThemeColors = Partial<{
   color: string
@@ -653,10 +653,11 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
           transition: 'none',
           color: 'rgba(0, 0, 0, 0.78)',
           borderRadius: defaultTheme.shape.borderRadius,
-        },
-        sizeSmall: {
           padding: 6,
         },
+        // sizeSmall: {
+        //   padding: 2,
+        // },
       },
       MuiListItem: {
         button: {
@@ -931,7 +932,7 @@ const init: UseThemeReturnType = {
 }
 
 export const useTheme = singletonHook(init, () => {
-  const [themeMode, setThemeMode] = useLocalStorage<ThemeMode>(
+  const [themeMode, setThemeMode] = useUserLocalStorage<ThemeMode>(
     'themeMode',
     'dark'
   )

@@ -44,7 +44,14 @@ export default function EventThemePage({ event }: Props) {
         </ThemeSubPage>
       )
     } else if (event.eventPhase === EventPhase.ThemeSlaughter) {
-      return <div />
+      return (
+        
+        <ThemeSubPage title="Theme Slaughter Round">
+          <ThemeSubmissionForm
+            event={filter(ThemeSubmissionForm_EventFragmentDoc, event)}
+          />
+        </ThemeSubPage>
+      )
     } else if (event.eventPhase === EventPhase.ThemeVoting) {
       return <div />
     } else if (event.eventPhase === EventPhase.EventRunning) {

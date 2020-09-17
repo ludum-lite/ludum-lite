@@ -14,6 +14,7 @@ import App from 'components/App'
 import * as serviceWorker from './serviceWorker'
 
 import StylesProvider from 'providers/StylesProvider'
+import UserLoadedCheck from 'components/UserLoadedCheck'
 
 /*****************/
 /* Apollo Client */
@@ -83,19 +84,21 @@ declare global {
 const Root = () => {
   return (
     <ApolloProvider client={client}>
-      <StylesProvider>
-        <SnackbarProvider
-          anchorOrigin={{
-            horizontal: 'right',
-            vertical: 'bottom',
-          }}
-        >
-          <BrowserRouter>
-            <SingletonHooksContainer />
-            <App />
-          </BrowserRouter>
-        </SnackbarProvider>
-      </StylesProvider>
+      <BrowserRouter>
+        <SingletonHooksContainer />
+        <UserLoadedCheck>
+          <StylesProvider>
+            <SnackbarProvider
+              anchorOrigin={{
+                horizontal: 'right',
+                vertical: 'bottom',
+              }}
+            >
+              <App />
+            </SnackbarProvider>
+          </StylesProvider>
+        </UserLoadedCheck>
+      </BrowserRouter>
     </ApolloProvider>
   )
 }

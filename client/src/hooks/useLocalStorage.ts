@@ -4,22 +4,25 @@ export default function useLocalStorage<T>(key: string, initialValue: T) {
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
   const storedValueRef = React.useRef<T | null>(null)
-  const [storedValue, setStoredValue] = React.useState<T>(() => {
+  const [cachedInitialValue] = React.useState(initialValue)
+  const [storedValue, setStoredValue] = React.useState<T>(initialValue)
+
+  React.useEffect(() => {
     try {
       // Get from local storage by key
       const item = window.localStorage.getItem(key)
-      // Parse stored json or if none return initialValue
-      const calculatedStoredValue = item ? JSON.parse(item) : initialValue
+      // Parse stored json or if none return cachedInitialValue
+      const calculatedStoredValue = item ? JSON.parse(item) : cachedInitialValue
       storedValueRef.current = calculatedStoredValue
-      return calculatedStoredValue
+      setStoredValue(calculatedStoredValue)
     } catch (error) {
-      // If error also return initialValue
+      // If error also return cachedInitialValue
       console.log(error)
-      const calculatedStoredValue = initialValue
+      const calculatedStoredValue = cachedInitialValue
       storedValueRef.current = calculatedStoredValue
-      return calculatedStoredValue
+      setStoredValue(calculatedStoredValue)
     }
-  })
+  }, [key, cachedInitialValue])
 
   // Return a wrapped version of useState's setter function that ...
   // ... persists the new value to localStorage.

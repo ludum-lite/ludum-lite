@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import styled, { css } from 'styled-components/macro'
-import { Routes, Route, Navigate, useParams } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import Sidebar from './sidebar/Sidebar'
 import RoutesWithFallback from './common/RoutesWithFallback'
 import PostsPage from 'components/posts/PostsPage'
@@ -10,7 +10,7 @@ import { useLogin } from 'hooks/useLogin'
 import { useHasNavigatedWithin } from 'hooks/useHasNavigatedWithin'
 import { useMe } from 'hooks/useMe'
 import CountdownWidget from './sidebar/CountdownWidget'
-import { events, ignoreProps, getValidValue } from 'utils'
+import { events, ignoreProps } from 'utils'
 import TeamWidget from './team-widget/TeamWidget'
 import GameWidget from './game-widget/GameWidget'
 import InvitePage from './team-widget/InvitePage'
@@ -23,14 +23,13 @@ import { AppBar, Toolbar, Hidden } from '@material-ui/core'
 import IconButton from 'components/common/mui/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import { useSidebarOpen } from 'hooks/useSidebarOpen'
-import useLocalStorage from 'hooks/useLocalStorage'
 import Icon from './common/mui/Icon'
 import { borderRadius } from 'polished'
 import { useFeaturedEvent } from 'hooks/useFeaturedEvent'
-import Typography from './common/mui/Typography'
 import NotificationBar from './notification-bar/NotificationBar'
 import EventPage from './events/EventPage'
 import { ROUTES } from './routes/routes'
+import useSelectedWidget from 'hooks/useSelectedWidget'
 
 const Root = styled.div`
   min-height: 100vh;
@@ -161,33 +160,15 @@ const WidgetsContainer = styled.div`
   }
 `
 
-type SelectableWidgets = 'countdown' | 'game' | 'team'
-
 interface Props {}
 export default function App({}: Props) {
-  const [selectedWidget, setSelectedWidget] = useLocalStorage<
-    SelectableWidgets
-  >('selectedWidget', 'countdown')
   useHasNavigatedWithin()
+  const [selectedWidget, setSelectedWidget] = useSelectedWidget()
   const { setIsSidebarOpen } = useSidebarOpen()
   const [postOverlayed] = usePostOverlayed()
   const { isLoggedIn, loginComponent } = useLogin()
   const { hasLoaded } = useMe()
   const { featuredEvent } = useFeaturedEvent()
-
-  React.useEffect(() => {
-    const validSelectedWidget = getValidValue(
-      {
-        countdown: true,
-        game: isLoggedIn,
-        team:
-          typeof (isLoggedIn && featuredEvent?.currentUserGameId) === 'number',
-      },
-      selectedWidget
-    )
-
-    setSelectedWidget(validSelectedWidget || 'countdown')
-  }, [featuredEvent, isLoggedIn, selectedWidget, setSelectedWidget])
 
   const onClickLeftIcon = React.useCallback(() => {
     setIsSidebarOpen(true)

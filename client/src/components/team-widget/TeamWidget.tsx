@@ -268,7 +268,7 @@ export default function GameWidget({ className }: Props) {
               </Typography>
               <IconButton
                 background="globalNav"
-                size="small"
+                // size="small"
                 {...bindTrigger(popupState)}
               >
                 <Icon icon={MoreHorizIcon} />
