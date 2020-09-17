@@ -461,6 +461,7 @@ export type Event = {
   eventPhase: EventPhase;
   startDate: Scalars['String'];
   endDate: Scalars['String'];
+  eventIdeas?: Maybe<Array<EventIdea>>;
   myEventIdeas?: Maybe<Array<EventIdea>>;
   eventIdeaLimit: Scalars['Int'];
 };
@@ -1154,6 +1155,7 @@ export type EventResolvers<ContextType = any, ParentType extends ResolversParent
   eventPhase?: Resolver<ResolversTypes['EventPhase'], ParentType, ContextType>,
   startDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   endDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  eventIdeas?: Resolver<Maybe<Array<ResolversTypes['EventIdea']>>, ParentType, ContextType>,
   myEventIdeas?: Resolver<Maybe<Array<ResolversTypes['EventIdea']>>, ParentType, ContextType>,
   eventIdeaLimit?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,

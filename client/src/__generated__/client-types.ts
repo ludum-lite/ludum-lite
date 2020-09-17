@@ -449,6 +449,7 @@ export type Event = {
   startDate: Scalars['String']
   endDate: Scalars['String']
   eventIdeas?: Maybe<Array<EventIdea>>
+  myEventIdeas?: Maybe<Array<EventIdea>>
   eventIdeaLimit: Scalars['Int']
 }
 
@@ -474,6 +475,7 @@ export type EventIdea = {
   __typename: 'EventIdea'
   id: Scalars['Int']
   name: Scalars['String']
+  myVote?: Maybe<Scalars['Int']>
 }
 
 export type AddEventIdeaInput = {
@@ -621,7 +623,19 @@ export type EventThemePage_EventFragment = { __typename: 'Event' } & Pick<
   Event,
   'id' | 'eventPhase'
 > &
-  ThemeSubmissionForm_EventFragment
+  ThemeSubmissionForm_EventFragment &
+  ThemeSlaughterForm_EventFragment
+
+export type ThemeSlaughterForm_EventFragment = { __typename: 'Event' } & Pick<
+  Event,
+  'id' | 'eventPhase'
+> & {
+    eventIdeas?: Maybe<
+      Array<
+        { __typename: 'EventIdea' } & Pick<EventIdea, 'id' | 'name' | 'myVote'>
+      >
+    >
+  }
 
 export type AddEventIdeaMutationVariables = Exact<{
   input: AddEventIdeaInput
@@ -664,7 +678,7 @@ export type ThemeSubmissionForm_EventFragment = { __typename: 'Event' } & Pick<
   Event,
   'id' | 'eventPhase' | 'eventIdeaLimit'
 > & {
-    eventIdeas?: Maybe<
+    myEventIdeas?: Maybe<
       Array<{ __typename: 'EventIdea' } & Pick<EventIdea, 'id' | 'name'>>
     >
   }
@@ -1222,11 +1236,22 @@ export const ThemeSubmissionForm_EventFragmentDoc = gql`
   fragment ThemeSubmissionForm_event on Event {
     id
     eventPhase
-    eventIdeas {
+    myEventIdeas {
       id
       name
     }
     eventIdeaLimit
+  }
+`
+export const ThemeSlaughterForm_EventFragmentDoc = gql`
+  fragment ThemeSlaughterForm_event on Event {
+    id
+    eventPhase
+    eventIdeas {
+      id
+      name
+      myVote
+    }
   }
 `
 export const EventThemePage_EventFragmentDoc = gql`
@@ -1234,8 +1259,10 @@ export const EventThemePage_EventFragmentDoc = gql`
     id
     eventPhase
     ...ThemeSubmissionForm_event
+    ...ThemeSlaughterForm_event
   }
   ${ThemeSubmissionForm_EventFragmentDoc}
+  ${ThemeSlaughterForm_EventFragmentDoc}
 `
 export const AddCommentForm_PostFragmentDoc = gql`
   fragment AddCommentForm_post on Post {

@@ -5,12 +5,14 @@ import {
   EventThemePage_EventFragment,
   EventPhase,
   ThemeSubmissionForm_EventFragmentDoc,
+  ThemeSlaughterForm_EventFragmentDoc,
 } from '__generated__/client-types'
 import { filter } from 'graphql-anywhere'
 import ThemeSubmissionForm from './theme/ThemeSubmissionForm'
 import { useMe } from 'hooks/useMe'
 import { Typography } from '@material-ui/core'
 import ThemeSubPage from './theme/ThemeSubPage'
+import ThemeSlaughterForm from './theme/ThemeSlaughterForm'
 
 const LoginMessage = styled.div`
   display: flex;
@@ -45,10 +47,9 @@ export default function EventThemePage({ event }: Props) {
       )
     } else if (event.eventPhase === EventPhase.ThemeSlaughter) {
       return (
-        
         <ThemeSubPage title="Theme Slaughter Round">
-          <ThemeSubmissionForm
-            event={filter(ThemeSubmissionForm_EventFragmentDoc, event)}
+          <ThemeSlaughterForm
+            event={filter(ThemeSlaughterForm_EventFragmentDoc, event)}
           />
         </ThemeSubPage>
       )
@@ -72,7 +73,9 @@ gql`
     eventPhase
 
     ...ThemeSubmissionForm_event
+    ...ThemeSlaughterForm_event
   }
 
   ${ThemeSubmissionForm_EventFragmentDoc}
+  ${ThemeSlaughterForm_EventFragmentDoc}
 `

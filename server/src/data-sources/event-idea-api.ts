@@ -47,9 +47,15 @@ export default class EventIdeaAPI extends BaseAPI {
   //     })
   //   }
   // }
+  async getEventIdeas(eventId: number): Promise<EventIdea[]> {
+    const response = await this.get(`vx/theme/idea/vote/get/${eventId}`)
+
+    const ideas = apiEventIdeasToEventIdeas(response.ideas)
+
+    return ideas
+  }
 
   async getMyEventIdeas(eventId: number): Promise<EventIdea[]> {
-    console.log('test')
     const response = await this.get(`vx/theme/idea/getmy/${eventId}`)
 
     const ideas = apiEventIdeasToEventIdeas(response.ideas)

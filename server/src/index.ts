@@ -126,6 +126,9 @@ const resolvers: Resolvers<Context> = {
     myEventIdeas(event, __, context) {
       return context.dataSources.eventIdeaApi.getMyEventIdeas(event.id)
     },
+    eventIdeas(event, __, context) {
+      return context.dataSources.eventIdeaApi.getEventIdeas(event.id)
+    },
   },
   Me: {
     lovedPosts(_, __, context) {

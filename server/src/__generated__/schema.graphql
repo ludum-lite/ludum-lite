@@ -304,6 +304,7 @@ type Event {
   eventPhase: EventPhase!
   startDate: String!
   endDate: String!
+  eventIdeas: [EventIdea!]
   myEventIdeas: [EventIdea!]
   eventIdeaLimit: Int!
 }
