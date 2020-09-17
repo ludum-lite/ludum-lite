@@ -304,7 +304,7 @@ type Event {
   eventPhase: EventPhase!
   startDate: String!
   endDate: String!
-  eventIdeas: [EventIdea!]
+  myEventIdeas: [EventIdea!]
   eventIdeaLimit: Int!
 }
 
@@ -328,6 +328,7 @@ union JoinEventResponse = JoinEventSuccess | UnauthorizedResponse
 type EventIdea {
   id: Int!
   name: String!
+  myVote: Int
 }
 
 input AddEventIdeaInput {

@@ -461,7 +461,7 @@ export type Event = {
   eventPhase: EventPhase;
   startDate: Scalars['String'];
   endDate: Scalars['String'];
-  eventIdeas?: Maybe<Array<EventIdea>>;
+  myEventIdeas?: Maybe<Array<EventIdea>>;
   eventIdeaLimit: Scalars['Int'];
 };
 
@@ -487,6 +487,7 @@ export type EventIdea = {
    __typename: 'EventIdea';
   id: Scalars['Int'];
   name: Scalars['String'];
+  myVote?: Maybe<Scalars['Int']>;
 };
 
 export type AddEventIdeaInput = {
@@ -1153,7 +1154,7 @@ export type EventResolvers<ContextType = any, ParentType extends ResolversParent
   eventPhase?: Resolver<ResolversTypes['EventPhase'], ParentType, ContextType>,
   startDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   endDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  eventIdeas?: Resolver<Maybe<Array<ResolversTypes['EventIdea']>>, ParentType, ContextType>,
+  myEventIdeas?: Resolver<Maybe<Array<ResolversTypes['EventIdea']>>, ParentType, ContextType>,
   eventIdeaLimit?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;
@@ -1172,6 +1173,7 @@ export type JoinEventResponseResolvers<ContextType = any, ParentType extends Res
 export type EventIdeaResolvers<ContextType = any, ParentType extends ResolversParentTypes['EventIdea'] = ResolversParentTypes['EventIdea']> = ResolversObject<{
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  myVote?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;
 

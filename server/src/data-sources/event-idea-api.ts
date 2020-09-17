@@ -48,7 +48,7 @@ export default class EventIdeaAPI extends BaseAPI {
   //   }
   // }
 
-  async getEventIdeas(eventId: number): Promise<EventIdea[]> {
+  async getMyEventIdeas(eventId: number): Promise<EventIdea[]> {
     console.log('test')
     const response = await this.get(`vx/theme/idea/getmy/${eventId}`)
 
@@ -57,14 +57,14 @@ export default class EventIdeaAPI extends BaseAPI {
     return ideas
   }
 
-  async getEventIdea({
+  async getMyEventIdea({
     eventId,
     id,
   }: {
     eventId: number
     id: number
   }): Promise<EventIdea | undefined> {
-    const ideas = await this.getEventIdeas(eventId)
+    const ideas = await this.getMyEventIdeas(eventId)
     const idea = ideas.find((idea) => idea.id === id)
 
     return idea

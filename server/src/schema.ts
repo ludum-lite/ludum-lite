@@ -345,7 +345,9 @@ export const typeDefs = gql`
     eventPhase: EventPhase!
     startDate: String!
     endDate: String!
-    eventIdeas: [EventIdea!]
+    # // Renaming 'eventIdeas' to 'myEventIdeas'. Readding 'eventIdeas' but it's all the ideas. And updating event idea to have 'myVote'
+    # eventIdeas: [EventIdea!]
+    myEventIdeas: [EventIdea!]
     eventIdeaLimit: Int!
   }
 
@@ -373,6 +375,7 @@ export const typeDefs = gql`
   type EventIdea {
     id: Int!
     name: String!
+    myVote: Int
   }
 
   # Add event idea

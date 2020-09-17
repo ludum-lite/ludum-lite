@@ -97,8 +97,8 @@ export default function ThemeSubmissionForm({ event }: Props) {
   const onSave = React.useMemo(() => {
     return handleSubmit(async (data) => {
       if (
-        event.eventIdeas &&
-        event.eventIdeas.some(
+        event.myEventIdeas &&
+        event.myEventIdeas.some(
           (eventIdea) =>
             eventIdea.name.toLowerCase() === data.name.toLowerCase()
         )
@@ -125,7 +125,7 @@ export default function ThemeSubmissionForm({ event }: Props) {
             cache.modify({
               id: `Event:${event.id}`,
               fields: {
-                eventIdeas(cachedEventIdeasRef) {
+                myEventIdeas(cachedEventIdeasRef) {
                   return [...cachedEventIdeasRef, eventIdea]
                 },
               },
@@ -134,11 +134,11 @@ export default function ThemeSubmissionForm({ event }: Props) {
         },
       })
     })
-  }, [handleSubmit, event.eventIdeas, event.id, addEventIdea, setError])
+  }, [handleSubmit, event.myEventIdeas, event.id, addEventIdea, setError])
 
   const suggestions = React.useMemo(() => {
-    if (event.eventIdeas && event.eventIdeas.length > 0) {
-      return event.eventIdeas.map((eventIdea) => (
+    if (event.myEventIdeas && event.myEventIdeas.length > 0) {
+      return event.myEventIdeas.map((eventIdea) => (
         <Suggestion key={eventIdea.id}>
           <SuggestionText textColor="white">{eventIdea.name}</SuggestionText>
           <IconButton
@@ -160,7 +160,7 @@ export default function ThemeSubmissionForm({ event }: Props) {
                     cache.modify({
                       id: `Event:${data.deleteEventIdea.eventId}`,
                       fields: {
-                        eventIdeas(cachedEventIdeasRef, { readField }) {
+                        myEventIdeas(cachedEventIdeasRef, { readField }) {
                           return cachedEventIdeasRef.filter(
                             (cachedEventIdeaRef: EventIdea) => {
                               return (
@@ -182,9 +182,9 @@ export default function ThemeSubmissionForm({ event }: Props) {
         </Suggestion>
       ))
     }
-  }, [deleteEventIdea, event.eventIdeas, event.id])
+  }, [deleteEventIdea, event.myEventIdeas, event.id])
 
-  const numEventIdeas = event.eventIdeas?.length || 0
+  const numEventIdeas = event.myEventIdeas?.length || 0
 
   return (
     <Root>
@@ -258,7 +258,7 @@ gql`
   fragment ThemeSubmissionForm_event on Event {
     id
     eventPhase
-    eventIdeas {
+    myEventIdeas {
       id
       name
     }

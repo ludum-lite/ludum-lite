@@ -123,8 +123,8 @@ const resolvers: Resolvers<Context> = {
 
       return null
     },
-    eventIdeas(event, __, context) {
-      return context.dataSources.eventIdeaApi.getEventIdeas(event.id)
+    myEventIdeas(event, __, context) {
+      return context.dataSources.eventIdeaApi.getMyEventIdeas(event.id)
     },
   },
   Me: {
@@ -215,7 +215,7 @@ const resolvers: Resolvers<Context> = {
   },
   // DeleteEventIdeaSuccess: {
   //   async eventIdea(response, __, context) {
-  //     const eventIdea = await context.dataSources.eventIdeaApi.getEventIdea({
+  //     const eventIdea = await context.dataSources.eventIdeaApi.getMyEventIdea({
   //       eventId: response.eventId,
   //       id: response.eventIdeaId,
   //     })
