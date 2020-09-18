@@ -38,25 +38,51 @@ const StyledButton = styled(MuiButton).withConfig({
     `
   }}
 
-  ${({ theme, customColor }) => {
-    if (customColor === 'success') {
-      return css`
-        background: ${theme.themeColors.button.color.successBackground};
-        color: white;
+  ${({ theme, variant, customColor }) => {
+    if (variant === 'contained') {
+      if (customColor === 'success') {
+        return css`
+          background: ${theme.themeColors.button.color.contained
+            .successBackground};
+          color: white;
 
-        &:hover {
-          background: ${theme.themeColors.button.color.successHoverBackground};
-        }
-      `
-    } else if (customColor === 'error') {
-      return css`
-        background: ${theme.themeColors.button.color.errorBackground};
-        color: white;
+          &:hover {
+            background: ${theme.themeColors.button.color.contained
+              .successHoverBackground};
+          }
+        `
+      } else if (customColor === 'error') {
+        return css`
+          background: ${theme.themeColors.button.color.contained
+            .errorBackground};
+          color: white;
 
-        &:hover {
-          background: ${theme.themeColors.button.color.errorHoverBackground};
-        }
-      `
+          &:hover {
+            background: ${theme.themeColors.button.color.contained
+              .errorHoverBackground};
+          }
+        `
+      }
+    } else if (variant === 'text') {
+      if (customColor === 'success') {
+        return css`
+          color: ${theme.themeColors.button.color.text.successColor};
+
+          &:hover {
+            background: ${theme.themeColors.button.color.text
+              .successHoverBackground};
+          }
+        `
+      } else if (customColor === 'error') {
+        return css`
+          color: ${theme.themeColors.button.color.text.errorColor};
+
+          &:hover {
+            background: ${theme.themeColors.button.color.text
+              .errorHoverBackground};
+          }
+        `
+      }
     }
   }}
 

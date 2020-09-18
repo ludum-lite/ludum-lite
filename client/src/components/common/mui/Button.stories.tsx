@@ -75,7 +75,6 @@ const INVALID_COMBINATIONS: PropCombination = {
     text: {
       primary: true,
       secondary: true,
-      success: true,
       error: true,
     },
     outlined: {
@@ -84,15 +83,10 @@ const INVALID_COMBINATIONS: PropCombination = {
       success: true,
       error: true,
     },
-    contained: {
-      error: true,
-    },
   },
   contextualNav: {
     text: {
       primary: true,
-      success: true,
-      error: true,
     },
     outlined: {
       default: true,
@@ -109,7 +103,6 @@ const INVALID_COMBINATIONS: PropCombination = {
     text: {
       primary: true,
       secondary: true,
-      success: true,
       error: true,
     },
     outlined: {
@@ -122,8 +115,6 @@ const INVALID_COMBINATIONS: PropCombination = {
   white: {
     text: {
       primary: true,
-      success: true,
-      error: true,
     },
     outlined: {
       primary: true,

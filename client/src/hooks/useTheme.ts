@@ -31,6 +31,7 @@ export type ThemeColors = {
   borderColor: string
   fadedWhite: string
   fadedBlack: string
+  cardBoxShadow: string
   cardBoxShadow_bottomHeavy: string
   appBar: {
     background: string
@@ -57,10 +58,27 @@ export type ThemeColors = {
       white: ButtonThemeColors
     }
     color: {
-      errorBackground: string
-      errorHoverBackground: string
-      successBackground: string
-      successHoverBackground: string
+      text: {
+        errorColor: string
+        errorHoverBackground: string
+        successColor: string
+        successHoverBackground: string
+      }
+      contained: {
+        errorBackground: string
+        errorHoverBackground: string
+        successBackground: string
+        successHoverBackground: string
+      }
+    }
+  }
+  rows: {
+    background: {
+      white: {
+        background: string
+        evenBackground: string
+        oddBackground: string
+      }
     }
   }
   dropOverlay: {
@@ -127,6 +145,9 @@ export type ThemeColors = {
     fadedTextColor: string
     dateTextColor: string
   }
+  slaughterSuggestion: {
+    background: string
+  }
   palette: {
     primary: {
       dark?: string
@@ -159,6 +180,8 @@ const fadedBlack = 'rgba(0, 0, 0, 0.44)'
 const textBlack = 'rgba(0, 0, 0, 0.87)'
 
 const commonTheme = {
+  cardBoxShadow,
+  cardBoxShadow_bottomHeavy,
   dropOverlay: {
     borderColor: 'rgb(32, 208, 0)',
     backgroundColor: 'rgba(72, 208, 15, 0.12)',
@@ -203,7 +226,6 @@ const lightTheme: ThemeColors = {
   fadedWhite,
   fadedBlack,
   borderColor,
-  cardBoxShadow_bottomHeavy,
   appBar: {
     background: styleVariables.sapphireBlue,
   },
@@ -251,10 +273,27 @@ const lightTheme: ThemeColors = {
       white: {},
     },
     color: {
-      errorBackground: styleVariables.red,
-      errorHoverBackground: styleVariables.redDark,
-      successBackground: styleVariables.green,
-      successHoverBackground: styleVariables.greenDark,
+      text: {
+        errorColor: styleVariables.red,
+        errorHoverBackground: 'rgb(255, 59, 78, 21%)',
+        successColor: 'rgb(73, 191, 131)',
+        successHoverBackground: 'rgb(73, 191, 131, 26%)',
+      },
+      contained: {
+        errorBackground: styleVariables.red,
+        errorHoverBackground: styleVariables.redDark,
+        successBackground: styleVariables.green,
+        successHoverBackground: styleVariables.greenDark,
+      },
+    },
+  },
+  rows: {
+    background: {
+      white: {
+        background: styleVariables.ghostWhite,
+        evenBackground: 'rgb(232, 247, 255)',
+        oddBackground: 'rgb(207, 238, 255)',
+      },
     },
   },
   tag: {
@@ -317,6 +356,9 @@ const lightTheme: ThemeColors = {
     fadedTextColor: 'rgba(255,255,255,0.9)',
     dateTextColor: 'rgba(255,255,255,0.65)',
   },
+  slaughterSuggestion: {
+    background: styleVariables.ghostWhite,
+  },
   palette: {
     primary: {
       dark: styleVariables.sapphireBlue,
@@ -369,7 +411,6 @@ const darkTheme: ThemeColors = {
   fadedWhite,
   fadedBlack,
   borderColor,
-  cardBoxShadow_bottomHeavy,
   appBar: {
     background: ldStyleVariables.portlandOrange,
   },
@@ -433,10 +474,27 @@ const darkTheme: ThemeColors = {
       },
     },
     color: {
-      errorBackground: ldStyleVariables.red,
-      errorHoverBackground: ldStyleVariables.redDark,
-      successBackground: ldStyleVariables.green,
-      successHoverBackground: ldStyleVariables.greenDark,
+      text: {
+        errorColor: ldStyleVariables.red,
+        errorHoverBackground: 'rgb(228, 27, 27, 18%)',
+        successColor: 'rgb(85, 177, 24)',
+        successHoverBackground: 'rgb(102, 204, 34, 23%)',
+      },
+      contained: {
+        errorBackground: ldStyleVariables.red,
+        errorHoverBackground: ldStyleVariables.redDark,
+        successBackground: ldStyleVariables.green,
+        successHoverBackground: ldStyleVariables.greenDark,
+      },
+    },
+  },
+  rows: {
+    background: {
+      white: {
+        background: 'white',
+        evenBackground: 'white',
+        oddBackground: 'rgb(224, 232, 243)',
+      },
     },
   },
   tag: {
@@ -498,6 +556,9 @@ const darkTheme: ThemeColors = {
     titleColor: 'rgba(255, 255, 255, 0.9)',
     fadedTextColor: 'rgba(255,255,255,0.85)',
     dateTextColor: 'rgba(255,255,255,0.5)',
+  },
+  slaughterSuggestion: {
+    background: 'white',
   },
   palette: {
     primary: {
@@ -904,6 +965,10 @@ export const ICON_SCALING = [
   {
     name: 'CloseIcon',
     base: 1,
+  },
+  {
+    name: 'FlagIcon',
+    base: 0.9,
   },
 ]
 
