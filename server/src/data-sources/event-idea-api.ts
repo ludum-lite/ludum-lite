@@ -48,11 +48,26 @@ export default class EventIdeaAPI extends BaseAPI {
   //   }
   // }
   async getEventIdeas(eventId: number): Promise<EventIdea[]> {
-    const response = await this.get(`vx/theme/idea/vote/get/${eventId}`)
+    try {
+      const themeIdeasResponse = await this.get(
+        `vx/theme/idea/vote/get/${eventId}`
+      )
+      const myVotesResponse = await this.get(
+        `vx/theme/idea/vote/getmy/${eventId}`
+      )
 
-    const ideas = apiEventIdeasToEventIdeas(response.ideas)
+      const ideas = apiEventIdeasToEventIdeas(themeIdeasResponse.ideas).map(
+        (idea) => {
+          idea.myVote = myVotesResponse.votes[idea.id]
+          return idea
+        }
+      )
 
-    return ideas
+      return ideas
+    } catch (e) {
+      console.error(e)
+      throw e
+    }
   }
 
   async getMyEventIdeas(eventId: number): Promise<EventIdea[]> {

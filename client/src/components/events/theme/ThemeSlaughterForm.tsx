@@ -38,6 +38,13 @@ const SuggestionActions = styled(ButtonGroup)`
   margin-top: ${({ theme }) => theme.spacing(2)}px;
 `
 
+const PreviousVotes = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+const PreviousVote = styled.div``
+
 // type FormInputs = {
 //   name: string
 // }
@@ -107,6 +114,12 @@ export default function ThemeSlaughterForm({ event }: Props) {
     )
   }, [event.eventIdeas])
 
+  const alreadyVotedEventIdeas = React.useMemo(() => {
+    return (
+      event.eventIdeas?.filter((eventIdea) => eventIdea.myVote !== null) || []
+    )
+  }, [event.eventIdeas])
+
   const currentEventIdea = React.useMemo(() => {
     return sample(remainingEventIdeas)
   }, [remainingEventIdeas])
@@ -139,6 +152,13 @@ export default function ThemeSlaughterForm({ event }: Props) {
           <u>N</u>o
         </Button>
       </SuggestionActions>
+      <PreviousVotes>
+        {alreadyVotedEventIdeas.map((eventIdea) => (
+          <PreviousVote key={eventIdea.id}>
+            {eventIdea.name} {eventIdea.myVote}
+          </PreviousVote>
+        ))}
+      </PreviousVotes>
       {/* {numEventIdeas < event.eventIdeaLimit && (
         <IdeaForm hasSuggestions={Boolean(suggestions)} onSubmit={onSave}>
           <InputRow>
