@@ -7,7 +7,9 @@ const Root = styled.div`
 `
 
 const Title = styled(Typography)`
-  margin-bottom: ${({ theme }) => theme.spacing(2)}px;
+  margin-bottom: ${({ theme }) => theme.spacing(4)}px;
+  display: flex;
+  /* justify-content: center; */
 `
 
 interface Props {
@@ -17,7 +19,7 @@ interface Props {
 export default function ThemeSubPage({ title, children }: Props) {
   return (
     <Root>
-      <Title variant="h5">{title}</Title>
+      <Title variant="h4">{title}</Title>
       {children}
     </Root>
   )

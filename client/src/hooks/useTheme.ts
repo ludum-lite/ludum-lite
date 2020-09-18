@@ -4,6 +4,7 @@ import { ThemeMode } from 'utils/types'
 import { createGlobalStyle, css } from 'styled-components/macro'
 import { createMuiTheme, Theme, fade } from '@material-ui/core'
 import useUserLocalStorage from './useUserLocalStorage'
+import useLocalStorage from './useLocalStorage'
 
 type ButtonThemeColors = Partial<{
   color: string
@@ -30,6 +31,7 @@ export type ThemeColors = {
   borderColor: string
   fadedWhite: string
   fadedBlack: string
+  cardBoxShadow_bottomHeavy: string
   appBar: {
     background: string
   }
@@ -53,6 +55,12 @@ export type ThemeColors = {
       contextualNav: ButtonThemeColors
       page: ButtonThemeColors
       white: ButtonThemeColors
+    }
+    color: {
+      errorBackground: string
+      errorHoverBackground: string
+      successBackground: string
+      successHoverBackground: string
     }
   }
   dropOverlay: {
@@ -145,6 +153,7 @@ const buttonContainedHoverBackgroundColor = 'rgba(0,0,0,0.32)'
 const buttonLightBackgroundHoverColor = 'rgba(255,255,255,0.2)'
 const buttonContainedColor = 'rgba(0, 0, 0, 0.87)'
 const cardBoxShadow = '0 0 6px 0px rgba(0,0,0,0.04)'
+const cardBoxShadow_bottomHeavy = '0px 1px 3px -1px #00000080'
 const fadedWhite = 'rgba(255,255,255,0.9)'
 const fadedBlack = 'rgba(0, 0, 0, 0.44)'
 const textBlack = 'rgba(0, 0, 0, 0.87)'
@@ -157,6 +166,7 @@ const commonTheme = {
 } as const
 
 // https://coolors.co/13293d-006494-058ed9-3fa6de-6ab8e2-004567-eaebed-f9f9ff-fdffff
+// With darks https://coolors.co/13293d-f87060-f74e3b-67d6c6-33c1ac-ee5533-ed431d-33af00-288f00
 const styleVariables = {
   prussianBlue: 'rgb(19, 41, 61)',
   indigoDye: 'rgb(0, 69, 103)',
@@ -164,7 +174,13 @@ const styleVariables = {
   greenBlue: 'rgb(5, 142, 217)',
   carolinaBlue: 'rgb(63, 166, 222)',
   bittersweet: 'rgb(248, 112, 96)',
+  bittersweetDark: 'rgb(247, 78, 59)',
+  red: 'rgb(255, 59, 78)',
+  redDark: 'rgb(210, 42, 58)',
+  green: 'rgb(103, 214, 158)',
+  greenDark: 'rgb(80, 177, 128)',
   greenShade: 'rgb(103, 214, 198)',
+  greenShadeDark: 'rgb(51, 193, 172)',
   aliceBlue: 'rgb(229, 233, 239)',
   cultured: 'rgb(238, 242, 247)',
   ghostWhite: 'rgb(249, 249, 255)',
@@ -187,6 +203,7 @@ const lightTheme: ThemeColors = {
   fadedWhite,
   fadedBlack,
   borderColor,
+  cardBoxShadow_bottomHeavy,
   appBar: {
     background: styleVariables.sapphireBlue,
   },
@@ -232,6 +249,12 @@ const lightTheme: ThemeColors = {
       },
       page: {},
       white: {},
+    },
+    color: {
+      errorBackground: styleVariables.red,
+      errorHoverBackground: styleVariables.redDark,
+      successBackground: styleVariables.green,
+      successHoverBackground: styleVariables.greenDark,
     },
   },
   tag: {
@@ -309,6 +332,7 @@ const lightTheme: ThemeColors = {
 }
 
 // https://coolors.co/1f2429-6f7984-a0a5ae-d0d0d8-eef2f7-00af54-f79122-ffcc11-ee5533-2288f7
+// With darks https://coolors.co/13293d-f87060-f74e3b-67d6c6-33c1ac-ee5533-ed431d-33af00-288f00
 const ldStyleVariables = {
   raisinBlack: 'rgb(31, 36, 41)',
   slateGray: 'rgb(111, 121, 132)',
@@ -318,9 +342,14 @@ const ldStyleVariables = {
   darkOrange: 'rgb(247, 145, 34)',
   sunglow: 'rgb(255, 204, 17)',
   portlandOrange: 'rgb(238, 85, 51)',
+  portlandOrangeDark: 'rgb(237, 67, 29)',
+  red: 'rgb(228, 27, 27)',
+  redDark: 'rgb(185, 23, 23)',
   blueDeFrance: 'rgb(34, 136, 247)',
-  green: 'rgb(51, 175, 0)',
+  green: 'rgb(102, 204, 34)',
+  greenDark: 'rgb(79, 165, 23)',
   blueGreen: 'rgb(0, 210, 152)',
+  blueGreenDark: 'rgb(0, 184, 132)',
   white: 'rgb(253, 255, 255)',
   boxShadow: {
     light: 'rgba(255, 255, 255, 0.25)',
@@ -340,6 +369,7 @@ const darkTheme: ThemeColors = {
   fadedWhite,
   fadedBlack,
   borderColor,
+  cardBoxShadow_bottomHeavy,
   appBar: {
     background: ldStyleVariables.portlandOrange,
   },
@@ -401,6 +431,12 @@ const darkTheme: ThemeColors = {
           hoverBackground: buttonContainedHoverBackgroundColor,
         },
       },
+    },
+    color: {
+      errorBackground: ldStyleVariables.red,
+      errorHoverBackground: ldStyleVariables.redDark,
+      successBackground: ldStyleVariables.green,
+      successHoverBackground: ldStyleVariables.greenDark,
     },
   },
   tag: {
@@ -931,8 +967,14 @@ const init: UseThemeReturnType = {
   GlobalStyle: null,
 }
 
+// Port 9009 is used for storybook. We don't want to use user storage for storybook since it uses token/api/etc
+const useLocalStorageHook =
+  window.location.pathname === '/iframe.html'
+    ? useLocalStorage
+    : useUserLocalStorage
+
 export const useTheme = singletonHook(init, () => {
-  const [themeMode, setThemeMode] = useUserLocalStorage<ThemeMode>(
+  const [themeMode, setThemeMode] = useLocalStorageHook<ThemeMode>(
     'themeMode',
     'dark'
   )

@@ -1,14 +1,11 @@
 import React from 'react'
 import { gql } from '@apollo/client'
 import styled from 'styled-components/macro'
-import {
-  ThemeSlaughterForm_EventFragment,
-  useDeleteEventIdeaMutation,
-  EventIdea,
-  useAddEventIdeaMutation,
-} from '__generated__/client-types'
+import { ThemeSlaughterForm_EventFragment } from '__generated__/client-types'
+import { sample } from 'lodash'
 import Input from 'components/common/mui/Input'
 import Button from 'components/common/mui/Button'
+import ButtonGroup from 'components/common/mui/ButtonGroup'
 import Typography from 'components/common/mui/Typography'
 import IconButton from 'components/common/mui/IconButton'
 import Icon from 'components/common/mui/Icon'
@@ -19,55 +16,31 @@ import { FormHelperText } from '@material-ui/core'
 const Root = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
+  margin-top: ${({ theme }) => theme.spacing(2)}px;
 `
 
-const Suggestions = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-
-  & > *:not(:last-child) {
-    margin-bottom: ${({ theme }) => theme.spacing(1)}px;
-  }
+const ThemeTitle = styled(Typography)`
+  margin-bottom: ${({ theme }) => theme.spacing(1)}px;
 `
 
 const Suggestion = styled.div`
   display: flex;
-  align-items: center;
+  justify-content: center;
   border-radius: ${({ theme }) => theme.shape.borderRadius}px;
-  background: ${({ theme }) => theme.themeColors.globalNavBackground};
+  background: white;
+  align-self: stretch;
+  padding: ${({ theme }) => `${theme.spacing(1)}px ${theme.spacing(3)}px`};
+  box-shadow: ${({ theme }) => theme.themeColors.cardBoxShadow_bottomHeavy};
 `
 
-const SuggestionText = styled(Typography)`
-  padding-left: ${({ theme }) => theme.spacing(2)}px;
-  padding-right: ${({ theme }) => theme.spacing(1)}px;
-`
-interface IdeaFormProps {
-  hasSuggestions: boolean
-}
-
-const IdeaForm = styled.form<IdeaFormProps>`
-  display: flex;
-  flex-direction: column;
-  margin-top: ${({ theme, hasSuggestions }) =>
-    hasSuggestions && theme.spacing(2)}px;
+const SuggestionActions = styled(ButtonGroup)`
+  margin-top: ${({ theme }) => theme.spacing(2)}px;
 `
 
-const InputRow = styled.div`
-  display: flex;
-`
-
-const SubmitButton = styled(Button)`
-  margin-left: ${({ theme }) => theme.spacing(2)}px;
-`
-
-const NameError = styled(FormHelperText)`
-  margin-top: ${({ theme }) => theme.spacing(1)}px;
-`
-
-type FormInputs = {
-  name: string
-}
+// type FormInputs = {
+//   name: string
+// }
 
 interface Props {
   event: ThemeSlaughterForm_EventFragment
@@ -128,19 +101,44 @@ export default function ThemeSlaughterForm({ event }: Props) {
   //   })
   // }, [handleSubmit, event.myEventIdeas, event.id, addEventIdea, setError])
 
-  const suggestions = React.useMemo(() => {
-    if (event.eventIdeas && event.eventIdeas.length > 0) {
-      return event.eventIdeas.map((eventIdea) => (
-        <Suggestion key={eventIdea.id}>
-          <SuggestionText textColor="white">{eventIdea.name}</SuggestionText>
-        </Suggestion>
-      ))
-    }
+  const remainingEventIdeas = React.useMemo(() => {
+    return (
+      event.eventIdeas?.filter((eventIdea) => eventIdea.myVote === null) || []
+    )
   }, [event.eventIdeas])
+
+  const currentEventIdea = React.useMemo(() => {
+    return sample(remainingEventIdeas)
+  }, [remainingEventIdeas])
+
+  // const suggestions = React.useMemo(() => {
+  //   if (remainingEventIdeas && remainingEventIdeas.length > 0) {
+  //     return remainingEventIdeas.map((eventIdea) => (
+  //       <Suggestion key={eventIdea.id}>
+  //         <SuggestionText textColor="white">{eventIdea.name}</SuggestionText>
+  //       </Suggestion>
+  //     ))
+  //   }
+  // }, [remainingEventIdeas])
 
   return (
     <Root>
-      {suggestions && <Suggestions>{suggestions}</Suggestions>}
+      <ThemeTitle variant="h5">Would this be a good Theme?</ThemeTitle>
+      {currentEventIdea && (
+        <Suggestion>
+          <Typography variant="h4" bold>
+            {currentEventIdea.name}
+          </Typography>
+        </Suggestion>
+      )}
+      <SuggestionActions>
+        <Button size="large" variant="contained" customColor="success">
+          <u>Y</u>es
+        </Button>
+        <Button size="large" variant="contained" customColor="error">
+          <u>N</u>o
+        </Button>
+      </SuggestionActions>
       {/* {numEventIdeas < event.eventIdeaLimit && (
         <IdeaForm hasSuggestions={Boolean(suggestions)} onSubmit={onSave}>
           <InputRow>

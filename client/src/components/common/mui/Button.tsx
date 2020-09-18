@@ -5,16 +5,18 @@ import {
   CircularProgress,
 } from '@material-ui/core'
 import styled, { css } from 'styled-components/macro'
+import { ignoreProps } from 'utils'
 
 export type Background = 'globalNav' | 'contextualNav' | 'page' | 'white'
 
 interface StyledButtonProps {
   background: Background
   isBreadcrumb: Boolean
+  customColor?: 'success' | 'error'
 }
 
 const StyledButton = styled(MuiButton).withConfig({
-  shouldForwardProp: (prop) => !['background', 'isBreadcrumb'].includes(prop),
+  shouldForwardProp: ignoreProps(['background', 'isBreadcrumb', 'customColor']),
 })<StyledButtonProps>`
   ${({ background, color, variant, theme }) => {
     const colors = theme.themeColors.button.background[background]
@@ -36,6 +38,28 @@ const StyledButton = styled(MuiButton).withConfig({
     `
   }}
 
+  ${({ theme, customColor }) => {
+    if (customColor === 'success') {
+      return css`
+        background: ${theme.themeColors.button.color.successBackground};
+        color: white;
+
+        &:hover {
+          background: ${theme.themeColors.button.color.successHoverBackground};
+        }
+      `
+    } else if (customColor === 'error') {
+      return css`
+        background: ${theme.themeColors.button.color.errorBackground};
+        color: white;
+
+        &:hover {
+          background: ${theme.themeColors.button.color.errorHoverBackground};
+        }
+      `
+    }
+  }}
+
   ${({ isBreadcrumb }) =>
     isBreadcrumb &&
     css`
@@ -47,6 +71,7 @@ const StyledButton = styled(MuiButton).withConfig({
 interface Props {
   background?: Background
   color?: MuiButtonProps['color']
+  customColor?: 'success' | 'error'
   variant?: MuiButtonProps['variant']
   loading?: Boolean
   isBreadcrumb?: Boolean
@@ -57,6 +82,7 @@ const Button = React.forwardRef(
     {
       background = 'white',
       color = 'default',
+      customColor,
       variant = 'text',
       loading,
       disabled,
@@ -72,6 +98,7 @@ const Button = React.forwardRef(
         innerRef={ref}
         background={background}
         color={color}
+        customColor={customColor}
         variant={variant}
         endIcon={loading && <CircularProgress size={20} color="inherit" />}
         children={children}

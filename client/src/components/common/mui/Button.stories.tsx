@@ -56,12 +56,17 @@ const WhiteBackground = styled(ButtonContainer)`
 const Options = styled(Panel)``
 
 const VARIANTS = ['text', 'outlined', 'contained'] as const
-const COLORS = ['default', 'primary', 'secondary'] as const
+const COLORS = ['default', 'primary', 'secondary', 'success', 'error'] as const
+function isCustomColor(color: string) {
+  return color === 'success' || color === 'error'
+}
 
 type PropCombination = {
   [key in Background]?: {
     [key in NonNullable<ButtonProps['variant']>]?: {
-      [key in NonNullable<Exclude<ButtonProps['color'], 'inherit'>>]?: boolean
+      [key in NonNullable<
+        Exclude<ButtonProps['color'], 'inherit'> | 'success' | 'error'
+      >]?: boolean
     }
   }
 }
@@ -70,20 +75,31 @@ const INVALID_COMBINATIONS: PropCombination = {
     text: {
       primary: true,
       secondary: true,
+      success: true,
+      error: true,
     },
     outlined: {
       primary: true,
       secondary: true,
+      success: true,
+      error: true,
+    },
+    contained: {
+      error: true,
     },
   },
   contextualNav: {
     text: {
       primary: true,
+      success: true,
+      error: true,
     },
     outlined: {
       default: true,
       primary: true,
       secondary: true,
+      success: true,
+      error: true,
     },
     contained: {
       default: true,
@@ -93,18 +109,26 @@ const INVALID_COMBINATIONS: PropCombination = {
     text: {
       primary: true,
       secondary: true,
+      success: true,
+      error: true,
     },
     outlined: {
       secondary: true,
       primary: true,
+      success: true,
+      error: true,
     },
   },
   white: {
     text: {
       primary: true,
+      success: true,
+      error: true,
     },
     outlined: {
       primary: true,
+      success: true,
+      error: true,
     },
   },
 }
@@ -119,7 +143,10 @@ function renderButtons(
       <Button
         key={`${variant}_${color}`}
         variant={variant}
-        color={color}
+        // @ts-ignore
+        color={isCustomColor(color) ? undefined : color}
+        // @ts-ignore
+        customColor={isCustomColor(color) ? color : undefined}
         background={background}
         size={size}
         loading={isLoading}
