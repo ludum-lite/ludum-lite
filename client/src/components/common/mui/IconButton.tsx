@@ -1,15 +1,18 @@
 import React from 'react'
 import { IconButton as MuiIconButton, IconButtonProps } from '@material-ui/core'
 import styled, { css } from 'styled-components/macro'
+import { ignoreProps } from 'utils'
 
 export type Background = 'globalNav' | 'contextualNav' | 'page' | 'white'
 
 interface StyledButtonProps {
   background: Background
+  color: IconButtonProps['color']
+  variant: 'default' | 'contained'
 }
 
 const StyledIconButton = styled(MuiIconButton).withConfig({
-  shouldForwardProp: (prop) => !['background'].includes(prop),
+  shouldForwardProp: ignoreProps(['background', 'variant']),
 })<StyledButtonProps>`
   ${({ background, color, theme }) => {
     const colors = theme.themeColors.button.background[background]
@@ -21,6 +24,22 @@ const StyledIconButton = styled(MuiIconButton).withConfig({
         background: ${colors.text?.hoverBackground};
       }
     `
+  }}
+
+  ${({ variant, color, theme }) => {
+    if (variant === 'contained' && color === 'default') {
+      return css`
+        color: white;
+
+        &.MuiIconButton-root {
+          background: ${theme.themeColors.defaultIconBlack};
+
+          &:hover {
+            background: ${theme.themeColors.fadedBlack};
+          }
+        }
+      `
+    }
   }}
 `
 
@@ -37,12 +56,27 @@ const StyledIconButton = styled(MuiIconButton).withConfig({
 export interface Props {
   background?: Background
   component?: React.ElementType
+  color?: IconButtonProps['color']
+  variant?: 'default' | 'contained'
 }
 const IconButton = React.forwardRef<
   HTMLButtonElement,
   Props & Omit<IconButtonProps, keyof Props>
->(({ background = 'white', ...others }, ref) => {
-  return <StyledIconButton ref={ref} background={background} {...others} />
-})
+>(
+  (
+    { background = 'white', variant = 'default', color = 'default', ...others },
+    ref
+  ) => {
+    return (
+      <StyledIconButton
+        ref={ref}
+        background={background}
+        variant={variant}
+        color={color}
+        {...others}
+      />
+    )
+  }
+)
 
 export default IconButton

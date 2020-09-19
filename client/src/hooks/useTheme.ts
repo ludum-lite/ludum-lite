@@ -31,6 +31,8 @@ export type ThemeColors = {
   borderColor: string
   fadedWhite: string
   fadedBlack: string
+  textBlack: string
+  defaultIconBlack: string
   cardBoxShadow: string
   cardBoxShadow_bottomHeavy: string
   appBar: {
@@ -178,8 +180,12 @@ const cardBoxShadow_bottomHeavy = '0px 1px 3px -1px #00000080'
 const fadedWhite = 'rgba(255,255,255,0.9)'
 const fadedBlack = 'rgba(0, 0, 0, 0.44)'
 const textBlack = 'rgba(0, 0, 0, 0.87)'
+const defaultIconBlack = 'rgba(0, 0, 0, 0.78)'
 
 const commonTheme = {
+  textBlack,
+  fadedBlack,
+  defaultIconBlack,
   cardBoxShadow,
   cardBoxShadow_bottomHeavy,
   dropOverlay: {

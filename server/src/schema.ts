@@ -31,6 +31,9 @@ export const typeDefs = gql`
     addEventIdea(input: AddEventIdeaInput!): AddEventIdeaResponse!
     deleteEventIdea(input: DeleteEventIdeaInput!): DeleteEventIdeaResponse!
     editEventIdea(input: EditEventIdeaInput!): EditEventIdeaResponse!
+    approveEventIdea(input: IdInput!): ApproveEventIdeaResponse!
+    rejectEventIdea(input: IdInput!): RejectEventIdeaResponse!
+    flagEventIdea(input: IdInput!): FlagEventIdeaResponse!
     editGame(input: EditGameInput!): EditGameResponse!
     addFriend(input: IdInput!): AddFriendResponse!
     addFriendAndAddToGame(input: IdInput!): AddFriendAndAddToGameResponse!
@@ -419,6 +422,30 @@ export const typeDefs = gql`
   }
 
   union EditEventIdeaResponse = EditEventIdeaSuccess | UnauthorizedResponse
+
+  # Not returning eventIdea on purpose due to ld api difficulties/performance implications. As long as the manual state update
+  # on the client side it simple enough, this shouldn't be too much of an issue.
+  type ApproveEventIdeaSuccess implements MutationResponse {
+    success: Boolean!
+  }
+
+  union ApproveEventIdeaResponse =
+      ApproveEventIdeaSuccess
+    | UnauthorizedResponse
+
+  # See ApproveEventIdeaSuccess note
+  type RejectEventIdeaSuccess implements MutationResponse {
+    success: Boolean!
+  }
+
+  union RejectEventIdeaResponse = RejectEventIdeaSuccess | UnauthorizedResponse
+
+  # See ApproveEventIdeaSuccess note
+  type FlagEventIdeaSuccess implements MutationResponse {
+    success: Boolean!
+  }
+
+  union FlagEventIdeaResponse = FlagEventIdeaSuccess | UnauthorizedResponse
 
   #########
   # Game

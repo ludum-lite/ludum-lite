@@ -13,6 +13,9 @@ import {
   DeleteEventIdeaResponse,
   EditEventIdeaInput,
   EditEventIdeaResponse,
+  ApproveEventIdeaResponse,
+  RejectEventIdeaResponse,
+  FlagEventIdeaResponse,
   DeleteEventIdeaInput,
   UnauthorizedResponse,
 } from '../__generated__/schema-types'
@@ -32,21 +35,6 @@ function apiEventIdeasToEventIdeas(eventIdeas: ApiEventIdeasDto): EventIdea[] {
 }
 
 export default class EventIdeaAPI extends BaseAPI {
-  // constructor() {
-  //   super()
-  // }
-
-  // initialize(config: DataSourceConfig<Context>) {
-  //   super.initialize(config)
-
-  //   if (!config.context.loaders.eventLoader) {
-  //     config.context.loaders.eventLoader = new DataLoader(async (keys) => {
-  //       const results = await this.get(`vx/node2/get/${keys.join('+')}`)
-
-  //       return sort(keys, results.node.map(apiEventIdeaToEventIdea))
-  //     })
-  //   }
-  // }
   async getEventIdeas(eventId: number): Promise<EventIdea[]> {
     try {
       const themeIdeasResponse = await this.get(
@@ -68,6 +56,20 @@ export default class EventIdeaAPI extends BaseAPI {
       console.error(e)
       throw e
     }
+  }
+
+  async getEventIdea({
+    eventId,
+    id,
+  }: {
+    eventId: number
+    id: number
+  }): Promise<EventIdea | undefined> {
+    const eventIdea = (await this.getEventIdeas(eventId)).find(
+      (eventIdea) => eventIdea.id === id
+    )
+
+    return eventIdea
   }
 
   async getMyEventIdeas(eventId: number): Promise<EventIdea[]> {
@@ -95,7 +97,7 @@ export default class EventIdeaAPI extends BaseAPI {
     eventId,
     name,
   }: AddEventIdeaInput): Promise<AddEventIdeaResponse> {
-    // TODO Get the event and make sure there aren't took many theme ideas already.
+    // TODO Get the event and make sure there aren't too many theme ideas already.
     // The create endpoint simply returns the existing ideas without error even if
     // you try to add too many. This isn't a problem now since the client can limit the number
 
@@ -156,6 +158,48 @@ export default class EventIdeaAPI extends BaseAPI {
       }
 
       return unauthorizedResponse
+    } catch (e) {
+      console.error(e)
+      return unauthorizedResponse
+    }
+  }
+
+  async approveEventIdea({ id }: IdInput): Promise<ApproveEventIdeaResponse> {
+    try {
+      this.get(`vx/theme/idea/vote/yes/${id}`)
+
+      return {
+        __typename: 'ApproveEventIdeaSuccess',
+        success: true,
+      }
+    } catch (e) {
+      console.error(e)
+      return unauthorizedResponse
+    }
+  }
+
+  async rejectEventIdea({ id }: IdInput): Promise<RejectEventIdeaResponse> {
+    try {
+      this.get(`vx/theme/idea/vote/no/${id}`)
+
+      return {
+        __typename: 'RejectEventIdeaSuccess',
+        success: true,
+      }
+    } catch (e) {
+      console.error(e)
+      return unauthorizedResponse
+    }
+  }
+
+  async flagEventIdea({ id }: IdInput): Promise<FlagEventIdeaResponse> {
+    try {
+      this.get(`vx/theme/idea/vote/flag/${id}`)
+
+      return {
+        __typename: 'FlagEventIdeaSuccess',
+        success: true,
+      }
     } catch (e) {
       console.error(e)
       return unauthorizedResponse

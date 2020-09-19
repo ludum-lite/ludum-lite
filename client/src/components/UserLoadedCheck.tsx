@@ -52,5 +52,7 @@ export default function UserLoadedCheck({ children }: Props) {
     return null
   }
 
+  console.log('has loaded me')
+
   return children
 }

@@ -1,8 +1,13 @@
 import React from 'react'
 import { gql } from '@apollo/client'
-import styled from 'styled-components/macro'
-import { ThemeSlaughterForm_EventFragment } from '__generated__/client-types'
-import { sample } from 'lodash'
+import styled, { css } from 'styled-components/macro'
+import {
+  ThemeSlaughterForm_EventFragment,
+  useApproveEventIdeaMutation,
+  useRejectEventIdeaMutation,
+  useFlagEventIdeaMutation,
+} from '__generated__/client-types'
+import { sample, update, sortBy, partition } from 'lodash'
 import Input from 'components/common/mui/Input'
 import Button from 'components/common/mui/Button'
 import ButtonGroup from 'components/common/mui/ButtonGroup'
@@ -13,6 +18,7 @@ import FlagIcon from '@material-ui/icons/Flag'
 import CloseIcon from '@material-ui/icons/Close'
 import { useForm } from 'react-hook-form'
 import { FormHelperText } from '@material-ui/core'
+import useUserLocalStorage from 'hooks/useUserLocalStorage'
 
 const Root = styled.div`
   display: flex;
@@ -26,14 +32,25 @@ const ThemeTitle = styled(Typography)`
 `
 
 const Suggestion = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
   border-radius: ${({ theme }) => theme.shape.borderRadius}px;
   background: ${({ theme }) =>
     theme.themeColors.slaughterSuggestion.background};
   align-self: stretch;
-  padding: ${({ theme }) => `${theme.spacing(1)}px ${theme.spacing(3)}px`};
+  padding: ${({ theme }) => `${theme.spacing(1)}px ${theme.spacing(5)}px`};
+  min-height: 50px;
   box-shadow: ${({ theme }) => theme.themeColors.cardBoxShadow_bottomHeavy};
+`
+
+const SuggestionFlagButtonContainer = styled.div`
+  position: absolute;
+  right: 5px;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
 `
 
 const SuggestionActions = styled(ButtonGroup)`
@@ -44,7 +61,7 @@ const PreviousVotes = styled.div`
   display: flex;
   flex-direction: column;
   align-self: stretch;
-  margin-top: ${({ theme }) => theme.spacing(2)}px;
+  margin-top: ${({ theme }) => theme.spacing(4)}px;
   border-radius: ${({ theme }) => theme.shape.borderRadius}px;
   overflow: auto;
   max-height: 500px;
@@ -53,9 +70,7 @@ const PreviousVotes = styled.div`
 
 const PreviousVote = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: ${({ theme }) => `${theme.spacing(1)}px ${theme.spacing(1)}px`};
+  align-items: stretch;
   background: ${({ theme }) =>
     theme.themeColors.rows.background.white.background};
 
@@ -75,6 +90,37 @@ const PreviousVote = styled.div`
   } */
 `
 
+interface PreviousVoteSideIndicatorProps {
+  vote: number | null | undefined
+}
+const PreviousVoteSideIndicator = styled.div<PreviousVoteSideIndicatorProps>`
+  width: 4px;
+
+  ${({ vote, theme }) => {
+    let background
+
+    if (vote === 1) {
+      background = theme.themeColors.button.color.contained.successBackground
+    } else if (vote === 0) {
+      background = theme.themeColors.button.color.contained.errorBackground
+    } else if (vote === -1) {
+      background = theme.themeColors.defaultIconBlack
+    }
+
+    return css`
+      background: ${background};
+    `
+  }}
+`
+
+const PreviousVoteContent = styled.div`
+  flex: 1 1 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: ${({ theme }) => `${theme.spacing(1)}px ${theme.spacing(1)}px`};
+`
+
 const PreviousVoteName = styled(Typography)``
 
 const PreviousVoteActions = styled(ButtonGroup)``
@@ -87,6 +133,12 @@ interface Props {
   event: ThemeSlaughterForm_EventFragment
 }
 export default function ThemeSlaughterForm({ event }: Props) {
+  const [themeIdeaVoteOrder, setThemeIdeaVoteOrder] = useUserLocalStorage<
+    number[]
+  >('themeIdeaVoteOrder', [])
+  const [approveEventIdeaMutation] = useApproveEventIdeaMutation()
+  const [rejectEventIdeaMutation] = useRejectEventIdeaMutation()
+  const [flagEventIdeaMutation] = useFlagEventIdeaMutation()
   // const {
   //   register,
   //   handleSubmit,
@@ -142,142 +194,248 @@ export default function ThemeSlaughterForm({ event }: Props) {
   //   })
   // }, [handleSubmit, event.myEventIdeas, event.id, addEventIdea, setError])
 
+  const approveEventIdea = React.useCallback(
+    (eventIdeaId: number) => {
+      approveEventIdeaMutation({
+        variables: {
+          input: {
+            id: eventIdeaId,
+          },
+        },
+        update(cache, { data }) {
+          if (data?.approveEventIdea.__typename === 'ApproveEventIdeaSuccess') {
+            cache.modify({
+              id: `EventIdea:${eventIdeaId}`,
+              fields: {
+                myVote: () => 1,
+              },
+            })
+          }
+        },
+      })
+    },
+    [approveEventIdeaMutation]
+  )
+
+  const rejectEventIdea = React.useCallback(
+    (eventIdeaId: number) => {
+      rejectEventIdeaMutation({
+        variables: {
+          input: {
+            id: eventIdeaId,
+          },
+        },
+        update(cache, { data }) {
+          if (data?.rejectEventIdea.__typename === 'RejectEventIdeaSuccess') {
+            cache.modify({
+              id: `EventIdea:${eventIdeaId}`,
+              fields: {
+                myVote: () => 0,
+              },
+            })
+          }
+        },
+      })
+    },
+    [rejectEventIdeaMutation]
+  )
+
+  const flagEventIdea = React.useCallback(
+    (eventIdeaId: number) => {
+      flagEventIdeaMutation({
+        variables: {
+          input: {
+            id: eventIdeaId,
+          },
+        },
+        update(cache, { data }) {
+          if (data?.flagEventIdea.__typename === 'FlagEventIdeaSuccess') {
+            cache.modify({
+              id: `EventIdea:${eventIdeaId}`,
+              fields: {
+                myVote: () => -1,
+              },
+            })
+          }
+        },
+      })
+    },
+    [flagEventIdeaMutation]
+  )
+
   const remainingEventIdeas = React.useMemo(() => {
     return (
       event.eventIdeas?.filter((eventIdea) => eventIdea.myVote === null) || []
     )
   }, [event.eventIdeas])
 
-  const alreadyVotedEventIdeas = React.useMemo(() => {
-    return (
+  // Use the locally preserved order of voting. Keep votes that happened on ldjam to the bottom since we don't know
+  // how to sort those
+  const votedEventIdeas = React.useMemo(() => {
+    const votedEventIdeasUnsorted =
       event.eventIdeas?.filter((eventIdea) => eventIdea.myVote !== null) || []
+
+    const [
+      ideasVotedOnLdLite,
+      ideasNotVotedOnLdLite,
+    ] = partition(votedEventIdeasUnsorted, (eventIdea) =>
+      themeIdeaVoteOrder.includes(eventIdea.id)
     )
-  }, [event.eventIdeas])
 
-  const currentEventIdea = React.useMemo(() => {
-    return sample(remainingEventIdeas)
-  }, [remainingEventIdeas])
+    const ideasVotedOnLdLiteSorted = sortBy(ideasVotedOnLdLite, [
+      (eventIdea) => {
+        return themeIdeaVoteOrder.indexOf(eventIdea.id)
+      },
+    ])
 
-  // const suggestions = React.useMemo(() => {
-  //   if (remainingEventIdeas && remainingEventIdeas.length > 0) {
-  //     return remainingEventIdeas.map((eventIdea) => (
-  //       <Suggestion key={eventIdea.id}>
-  //         <SuggestionText textColor="white">{eventIdea.name}</SuggestionText>
-  //       </Suggestion>
-  //     ))
-  //   }
-  // }, [remainingEventIdeas])
+    const result = [...ideasVotedOnLdLiteSorted, ...ideasNotVotedOnLdLite]
+
+    return result
+  }, [event.eventIdeas, themeIdeaVoteOrder])
+
+  const [currentEventIdea, setCurrentEventIdea] = React.useState(() =>
+    sample(remainingEventIdeas)
+  )
+
+  const remainingEventIdeasWithoutCurrent = React.useMemo(() => {
+    if (currentEventIdea) {
+      return (
+        remainingEventIdeas.filter(
+          (eventIdea) => eventIdea.id !== currentEventIdea.id
+        ) || []
+      )
+    }
+
+    return []
+  }, [remainingEventIdeas, currentEventIdea])
 
   return (
     <Root>
       <ThemeTitle variant="h5">Would this be a good Theme?</ThemeTitle>
       {currentEventIdea && (
-        <Suggestion>
-          <Typography variant="h4" bold>
-            {currentEventIdea.name}
-          </Typography>
-        </Suggestion>
-      )}
-      <SuggestionActions>
-        <Button size="large" variant="contained" customColor="success">
-          <u>Y</u>es
-        </Button>
-        <Button size="large" variant="contained" customColor="error">
-          <u>N</u>o
-        </Button>
-      </SuggestionActions>
-      <PreviousVotes>
-        {alreadyVotedEventIdeas.map((eventIdea) => (
-          <PreviousVote key={eventIdea.id}>
-            <PreviousVoteName>{eventIdea.name}</PreviousVoteName>
-            <PreviousVoteActions>
-              <Button
-                size="small"
-                variant={eventIdea.myVote === 1 ? 'contained' : 'text'}
-                customColor="success"
+        <>
+          <Suggestion>
+            <Typography variant="h4" bold>
+              {currentEventIdea.name}
+            </Typography>
+            <SuggestionFlagButtonContainer>
+              <IconButton
+                onClick={() => {
+                  flagEventIdea(currentEventIdea.id)
+                  setThemeIdeaVoteOrder([
+                    currentEventIdea.id,
+                    ...themeIdeaVoteOrder,
+                  ])
+                  setCurrentEventIdea(sample(remainingEventIdeasWithoutCurrent))
+                }}
               >
-                Yes
-              </Button>
-              <Button
-                size="small"
-                variant={eventIdea.myVote === 0 ? 'contained' : 'text'}
-                customColor="error"
-              >
-                No
-              </Button>
-              <IconButton size="small">
                 <Icon icon={FlagIcon} />
               </IconButton>
-              {/* {eventIdea.myVote} */}
-            </PreviousVoteActions>
+            </SuggestionFlagButtonContainer>
+          </Suggestion>
+          <SuggestionActions>
+            <Button
+              size="large"
+              variant="contained"
+              customColor="success"
+              onClick={() => {
+                approveEventIdea(currentEventIdea.id)
+                setThemeIdeaVoteOrder([
+                  currentEventIdea.id,
+                  ...themeIdeaVoteOrder,
+                ])
+                setCurrentEventIdea(sample(remainingEventIdeasWithoutCurrent))
+              }}
+            >
+              <u>Y</u>es
+            </Button>
+            <Button
+              size="large"
+              variant="contained"
+              customColor="error"
+              onClick={() => {
+                rejectEventIdea(currentEventIdea.id)
+                setThemeIdeaVoteOrder([
+                  currentEventIdea.id,
+                  ...themeIdeaVoteOrder,
+                ])
+                setCurrentEventIdea(sample(remainingEventIdeasWithoutCurrent))
+              }}
+            >
+              <u>N</u>o
+            </Button>
+          </SuggestionActions>
+        </>
+      )}
+      <PreviousVotes>
+        {votedEventIdeas.map((eventIdea) => (
+          <PreviousVote key={eventIdea.id}>
+            <PreviousVoteSideIndicator vote={eventIdea.myVote} />
+            <PreviousVoteContent>
+              <PreviousVoteName>{eventIdea.name}</PreviousVoteName>
+              <PreviousVoteActions>
+                <Button
+                  size="small"
+                  variant={eventIdea.myVote === 1 ? 'contained' : 'text'}
+                  customColor="success"
+                  onClick={() => {
+                    approveEventIdea(eventIdea.id)
+                  }}
+                >
+                  Yes
+                </Button>
+                <Button
+                  size="small"
+                  variant={eventIdea.myVote === 0 ? 'contained' : 'text'}
+                  customColor="error"
+                  onClick={() => {
+                    rejectEventIdea(eventIdea.id)
+                  }}
+                >
+                  No
+                </Button>
+                <IconButton
+                  size="small"
+                  variant={eventIdea.myVote === -1 ? 'contained' : 'default'}
+                  onClick={() => {
+                    flagEventIdea(eventIdea.id)
+                  }}
+                >
+                  <Icon icon={FlagIcon} />
+                </IconButton>
+              </PreviousVoteActions>
+            </PreviousVoteContent>
           </PreviousVote>
         ))}
       </PreviousVotes>
-      {/* {numEventIdeas < event.eventIdeaLimit && (
-        <IdeaForm hasSuggestions={Boolean(suggestions)} onSubmit={onSave}>
-          <InputRow>
-            <Input
-              placeholder="Suggest a theme..."
-              inputProps={{
-                maxLength: 64,
-              }}
-              fullWidth
-              inputRef={register({ required: true })}
-              name="name"
-              autoComplete="randomtstring"
-              autoCorrect="randomstring"
-            />
-            <SubmitButton
-              background="white"
-              variant="contained"
-              color="secondary"
-              type="submit"
-            >
-              Submit
-            </SubmitButton>
-          </InputRow>
-          {errors.name?.type === 'required' && (
-            <NameError error>An idea is required</NameError>
-          )}
-          {errors.name?.type === 'manual' && (
-            <NameError error>{errors.name?.message}</NameError>
-          )}
-        </IdeaForm>
-      )} */}
     </Root>
   )
 }
 
 gql`
-  # mutation AddEventIdea($input: AddEventIdeaInput!) {
-  #   addEventIdea(input: $input) {
-  #     ... on AddEventIdeaSuccess {
-  #       eventIdea {
-  #         id
-  #         name
-  #       }
-  #     }
-  #   }
-  # }
+  mutation ApproveEventIdea($input: IdInput!) {
+    approveEventIdea(input: $input) {
+      ... on ApproveEventIdeaSuccess {
+        success
+      }
+    }
+  }
 
-  # mutation EditEventIdea($input: EditEventIdeaInput!) {
-  #   editEventIdea(input: $input) {
-  #     ... on EditEventIdeaSuccess {
-  #       eventIdea {
-  #         id
-  #         name
-  #       }
-  #     }
-  #   }
-  # }
+  mutation RejectEventIdea($input: IdInput!) {
+    rejectEventIdea(input: $input) {
+      ... on RejectEventIdeaSuccess {
+        success
+      }
+    }
+  }
 
-  # mutation DeleteEventIdea($input: DeleteEventIdeaInput!) {
-  #   deleteEventIdea(input: $input) {
-  #     ... on DeleteEventIdeaSuccess {
-  #       eventId
-  #     }
-  #   }
-  # }
+  mutation FlagEventIdea($input: IdInput!) {
+    flagEventIdea(input: $input) {
+      ... on FlagEventIdeaSuccess {
+        success
+      }
+    }
+  }
 
   fragment ThemeSlaughterForm_event on Event {
     id

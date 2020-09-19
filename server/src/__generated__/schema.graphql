@@ -24,6 +24,9 @@ type Mutation {
   addEventIdea(input: AddEventIdeaInput!): AddEventIdeaResponse!
   deleteEventIdea(input: DeleteEventIdeaInput!): DeleteEventIdeaResponse!
   editEventIdea(input: EditEventIdeaInput!): EditEventIdeaResponse!
+  approveEventIdea(input: IdInput!): ApproveEventIdeaResponse!
+  rejectEventIdea(input: IdInput!): RejectEventIdeaResponse!
+  flagEventIdea(input: IdInput!): FlagEventIdeaResponse!
   editGame(input: EditGameInput!): EditGameResponse!
   addFriend(input: IdInput!): AddFriendResponse!
   addFriendAndAddToGame(input: IdInput!): AddFriendAndAddToGameResponse!
@@ -370,6 +373,24 @@ type EditEventIdeaSuccess implements MutationResponse {
 }
 
 union EditEventIdeaResponse = EditEventIdeaSuccess | UnauthorizedResponse
+
+type ApproveEventIdeaSuccess implements MutationResponse {
+  success: Boolean!
+}
+
+union ApproveEventIdeaResponse = ApproveEventIdeaSuccess | UnauthorizedResponse
+
+type RejectEventIdeaSuccess implements MutationResponse {
+  success: Boolean!
+}
+
+union RejectEventIdeaResponse = RejectEventIdeaSuccess | UnauthorizedResponse
+
+type FlagEventIdeaSuccess implements MutationResponse {
+  success: Boolean!
+}
+
+union FlagEventIdeaResponse = FlagEventIdeaSuccess | UnauthorizedResponse
 
 type Game {
   id: Int!

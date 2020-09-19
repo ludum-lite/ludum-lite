@@ -59,6 +59,9 @@ export type Mutation = {
   addEventIdea: AddEventIdeaResponse
   deleteEventIdea: DeleteEventIdeaResponse
   editEventIdea: EditEventIdeaResponse
+  approveEventIdea: ApproveEventIdeaResponse
+  rejectEventIdea: RejectEventIdeaResponse
+  flagEventIdea: FlagEventIdeaResponse
   editGame: EditGameResponse
   addFriend: AddFriendResponse
   addFriendAndAddToGame: AddFriendAndAddToGameResponse
@@ -117,6 +120,18 @@ export type MutationDeleteEventIdeaArgs = {
 
 export type MutationEditEventIdeaArgs = {
   input: EditEventIdeaInput
+}
+
+export type MutationApproveEventIdeaArgs = {
+  input: IdInput
+}
+
+export type MutationRejectEventIdeaArgs = {
+  input: IdInput
+}
+
+export type MutationFlagEventIdeaArgs = {
+  input: IdInput
 }
 
 export type MutationEditGameArgs = {
@@ -522,6 +537,31 @@ export type EditEventIdeaSuccess = MutationResponse & {
 
 export type EditEventIdeaResponse = EditEventIdeaSuccess | UnauthorizedResponse
 
+export type ApproveEventIdeaSuccess = MutationResponse & {
+  __typename: 'ApproveEventIdeaSuccess'
+  success: Scalars['Boolean']
+}
+
+export type ApproveEventIdeaResponse =
+  | ApproveEventIdeaSuccess
+  | UnauthorizedResponse
+
+export type RejectEventIdeaSuccess = MutationResponse & {
+  __typename: 'RejectEventIdeaSuccess'
+  success: Scalars['Boolean']
+}
+
+export type RejectEventIdeaResponse =
+  | RejectEventIdeaSuccess
+  | UnauthorizedResponse
+
+export type FlagEventIdeaSuccess = MutationResponse & {
+  __typename: 'FlagEventIdeaSuccess'
+  success: Scalars['Boolean']
+}
+
+export type FlagEventIdeaResponse = FlagEventIdeaSuccess | UnauthorizedResponse
+
 export type Game = {
   __typename: 'Game'
   id: Scalars['Int']
@@ -625,6 +665,45 @@ export type EventThemePage_EventFragment = { __typename: 'Event' } & Pick<
 > &
   ThemeSubmissionForm_EventFragment &
   ThemeSlaughterForm_EventFragment
+
+export type ApproveEventIdeaMutationVariables = Exact<{
+  input: IdInput
+}>
+
+export type ApproveEventIdeaMutation = { __typename: 'Mutation' } & {
+  approveEventIdea:
+    | ({ __typename: 'ApproveEventIdeaSuccess' } & Pick<
+        ApproveEventIdeaSuccess,
+        'success'
+      >)
+    | { __typename: 'UnauthorizedResponse' }
+}
+
+export type RejectEventIdeaMutationVariables = Exact<{
+  input: IdInput
+}>
+
+export type RejectEventIdeaMutation = { __typename: 'Mutation' } & {
+  rejectEventIdea:
+    | ({ __typename: 'RejectEventIdeaSuccess' } & Pick<
+        RejectEventIdeaSuccess,
+        'success'
+      >)
+    | { __typename: 'UnauthorizedResponse' }
+}
+
+export type FlagEventIdeaMutationVariables = Exact<{
+  input: IdInput
+}>
+
+export type FlagEventIdeaMutation = { __typename: 'Mutation' } & {
+  flagEventIdea:
+    | ({ __typename: 'FlagEventIdeaSuccess' } & Pick<
+        FlagEventIdeaSuccess,
+        'success'
+      >)
+    | { __typename: 'UnauthorizedResponse' }
+}
 
 export type ThemeSlaughterForm_EventFragment = { __typename: 'Event' } & Pick<
   Event,
@@ -1534,6 +1613,162 @@ export type GetEventPageDataLazyQueryHookResult = ReturnType<
 export type GetEventPageDataQueryResult = ApolloReactCommon.QueryResult<
   GetEventPageDataQuery,
   GetEventPageDataQueryVariables
+>
+export const ApproveEventIdeaDocument = gql`
+  mutation ApproveEventIdea($input: IdInput!) {
+    approveEventIdea(input: $input) {
+      ... on ApproveEventIdeaSuccess {
+        success
+      }
+    }
+  }
+`
+export type ApproveEventIdeaMutationFn = ApolloReactCommon.MutationFunction<
+  ApproveEventIdeaMutation,
+  ApproveEventIdeaMutationVariables
+>
+
+/**
+ * __useApproveEventIdeaMutation__
+ *
+ * To run a mutation, you first call `useApproveEventIdeaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useApproveEventIdeaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [approveEventIdeaMutation, { data, loading, error }] = useApproveEventIdeaMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useApproveEventIdeaMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    ApproveEventIdeaMutation,
+    ApproveEventIdeaMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    ApproveEventIdeaMutation,
+    ApproveEventIdeaMutationVariables
+  >(ApproveEventIdeaDocument, baseOptions)
+}
+export type ApproveEventIdeaMutationHookResult = ReturnType<
+  typeof useApproveEventIdeaMutation
+>
+export type ApproveEventIdeaMutationResult = ApolloReactCommon.MutationResult<
+  ApproveEventIdeaMutation
+>
+export type ApproveEventIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  ApproveEventIdeaMutation,
+  ApproveEventIdeaMutationVariables
+>
+export const RejectEventIdeaDocument = gql`
+  mutation RejectEventIdea($input: IdInput!) {
+    rejectEventIdea(input: $input) {
+      ... on RejectEventIdeaSuccess {
+        success
+      }
+    }
+  }
+`
+export type RejectEventIdeaMutationFn = ApolloReactCommon.MutationFunction<
+  RejectEventIdeaMutation,
+  RejectEventIdeaMutationVariables
+>
+
+/**
+ * __useRejectEventIdeaMutation__
+ *
+ * To run a mutation, you first call `useRejectEventIdeaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRejectEventIdeaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [rejectEventIdeaMutation, { data, loading, error }] = useRejectEventIdeaMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRejectEventIdeaMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    RejectEventIdeaMutation,
+    RejectEventIdeaMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    RejectEventIdeaMutation,
+    RejectEventIdeaMutationVariables
+  >(RejectEventIdeaDocument, baseOptions)
+}
+export type RejectEventIdeaMutationHookResult = ReturnType<
+  typeof useRejectEventIdeaMutation
+>
+export type RejectEventIdeaMutationResult = ApolloReactCommon.MutationResult<
+  RejectEventIdeaMutation
+>
+export type RejectEventIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  RejectEventIdeaMutation,
+  RejectEventIdeaMutationVariables
+>
+export const FlagEventIdeaDocument = gql`
+  mutation FlagEventIdea($input: IdInput!) {
+    flagEventIdea(input: $input) {
+      ... on FlagEventIdeaSuccess {
+        success
+      }
+    }
+  }
+`
+export type FlagEventIdeaMutationFn = ApolloReactCommon.MutationFunction<
+  FlagEventIdeaMutation,
+  FlagEventIdeaMutationVariables
+>
+
+/**
+ * __useFlagEventIdeaMutation__
+ *
+ * To run a mutation, you first call `useFlagEventIdeaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useFlagEventIdeaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [flagEventIdeaMutation, { data, loading, error }] = useFlagEventIdeaMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useFlagEventIdeaMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    FlagEventIdeaMutation,
+    FlagEventIdeaMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    FlagEventIdeaMutation,
+    FlagEventIdeaMutationVariables
+  >(FlagEventIdeaDocument, baseOptions)
+}
+export type FlagEventIdeaMutationHookResult = ReturnType<
+  typeof useFlagEventIdeaMutation
+>
+export type FlagEventIdeaMutationResult = ApolloReactCommon.MutationResult<
+  FlagEventIdeaMutation
+>
+export type FlagEventIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  FlagEventIdeaMutation,
+  FlagEventIdeaMutationVariables
 >
 export const AddEventIdeaDocument = gql`
   mutation AddEventIdea($input: AddEventIdeaInput!) {
@@ -3475,6 +3710,15 @@ const result: IntrospectionResultData = {
             name: 'EditEventIdeaSuccess',
           },
           {
+            name: 'ApproveEventIdeaSuccess',
+          },
+          {
+            name: 'RejectEventIdeaSuccess',
+          },
+          {
+            name: 'FlagEventIdeaSuccess',
+          },
+          {
             name: 'EditGameSuccess',
           },
           {
@@ -3713,6 +3957,42 @@ const result: IntrospectionResultData = {
         possibleTypes: [
           {
             name: 'EditEventIdeaSuccess',
+          },
+          {
+            name: 'UnauthorizedResponse',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'ApproveEventIdeaResponse',
+        possibleTypes: [
+          {
+            name: 'ApproveEventIdeaSuccess',
+          },
+          {
+            name: 'UnauthorizedResponse',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'RejectEventIdeaResponse',
+        possibleTypes: [
+          {
+            name: 'RejectEventIdeaSuccess',
+          },
+          {
+            name: 'UnauthorizedResponse',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'FlagEventIdeaResponse',
+        possibleTypes: [
+          {
+            name: 'FlagEventIdeaSuccess',
           },
           {
             name: 'UnauthorizedResponse',

@@ -74,6 +74,15 @@ const resolvers: Resolvers<Context> = {
     editEventIdea(_, { input }, context) {
       return context.dataSources.eventIdeaApi.editEventIdea(input)
     },
+    approveEventIdea(_, { input }, context) {
+      return context.dataSources.eventIdeaApi.approveEventIdea(input)
+    },
+    rejectEventIdea(_, { input }, context) {
+      return context.dataSources.eventIdeaApi.rejectEventIdea(input)
+    },
+    flagEventIdea(_, { input }, context) {
+      return context.dataSources.eventIdeaApi.flagEventIdea(input)
+    },
     editGame(_, { input }, context) {
       return context.dataSources.gameApi.editGame(input)
     },
