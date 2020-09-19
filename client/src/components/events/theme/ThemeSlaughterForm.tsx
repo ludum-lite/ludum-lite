@@ -7,18 +7,15 @@ import {
   useRejectEventIdeaMutation,
   useFlagEventIdeaMutation,
 } from '__generated__/client-types'
-import { sample, update, sortBy, partition } from 'lodash'
-import Input from 'components/common/mui/Input'
+import { sample, sortBy, partition } from 'lodash'
 import Button from 'components/common/mui/Button'
 import ButtonGroup from 'components/common/mui/ButtonGroup'
 import Typography from 'components/common/mui/Typography'
 import IconButton from 'components/common/mui/IconButton'
 import Icon from 'components/common/mui/Icon'
 import FlagIcon from '@material-ui/icons/Flag'
-import CloseIcon from '@material-ui/icons/Close'
-import { useForm } from 'react-hook-form'
-import { FormHelperText } from '@material-ui/core'
 import useUserLocalStorage from 'hooks/useUserLocalStorage'
+import Input from 'components/common/mui/Input'
 
 const Root = styled.div`
   display: flex;
@@ -57,11 +54,22 @@ const SuggestionActions = styled(ButtonGroup)`
   margin-top: ${({ theme }) => theme.spacing(2)}px;
 `
 
-const PreviousVotes = styled.div`
+const PreviousVotesContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-self: stretch;
-  margin-top: ${({ theme }) => theme.spacing(4)}px;
+  margin-top: ${({ theme }) => theme.spacing(5)}px;
+`
+
+const PreviousVotesActionsRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+
+const PreviousVotes = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: ${({ theme }) => theme.spacing(2)}px;
   border-radius: ${({ theme }) => theme.shape.borderRadius}px;
   overflow: auto;
   max-height: 500px;
@@ -77,17 +85,6 @@ const PreviousVote = styled.div`
   &:not(:last-child) {
     border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
   }
-
-
-  /* &:nth-child(even) {
-    background: ${({ theme }) =>
-      theme.themeColors.rows.background.white.evenBackground};
-  }
-
-  &:nth-child(odd) {
-    background: ${({ theme }) =>
-      theme.themeColors.rows.background.white.oddBackground};
-  } */
 `
 
 interface PreviousVoteSideIndicatorProps {
@@ -121,7 +118,9 @@ const PreviousVoteContent = styled.div`
   padding: ${({ theme }) => `${theme.spacing(1)}px ${theme.spacing(1)}px`};
 `
 
-const PreviousVoteName = styled(Typography)``
+const PreviousVoteName = styled(Typography)`
+  padding: ${({ theme }) => theme.spacing(1)}px;
+`
 
 const PreviousVoteActions = styled(ButtonGroup)``
 
@@ -139,60 +138,7 @@ export default function ThemeSlaughterForm({ event }: Props) {
   const [approveEventIdeaMutation] = useApproveEventIdeaMutation()
   const [rejectEventIdeaMutation] = useRejectEventIdeaMutation()
   const [flagEventIdeaMutation] = useFlagEventIdeaMutation()
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   reset,
-  //   errors,
-  //   setError,
-  //   clearErrors,
-  // } = useForm<FormInputs>({
-  //   defaultValues: {
-  //     name: '',
-  //   },
-  // })
-
-  // const onSave = React.useMemo(() => {
-  //   return handleSubmit(async (data) => {
-  //     if (
-  //       event.myEventIdeas &&
-  //       event.myEventIdeas.some(
-  //         (eventIdea) =>
-  //           eventIdea.name.toLowerCase() === data.name.toLowerCase()
-  //       )
-  //     ) {
-  //       setError('name', {
-  //         type: 'manual',
-  //         message: 'Suggestion already submitted',
-  //       })
-
-  //       return
-  //     }
-
-  //     addEventIdea({
-  //       variables: {
-  //         input: {
-  //           eventId: event.id,
-  //           name: data.name,
-  //         },
-  //       },
-  //       update(cache, { data }) {
-  //         if (data?.addEventIdea.__typename === 'AddEventIdeaSuccess') {
-  //           const eventIdea = data.addEventIdea.eventIdea
-
-  //           cache.modify({
-  //             id: `Event:${event.id}`,
-  //             fields: {
-  //               myEventIdeas(cachedEventIdeasRef) {
-  //                 return [...cachedEventIdeasRef, eventIdea]
-  //               },
-  //             },
-  //           })
-  //         }
-  //       },
-  //     })
-  //   })
-  // }, [handleSubmit, event.myEventIdeas, event.id, addEventIdea, setError])
+  const [searchValue, setSearchValue] = React.useState('')
 
   const approveEventIdea = React.useCallback(
     (eventIdeaId: number) => {
@@ -293,6 +239,12 @@ export default function ThemeSlaughterForm({ event }: Props) {
     return result
   }, [event.eventIdeas, themeIdeaVoteOrder])
 
+  const filteredRemainingEventIdeas = React.useMemo(() => {
+    return remainingEventIdeas.filter((eventIdea) =>
+      eventIdea.name.toLowerCase().includes(searchValue.toLowerCase())
+    )
+  }, [remainingEventIdeas, searchValue])
+
   const [currentEventIdea, setCurrentEventIdea] = React.useState(() =>
     sample(remainingEventIdeas)
   )
@@ -367,47 +319,58 @@ export default function ThemeSlaughterForm({ event }: Props) {
           </SuggestionActions>
         </>
       )}
-      <PreviousVotes>
-        {votedEventIdeas.map((eventIdea) => (
-          <PreviousVote key={eventIdea.id}>
-            <PreviousVoteSideIndicator vote={eventIdea.myVote} />
-            <PreviousVoteContent>
-              <PreviousVoteName>{eventIdea.name}</PreviousVoteName>
-              <PreviousVoteActions>
-                <Button
-                  size="small"
-                  variant={eventIdea.myVote === 1 ? 'contained' : 'text'}
-                  customColor="success"
-                  onClick={() => {
-                    approveEventIdea(eventIdea.id)
-                  }}
-                >
-                  Yes
-                </Button>
-                <Button
-                  size="small"
-                  variant={eventIdea.myVote === 0 ? 'contained' : 'text'}
-                  customColor="error"
-                  onClick={() => {
-                    rejectEventIdea(eventIdea.id)
-                  }}
-                >
-                  No
-                </Button>
-                <IconButton
-                  size="small"
-                  variant={eventIdea.myVote === -1 ? 'contained' : 'default'}
-                  onClick={() => {
-                    flagEventIdea(eventIdea.id)
-                  }}
-                >
-                  <Icon icon={FlagIcon} />
-                </IconButton>
-              </PreviousVoteActions>
-            </PreviousVoteContent>
-          </PreviousVote>
-        ))}
-      </PreviousVotes>
+      <PreviousVotesContainer>
+        <PreviousVotesActionsRow>
+          <Input
+            placeholder="Search..."
+            value={searchValue}
+            onChange={(e) => {
+              setSearchValue(e.target.value)
+            }}
+          />
+        </PreviousVotesActionsRow>
+        <PreviousVotes>
+          {filteredRemainingEventIdeas.map((eventIdea) => (
+            <PreviousVote key={eventIdea.id}>
+              <PreviousVoteSideIndicator vote={eventIdea.myVote} />
+              <PreviousVoteContent>
+                <PreviousVoteName>{eventIdea.name}</PreviousVoteName>
+                <PreviousVoteActions>
+                  <Button
+                    size="small"
+                    variant={eventIdea.myVote === 1 ? 'contained' : 'text'}
+                    customColor="success"
+                    onClick={() => {
+                      approveEventIdea(eventIdea.id)
+                    }}
+                  >
+                    Yes
+                  </Button>
+                  <Button
+                    size="small"
+                    variant={eventIdea.myVote === 0 ? 'contained' : 'text'}
+                    customColor="error"
+                    onClick={() => {
+                      rejectEventIdea(eventIdea.id)
+                    }}
+                  >
+                    No
+                  </Button>
+                  <IconButton
+                    size="small"
+                    variant={eventIdea.myVote === -1 ? 'contained' : 'default'}
+                    onClick={() => {
+                      flagEventIdea(eventIdea.id)
+                    }}
+                  >
+                    <Icon icon={FlagIcon} />
+                  </IconButton>
+                </PreviousVoteActions>
+              </PreviousVoteContent>
+            </PreviousVote>
+          ))}
+        </PreviousVotes>
+      </PreviousVotesContainer>
     </Root>
   )
 }

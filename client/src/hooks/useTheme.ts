@@ -35,6 +35,7 @@ export type ThemeColors = {
   defaultIconBlack: string
   cardBoxShadow: string
   cardBoxShadow_bottomHeavy: string
+  paperBackground: string
   appBar: {
     background: string
   }
@@ -51,6 +52,7 @@ export type ThemeColors = {
     background: string
     hoverOutlineColor: string
     dividerColor: string
+    boxShadow: string
   }
   button: {
     background: {
@@ -176,7 +178,7 @@ const buttonContainedHoverBackgroundColor = 'rgba(0,0,0,0.32)'
 const buttonLightBackgroundHoverColor = 'rgba(255,255,255,0.2)'
 const buttonContainedColor = 'rgba(0, 0, 0, 0.87)'
 const cardBoxShadow = '0 0 6px 0px rgba(0,0,0,0.04)'
-const cardBoxShadow_bottomHeavy = '0px 1px 3px -1px #00000080'
+const cardBoxShadow_bottomHeavy = '0px 1px 3px -1px rgb(0, 0, 0, 28%)'
 const fadedWhite = 'rgba(255,255,255,0.9)'
 const fadedBlack = 'rgba(0, 0, 0, 0.44)'
 const textBlack = 'rgba(0, 0, 0, 0.87)'
@@ -232,6 +234,7 @@ const lightTheme: ThemeColors = {
   fadedWhite,
   fadedBlack,
   borderColor,
+  paperBackground: styleVariables.white,
   appBar: {
     background: styleVariables.sapphireBlue,
   },
@@ -245,9 +248,10 @@ const lightTheme: ThemeColors = {
     background: styleVariables.bittersweet,
   },
   input: {
-    background: 'rgba(75, 80, 97, 0.17)',
+    background: styleVariables.cultured,
     hoverOutlineColor: styleVariables.greenBlue,
     dividerColor: styleVariables.white,
+    boxShadow: cardBoxShadow_bottomHeavy,
   },
   button: {
     background: {
@@ -296,7 +300,7 @@ const lightTheme: ThemeColors = {
   rows: {
     background: {
       white: {
-        background: styleVariables.ghostWhite,
+        background: styleVariables.cultured,
         evenBackground: 'rgb(232, 247, 255)',
         oddBackground: 'rgb(207, 238, 255)',
       },
@@ -363,7 +367,7 @@ const lightTheme: ThemeColors = {
     dateTextColor: 'rgba(255,255,255,0.65)',
   },
   slaughterSuggestion: {
-    background: styleVariables.ghostWhite,
+    background: styleVariables.cultured,
   },
   palette: {
     primary: {
@@ -417,6 +421,7 @@ const darkTheme: ThemeColors = {
   fadedWhite,
   fadedBlack,
   borderColor,
+  paperBackground: styleVariables.cultured,
   appBar: {
     background: ldStyleVariables.portlandOrange,
   },
@@ -433,6 +438,7 @@ const darkTheme: ThemeColors = {
     background: ldStyleVariables.white,
     hoverOutlineColor: ldStyleVariables.portlandOrange,
     dividerColor: ldStyleVariables.lightGray,
+    boxShadow: cardBoxShadow_bottomHeavy,
   },
   button: {
     background: {
@@ -729,7 +735,7 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       },
       MuiDrawer: {
         paper: {
-          background: selectedThemeColors.pageBackground,
+          background: selectedThemeColors.paperBackground,
         },
       },
       MuiTab: {
@@ -791,7 +797,7 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       },
       MuiInputBase: {
         root: {
-          boxShadow: cardBoxShadow,
+          boxShadow: selectedThemeColors.input.boxShadow,
         },
         input: {
           '&::placeholder': {

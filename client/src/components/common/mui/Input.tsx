@@ -4,6 +4,7 @@ import {
   FilledInputProps,
 } from '@material-ui/core'
 import styled, { css } from 'styled-components/macro'
+import { ignoreProps } from 'utils'
 
 type Background = 'transparent' | null
 type Color = 'black' | 'white'
@@ -16,11 +17,8 @@ interface StyledInputProps {
 }
 
 const StyledInput = styled(MuiFillInput).withConfig({
-  shouldForwardProp: (prop) =>
-    !['background', 'textColor', 'flushLeftEdge'].includes(prop),
+  shouldForwardProp: ignoreProps(['background', 'textColor', 'flushLeftEdge']),
 })<StyledInputProps>`
-  box-shadow: 0 0 6px 1px rgba(0, 0, 0, 0.03);
-
   ${({ background }) =>
     background === 'transparent' &&
     css`
