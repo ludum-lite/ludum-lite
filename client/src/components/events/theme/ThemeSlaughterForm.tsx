@@ -7,6 +7,7 @@ import {
   useRejectEventIdeaMutation,
   useFlagEventIdeaMutation,
 } from '__generated__/client-types'
+import { GlobalHotKeys } from 'react-hotkeys'
 import { sample, sortBy, partition, groupBy, mapValues } from 'lodash'
 import Button from 'components/common/mui/Button'
 import ButtonGroup from 'components/common/mui/ButtonGroup'
@@ -22,6 +23,11 @@ import { DebounceInput } from 'react-debounce-input'
 import { Select, MenuItem } from '@material-ui/core'
 import { getVoteColor } from './utils'
 import PreviousVoteRow from './PreviousVoteRow'
+
+const keyMap = {
+  APPROVE: 'y',
+  REJECT: 'n',
+}
 
 enum VoteFilterBy {
   All = 'all',
@@ -353,26 +359,67 @@ export default function ThemeSlaughterForm({ event }: Props) {
     return []
   }, [remainingEventIdeas, currentEventIdea])
 
+  const approveCurrentEventIdea = React.useCallback(() => {
+    if (currentEventIdea) {
+      approveEventIdea(currentEventIdea.id)
+      setThemeIdeaVoteOrder([currentEventIdea.id, ...themeIdeaVoteOrder])
+      setCurrentEventIdea(sample(remainingEventIdeasWithoutCurrent))
+    }
+  }, [
+    approveEventIdea,
+    currentEventIdea,
+    remainingEventIdeasWithoutCurrent,
+    setThemeIdeaVoteOrder,
+    themeIdeaVoteOrder,
+  ])
+
+  const rejectCurrentEventIdea = React.useCallback(() => {
+    if (currentEventIdea) {
+      rejectEventIdea(currentEventIdea.id)
+      setThemeIdeaVoteOrder([currentEventIdea.id, ...themeIdeaVoteOrder])
+      setCurrentEventIdea(sample(remainingEventIdeasWithoutCurrent))
+    }
+  }, [
+    rejectEventIdea,
+    currentEventIdea,
+    remainingEventIdeasWithoutCurrent,
+    setThemeIdeaVoteOrder,
+    themeIdeaVoteOrder,
+  ])
+
+  const flagCurrentEventIdea = React.useCallback(() => {
+    if (currentEventIdea) {
+      flagEventIdea(currentEventIdea.id)
+      setThemeIdeaVoteOrder([currentEventIdea.id, ...themeIdeaVoteOrder])
+      setCurrentEventIdea(sample(remainingEventIdeasWithoutCurrent))
+    }
+  }, [
+    flagEventIdea,
+    currentEventIdea,
+    remainingEventIdeasWithoutCurrent,
+    setThemeIdeaVoteOrder,
+    themeIdeaVoteOrder,
+  ])
+
   return (
     <Root>
       <ThemeTitle variant="h5">Would this be a good Theme?</ThemeTitle>
       {currentEventIdea && (
         <>
+          <GlobalHotKeys
+            keyMap={keyMap}
+            handlers={{
+              APPROVE: () => approveCurrentEventIdea(),
+              REJECT: () => rejectCurrentEventIdea(),
+            }}
+            allowChanges
+          />
           <Suggestion>
             <Typography variant="h4" bold>
               {currentEventIdea.name}
             </Typography>
             <SuggestionFlagButtonContainer>
-              <IconButton
-                onClick={() => {
-                  flagEventIdea(currentEventIdea.id)
-                  setThemeIdeaVoteOrder([
-                    currentEventIdea.id,
-                    ...themeIdeaVoteOrder,
-                  ])
-                  setCurrentEventIdea(sample(remainingEventIdeasWithoutCurrent))
-                }}
-              >
+              <IconButton onClick={flagCurrentEventIdea}>
                 <Icon icon={FlagIcon} />
               </IconButton>
             </SuggestionFlagButtonContainer>
@@ -382,14 +429,7 @@ export default function ThemeSlaughterForm({ event }: Props) {
               size="large"
               variant="contained"
               customColor="success"
-              onClick={() => {
-                approveEventIdea(currentEventIdea.id)
-                setThemeIdeaVoteOrder([
-                  currentEventIdea.id,
-                  ...themeIdeaVoteOrder,
-                ])
-                setCurrentEventIdea(sample(remainingEventIdeasWithoutCurrent))
-              }}
+              onClick={approveCurrentEventIdea}
             >
               <u>Y</u>es
             </Button>
@@ -397,14 +437,7 @@ export default function ThemeSlaughterForm({ event }: Props) {
               size="large"
               variant="contained"
               customColor="error"
-              onClick={() => {
-                rejectEventIdea(currentEventIdea.id)
-                setThemeIdeaVoteOrder([
-                  currentEventIdea.id,
-                  ...themeIdeaVoteOrder,
-                ])
-                setCurrentEventIdea(sample(remainingEventIdeasWithoutCurrent))
-              }}
+              onClick={rejectCurrentEventIdea}
             >
               <u>N</u>o
             </Button>
