@@ -136,11 +136,16 @@ const PreviousVotesDistributionContainer = styled.div`
 const PreviousVotesDistributionList = styled.div`
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 `
 
 const PreviousVotesDistributionItem = styled.div`
   display: flex;
   align-items: center;
+
+  &:not(:last-child) {
+    margin-right: ${({ theme }) => theme.spacing(1)}px;
+  }
 `
 
 interface DistributionCircleProps {
