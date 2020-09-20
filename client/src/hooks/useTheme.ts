@@ -858,7 +858,21 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       },
       MuiSelect: {
         selectMenu: {
-          padding: '27px 12px 10px',
+          // padding: '27px 12px 10px',
+          padding: '12px 12px 12px',
+        },
+        select: {
+          '&:focus': {
+            backgroundColor: 'none',
+          },
+        },
+        filled: {
+          '&&': {
+            paddingRight: 36,
+          },
+        },
+        icon: {
+          top: 'calc(50% - 14px)',
         },
       },
     },
@@ -980,6 +994,14 @@ export const ICON_SCALING = [
   },
   {
     name: 'FlagIcon',
+    base: 0.9,
+  },
+  {
+    name: 'SortIcon',
+    base: 1,
+  },
+  {
+    name: 'SearchIcon',
     base: 0.9,
   },
 ]

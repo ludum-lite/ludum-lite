@@ -2,6 +2,7 @@ import React from 'react'
 import {
   FilledInput as MuiFillInput,
   FilledInputProps,
+  InputBaseComponentProps,
 } from '@material-ui/core'
 import styled, { css } from 'styled-components/macro'
 import { ignoreProps } from 'utils'
@@ -61,14 +62,14 @@ const StyledInput = styled(MuiFillInput).withConfig({
     `}
 `
 
-interface MoreProps {
+interface InputProps {
   background?: Background
   textColor?: Color
   flushLeftEdge?: boolean
   ref?: React.RefObject<HTMLInputElement>
 }
 
-export type Props = MoreProps & FilledInputProps
+export type Props = InputProps & FilledInputProps
 
 const Input = React.forwardRef<HTMLInputElement, Props>(
   (
