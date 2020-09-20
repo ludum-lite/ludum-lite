@@ -149,8 +149,9 @@ export type ThemeColors = {
     fadedTextColor: string
     dateTextColor: string
   }
-  slaughterSuggestion: {
-    background: string
+  themeSlaughter: {
+    suggestionBackground: string
+    remaingVotesBackground: string
   }
   palette: {
     primary: {
@@ -366,8 +367,9 @@ const lightTheme: ThemeColors = {
     fadedTextColor: 'rgba(255,255,255,0.9)',
     dateTextColor: 'rgba(255,255,255,0.65)',
   },
-  slaughterSuggestion: {
-    background: styleVariables.cultured,
+  themeSlaughter: {
+    suggestionBackground: styleVariables.cultured,
+    remaingVotesBackground: styleVariables.greenBlue,
   },
   palette: {
     primary: {
@@ -569,8 +571,9 @@ const darkTheme: ThemeColors = {
     fadedTextColor: 'rgba(255,255,255,0.85)',
     dateTextColor: 'rgba(255,255,255,0.5)',
   },
-  slaughterSuggestion: {
-    background: 'white',
+  themeSlaughter: {
+    suggestionBackground: 'white',
+    remaingVotesBackground: ldStyleVariables.blueDeFrance,
   },
   palette: {
     primary: {

@@ -7,7 +7,7 @@ import {
   useRejectEventIdeaMutation,
   useFlagEventIdeaMutation,
 } from '__generated__/client-types'
-import { sample, sortBy, partition } from 'lodash'
+import { sample, sortBy, partition, groupBy, mapValues } from 'lodash'
 import Button from 'components/common/mui/Button'
 import ButtonGroup from 'components/common/mui/ButtonGroup'
 import Typography from 'components/common/mui/Typography'
@@ -19,7 +19,9 @@ import MuiSearchIcon from '@material-ui/icons/Search'
 import useUserLocalStorage from 'hooks/useUserLocalStorage'
 import Input from 'components/common/mui/Input'
 import { DebounceInput } from 'react-debounce-input'
-import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
+import { Select, MenuItem } from '@material-ui/core'
+import { getVoteColor } from './utils'
+import PreviousVoteRow from './PreviousVoteRow'
 
 enum VoteFilterBy {
   All = 'all',
@@ -58,7 +60,7 @@ const Suggestion = styled.div`
   justify-content: center;
   border-radius: ${({ theme }) => theme.shape.borderRadius}px;
   background: ${({ theme }) =>
-    theme.themeColors.slaughterSuggestion.background};
+    theme.themeColors.themeSlaughter.suggestionBackground};
   align-self: stretch;
   padding: ${({ theme }) => `${theme.spacing(1)}px ${theme.spacing(5)}px`};
   min-height: 50px;
@@ -123,33 +125,35 @@ const PreviousVotes = styled.div`
   box-shadow: ${({ theme }) => theme.themeColors.cardBoxShadow_bottomHeavy};
 `
 
-const PreviousVote = styled.div`
+/* Distribution Bar */
+const PreviousVotesDistributionContainer = styled.div`
   display: flex;
-  align-items: stretch;
-  background: ${({ theme }) =>
-    theme.themeColors.rows.background.white.background};
-
-  &:not(:last-child) {
-    border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
-  }
+  flex-direction: column;
+  align-self: stretch;
+  margin-top: ${({ theme }) => theme.spacing(4)}px;
 `
 
-interface PreviousVoteSideIndicatorProps {
-  vote: number | null | undefined
+const PreviousVotesDistributionList = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+
+const PreviousVotesDistributionItem = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+interface DistributionCircleProps {
+  vote?: number | null
 }
-const PreviousVoteSideIndicator = styled.div<PreviousVoteSideIndicatorProps>`
-  width: 4px;
+const DistributionCircle = styled.div<DistributionCircleProps>`
+  height: 12px;
+  width: 12px;
+  border-radius: 100%;
+  margin-right: ${({ theme }) => theme.spacing(1)}px;
 
   ${({ vote, theme }) => {
-    let background
-
-    if (vote === 1) {
-      background = theme.themeColors.button.color.contained.successBackground
-    } else if (vote === 0) {
-      background = theme.themeColors.button.color.contained.errorBackground
-    } else if (vote === -1) {
-      background = theme.themeColors.defaultIconBlack
-    }
+    const background = getVoteColor(vote, theme)
 
     return css`
       background: ${background};
@@ -157,19 +161,39 @@ const PreviousVoteSideIndicator = styled.div<PreviousVoteSideIndicatorProps>`
   }}
 `
 
-const PreviousVoteContent = styled.div`
-  flex: 1 1 0px;
+const DistributionText = styled(Typography)`
+  margin-right: ${({ theme }) => theme.spacing(1)}px;
+`
+
+const DistributionNumber = styled(Typography)``
+
+const PreviousVotesBar = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: ${({ theme }) => `${theme.spacing(1)}px ${theme.spacing(1)}px`};
+  overflow: hidden;
+  border-radius: 12px;
+  height: 12px;
+  margin-top: ${({ theme }) => theme.spacing(1)}px;
 `
 
-const PreviousVoteName = styled(Typography)`
-  padding: ${({ theme }) => theme.spacing(1)}px;
-`
+interface PreviousVotesBarSegmentProps {
+  count: number
+  vote?: number | null
+}
+const PreviousVotesBarSegment = styled.div<PreviousVotesBarSegmentProps>`
+  flex: ${({ count }) => count} 0 5px;
 
-const PreviousVoteActions = styled(ButtonGroup)``
+  &:not(:last-child) {
+    border-right: 1px solid ${({ theme }) => theme.themeColors.whiteBackground};
+  }
+
+  ${({ vote, theme }) => {
+    const background = getVoteColor(vote, theme)
+
+    return css`
+      background: ${background};
+    `
+  }}
+`
 
 // type FormInputs = {
 //   name: string
@@ -287,6 +311,13 @@ export default function ThemeSlaughterForm({ event }: Props) {
     return result
   }, [event.eventIdeas, themeIdeaVoteOrder])
 
+  const votedDistributions = React.useMemo(() => {
+    return mapValues(
+      groupBy(votedEventIdeas, (eventIdea) => eventIdea.myVote),
+      (eventIdeas) => eventIdeas.length
+    )
+  }, [votedEventIdeas])
+
   const filteredVotedEventIdeas = React.useMemo(() => {
     const searchFilteredEventIdeas = votedEventIdeas.filter((eventIdea) =>
       eventIdea.name.toLowerCase().includes(searchValue.toLowerCase())
@@ -375,6 +406,44 @@ export default function ThemeSlaughterForm({ event }: Props) {
           </SuggestionActions>
         </>
       )}
+      <PreviousVotesDistributionContainer>
+        <PreviousVotesDistributionList>
+          <PreviousVotesDistributionItem>
+            <DistributionCircle vote={1} />
+            <DistributionText>Approved</DistributionText>
+            <DistributionNumber color="textSecondary">
+              {votedDistributions[1]}
+            </DistributionNumber>
+          </PreviousVotesDistributionItem>
+          <PreviousVotesDistributionItem>
+            <DistributionCircle vote={-1} />
+            <DistributionText>Rejected</DistributionText>
+            <DistributionNumber color="textSecondary">
+              {votedDistributions[-1]}
+            </DistributionNumber>
+          </PreviousVotesDistributionItem>
+          <PreviousVotesDistributionItem>
+            <DistributionCircle vote={0} />
+            <DistributionText>Flagged</DistributionText>
+            <DistributionNumber color="textSecondary">
+              {votedDistributions[0]}
+            </DistributionNumber>
+          </PreviousVotesDistributionItem>
+          <PreviousVotesDistributionItem>
+            <DistributionCircle />
+            <DistributionText>Remaining</DistributionText>
+            <DistributionNumber color="textSecondary">
+              {remainingEventIdeas.length}
+            </DistributionNumber>
+          </PreviousVotesDistributionItem>
+        </PreviousVotesDistributionList>
+        <PreviousVotesBar>
+          <PreviousVotesBarSegment vote={1} count={votedDistributions[1]} />
+          <PreviousVotesBarSegment vote={-1} count={votedDistributions[-1]} />
+          <PreviousVotesBarSegment vote={0} count={votedDistributions[0]} />
+          <PreviousVotesBarSegment count={remainingEventIdeas.length} />
+        </PreviousVotesBar>
+      </PreviousVotesDistributionContainer>
       <PreviousVotesContainer>
         <PreviousVotesActionsRow>
           <FilterPreviousVotesInput
@@ -420,43 +489,15 @@ export default function ThemeSlaughterForm({ event }: Props) {
         </PreviousVotesActionsRow>
         <PreviousVotes>
           {filteredVotedEventIdeas.map((eventIdea) => (
-            <PreviousVote key={eventIdea.id}>
-              <PreviousVoteSideIndicator vote={eventIdea.myVote} />
-              <PreviousVoteContent>
-                <PreviousVoteName>{eventIdea.name}</PreviousVoteName>
-                <PreviousVoteActions>
-                  <Button
-                    size="small"
-                    variant={eventIdea.myVote === 1 ? 'contained' : 'text'}
-                    customColor="success"
-                    onClick={() => {
-                      approveEventIdea(eventIdea.id)
-                    }}
-                  >
-                    Yes
-                  </Button>
-                  <Button
-                    size="small"
-                    variant={eventIdea.myVote === 0 ? 'contained' : 'text'}
-                    customColor="error"
-                    onClick={() => {
-                      rejectEventIdea(eventIdea.id)
-                    }}
-                  >
-                    No
-                  </Button>
-                  <IconButton
-                    size="small"
-                    variant={eventIdea.myVote === -1 ? 'contained' : 'default'}
-                    onClick={() => {
-                      flagEventIdea(eventIdea.id)
-                    }}
-                  >
-                    <Icon icon={FlagIcon} />
-                  </IconButton>
-                </PreviousVoteActions>
-              </PreviousVoteContent>
-            </PreviousVote>
+            <PreviousVoteRow
+              key={eventIdea.id}
+              id={eventIdea.id}
+              vote={eventIdea.myVote}
+              eventIdeaName={eventIdea.name}
+              onApprove={approveEventIdea}
+              onReject={rejectEventIdea}
+              onFlag={flagEventIdea}
+            />
           ))}
         </PreviousVotes>
       </PreviousVotesContainer>
