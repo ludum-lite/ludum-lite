@@ -159,13 +159,13 @@ export default function EventPage(props: EventPageProps) {
       return (
         <TabbedContent>
           <Tabs value={subPage}>
-            <Tab
+            {/* <Tab
               component={Link}
               to={ROUTES.EVENT.getEventRoute(eventId, 'games')}
               noUnderline
               value={EventTab.Games}
               label="Games"
-            />
+            /> */}
             <Tab
               component={Link}
               to={ROUTES.EVENT.getEventRoute(eventId, 'theme')}
@@ -173,13 +173,13 @@ export default function EventPage(props: EventPageProps) {
               value={EventTab.Theme}
               label="Theme"
             />
-            <Tab
+            {/* <Tab
               component={Link}
               to={ROUTES.EVENT.getEventRoute(eventId, 'stats')}
               noUnderline
               value={EventTab.Stats}
               label="Stats"
-            />
+            /> */}
           </Tabs>
         </TabbedContent>
       )

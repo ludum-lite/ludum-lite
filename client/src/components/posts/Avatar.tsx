@@ -1,9 +1,7 @@
 import React from 'react'
 import styled, { css } from 'styled-components/macro'
 import { Link } from 'react-router-dom'
-
-const DEFAULT_IMAGE =
-  'https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png'
+import defaultProfileImage from './default-profile.png'
 
 const AvatarLink = styled(Link)`
   display: flex;
@@ -52,7 +50,7 @@ export default function Avatar({
   return (
     <AvatarLink className={className} to={linkPath || ''}>
       <AvatarImg
-        src={avatarPath || (defaultToProfileImage ? DEFAULT_IMAGE : '')}
+        src={avatarPath || (defaultToProfileImage ? defaultProfileImage : '')}
         alt=""
         style={{ height: size, width: size }}
         circle={circle}

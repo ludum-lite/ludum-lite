@@ -161,7 +161,7 @@ const DistributionCircle = styled.div<DistributionCircleProps>`
   height: 12px;
   width: 12px;
   border-radius: 100%;
-  margin-right: ${({ theme }) => theme.spacing(1)}px;
+  margin-right: ${({ theme }) => theme.spacing(0.75)}px;
 
   ${({ vote, theme }) => {
     const background = getVoteColor(vote, theme)
@@ -172,11 +172,11 @@ const DistributionCircle = styled.div<DistributionCircleProps>`
   }}
 `
 
-const DistributionText = styled(Typography)`
-  margin-right: ${({ theme }) => theme.spacing(1)}px;
-`
+const DistributionText = styled(Typography)``
 
-const DistributionNumber = styled(Typography)``
+const DistributionNumber = styled(Typography)`
+  margin-right: ${({ theme }) => theme.spacing(0.75)}px;
+`
 
 const PreviousVotesBar = styled.div`
   display: flex;
@@ -191,7 +191,7 @@ interface PreviousVotesBarSegmentProps {
   vote?: number | null
 }
 const PreviousVotesBarSegment = styled.div<PreviousVotesBarSegmentProps>`
-  flex: ${({ count }) => count} 0 5px;
+  flex: ${({ count }) => count} 0 0px;
 
   &:not(:last-child) {
     border-right: 1px solid ${({ theme }) => theme.themeColors.whiteBackground};
@@ -403,9 +403,9 @@ export default function ThemeSlaughterForm({ event }: Props) {
 
   return (
     <Root>
-      <ThemeTitle variant="h5">Would this be a good Theme?</ThemeTitle>
-      {currentEventIdea && (
+      {currentEventIdea ? (
         <>
+          <ThemeTitle variant="h5">Would this be a good Theme?</ThemeTitle>
           <GlobalHotKeys
             keyMap={keyMap}
             handlers={{
@@ -443,42 +443,40 @@ export default function ThemeSlaughterForm({ event }: Props) {
             </Button>
           </SuggestionActions>
         </>
+      ) : (
+        <Typography variant="h5" color="textSecondary">
+          You're done voting!
+        </Typography>
       )}
       <PreviousVotesDistributionContainer>
         <PreviousVotesDistributionList>
           <PreviousVotesDistributionItem>
             <DistributionCircle vote={1} />
+            <DistributionNumber>{votedDistributions[1]}</DistributionNumber>
             <DistributionText>Approved</DistributionText>
-            <DistributionNumber color="textSecondary">
-              {votedDistributions[1]}
-            </DistributionNumber>
-          </PreviousVotesDistributionItem>
-          <PreviousVotesDistributionItem>
-            <DistributionCircle vote={-1} />
-            <DistributionText>Rejected</DistributionText>
-            <DistributionNumber color="textSecondary">
-              {votedDistributions[-1]}
-            </DistributionNumber>
           </PreviousVotesDistributionItem>
           <PreviousVotesDistributionItem>
             <DistributionCircle vote={0} />
+            <DistributionNumber>{votedDistributions[0]}</DistributionNumber>
+            <DistributionText>Rejected</DistributionText>
+          </PreviousVotesDistributionItem>
+          <PreviousVotesDistributionItem>
+            <DistributionCircle vote={-1} />
+            <DistributionNumber>{votedDistributions[-1]}</DistributionNumber>
             <DistributionText>Flagged</DistributionText>
-            <DistributionNumber color="textSecondary">
-              {votedDistributions[0]}
-            </DistributionNumber>
           </PreviousVotesDistributionItem>
           <PreviousVotesDistributionItem>
             <DistributionCircle />
-            <DistributionText>Remaining</DistributionText>
-            <DistributionNumber color="textSecondary">
+            <DistributionNumber>
               {remainingEventIdeas.length}
             </DistributionNumber>
+            <DistributionText>Remaining</DistributionText>
           </PreviousVotesDistributionItem>
         </PreviousVotesDistributionList>
         <PreviousVotesBar>
           <PreviousVotesBarSegment vote={1} count={votedDistributions[1]} />
-          <PreviousVotesBarSegment vote={-1} count={votedDistributions[-1]} />
           <PreviousVotesBarSegment vote={0} count={votedDistributions[0]} />
+          <PreviousVotesBarSegment vote={-1} count={votedDistributions[-1]} />
           <PreviousVotesBarSegment count={remainingEventIdeas.length} />
         </PreviousVotesBar>
       </PreviousVotesDistributionContainer>
