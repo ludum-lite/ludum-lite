@@ -2,7 +2,6 @@ import React from 'react'
 import {
   FilledInput as MuiFillInput,
   FilledInputProps,
-  InputBaseComponentProps,
 } from '@material-ui/core'
 import styled, { css } from 'styled-components/macro'
 import { ignoreProps } from 'utils'

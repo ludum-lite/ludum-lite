@@ -4,7 +4,6 @@ import styled, { css } from 'styled-components/macro'
 import MultilineTextField from 'components/common/MultilineTextField'
 import Markdown from 'components/common/Markdown'
 import Fade from '@material-ui/core/Fade'
-import { ignoreProps } from 'utils'
 import { useLogin } from 'hooks/useLogin'
 import useEditablePreviewActionRow from 'hooks/useEditablePreviewActionRow'
 

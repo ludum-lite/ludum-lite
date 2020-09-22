@@ -160,8 +160,7 @@ const WidgetsContainer = styled.div`
   }
 `
 
-interface Props {}
-export default function App({}: Props) {
+export default function App() {
   useHasNavigatedWithin()
   const [selectedWidget, setSelectedWidget] = useSelectedWidget()
   const { setIsSidebarOpen } = useSidebarOpen()

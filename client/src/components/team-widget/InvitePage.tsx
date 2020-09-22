@@ -40,8 +40,7 @@ const StyledButtonGroup = styled(ButtonGroup)`
   margin-top: ${({ theme }) => theme.spacing(3)}px;
 `
 
-interface Props {}
-export default function InvitePage({}: Props) {
+export default function InvitePage() {
   const { promptLogin, isLoggedIn } = useLogin()
   const { enqueueSnackbar } = useSnackbar()
   const navigate = useNavigate()

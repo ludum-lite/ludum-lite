@@ -40,8 +40,7 @@ const StyledButton = styled(Button)`
   margin-top: ${({ theme }) => theme.spacing(3)}px;
 `
 
-interface Props {}
-export default function ConfirmInviteAndAddToTeamPage({}: Props) {
+export default function ConfirmInviteAndAddToTeamPage() {
   const { isLoggedIn, promptLogin } = useLogin()
   const { enqueueSnackbar } = useSnackbar()
   const navigate = useNavigate()

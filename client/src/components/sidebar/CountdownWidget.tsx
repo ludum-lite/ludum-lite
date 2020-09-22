@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react'
-import _ from 'lodash'
 import styled, { css } from 'styled-components/macro'
 import Countdown from './Countdown'
 import moment from 'moment'

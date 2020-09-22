@@ -1,8 +1,6 @@
 import React, { Fragment } from 'react'
 import styled from 'styled-components/macro'
 import { gql } from '@apollo/client'
-import _ from 'lodash'
-
 import {
   Typography,
   LinearProgress,

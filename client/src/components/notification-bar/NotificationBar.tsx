@@ -38,8 +38,7 @@ const NotificationTitle = styled(Typography)`
 
 const ThemeName = styled.strong``
 
-interface Props {}
-export default function NotificationBar({}: Props) {
+export default function NotificationBar() {
   const { featuredEvent } = useFeaturedEvent()
   const currentEvent = getCurrentEvent(events)
   const currentPhase = currentEvent && findCurrentPhase(currentEvent.timeline)

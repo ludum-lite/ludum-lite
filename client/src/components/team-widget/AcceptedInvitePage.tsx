@@ -29,8 +29,7 @@ const InviteButton = styled(ClickToCopyButton)`
   font-family: 'Oxygen Mono';
 `
 
-interface Props {}
-export default function AcceptedInvitePage({}: Props) {
+export default function AcceptedInvitePage() {
   const { me } = useMe()
   const { userId } = useParams()
   const { data } = useAcceptedInvitePageQuery({
