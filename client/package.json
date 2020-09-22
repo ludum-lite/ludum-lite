@@ -68,7 +68,7 @@
   "scripts": {
     "start": "concurrently -n CLIENT,CODEGEN \"env-cmd -e development react-scripts start\" \"yarn codegen\"",
     "start:prod:local": "concurrently -n CLIENT,CODEGEN \"env-cmd -e production react-scripts start\" \"yarn codegen\"",
-    "build": "react-scripts build",
+    "build": "env-cmd -e production react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "codegen": "graphql-codegen --watch --config codegen.yml",
