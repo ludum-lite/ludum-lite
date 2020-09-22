@@ -93,8 +93,7 @@ const paths = [
   },
 ]
 
-interface Props {}
-const Sidebar = React.memo(({}: Props) => {
+const Sidebar = React.memo(() => {
   const { isSidebarOpen, setIsSidebarOpen } = useSidebarOpen()
 
   const { basePath } = useParams()
