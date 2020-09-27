@@ -6,9 +6,9 @@ name: CI
 # events but only for the master branch
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -24,5 +24,4 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Push schema
-        run: apollo service:push --graph=ludum-lite --key=service:ludum-lite:9U-OWusBgDqDE8uWS0mEkA --variant=current --localSchemaFile=./src/__generated__/schema.graphql
-
+        run: yarn apollo service:push --graph=ludum-lite --key=service:ludum-lite:9U-OWusBgDqDE8uWS0mEkA --variant=current --localSchemaFile=./src/__generated__/schema.graphql
