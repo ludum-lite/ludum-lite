@@ -25,7 +25,9 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      # Runs a single command using the runners shell
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '12'
+      - run: yarn install
       - name: Push schema
         run: yarn apollo service:push --graph=ludum-lite --key=service:ludum-lite:9U-OWusBgDqDE8uWS0mEkA --variant=current --localSchemaFile=./src/__generated__/schema.graphql
