@@ -2,21 +2,21 @@
   "name": "server",
   "private": true,
   "scripts": {
-    "start": "concurrently -n SERVER,TYPEGEN \"env-cmd -e development yarn watch-server\" \"yarn watch-schema\"",
-    "start:prod:local": "concurrently -n SERVER,TYPEGEN \"env-cmd -e production yarn watch-server\" \"yarn watch-schema\"",
-    "start:prod": "env-cmd -e production ts-node --files ./src",
-    "watch-server": "ts-node-dev --no-notify --transpileOnly --respawn ./src",
-    "watch-schema": "graphql-codegen --watch --config codegen.yml"
+    "start": "concurrently -n TSC,TYPEGEN,SERVERLESS \"yarn compile-ts\" \"yarn compile-schema\" \"yarn serverless-offline\"",
+    "compile-ts": "tsc --watch",
+    "compile-schema": "graphql-codegen --watch --config codegen.yml",
+    "serverless-offline": "serverless offline start --port=4000",
+    "deploy": "serverless deploy"
   },
   "dependencies": {
     "@types/lodash": "^4.14.149",
-    "apollo-datasource-rest": "^0.8.1",
-    "apollo-server": "^2.12.0",
+    "apollo": "^2.31.0",
+    "apollo-datasource-rest": "^0.9.4",
+    "apollo-server-lambda": "^2.18.1",
     "concurrently": "^5.2.0",
     "cuid": "^2.1.8",
     "dataloader": "^2.0.0",
     "dataloader-sort": "^0.0.5",
-    "env-cmd": "^10.1.0",
     "form-data": "^3.0.0",
     "graphql": "^15.0.0",
     "lodash": "^4.17.15",
@@ -32,7 +32,13 @@
     "@graphql-codegen/typescript-operations": "^1.17.0",
     "@graphql-codegen/typescript-resolvers": "1.13.4",
     "prettier": "2.0.4",
-    "ts-node-dev": "^1.0.0-pre.44",
+    "serverless-dotenv-plugin": "^3.0.0",
+    "serverless-offline": "^5.12.1",
+    "serverless-plugin-typescript": "^1.1.9",
+    "ts-node-dev": "1.0.0-pre.63",
     "typescript": "^3.8.3"
+  },
+  "resolutions": {
+    "graphql": "^15.0.0"
   }
 }

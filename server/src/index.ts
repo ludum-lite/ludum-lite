@@ -1,4 +1,4 @@
-import { ApolloServer, makeExecutableSchema } from 'apollo-server'
+import { ApolloServer, makeExecutableSchema } from 'apollo-server-lambda'
 import { Context } from './data-sources/context'
 import CommentAPI from './data-sources/comment-api'
 import EventAPI from './data-sources/event-api'
@@ -225,16 +225,6 @@ const resolvers: Resolvers<Context> = {
       return context.dataSources.eventApi.getFeaturedEvent()
     },
   },
-  // DeleteEventIdeaSuccess: {
-  //   async eventIdea(response, __, context) {
-  //     const eventIdea = await context.dataSources.eventIdeaApi.getMyEventIdea({
-  //       eventId: response.eventId,
-  //       id: response.eventIdeaId,
-  //     })
-
-  //     return eventIdea ||
-  //   },
-  // },
   EventPhase: {
     ThemeSubmission: 1,
     ThemeSlaughter: 2,
@@ -253,15 +243,16 @@ const schema = makeExecutableSchema({
   },
 })
 
-new ApolloServer({
+const apolloServer = new ApolloServer({
   schema,
-  context: ({ req: { headers } }): Context =>
-    (({
-      authToken: headers.authorization,
+  context: ({ event }): Context => {
+    return ({
+      authToken: event.headers.authorization,
       loaders: {
         postLoader: undefined,
       },
-    } as any) as Context),
+    } as any) as Context
+  },
   dataSources: () => ({
     postApi: new PostAPI(),
     commentApi: new CommentAPI(),
@@ -271,11 +262,6 @@ new ApolloServer({
     gameApi: new GameAPI(),
     imageApi: new ImageAPI(),
   }),
-  engine: {
-    apiKey: 'service:ldjam:S8IzjK8QYWQyOeLhjtuFvA',
-  },
 })
-  .listen()
-  .then(({ url }) => {
-    console.log(`\nServer ready at ${url}`)
-  })
+
+export const graphqlHandler = apolloServer.createHandler()

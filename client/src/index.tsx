@@ -51,7 +51,7 @@ const authLink = setContext((_, { headers }) => {
 })
 
 const uploadLink = createUploadLink({
-  uri: 'http://localhost:4000',
+  uri: process.env.REACT_APP_UPLOAD_LINK,
 })
 
 // @ts-ignore
