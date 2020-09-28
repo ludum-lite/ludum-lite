@@ -30,4 +30,4 @@ jobs:
           node-version: '12'
       - run: yarn install
       - name: Push schema
-        run: yarn apollo service:push --graph=ludum-lite --key=service:ludum-lite:9U-OWusBgDqDE8uWS0mEkA --variant=current --localSchemaFile=./src/__generated__/schema.graphql
+        run: yarn apollo service:push --graph=ludum-lite --key=${{ secrets.APOLLO_STUDIO_KEY }} --variant=current --localSchemaFile=./src/__generated__/schema.graphql
