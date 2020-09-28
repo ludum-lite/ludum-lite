@@ -107,7 +107,6 @@ export default class EventAPI extends BaseAPI {
         const games = await this.context.loaders.gameLoader.loadMany(
           response.what
         )
-        console.log(games)
         const lastGameModified = maxBy(
           filterOutErrorsFromResponses(games),
           'modifiedDate'

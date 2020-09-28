@@ -2,6 +2,15 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "concurrently -n CLIENT,CODEGEN \"env-cmd -e development react-scripts start\" \"yarn codegen\"",
+    "start:prod:local": "concurrently -n CLIENT,CODEGEN \"env-cmd -e production react-scripts start\" \"yarn codegen\"",
+    "codegen": "graphql-codegen --watch --config codegen.yml",
+    "build": "env-cmd -e production react-scripts build",
+    "test": "react-scripts test",
+    "storybook": "start-storybook -p 9009 -s public",
+    "build-storybook": "build-storybook -s public"
+  },
   "dependencies": {
     "@apollo/client": "^3.2.1",
     "@apollo/link-batch-http": "^2.0.0-beta.3",
@@ -64,16 +73,6 @@
     "@storybook/addons": "^5.3.19",
     "@storybook/preset-create-react-app": "^3.0.0",
     "@storybook/react": "^5.3.19"
-  },
-  "scripts": {
-    "start": "concurrently -n CLIENT,CODEGEN \"env-cmd -e development react-scripts start\" \"yarn codegen\"",
-    "start:prod:local": "concurrently -n CLIENT,CODEGEN \"env-cmd -e production react-scripts start\" \"yarn codegen\"",
-    "build": "env-cmd -e production react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "codegen": "graphql-codegen --watch --config codegen.yml",
-    "storybook": "start-storybook -p 9009 -s public",
-    "build-storybook": "build-storybook -s public"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -94,7 +94,7 @@ export default class UserAPI extends BaseAPI {
         token,
       }
     } catch (e) {
-      console.log(e)
+      console.error(e)
       return {
         __typename: 'LoginFailure',
         success: false,

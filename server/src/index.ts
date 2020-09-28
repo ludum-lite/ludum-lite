@@ -124,7 +124,6 @@ const resolvers: Resolvers<Context> = {
     },
     async currentUserGame(_, __, context) {
       const gameId = await context.dataSources.eventApi.getCurrentUserGameId()
-      console.log(gameId)
 
       if (gameId) {
         return context.dataSources.gameApi.getGame(gameId)
