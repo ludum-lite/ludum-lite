@@ -5,8 +5,7 @@
     "start": "concurrently -n TSC,TYPEGEN,SERVERLESS \"yarn compile-ts\" \"yarn compile-schema\" \"yarn serverless-offline\"",
     "compile-ts": "tsc --watch",
     "compile-schema": "graphql-codegen --watch --config codegen.yml",
-    "serverless-offline": "serverless offline start --port=4000",
-    "deploy": "serverless deploy"
+    "serverless-offline": "serverless offline start --port=4000"
   },
   "dependencies": {
     "@types/lodash": "^4.14.149",
