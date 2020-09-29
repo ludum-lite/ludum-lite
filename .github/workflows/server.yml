@@ -21,9 +21,11 @@ jobs:
         with:
           node-version: '12'
       - run: yarn install
+        env:
+          NODE_ENV: production
       - name: Push schema
         run: yarn apollo service:push --graph=ludum-lite --key=${{ secrets.APOLLO_STUDIO_KEY }} --variant=current --localSchemaFile=./src/__generated__/schema.graphql
       - name: Serverless deploy
         run: |
           yarn serverless config credentials --provider aws --key ${{ secrets.AWS_ACCESS_KEY }} --secret ${{ secrets.AWS_SECRET_KEY }}
-          yarn serverless deploy
+          yarn serverless deploy --stage production
