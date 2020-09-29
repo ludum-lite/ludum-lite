@@ -8,6 +8,7 @@
     "serverless-offline": "serverless offline start --port=4000"
   },
   "dependencies": {
+    "apollo": "^2.31.0",
     "apollo-datasource-rest": "^0.9.4",
     "apollo-server-lambda": "^2.18.1",
     "concurrently": "^5.2.0",
