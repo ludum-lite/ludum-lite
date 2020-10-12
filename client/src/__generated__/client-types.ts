@@ -928,7 +928,7 @@ export type GetPostPageDataQuery = { __typename: 'Query' } & {
 
 export type PostPage_PostFragment = { __typename: 'Post' } & Pick<
   Post,
-  'id' | 'name' | 'publishedDate' | 'body'
+  'id' | 'name' | 'publishedDate' | 'body' | 'subtype'
 > & {
     author?: Maybe<
       { __typename: 'User' } & Pick<
@@ -1483,6 +1483,7 @@ export const PostPage_PostFragmentDoc = gql`
     name
     publishedDate
     body
+    subtype
     author {
       id
       profilePath

@@ -49,6 +49,8 @@ import PreviewableMarkdownInput from 'components/common/PreviewableMarkdownInput
 import Breadcrumb from 'components/common/Breadcrumb'
 import NewsTag from './NewsTag'
 
+const NO_TITLE_TEXT = '-- No Title  --'
+
 enum CommentSortBy {
   DatePostedNewest = 'datePosted_newest',
   DatePostedOldest = 'datePosted_oldest',
@@ -78,7 +80,7 @@ const HeaderUserContainer = styled.div``
 const TitleRow = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: ${({ theme }) => theme.spacing(1)}px;
+  margin-bottom: ${({ theme }) => theme.spacing(1.5)}px;
 `
 
 const StyledNewsTag = styled(NewsTag)`
@@ -177,7 +179,6 @@ export default function PostPage({ isEditing }: PostPageProps) {
   const { id: postId } = useParams()
   const {
     control,
-    register,
     handleSubmit,
     errors,
     setError,
@@ -432,11 +433,12 @@ export default function PostPage({ isEditing }: PostPageProps) {
                       </Fragment>
                     ) : (
                       <TitleRow>
-                        <StyledNewsTag variant="contained" />
+                        {post.subtype === 'news' && (
+                          <StyledNewsTag variant="contained" />
+                        )}
                         <Title>
                           <TitleText variant="h4">
-                            {(isEditing ? value : post.name) ||
-                              '-- No Title  --'}
+                            {(isEditing ? value : post.name) || NO_TITLE_TEXT}
                           </TitleText>
                           {errors.title && (
                             <Typography variant="caption" color="error">
@@ -525,7 +527,6 @@ export default function PostPage({ isEditing }: PostPageProps) {
     isEditing,
     editActionRow,
     state,
-    register,
     errors.title,
     control,
     commentSortBy,
@@ -538,7 +539,9 @@ export default function PostPage({ isEditing }: PostPageProps) {
       return (
         <Breadcrumbs>
           <Breadcrumb to="/posts">Posts</Breadcrumb>
-          <Breadcrumb to={`/posts/${post.id}`}>{post.name}</Breadcrumb>
+          <Breadcrumb to={`/posts/${post.id}`}>
+            {post.name || NO_TITLE_TEXT}
+          </Breadcrumb>
           {isEditing && <Breadcrumb>Edit</Breadcrumb>}
         </Breadcrumbs>
       )
@@ -589,6 +592,7 @@ gql`
     name
     publishedDate
     body
+    subtype
     author {
       id
       profilePath
