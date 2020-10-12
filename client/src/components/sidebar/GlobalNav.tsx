@@ -10,12 +10,7 @@ import { ReactComponent as UserIcon } from 'assets/user.svg'
 import { useLogin } from 'hooks/useLogin'
 import { useTheme } from 'hooks/useTheme'
 import { gql } from '@apollo/client'
-import {
-  useCreatePostMutation,
-  useGlobalNavDataQuery,
-} from '__generated__/client-types'
-import { useSnackbar } from 'notistack'
-import { useNavigate } from 'react-router'
+import Link from 'components/common/mui/Link'
 
 const Root = styled.div`
   display: flex;
@@ -27,14 +22,9 @@ const Root = styled.div`
 const Header = styled.div``
 
 const StyledIconButton = styled(IconButton)`
-  /* color: white; */
   width: 48px;
   height: 48px;
   padding: 0;
-
-  /* &:hover {
-    background-color: rgba(255, 255, 255, 0.25);
-  } */
 `
 
 const Body = styled.div`
@@ -103,12 +93,8 @@ interface Props {
   closeSidebar: () => void
 }
 export default function GlobalNav({ closeSidebar }: Props) {
-  const { enqueueSnackbar } = useSnackbar()
-  const navigate = useNavigate()
   const { themeMode, toggleTheme } = useTheme()
   const { promptLogin, isLoggedIn } = useLogin()
-  const { data } = useGlobalNavDataQuery()
-  const [createPostMutation] = useCreatePostMutation()
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
@@ -138,38 +124,10 @@ export default function GlobalNav({ closeSidebar }: Props) {
         <Tooltip placement="right" title="Create Post">
           <StyledIconButton
             background="globalNav"
-            onClick={async () => {
-              const gameId = data?.featuredEvent.currentUserGameId
-              if (gameId) {
-                try {
-                  const response = await createPostMutation({
-                    variables: {
-                      input: {
-                        gameId,
-                      },
-                    },
-                  })
-
-                  navigate(
-                    `/posts/${
-                      response.data?.createPost.__typename ===
-                        'CreatePostSuccess' && response.data.createPost.post.id
-                    }/edit`
-                  )
-                  closeSidebar()
-                } catch (e) {
-                  console.error(e)
-                  enqueueSnackbar('Something went wrong', {
-                    variant: 'error',
-                  })
-                }
-              } else {
-                console.error('Trying to create post error: No game id')
-                enqueueSnackbar('Please login or join the event', {
-                  variant: 'error',
-                })
-              }
-            }}
+            onClick={closeSidebar}
+            component={Link}
+            // @ts-ignore
+            to="/posts/new"
           >
             <AddIcon />
           </StyledIconButton>
@@ -222,16 +180,6 @@ gql`
     featuredEvent {
       id
       currentUserGameId
-    }
-  }
-
-  mutation CreatePost($input: CreatePostInput!) {
-    createPost(input: $input) {
-      ... on CreatePostSuccess {
-        post {
-          id
-        }
-      }
     }
   }
 `

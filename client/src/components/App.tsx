@@ -30,6 +30,7 @@ import NotificationBar from './notification-bar/NotificationBar'
 import EventPage from './events/EventPage'
 import { ROUTES } from './routes/routes'
 import useSelectedWidget from 'hooks/useSelectedWidget'
+import NewPostPage from './posts/NewPostPage'
 
 const Root = styled.div`
   min-height: 100vh;
@@ -212,6 +213,7 @@ export default function App() {
               ) : (
                 <Route path="/posts/:id" element={<PostPage />} />
               )}
+              <Route path="/posts/new" element={<NewPostPage />} />
               <Route path="/posts/:id/edit" element={<PostPage isEditing />} />
               <Route path="/invite/:userId" element={<InvitePage />} />
               <Route
