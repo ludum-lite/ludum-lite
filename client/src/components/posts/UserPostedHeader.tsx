@@ -4,9 +4,9 @@ import styled, { css } from 'styled-components/macro'
 import moment from 'moment'
 import { getStaticUrl, ignoreProps } from 'utils'
 
-import { Typography } from '@material-ui/core'
 import Link from 'components/common/mui/Link'
 import Avatar from './Avatar'
+import Typography from 'components/common/mui/Typography'
 
 const HeaderUserContainer = styled.div`
   display: flex;
@@ -21,9 +21,10 @@ const StyledAvatar = styled(Avatar)`
 
 interface UserLinkProps {
   highlightUserLink?: boolean
+  collapsedNewsPost?: boolean
 }
 const UserLink = styled(Link).withConfig({
-  shouldForwardProp: ignoreProps(['highlightUserLink']),
+  shouldForwardProp: ignoreProps(['highlightUserLink', 'collapsedNewsPost']),
 })<UserLinkProps>`
   margin-right: ${({ theme }) => theme.spacing(1)}px;
   ${({ highlightUserLink }) =>
@@ -31,6 +32,12 @@ const UserLink = styled(Link).withConfig({
     css`
       color: ${({ theme }) => theme.themeColors.comment.postAuthorLinkColor};
       font-weight: bold;
+    `}
+
+  ${({ collapsedNewsPost }) =>
+    collapsedNewsPost &&
+    css`
+      color: ${({ theme }) => theme.themeColors.fadedWhite};
     `}
 `
 
@@ -40,6 +47,7 @@ interface Props {
   userName?: string
   postedDate?: string | React.ReactNode | null
   highlightUserLink?: boolean
+  collapsedNewsPost?: boolean
 }
 
 export default function UserPostedHeader({
@@ -48,6 +56,7 @@ export default function UserPostedHeader({
   userName,
   postedDate,
   highlightUserLink,
+  collapsedNewsPost,
 }: Props) {
   const postedDateComponent = React.useMemo(() => {
     if (typeof postedDate === 'string') {
@@ -76,11 +85,16 @@ export default function UserPostedHeader({
           color="textSecondary"
           variant="caption"
           highlightUserLink={highlightUserLink}
+          collapsedNewsPost={collapsedNewsPost}
         >{`u/${userName}`}</UserLink>
       ) : (
         'User not available'
       )}
-      <Typography variant="caption" color="textPrimary">
+      <Typography
+        variant="caption"
+        color={collapsedNewsPost ? undefined : 'textPrimary'}
+        textColor={collapsedNewsPost ? 'white' : undefined}
+      >
         {postedDateComponent}
       </Typography>
     </HeaderUserContainer>

@@ -112,11 +112,23 @@ export default function PostsPage() {
     notifyOnNetworkStatusChange: true,
   })
 
-  const postComponents = data?.searchPosts?.posts?.map((post) => (
-    <Post key={post.id} post={post} me={data?.me} />
-  ))
+  const latestNewsPost = postType === PostType.All && data?.latestNewsPost && (
+    <Post
+      key="latestNewsPost"
+      post={data?.latestNewsPost}
+      me={data?.me}
+      collapsedNewsPost
+    />
+  )
 
-  const hasPosts = postComponents && postComponents.length > 0
+  const postComponents =
+    data?.searchPosts?.posts?.map((post) => (
+      <Post key={post.id} post={post} me={data?.me} />
+    )) || []
+
+  const allPosts = [latestNewsPost, ...postComponents].filter(Boolean)
+
+  const hasPosts = allPosts.length > 0
 
   const body = React.useMemo(() => {
     if (
@@ -125,11 +137,11 @@ export default function PostsPage() {
     ) {
       return null
     } else if (hasPosts) {
-      return <Posts>{postComponents}</Posts>
+      return <Posts>{allPosts}</Posts>
     } else {
       return <NoItemsContainer />
     }
-  }, [postComponents, hasPosts, networkStatus])
+  }, [allPosts, hasPosts, networkStatus])
 
   const footer = React.useMemo(() => {
     if (
@@ -224,6 +236,11 @@ gql`
     $page: Int!
   ) {
     isLoggedIn @client
+    latestNewsPost {
+      id
+      publishedDate
+      ...Post_post
+    }
     searchPosts(filters: $filters, limit: $limit, page: $page) {
       page
       posts {

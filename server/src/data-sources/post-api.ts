@@ -142,6 +142,22 @@ export default class PostAPI extends BaseAPI {
     }
   }
 
+  async getLatestNewsPost(): Promise<Post | null> {
+    const searchPostResponse = await this.searchPosts({
+      limit: 1,
+      page: 0,
+      filters: {
+        postType: PostType.News,
+      },
+    })
+
+    console.log({
+      searchPostResponse,
+    })
+
+    return searchPostResponse.posts[0] || null
+  }
+
   async getPost(id: number) {
     return await this.context.loaders.postLoader.load(id)
   }

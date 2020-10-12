@@ -19,6 +19,7 @@ export type Query = {
   favoritedIds: Array<Scalars['Int']>
   featuredEvent: Event
   isLoggedIn: Scalars['Boolean']
+  latestNewsPost?: Maybe<Post>
   me: MeResponse
   post: Post
   searchPosts: SearchPostResponse
@@ -878,7 +879,7 @@ export type EditCommentMutation = { __typename: 'Mutation' } & {
 
 export type Post_PostFragment = { __typename: 'Post' } & Pick<
   Post,
-  'id' | 'numLove' | 'numNotes' | 'name' | 'body' | 'publishedDate'
+  'id' | 'numLove' | 'numNotes' | 'name' | 'body' | 'publishedDate' | 'subtype'
 > & {
     author?: Maybe<
       { __typename: 'User' } & Pick<
@@ -902,7 +903,7 @@ export type Post_MeFragment =
 
 export type PostDetails_PostFragment = { __typename: 'Post' } & Pick<
   Post,
-  'id' | 'name' | 'body' | 'publishedDate'
+  'id' | 'name' | 'body' | 'publishedDate' | 'subtype'
 > & {
     author?: Maybe<
       { __typename: 'User' } & Pick<
@@ -999,6 +1000,10 @@ export type GetPostsPageDataQuery = { __typename: 'Query' } & Pick<
   Query,
   'isLoggedIn'
 > & {
+    latestNewsPost?: Maybe<
+      { __typename: 'Post' } & Pick<Post, 'id' | 'publishedDate'> &
+        Post_PostFragment
+    >
     searchPosts: { __typename: 'SearchPostResponse' } & Pick<
       SearchPostResponse,
       'page'
@@ -1357,6 +1362,7 @@ export const PostDetails_PostFragmentDoc = gql`
     name
     body
     publishedDate
+    subtype
     author {
       id
       profilePath
@@ -1385,6 +1391,7 @@ export const Post_PostFragmentDoc = gql`
     name
     body
     publishedDate
+    subtype
     author {
       id
       profilePath
@@ -2463,6 +2470,11 @@ export const GetPostsPageDataDocument = gql`
     $page: Int!
   ) {
     isLoggedIn @client
+    latestNewsPost {
+      id
+      publishedDate
+      ...Post_post
+    }
     searchPosts(filters: $filters, limit: $limit, page: $page) {
       page
       posts {

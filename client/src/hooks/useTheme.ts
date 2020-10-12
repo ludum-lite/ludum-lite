@@ -108,6 +108,8 @@ export type ThemeColors = {
     backgroundColor: string
     activeBorderColor: string
     editActionRowBackground: string
+    newsTagBackground: string
+    newsTagColor: string
   }
   moreButton: {
     background: string
@@ -326,6 +328,8 @@ const lightTheme: ThemeColors = {
     backgroundColor: styleVariables.white,
     activeBorderColor: styleVariables.greenBlue,
     editActionRowBackground: styleVariables.greenBlue,
+    newsTagBackground: styleVariables.greenBlue,
+    newsTagColor: styleVariables.white,
   },
   loveButton: {
     activeColor: styleVariables.bittersweet,
@@ -530,6 +534,8 @@ const darkTheme: ThemeColors = {
     backgroundColor: ldStyleVariables.cultured,
     activeBorderColor: ldStyleVariables.portlandOrange,
     editActionRowBackground: ldStyleVariables.portlandOrange,
+    newsTagBackground: ldStyleVariables.blueDeFrance,
+    newsTagColor: ldStyleVariables.white,
   },
   moreButton: {
     background: ldStyleVariables.cultured,
@@ -872,6 +878,7 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
         filled: {
           '&&': {
             paddingRight: 36,
+            paddingTop: 25,
           },
         },
         icon: {

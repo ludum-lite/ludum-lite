@@ -11,6 +11,7 @@ export const typeDefs = gql`
       limit: Int!
       page: Int!
     ): SearchPostResponse!
+    latestNewsPost: Post
     user(input: IdInput!): User!
     featuredEvent: Event!
     event(input: IdInput!): Event!

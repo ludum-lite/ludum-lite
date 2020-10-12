@@ -2,13 +2,15 @@ import React from 'react'
 import styled from 'styled-components/macro'
 import { gql } from '@apollo/client'
 
-import { Typography, Collapse } from '@material-ui/core'
+import { Collapse } from '@material-ui/core'
 import Markdown from 'components/common/Markdown'
 import Button from 'components/common/mui/Button'
 import UserPostedHeader from './UserPostedHeader'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import Icon from 'components/common/mui/Icon'
 import { PostDetails_PostFragment } from '__generated__/client-types'
+import Typography from 'components/common/mui/Typography'
+import NewsTag from './NewsTag'
 
 const Root = styled.div`
   overflow: hidden;
@@ -17,23 +19,39 @@ const Root = styled.div`
 const Header = styled.div`
   display: flex;
   align-items: center;
+  overflow: hidden;
+  max-width: 100%;
 `
 
 const HeaderContent = styled.div`
   display: flex;
   flex: 1 1 0px;
   flex-direction: column;
+  overflow: hidden;
 `
 
 const HeaderUserContainer = styled.div``
 
+const TitleRow = styled.div`
+  display: flex;
+  margin-bottom: ${({ theme }) => theme.spacing(1)}px;
+  align-items: center;
+`
+
+const StyledNewsTag = styled(NewsTag)`
+  margin-right: ${({ theme }) => theme.spacing(1.5)}px;
+`
+
 const Title = styled.div`
   margin-right: 8px;
-  margin-bottom: ${({ theme }) => theme.spacing(1)}px;
+  overflow: hidden;
+  max-width: 100%;
 `
 
 const TitleText = styled(Typography)`
   font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 
 const Content = styled.div`
@@ -63,8 +81,15 @@ const CollapseButtonContainer = styled.div<CollapseButtonContainerProps>`
 interface Props {
   post: PostDetails_PostFragment
   forceExpand?: boolean
+  className?: string
+  collapsedNewsPost?: boolean
 }
-export default function PostDetails({ post, forceExpand }: Props) {
+export default function PostDetails({
+  post,
+  forceExpand,
+  className,
+  collapsedNewsPost,
+}: Props) {
   const [shouldCollapse, setShouldCollapse] = React.useState<
     boolean | undefined
   >(undefined)
@@ -104,45 +129,60 @@ export default function PostDetails({ post, forceExpand }: Props) {
   if (!post || !post.author || !post.publishedDate) return null
 
   return (
-    <Root>
+    <Root className={className}>
       <Header>
         <HeaderContent>
-          <Title>
-            <TitleText variant="h4">{post.name}</TitleText>
-          </Title>
+          <TitleRow>
+            {post.subtype === 'news' && (
+              <StyledNewsTag
+                variant={collapsedNewsPost ? 'inverted' : 'contained'}
+              />
+            )}
+            <Title>
+              <TitleText
+                variant="h4"
+                textColor={collapsedNewsPost ? 'white' : undefined}
+              >
+                {post.name}
+              </TitleText>
+            </Title>
+          </TitleRow>
           <HeaderUserContainer>
             <UserPostedHeader
               userProfilePath={post.author.profilePath}
               userAvatarPath={post.author.avatarPath || ''}
               userName={post.author.name}
               postedDate={post.publishedDate}
+              collapsedNewsPost={collapsedNewsPost}
             />
           </HeaderUserContainer>
         </HeaderContent>
       </Header>
-      <Content>
-        <Collapse
-          in={!finalShouldCollapse}
-          collapsedHeight={initialShouldCollapse ? 350 : 0}
-        >
-          <Markdown source={post.body} removeHrefs />
-        </Collapse>
-        <CollapseButtonContainer show={finalShouldCollapse}>
-          <Button
-            fullWidth
-            disableElevation
-            size="large"
-            variant="contained"
-            onClick={(e) => {
-              e.stopPropagation()
-              setShouldCollapse(false)
-            }}
-            endIcon={<Icon icon={ExpandMore} />}
+      {!collapsedNewsPost && (
+        <Content>
+          <Collapse
+            in={!finalShouldCollapse}
+            collapsedHeight={initialShouldCollapse ? 350 : 0}
           >
-            Show More
-          </Button>
-        </CollapseButtonContainer>
-      </Content>
+            <Markdown source={post.body} removeHrefs />
+          </Collapse>
+          <CollapseButtonContainer show={finalShouldCollapse}>
+            <Button
+              fullWidth
+              disableElevation
+              size="large"
+              variant="contained"
+              onClick={(e) => {
+                e.stopPropagation()
+                setShouldCollapse(false)
+              }}
+              endIcon={<Icon icon={ExpandMore} />}
+            >
+              Show More
+            </Button>
+          </CollapseButtonContainer>
+        </Content>
+      )}
     </Root>
   )
 }
@@ -153,6 +193,7 @@ gql`
     name
     body
     publishedDate
+    subtype
     author {
       id
       profilePath

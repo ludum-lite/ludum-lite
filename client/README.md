@@ -71,3 +71,7 @@ Open: `ld_event.<number>.event`
 # Notes
 
 Using moment@2.24.0 since apollo already has it as a dependency
+
+# Create news post
+
+Filter type="post" in sqladmin. Update the subtype to "news"

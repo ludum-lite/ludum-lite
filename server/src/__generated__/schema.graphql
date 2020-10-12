@@ -4,6 +4,7 @@ type Query {
   me: MeResponse!
   post(input: IdInput!): Post!
   searchPosts(filters: SearchPostsFiltersInput!, limit: Int!, page: Int!): SearchPostResponse!
+  latestNewsPost: Post
   user(input: IdInput!): User!
   featuredEvent: Event!
   event(input: IdInput!): Event!

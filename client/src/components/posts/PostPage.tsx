@@ -47,6 +47,7 @@ import {
 import Tag from 'components/common/Tag'
 import PreviewableMarkdownInput from 'components/common/PreviewableMarkdownInput'
 import Breadcrumb from 'components/common/Breadcrumb'
+import NewsTag from './NewsTag'
 
 enum CommentSortBy {
   DatePostedNewest = 'datePosted_newest',
@@ -74,8 +75,18 @@ const HeaderContent = styled.div`
 
 const HeaderUserContainer = styled.div``
 
-const Title = styled.div`
+const TitleRow = styled.div`
+  display: flex;
+  align-items: center;
   margin-bottom: ${({ theme }) => theme.spacing(1)}px;
+`
+
+const StyledNewsTag = styled(NewsTag)`
+  margin-right: ${({ theme }) => theme.spacing(1.5)}px;
+`
+
+const Title = styled.div`
+  overflow: hidden;
 `
 
 const PageContent = styled.div`
@@ -172,25 +183,17 @@ export default function PostPage({ isEditing }: PostPageProps) {
     setError,
     clearErrors,
     reset,
-  } = useForm<FormInputs>()
+    setValue,
+  } = useForm<FormInputs>({
+    defaultValues: {
+      title: '',
+    },
+  })
 
   const [commentSortBy, setSortBy] = useUserLocalStorage(
     'comments_sortBy',
     CommentSortBy.DatePostedNewest
   )
-
-  const startEditing = React.useCallback(() => {
-    navigate(`/posts/${postId}/edit`)
-    clearErrors()
-  }, [navigate, postId, clearErrors])
-
-  const stopEditing = React.useCallback(() => {
-    navigate(`/posts/${postId}`, {
-      replace: true,
-    })
-    clearErrors()
-    reset()
-  }, [clearErrors, navigate, reset, postId])
 
   const onChangeSortBy = React.useCallback(
     (sortBy: CommentSortBy) => {
@@ -229,6 +232,21 @@ export default function PostPage({ isEditing }: PostPageProps) {
     Boolean(me?.__typename) &&
     (me?.__typename === 'UnauthorizedResponse' ||
       (me?.__typename === 'Me' && me?.id !== post?.authorId))
+
+  React.useEffect(() => {
+    if (isEditing) {
+      clearErrors()
+      setValue('title', post?.name)
+    }
+  }, [clearErrors, setValue, post, isEditing])
+
+  const stopEditing = React.useCallback(() => {
+    navigate(`/posts/${postId}`, {
+      replace: true,
+    })
+    clearErrors()
+    reset()
+  }, [clearErrors, navigate, reset, postId])
 
   React.useEffect(() => {
     if (isNotMyPost && isEditing) {
@@ -315,7 +333,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
           key="edit"
           onClick={() => {
             popupState.close()
-            startEditing()
+            navigate(`/posts/${postId}/edit`)
           }}
         >
           Edit
@@ -377,11 +395,12 @@ export default function PostPage({ isEditing }: PostPageProps) {
   }, [
     enqueueSnackbar,
     isMyPost,
+    navigate,
     popupState,
     post,
+    postId,
     publishPostMutation,
     setError,
-    startEditing,
   ])
 
   const pageContent = React.useMemo(() => {
@@ -392,32 +411,43 @@ export default function PostPage({ isEditing }: PostPageProps) {
           <Article>
             <Header>
               <HeaderContent>
-                {isEditing && state === 'write' ? (
-                  <Fragment>
-                    <TitleInput
-                      name="title"
-                      placeholder="Title"
-                      defaultValue={post.name}
-                      inputRef={register}
-                    />
-                    {errors.title && (
-                      <TitleInputError variant="caption" color="error">
-                        {errors.title.message}
-                      </TitleInputError>
-                    )}
-                  </Fragment>
-                ) : (
-                  <Title>
-                    <TitleText variant="h4">
-                      {post.name || '-- No Title  --'}
-                    </TitleText>
-                    {errors.title && (
-                      <Typography variant="caption" color="error">
-                        {errors.title.message}
-                      </Typography>
-                    )}
-                  </Title>
-                )}
+                <Controller
+                  control={control}
+                  name="title"
+                  render={({ onChange, onBlur, value }) =>
+                    isEditing && state === 'write' ? (
+                      <Fragment>
+                        <TitleInput
+                          name="title"
+                          placeholder="Title"
+                          value={value}
+                          onChange={onChange}
+                          onBlur={onBlur}
+                        />
+                        {errors.title && (
+                          <TitleInputError variant="caption" color="error">
+                            {errors.title.message}
+                          </TitleInputError>
+                        )}
+                      </Fragment>
+                    ) : (
+                      <TitleRow>
+                        <StyledNewsTag variant="contained" />
+                        <Title>
+                          <TitleText variant="h4">
+                            {(isEditing ? value : post.name) ||
+                              '-- No Title  --'}
+                          </TitleText>
+                          {errors.title && (
+                            <Typography variant="caption" color="error">
+                              {errors.title.message}
+                            </Typography>
+                          )}
+                        </Title>
+                      </TitleRow>
+                    )
+                  }
+                />
                 {!isEditing && (
                   <HeaderUserContainer>
                     <UserPostedHeader

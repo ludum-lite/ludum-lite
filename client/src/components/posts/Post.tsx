@@ -35,9 +35,11 @@ const activeBoxShadowKeyFrames = (color: string) => keyframes`
 
 interface RootProps {
   active: boolean
+  isNewsType: boolean
+  collapsedNewsPost?: boolean
 }
 const Root = styled(Card).withConfig({
-  shouldForwardProp: ignoreProps(['active']),
+  shouldForwardProp: ignoreProps(['active', 'isNewsType', 'collapsedNewsPost']),
 })<RootProps>`
   position: relative;
   display: flex;
@@ -55,6 +57,21 @@ const Root = styled(Card).withConfig({
           theme.themeColors.post.activeBorderColor
         )}
         250ms forwards;
+    `}
+
+  ${({ isNewsType, collapsedNewsPost }) =>
+    isNewsType &&
+    !collapsedNewsPost &&
+    css`
+      padding-left: ${({ theme }) => theme.spacing(1.25)}px;
+      border-left: ${({ theme }) => theme.spacing(1.25)}px solid
+        ${({ theme }) => theme.themeColors.post.newsTagBackground};
+    `}
+  
+  ${({ collapsedNewsPost }) =>
+    collapsedNewsPost &&
+    css`
+      background: ${({ theme }) => theme.themeColors.post.newsTagBackground};
     `}
 `
 
@@ -110,8 +127,9 @@ const ActionRow = styled.div`
 interface Props {
   post: Post_PostFragment
   me: Post_MeFragment
+  collapsedNewsPost?: boolean
 }
-export default function Post({ post, me }: Props) {
+export default function Post({ post, me, collapsedNewsPost }: Props) {
   const [, setPostOverlayed] = usePostOverlayed()
   const { activePostId } = useActivePostId()
 
@@ -129,24 +147,31 @@ export default function Post({ post, me }: Props) {
       onClick={() => onClickCard(post.id)}
       clickable
       active={activePostId === post.id}
+      isNewsType={post.subtype === 'news'}
+      collapsedNewsPost={collapsedNewsPost}
     >
       <Link to={`/posts/${post.id}`} overlay />
-      <PostDetails post={filter(PostDetails_PostFragmentDoc, post)} />
-      <ActionRow>
-        <StyledButtonGroup>
-          <PostLoveButton
-            post={filter(PostLoveButton_PostFragmentDoc, post)}
-            me={filter(PostLoveButton_MeFragmentDoc, me)}
-            background="white"
-          />
-          <PostCommentButton
-            post={filter(PostCommentButton_PostFragmentDoc, post)}
-            background="white"
-          />
-          <Separator />
-          <PostBookmarkButton postId={post.id} background="white" />
-        </StyledButtonGroup>
-      </ActionRow>
+      <PostDetails
+        post={filter(PostDetails_PostFragmentDoc, post)}
+        collapsedNewsPost={collapsedNewsPost}
+      />
+      {!collapsedNewsPost && (
+        <ActionRow>
+          <StyledButtonGroup>
+            <PostLoveButton
+              post={filter(PostLoveButton_PostFragmentDoc, post)}
+              me={filter(PostLoveButton_MeFragmentDoc, me)}
+              background="white"
+            />
+            <PostCommentButton
+              post={filter(PostCommentButton_PostFragmentDoc, post)}
+              background="white"
+            />
+            <Separator />
+            <PostBookmarkButton postId={post.id} background="white" />
+          </StyledButtonGroup>
+        </ActionRow>
+      )}
     </Root>
   )
 }
@@ -159,6 +184,7 @@ gql`
     name
     body
     publishedDate
+    subtype
     author {
       id
       profilePath

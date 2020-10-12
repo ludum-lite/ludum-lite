@@ -18,6 +18,7 @@ export type Query = {
   me: MeResponse;
   post: Post;
   searchPosts: SearchPostResponse;
+  latestNewsPost?: Maybe<Post>;
   user: User;
   featuredEvent: Event;
   event: Event;
@@ -893,6 +894,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   me?: Resolver<ResolversTypes['MeResponse'], ParentType, ContextType>,
   post?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<QueryPostArgs, 'input'>>,
   searchPosts?: Resolver<ResolversTypes['SearchPostResponse'], ParentType, ContextType, RequireFields<QuerySearchPostsArgs, 'filters' | 'limit' | 'page'>>,
+  latestNewsPost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType>,
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'input'>>,
   featuredEvent?: Resolver<ResolversTypes['Event'], ParentType, ContextType>,
   event?: Resolver<ResolversTypes['Event'], ParentType, ContextType, RequireFields<QueryEventArgs, 'input'>>,

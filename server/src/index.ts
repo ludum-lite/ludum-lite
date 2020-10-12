@@ -7,7 +7,7 @@ import GameAPI from './data-sources/game-api'
 import PostAPI from './data-sources/post-api'
 import UserAPI from './data-sources/user-api'
 import { typeDefs } from './schema'
-import { Resolvers } from './__generated__/schema-types'
+import { PostType, Resolvers } from './__generated__/schema-types'
 import ImageAPI from './data-sources/image-api'
 
 const resolvers: Resolvers<Context> = {
@@ -23,6 +23,9 @@ const resolvers: Resolvers<Context> = {
     },
     searchPosts(_, args, context) {
       return context.dataSources.postApi.searchPosts(args)
+    },
+    latestNewsPost(_, __, context) {
+      return context.dataSources.postApi.getLatestNewsPost()
     },
     featuredEvent(_, __, context) {
       return context.dataSources.eventApi.getFeaturedEvent()
