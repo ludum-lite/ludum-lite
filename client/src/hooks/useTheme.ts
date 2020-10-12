@@ -878,7 +878,7 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
         filled: {
           '&&': {
             paddingRight: 36,
-            paddingTop: 25,
+            // paddingTop: 25,
           },
         },
         icon: {
@@ -1056,6 +1056,10 @@ const globalStyleGenerator = ({
       path {
         transform: scale(1.2);
       }
+    }
+
+    .MuiFormLabel-root + .MuiInputBase-root .MuiSelect-root {
+      padding-top: 25px;
     }
   `
 }
