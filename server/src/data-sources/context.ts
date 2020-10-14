@@ -6,6 +6,7 @@ import EventAPI from './event-api'
 import EventIdeaAPI from './event-idea-api'
 import GameAPI from './game-api'
 import ImageAPI from './image-api'
+import VotingRoundAPI from './voting-round-api'
 import { Post, User, Comment, Event, Game } from '../__generated__/schema-types'
 
 export type Context = {
@@ -18,6 +19,7 @@ export type Context = {
     eventIdeaApi: EventIdeaAPI
     gameApi: GameAPI
     imageApi: ImageAPI
+    votingRoundApi: VotingRoundAPI
   }
   loaders: {
     postLoader: DataLoader<number, Post>

@@ -49,9 +49,15 @@ paste and save (esc to normal mode and :x!)
 
 # Simulate an event
 
+First you need to perform some manual steps
+Update this snippet `../src/` in `www/sandbox/simulator/model_default` to `~/www/`
+
+Simulate the event
+
 ```
 > vagrant ssh
-> ./www/sandbox/simulator/simulate_ld_event 50 actions
+> cd ./www/sandbox/simulator
+> ./simulate_ld_event 50 actions
 ```
 
 # Open the website

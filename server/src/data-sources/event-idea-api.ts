@@ -1,12 +1,7 @@
-import DataLoader from 'dataloader'
-import { DataSourceConfig } from 'apollo-datasource'
-import sort from 'dataloader-sort'
 import BaseAPI from './base-api'
-import { Context } from './context'
-import { maxBy, last } from 'lodash'
+import { last } from 'lodash'
 import {
   EventIdea,
-  JoinEventResponse,
   AddEventIdeaResponse,
   AddEventIdeaInput,
   IdInput,
@@ -17,10 +12,8 @@ import {
   RejectEventIdeaResponse,
   FlagEventIdeaResponse,
   DeleteEventIdeaInput,
-  UnauthorizedResponse,
 } from '../__generated__/schema-types'
 import { unauthorizedResponse } from './const'
-import { filterOutErrorsFromResponses } from './utils'
 
 export type ApiEventIdeasDto = {
   [key: number]: string
@@ -205,64 +198,4 @@ export default class EventIdeaAPI extends BaseAPI {
       return unauthorizedResponse
     }
   }
-
-  // async getFeaturedEvent(): Promise<Event> {
-  //   const rootNodeResponse = await this.get(`vx/node2/get/1`)
-  //   const eventId = parseInt(rootNodeResponse.node[0].meta.featured)
-
-  //   return this.context.loaders.eventLoader.load(eventId)
-  // }
-
-  // async getEvent(id: number): Promise<Event> {
-  //   return this.context.loaders.eventLoader.load(id)
-  // }
-
-  // async joinEvent(): Promise<JoinEventResponse> {
-  //   const event = await this.getFeaturedEvent()
-
-  //   if (event.__typename === 'Event') {
-  //     try {
-  //       const joinEventResponse = await this.post(
-  //         `vx/node/add/${event.id}/item/game`
-  //       )
-  //       const gameId = joinEventResponse.id
-
-  //       return {
-  //         __typename: 'JoinEventSuccess',
-  //         success: true,
-  //         gameId,
-  //       }
-  //     } catch (e) {
-  //       console.error(e)
-  //       return unauthorizedResponse
-  //     }
-  //   }
-
-  //   return unauthorizedResponse
-  // }
-
-  // async getCurrentUserGameId(): Promise<Event['currentUserGameId']> {
-  //   const event = await this.getFeaturedEvent()
-
-  //   if (event.__typename === 'Event') {
-  //     const response = await this.get(`vx/node/what/${event.id}`)
-
-  //     if (response.what.length === 1) {
-  //       return response.what[0] || null
-  //     } else {
-  //       const games = await this.context.loaders.gameLoader.loadMany(
-  //         response.what
-  //       )
-  //       console.log(games)
-  //       const lastGameModified = maxBy(
-  //         filterOutErrorsFromResponses(games),
-  //         'modifiedDate'
-  //       )
-
-  //       return lastGameModified?.id || null
-  //     }
-  //   }
-
-  //   return null
-  // }
 }

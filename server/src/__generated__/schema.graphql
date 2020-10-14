@@ -311,6 +311,7 @@ type Event {
   eventIdeas: [EventIdea!]
   myEventIdeas: [EventIdea!]
   eventIdeaLimit: Int!
+  votingRounds: [VotingRound!]
 }
 
 enum EventPhase {
@@ -392,6 +393,37 @@ type FlagEventIdeaSuccess implements MutationResponse {
 }
 
 union FlagEventIdeaResponse = FlagEventIdeaSuccess | UnauthorizedResponse
+
+type VotingRound {
+  name: String!
+  page: Int!
+  votingRoundIdeas: [VotingRoundIdea!]!
+}
+
+type VotingRoundIdea {
+  id: Int!
+  name: String!
+  page: Int!
+  myVote: Int
+}
+
+type ApproveVotingRoundIdeaSuccess implements MutationResponse {
+  success: Boolean!
+}
+
+union ApproveVotingRoundIdeaResponse = ApproveVotingRoundIdeaSuccess | UnauthorizedResponse
+
+type VoteMaybeVotingRoundIdeaSuccess implements MutationResponse {
+  success: Boolean!
+}
+
+union VoteMaybeVotingRoundIdeaResponse = VoteMaybeVotingRoundIdeaSuccess | UnauthorizedResponse
+
+type RejectVotingRoundIdeaSuccess implements MutationResponse {
+  success: Boolean!
+}
+
+union RejectVotingRoundIdeaResponse = RejectVotingRoundIdeaSuccess | UnauthorizedResponse
 
 type Game {
   id: Int!

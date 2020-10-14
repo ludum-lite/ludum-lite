@@ -6,8 +6,9 @@ import EventIdeaAPI from './data-sources/event-idea-api'
 import GameAPI from './data-sources/game-api'
 import PostAPI from './data-sources/post-api'
 import UserAPI from './data-sources/user-api'
+import VotingRoundAPI from './data-sources/voting-round-api'
 import { typeDefs } from './schema'
-import { PostType, Resolvers } from './__generated__/schema-types'
+import { Resolvers } from './__generated__/schema-types'
 import ImageAPI from './data-sources/image-api'
 
 const resolvers: Resolvers<Context> = {
@@ -140,6 +141,9 @@ const resolvers: Resolvers<Context> = {
     eventIdeas(event, __, context) {
       return context.dataSources.eventIdeaApi.getEventIdeas(event.id)
     },
+    votingRounds(event, __, context) {
+      return context.dataSources.votingRoundApi.getVotingRounds(event.id)
+    },
   },
   Me: {
     lovedPosts(_, __, context) {
@@ -263,6 +267,7 @@ const apolloServer = new ApolloServer({
     eventIdeaApi: new EventIdeaAPI(),
     gameApi: new GameAPI(),
     imageApi: new ImageAPI(),
+    votingRoundApi: new VotingRoundAPI(),
   }),
 })
 

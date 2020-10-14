@@ -483,6 +483,7 @@ export type Event = {
   eventIdeas?: Maybe<Array<EventIdea>>;
   myEventIdeas?: Maybe<Array<EventIdea>>;
   eventIdeaLimit: Scalars['Int'];
+  votingRounds?: Maybe<Array<VotingRound>>;
 };
 
 export enum EventPhase {
@@ -572,6 +573,42 @@ export type FlagEventIdeaSuccess = MutationResponse & {
 };
 
 export type FlagEventIdeaResponse = FlagEventIdeaSuccess | UnauthorizedResponse;
+
+export type VotingRound = {
+   __typename: 'VotingRound';
+  name: Scalars['String'];
+  page: Scalars['Int'];
+  votingRoundIdeas: Array<VotingRoundIdea>;
+};
+
+export type VotingRoundIdea = {
+   __typename: 'VotingRoundIdea';
+  id: Scalars['Int'];
+  name: Scalars['String'];
+  page: Scalars['Int'];
+  myVote?: Maybe<Scalars['Int']>;
+};
+
+export type ApproveVotingRoundIdeaSuccess = MutationResponse & {
+   __typename: 'ApproveVotingRoundIdeaSuccess';
+  success: Scalars['Boolean'];
+};
+
+export type ApproveVotingRoundIdeaResponse = ApproveVotingRoundIdeaSuccess | UnauthorizedResponse;
+
+export type VoteMaybeVotingRoundIdeaSuccess = MutationResponse & {
+   __typename: 'VoteMaybeVotingRoundIdeaSuccess';
+  success: Scalars['Boolean'];
+};
+
+export type VoteMaybeVotingRoundIdeaResponse = VoteMaybeVotingRoundIdeaSuccess | UnauthorizedResponse;
+
+export type RejectVotingRoundIdeaSuccess = MutationResponse & {
+   __typename: 'RejectVotingRoundIdeaSuccess';
+  success: Scalars['Boolean'];
+};
+
+export type RejectVotingRoundIdeaResponse = RejectVotingRoundIdeaSuccess | UnauthorizedResponse;
 
 export type Game = {
    __typename: 'Game';
@@ -718,7 +755,7 @@ export type ResolversTypes = ResolversObject<{
   Query: ResolverTypeWrapper<{}>,
   Int: ResolverTypeWrapper<Scalars['Int']>,
   Mutation: ResolverTypeWrapper<{}>,
-  MutationResponse: ResolversTypes['UploadImageSuccess'] | ResolversTypes['UploadImageFailure'] | ResolversTypes['LoginFailure'] | ResolversTypes['LoginSuccess'] | ResolversTypes['AddFriendSuccess'] | ResolversTypes['AddFriendAndAddToGameSuccess'] | ResolversTypes['LovePostSuccess'] | ResolversTypes['UnlovePostSuccess'] | ResolversTypes['EditPostSuccess'] | ResolversTypes['EditPostFieldError'] | ResolversTypes['CreatePostSuccess'] | ResolversTypes['PublishPostSuccess'] | ResolversTypes['PublishPostNameTooShort'] | ResolversTypes['LoveCommentSuccess'] | ResolversTypes['UnloveCommentSuccess'] | ResolversTypes['AddCommentSuccess'] | ResolversTypes['EditCommentSuccess'] | ResolversTypes['JoinEventSuccess'] | ResolversTypes['AddEventIdeaSuccess'] | ResolversTypes['DeleteEventIdeaSuccess'] | ResolversTypes['EditEventIdeaSuccess'] | ResolversTypes['ApproveEventIdeaSuccess'] | ResolversTypes['RejectEventIdeaSuccess'] | ResolversTypes['FlagEventIdeaSuccess'] | ResolversTypes['EditGameSuccess'] | ResolversTypes['AddUserToGameSuccess'] | ResolversTypes['RemoveUserFromGameSuccess'],
+  MutationResponse: ResolversTypes['UploadImageSuccess'] | ResolversTypes['UploadImageFailure'] | ResolversTypes['LoginFailure'] | ResolversTypes['LoginSuccess'] | ResolversTypes['AddFriendSuccess'] | ResolversTypes['AddFriendAndAddToGameSuccess'] | ResolversTypes['LovePostSuccess'] | ResolversTypes['UnlovePostSuccess'] | ResolversTypes['EditPostSuccess'] | ResolversTypes['EditPostFieldError'] | ResolversTypes['CreatePostSuccess'] | ResolversTypes['PublishPostSuccess'] | ResolversTypes['PublishPostNameTooShort'] | ResolversTypes['LoveCommentSuccess'] | ResolversTypes['UnloveCommentSuccess'] | ResolversTypes['AddCommentSuccess'] | ResolversTypes['EditCommentSuccess'] | ResolversTypes['JoinEventSuccess'] | ResolversTypes['AddEventIdeaSuccess'] | ResolversTypes['DeleteEventIdeaSuccess'] | ResolversTypes['EditEventIdeaSuccess'] | ResolversTypes['ApproveEventIdeaSuccess'] | ResolversTypes['RejectEventIdeaSuccess'] | ResolversTypes['FlagEventIdeaSuccess'] | ResolversTypes['ApproveVotingRoundIdeaSuccess'] | ResolversTypes['VoteMaybeVotingRoundIdeaSuccess'] | ResolversTypes['RejectVotingRoundIdeaSuccess'] | ResolversTypes['EditGameSuccess'] | ResolversTypes['AddUserToGameSuccess'] | ResolversTypes['RemoveUserFromGameSuccess'],
   UnauthorizedResponse: ResolverTypeWrapper<UnauthorizedResponse>,
   IdInput: IdInput,
   UploadImageSuccess: ResolverTypeWrapper<UploadImageSuccess>,
@@ -786,6 +823,14 @@ export type ResolversTypes = ResolversObject<{
   RejectEventIdeaResponse: ResolversTypes['RejectEventIdeaSuccess'] | ResolversTypes['UnauthorizedResponse'],
   FlagEventIdeaSuccess: ResolverTypeWrapper<FlagEventIdeaSuccess>,
   FlagEventIdeaResponse: ResolversTypes['FlagEventIdeaSuccess'] | ResolversTypes['UnauthorizedResponse'],
+  VotingRound: ResolverTypeWrapper<VotingRound>,
+  VotingRoundIdea: ResolverTypeWrapper<VotingRoundIdea>,
+  ApproveVotingRoundIdeaSuccess: ResolverTypeWrapper<ApproveVotingRoundIdeaSuccess>,
+  ApproveVotingRoundIdeaResponse: ResolversTypes['ApproveVotingRoundIdeaSuccess'] | ResolversTypes['UnauthorizedResponse'],
+  VoteMaybeVotingRoundIdeaSuccess: ResolverTypeWrapper<VoteMaybeVotingRoundIdeaSuccess>,
+  VoteMaybeVotingRoundIdeaResponse: ResolversTypes['VoteMaybeVotingRoundIdeaSuccess'] | ResolversTypes['UnauthorizedResponse'],
+  RejectVotingRoundIdeaSuccess: ResolverTypeWrapper<RejectVotingRoundIdeaSuccess>,
+  RejectVotingRoundIdeaResponse: ResolversTypes['RejectVotingRoundIdeaSuccess'] | ResolversTypes['UnauthorizedResponse'],
   Game: ResolverTypeWrapper<Game>,
   EditGameInput: EditGameInput,
   EditGameSuccess: ResolverTypeWrapper<EditGameSuccess>,
@@ -806,7 +851,7 @@ export type ResolversParentTypes = ResolversObject<{
   Query: {},
   Int: Scalars['Int'],
   Mutation: {},
-  MutationResponse: ResolversParentTypes['UploadImageSuccess'] | ResolversParentTypes['UploadImageFailure'] | ResolversParentTypes['LoginFailure'] | ResolversParentTypes['LoginSuccess'] | ResolversParentTypes['AddFriendSuccess'] | ResolversParentTypes['AddFriendAndAddToGameSuccess'] | ResolversParentTypes['LovePostSuccess'] | ResolversParentTypes['UnlovePostSuccess'] | ResolversParentTypes['EditPostSuccess'] | ResolversParentTypes['EditPostFieldError'] | ResolversParentTypes['CreatePostSuccess'] | ResolversParentTypes['PublishPostSuccess'] | ResolversParentTypes['PublishPostNameTooShort'] | ResolversParentTypes['LoveCommentSuccess'] | ResolversParentTypes['UnloveCommentSuccess'] | ResolversParentTypes['AddCommentSuccess'] | ResolversParentTypes['EditCommentSuccess'] | ResolversParentTypes['JoinEventSuccess'] | ResolversParentTypes['AddEventIdeaSuccess'] | ResolversParentTypes['DeleteEventIdeaSuccess'] | ResolversParentTypes['EditEventIdeaSuccess'] | ResolversParentTypes['ApproveEventIdeaSuccess'] | ResolversParentTypes['RejectEventIdeaSuccess'] | ResolversParentTypes['FlagEventIdeaSuccess'] | ResolversParentTypes['EditGameSuccess'] | ResolversParentTypes['AddUserToGameSuccess'] | ResolversParentTypes['RemoveUserFromGameSuccess'],
+  MutationResponse: ResolversParentTypes['UploadImageSuccess'] | ResolversParentTypes['UploadImageFailure'] | ResolversParentTypes['LoginFailure'] | ResolversParentTypes['LoginSuccess'] | ResolversParentTypes['AddFriendSuccess'] | ResolversParentTypes['AddFriendAndAddToGameSuccess'] | ResolversParentTypes['LovePostSuccess'] | ResolversParentTypes['UnlovePostSuccess'] | ResolversParentTypes['EditPostSuccess'] | ResolversParentTypes['EditPostFieldError'] | ResolversParentTypes['CreatePostSuccess'] | ResolversParentTypes['PublishPostSuccess'] | ResolversParentTypes['PublishPostNameTooShort'] | ResolversParentTypes['LoveCommentSuccess'] | ResolversParentTypes['UnloveCommentSuccess'] | ResolversParentTypes['AddCommentSuccess'] | ResolversParentTypes['EditCommentSuccess'] | ResolversParentTypes['JoinEventSuccess'] | ResolversParentTypes['AddEventIdeaSuccess'] | ResolversParentTypes['DeleteEventIdeaSuccess'] | ResolversParentTypes['EditEventIdeaSuccess'] | ResolversParentTypes['ApproveEventIdeaSuccess'] | ResolversParentTypes['RejectEventIdeaSuccess'] | ResolversParentTypes['FlagEventIdeaSuccess'] | ResolversParentTypes['ApproveVotingRoundIdeaSuccess'] | ResolversParentTypes['VoteMaybeVotingRoundIdeaSuccess'] | ResolversParentTypes['RejectVotingRoundIdeaSuccess'] | ResolversParentTypes['EditGameSuccess'] | ResolversParentTypes['AddUserToGameSuccess'] | ResolversParentTypes['RemoveUserFromGameSuccess'],
   UnauthorizedResponse: UnauthorizedResponse,
   IdInput: IdInput,
   UploadImageSuccess: UploadImageSuccess,
@@ -874,6 +919,14 @@ export type ResolversParentTypes = ResolversObject<{
   RejectEventIdeaResponse: ResolversParentTypes['RejectEventIdeaSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
   FlagEventIdeaSuccess: FlagEventIdeaSuccess,
   FlagEventIdeaResponse: ResolversParentTypes['FlagEventIdeaSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
+  VotingRound: VotingRound,
+  VotingRoundIdea: VotingRoundIdea,
+  ApproveVotingRoundIdeaSuccess: ApproveVotingRoundIdeaSuccess,
+  ApproveVotingRoundIdeaResponse: ResolversParentTypes['ApproveVotingRoundIdeaSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
+  VoteMaybeVotingRoundIdeaSuccess: VoteMaybeVotingRoundIdeaSuccess,
+  VoteMaybeVotingRoundIdeaResponse: ResolversParentTypes['VoteMaybeVotingRoundIdeaSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
+  RejectVotingRoundIdeaSuccess: RejectVotingRoundIdeaSuccess,
+  RejectVotingRoundIdeaResponse: ResolversParentTypes['RejectVotingRoundIdeaSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
   Game: Game,
   EditGameInput: EditGameInput,
   EditGameSuccess: EditGameSuccess,
@@ -927,7 +980,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 }>;
 
 export type MutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{
-  __resolveType: TypeResolveFn<'UploadImageSuccess' | 'UploadImageFailure' | 'LoginFailure' | 'LoginSuccess' | 'AddFriendSuccess' | 'AddFriendAndAddToGameSuccess' | 'LovePostSuccess' | 'UnlovePostSuccess' | 'EditPostSuccess' | 'EditPostFieldError' | 'CreatePostSuccess' | 'PublishPostSuccess' | 'PublishPostNameTooShort' | 'LoveCommentSuccess' | 'UnloveCommentSuccess' | 'AddCommentSuccess' | 'EditCommentSuccess' | 'JoinEventSuccess' | 'AddEventIdeaSuccess' | 'DeleteEventIdeaSuccess' | 'EditEventIdeaSuccess' | 'ApproveEventIdeaSuccess' | 'RejectEventIdeaSuccess' | 'FlagEventIdeaSuccess' | 'EditGameSuccess' | 'AddUserToGameSuccess' | 'RemoveUserFromGameSuccess', ParentType, ContextType>,
+  __resolveType: TypeResolveFn<'UploadImageSuccess' | 'UploadImageFailure' | 'LoginFailure' | 'LoginSuccess' | 'AddFriendSuccess' | 'AddFriendAndAddToGameSuccess' | 'LovePostSuccess' | 'UnlovePostSuccess' | 'EditPostSuccess' | 'EditPostFieldError' | 'CreatePostSuccess' | 'PublishPostSuccess' | 'PublishPostNameTooShort' | 'LoveCommentSuccess' | 'UnloveCommentSuccess' | 'AddCommentSuccess' | 'EditCommentSuccess' | 'JoinEventSuccess' | 'AddEventIdeaSuccess' | 'DeleteEventIdeaSuccess' | 'EditEventIdeaSuccess' | 'ApproveEventIdeaSuccess' | 'RejectEventIdeaSuccess' | 'FlagEventIdeaSuccess' | 'ApproveVotingRoundIdeaSuccess' | 'VoteMaybeVotingRoundIdeaSuccess' | 'RejectVotingRoundIdeaSuccess' | 'EditGameSuccess' | 'AddUserToGameSuccess' | 'RemoveUserFromGameSuccess', ParentType, ContextType>,
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
 }>;
 
@@ -1214,6 +1267,7 @@ export type EventResolvers<ContextType = any, ParentType extends ResolversParent
   eventIdeas?: Resolver<Maybe<Array<ResolversTypes['EventIdea']>>, ParentType, ContextType>,
   myEventIdeas?: Resolver<Maybe<Array<ResolversTypes['EventIdea']>>, ParentType, ContextType>,
   eventIdeaLimit?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
+  votingRounds?: Resolver<Maybe<Array<ResolversTypes['VotingRound']>>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;
 
@@ -1292,6 +1346,48 @@ export type FlagEventIdeaSuccessResolvers<ContextType = any, ParentType extends 
 
 export type FlagEventIdeaResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['FlagEventIdeaResponse'] = ResolversParentTypes['FlagEventIdeaResponse']> = ResolversObject<{
   __resolveType: TypeResolveFn<'FlagEventIdeaSuccess' | 'UnauthorizedResponse', ParentType, ContextType>
+}>;
+
+export type VotingRoundResolvers<ContextType = any, ParentType extends ResolversParentTypes['VotingRound'] = ResolversParentTypes['VotingRound']> = ResolversObject<{
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  page?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
+  votingRoundIdeas?: Resolver<Array<ResolversTypes['VotingRoundIdea']>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
+export type VotingRoundIdeaResolvers<ContextType = any, ParentType extends ResolversParentTypes['VotingRoundIdea'] = ResolversParentTypes['VotingRoundIdea']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  page?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
+  myVote?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
+export type ApproveVotingRoundIdeaSuccessResolvers<ContextType = any, ParentType extends ResolversParentTypes['ApproveVotingRoundIdeaSuccess'] = ResolversParentTypes['ApproveVotingRoundIdeaSuccess']> = ResolversObject<{
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
+export type ApproveVotingRoundIdeaResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ApproveVotingRoundIdeaResponse'] = ResolversParentTypes['ApproveVotingRoundIdeaResponse']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'ApproveVotingRoundIdeaSuccess' | 'UnauthorizedResponse', ParentType, ContextType>
+}>;
+
+export type VoteMaybeVotingRoundIdeaSuccessResolvers<ContextType = any, ParentType extends ResolversParentTypes['VoteMaybeVotingRoundIdeaSuccess'] = ResolversParentTypes['VoteMaybeVotingRoundIdeaSuccess']> = ResolversObject<{
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
+export type VoteMaybeVotingRoundIdeaResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['VoteMaybeVotingRoundIdeaResponse'] = ResolversParentTypes['VoteMaybeVotingRoundIdeaResponse']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'VoteMaybeVotingRoundIdeaSuccess' | 'UnauthorizedResponse', ParentType, ContextType>
+}>;
+
+export type RejectVotingRoundIdeaSuccessResolvers<ContextType = any, ParentType extends ResolversParentTypes['RejectVotingRoundIdeaSuccess'] = ResolversParentTypes['RejectVotingRoundIdeaSuccess']> = ResolversObject<{
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
+export type RejectVotingRoundIdeaResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['RejectVotingRoundIdeaResponse'] = ResolversParentTypes['RejectVotingRoundIdeaResponse']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'RejectVotingRoundIdeaSuccess' | 'UnauthorizedResponse', ParentType, ContextType>
 }>;
 
 export type GameResolvers<ContextType = any, ParentType extends ResolversParentTypes['Game'] = ResolversParentTypes['Game']> = ResolversObject<{
@@ -1409,6 +1505,14 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   RejectEventIdeaResponse?: RejectEventIdeaResponseResolvers,
   FlagEventIdeaSuccess?: FlagEventIdeaSuccessResolvers<ContextType>,
   FlagEventIdeaResponse?: FlagEventIdeaResponseResolvers,
+  VotingRound?: VotingRoundResolvers<ContextType>,
+  VotingRoundIdea?: VotingRoundIdeaResolvers<ContextType>,
+  ApproveVotingRoundIdeaSuccess?: ApproveVotingRoundIdeaSuccessResolvers<ContextType>,
+  ApproveVotingRoundIdeaResponse?: ApproveVotingRoundIdeaResponseResolvers,
+  VoteMaybeVotingRoundIdeaSuccess?: VoteMaybeVotingRoundIdeaSuccessResolvers<ContextType>,
+  VoteMaybeVotingRoundIdeaResponse?: VoteMaybeVotingRoundIdeaResponseResolvers,
+  RejectVotingRoundIdeaSuccess?: RejectVotingRoundIdeaSuccessResolvers<ContextType>,
+  RejectVotingRoundIdeaResponse?: RejectVotingRoundIdeaResponseResolvers,
   Game?: GameResolvers<ContextType>,
   EditGameSuccess?: EditGameSuccessResolvers<ContextType>,
   EditGameResponse?: EditGameResponseResolvers,

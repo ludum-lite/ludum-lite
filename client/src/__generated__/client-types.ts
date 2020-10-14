@@ -467,6 +467,7 @@ export type Event = {
   eventIdeas?: Maybe<Array<EventIdea>>
   myEventIdeas?: Maybe<Array<EventIdea>>
   eventIdeaLimit: Scalars['Int']
+  votingRounds?: Maybe<Array<VotingRound>>
 }
 
 export enum EventPhase {
@@ -562,6 +563,48 @@ export type FlagEventIdeaSuccess = MutationResponse & {
 }
 
 export type FlagEventIdeaResponse = FlagEventIdeaSuccess | UnauthorizedResponse
+
+export type VotingRound = {
+  __typename: 'VotingRound'
+  name: Scalars['String']
+  page: Scalars['Int']
+  votingRoundIdeas: Array<VotingRoundIdea>
+}
+
+export type VotingRoundIdea = {
+  __typename: 'VotingRoundIdea'
+  id: Scalars['Int']
+  name: Scalars['String']
+  page: Scalars['Int']
+  myVote?: Maybe<Scalars['Int']>
+}
+
+export type ApproveVotingRoundIdeaSuccess = MutationResponse & {
+  __typename: 'ApproveVotingRoundIdeaSuccess'
+  success: Scalars['Boolean']
+}
+
+export type ApproveVotingRoundIdeaResponse =
+  | ApproveVotingRoundIdeaSuccess
+  | UnauthorizedResponse
+
+export type VoteMaybeVotingRoundIdeaSuccess = MutationResponse & {
+  __typename: 'VoteMaybeVotingRoundIdeaSuccess'
+  success: Scalars['Boolean']
+}
+
+export type VoteMaybeVotingRoundIdeaResponse =
+  | VoteMaybeVotingRoundIdeaSuccess
+  | UnauthorizedResponse
+
+export type RejectVotingRoundIdeaSuccess = MutationResponse & {
+  __typename: 'RejectVotingRoundIdeaSuccess'
+  success: Scalars['Boolean']
+}
+
+export type RejectVotingRoundIdeaResponse =
+  | RejectVotingRoundIdeaSuccess
+  | UnauthorizedResponse
 
 export type Game = {
   __typename: 'Game'
@@ -665,7 +708,8 @@ export type EventThemePage_EventFragment = { __typename: 'Event' } & Pick<
   'id' | 'eventPhase'
 > &
   ThemeSubmissionForm_EventFragment &
-  ThemeSlaughterForm_EventFragment
+  ThemeSlaughterForm_EventFragment &
+  ThemeVotingForm_EventFragment
 
 export type ApproveEventIdeaMutationVariables = Exact<{
   input: IdInput
@@ -760,6 +804,29 @@ export type ThemeSubmissionForm_EventFragment = { __typename: 'Event' } & Pick<
 > & {
     myEventIdeas?: Maybe<
       Array<{ __typename: 'EventIdea' } & Pick<EventIdea, 'id' | 'name'>>
+    >
+  }
+
+export type ThemeVotingForm_EventFragment = { __typename: 'Event' } & Pick<
+  Event,
+  'id' | 'eventPhase'
+> & {
+    votingRounds?: Maybe<
+      Array<
+        { __typename: 'VotingRound' } & Pick<VotingRound, 'name' | 'page'> & {
+            votingRoundIdeas: Array<
+              { __typename: 'VotingRoundIdea' } & Pick<
+                VotingRoundIdea,
+                'id' | 'name' | 'myVote'
+              >
+            >
+          }
+      >
+    >
+    eventIdeas?: Maybe<
+      Array<
+        { __typename: 'EventIdea' } & Pick<EventIdea, 'id' | 'name' | 'myVote'>
+      >
     >
   }
 
@@ -1347,15 +1414,37 @@ export const ThemeSlaughterForm_EventFragmentDoc = gql`
     }
   }
 `
+export const ThemeVotingForm_EventFragmentDoc = gql`
+  fragment ThemeVotingForm_event on Event {
+    id
+    eventPhase
+    votingRounds {
+      name
+      page
+      votingRoundIdeas {
+        id
+        name
+        myVote
+      }
+    }
+    eventIdeas {
+      id
+      name
+      myVote
+    }
+  }
+`
 export const EventThemePage_EventFragmentDoc = gql`
   fragment EventThemePage_event on Event {
     id
     eventPhase
     ...ThemeSubmissionForm_event
     ...ThemeSlaughterForm_event
+    ...ThemeVotingForm_event
   }
   ${ThemeSubmissionForm_EventFragmentDoc}
   ${ThemeSlaughterForm_EventFragmentDoc}
+  ${ThemeVotingForm_EventFragmentDoc}
 `
 export const AddCommentForm_PostFragmentDoc = gql`
   fragment AddCommentForm_post on Post {
@@ -3797,6 +3886,15 @@ const result: IntrospectionResultData = {
             name: 'FlagEventIdeaSuccess',
           },
           {
+            name: 'ApproveVotingRoundIdeaSuccess',
+          },
+          {
+            name: 'VoteMaybeVotingRoundIdeaSuccess',
+          },
+          {
+            name: 'RejectVotingRoundIdeaSuccess',
+          },
+          {
             name: 'EditGameSuccess',
           },
           {
@@ -4071,6 +4169,42 @@ const result: IntrospectionResultData = {
         possibleTypes: [
           {
             name: 'FlagEventIdeaSuccess',
+          },
+          {
+            name: 'UnauthorizedResponse',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'ApproveVotingRoundIdeaResponse',
+        possibleTypes: [
+          {
+            name: 'ApproveVotingRoundIdeaSuccess',
+          },
+          {
+            name: 'UnauthorizedResponse',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'VoteMaybeVotingRoundIdeaResponse',
+        possibleTypes: [
+          {
+            name: 'VoteMaybeVotingRoundIdeaSuccess',
+          },
+          {
+            name: 'UnauthorizedResponse',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'RejectVotingRoundIdeaResponse',
+        possibleTypes: [
+          {
+            name: 'RejectVotingRoundIdeaSuccess',
           },
           {
             name: 'UnauthorizedResponse',

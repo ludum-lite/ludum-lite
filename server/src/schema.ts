@@ -349,10 +349,10 @@ export const typeDefs = gql`
     eventPhase: EventPhase!
     startDate: String!
     endDate: String!
-    # // Renaming 'eventIdeas' to 'myEventIdeas'. Readding 'eventIdeas' but it's all the ideas. And updating event idea to have 'myVote'
     eventIdeas: [EventIdea!]
     myEventIdeas: [EventIdea!]
     eventIdeaLimit: Int!
+    votingRounds: [VotingRound!]
   }
 
   enum EventPhase {
@@ -447,6 +447,51 @@ export const typeDefs = gql`
   }
 
   union FlagEventIdeaResponse = FlagEventIdeaSuccess | UnauthorizedResponse
+
+  #########
+  # Voting Round
+  #########
+
+  type VotingRound {
+    name: String!
+    page: Int!
+    votingRoundIdeas: [VotingRoundIdea!]!
+  }
+
+  #########
+  # Voting Round Idea
+  #########
+
+  type VotingRoundIdea {
+    id: Int!
+    name: String!
+    page: Int!
+    myVote: Int
+  }
+
+  type ApproveVotingRoundIdeaSuccess implements MutationResponse {
+    success: Boolean!
+  }
+
+  union ApproveVotingRoundIdeaResponse =
+      ApproveVotingRoundIdeaSuccess
+    | UnauthorizedResponse
+
+  type VoteMaybeVotingRoundIdeaSuccess implements MutationResponse {
+    success: Boolean!
+  }
+
+  union VoteMaybeVotingRoundIdeaResponse =
+      VoteMaybeVotingRoundIdeaSuccess
+    | UnauthorizedResponse
+
+  type RejectVotingRoundIdeaSuccess implements MutationResponse {
+    success: Boolean!
+  }
+
+  union RejectVotingRoundIdeaResponse =
+      RejectVotingRoundIdeaSuccess
+    | UnauthorizedResponse
 
   #########
   # Game
