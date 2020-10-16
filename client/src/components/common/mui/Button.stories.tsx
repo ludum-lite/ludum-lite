@@ -56,16 +56,26 @@ const WhiteBackground = styled(ButtonContainer)`
 const Options = styled(Panel)``
 
 const VARIANTS = ['text', 'outlined', 'contained'] as const
-const COLORS = ['default', 'primary', 'secondary', 'success', 'error'] as const
+const COLORS = [
+  'default',
+  'primary',
+  'secondary',
+  'success',
+  'error',
+  'yellow',
+] as const
 function isCustomColor(color: string) {
-  return color === 'success' || color === 'error'
+  return color === 'success' || color === 'error' || color === 'yellow'
 }
 
 type PropCombination = {
   [key in Background]?: {
     [key in NonNullable<ButtonProps['variant']>]?: {
       [key in NonNullable<
-        Exclude<ButtonProps['color'], 'inherit'> | 'success' | 'error'
+        | Exclude<ButtonProps['color'], 'inherit'>
+        | 'success'
+        | 'error'
+        | 'yellow'
       >]?: boolean
     }
   }
@@ -76,12 +86,14 @@ const INVALID_COMBINATIONS: PropCombination = {
       primary: true,
       secondary: true,
       error: true,
+      yellow: true,
     },
     outlined: {
       primary: true,
       secondary: true,
       success: true,
       error: true,
+      yellow: true,
     },
   },
   contextualNav: {
@@ -94,6 +106,7 @@ const INVALID_COMBINATIONS: PropCombination = {
       secondary: true,
       success: true,
       error: true,
+      yellow: true,
     },
     contained: {
       default: true,
@@ -104,22 +117,26 @@ const INVALID_COMBINATIONS: PropCombination = {
       primary: true,
       secondary: true,
       error: true,
+      yellow: true,
     },
     outlined: {
       secondary: true,
       primary: true,
       success: true,
       error: true,
+      yellow: true,
     },
   },
   white: {
     text: {
       primary: true,
+      yellow: true,
     },
     outlined: {
       primary: true,
       success: true,
       error: true,
+      yellow: true,
     },
   },
 }

@@ -87,6 +87,15 @@ const resolvers: Resolvers<Context> = {
     flagEventIdea(_, { input }, context) {
       return context.dataSources.eventIdeaApi.flagEventIdea(input)
     },
+    approveVotingRoundIdea(_, { input }, context) {
+      return context.dataSources.votingRoundApi.approveVotingRoundIdea(input)
+    },
+    voteMaybeVotingRoundIdea(_, { input }, context) {
+      return context.dataSources.votingRoundApi.voteMaybeVotingRoundIdea(input)
+    },
+    rejectVotingRoundIdea(_, { input }, context) {
+      return context.dataSources.votingRoundApi.rejectVotingRoundIdea(input)
+    },
     editGame(_, { input }, context) {
       return context.dataSources.gameApi.editGame(input)
     },

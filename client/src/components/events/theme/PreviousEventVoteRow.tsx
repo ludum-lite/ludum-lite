@@ -51,15 +51,15 @@ const PreviousVoteActions = styled(ButtonGroup)``
 interface Props {
   id: number
   vote?: number | null
-  eventIdeaName: string
+  name: string
   onApprove: (id: number) => void
   onReject: (id: number) => void
-  onFlag: (id: number) => void
+  onFlag?: (id: number) => void
 }
-function PreviousVoteRow({
+function PreviousEventVoteRow({
   id,
   vote,
-  eventIdeaName,
+  name,
   onApprove,
   onReject,
   onFlag,
@@ -68,7 +68,7 @@ function PreviousVoteRow({
     <Root>
       <PreviousVoteSideIndicator vote={vote} />
       <PreviousVoteContent>
-        <PreviousVoteName>{eventIdeaName}</PreviousVoteName>
+        <PreviousVoteName>{name}</PreviousVoteName>
         <PreviousVoteActions>
           <Button
             size="small"
@@ -90,19 +90,21 @@ function PreviousVoteRow({
           >
             No
           </Button>
-          <IconButton
-            size="small"
-            variant={vote === -1 ? 'contained' : 'default'}
-            onClick={() => {
-              onFlag(id)
-            }}
-          >
-            <Icon icon={FlagIcon} />
-          </IconButton>
+          {onFlag && (
+            <IconButton
+              size="small"
+              variant={vote === -1 ? 'contained' : 'default'}
+              onClick={() => {
+                onFlag(id)
+              }}
+            >
+              <Icon icon={FlagIcon} />
+            </IconButton>
+          )}
         </PreviousVoteActions>
       </PreviousVoteContent>
     </Root>
   )
 }
 
-export default React.memo(PreviousVoteRow)
+export default React.memo(PreviousEventVoteRow)

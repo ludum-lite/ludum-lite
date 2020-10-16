@@ -63,6 +63,9 @@ export type Mutation = {
   approveEventIdea: ApproveEventIdeaResponse
   rejectEventIdea: RejectEventIdeaResponse
   flagEventIdea: FlagEventIdeaResponse
+  approveVotingRoundIdea: ApproveVotingRoundIdeaResponse
+  voteMaybeVotingRoundIdea: VoteMaybeVotingRoundIdeaResponse
+  rejectVotingRoundIdea: RejectVotingRoundIdeaResponse
   editGame: EditGameResponse
   addFriend: AddFriendResponse
   addFriendAndAddToGame: AddFriendAndAddToGameResponse
@@ -132,6 +135,18 @@ export type MutationRejectEventIdeaArgs = {
 }
 
 export type MutationFlagEventIdeaArgs = {
+  input: IdInput
+}
+
+export type MutationApproveVotingRoundIdeaArgs = {
+  input: IdInput
+}
+
+export type MutationVoteMaybeVotingRoundIdeaArgs = {
+  input: IdInput
+}
+
+export type MutationRejectVotingRoundIdeaArgs = {
   input: IdInput
 }
 
@@ -807,9 +822,48 @@ export type ThemeSubmissionForm_EventFragment = { __typename: 'Event' } & Pick<
     >
   }
 
+export type ApproveVotingRoundIdeaMutationVariables = Exact<{
+  input: IdInput
+}>
+
+export type ApproveVotingRoundIdeaMutation = { __typename: 'Mutation' } & {
+  approveVotingRoundIdea:
+    | ({ __typename: 'ApproveVotingRoundIdeaSuccess' } & Pick<
+        ApproveVotingRoundIdeaSuccess,
+        'success'
+      >)
+    | { __typename: 'UnauthorizedResponse' }
+}
+
+export type RejectVotingRoundIdeaMutationVariables = Exact<{
+  input: IdInput
+}>
+
+export type RejectVotingRoundIdeaMutation = { __typename: 'Mutation' } & {
+  rejectVotingRoundIdea:
+    | ({ __typename: 'RejectVotingRoundIdeaSuccess' } & Pick<
+        RejectVotingRoundIdeaSuccess,
+        'success'
+      >)
+    | { __typename: 'UnauthorizedResponse' }
+}
+
+export type VoteMaybeVotingRoundIdeaMutationVariables = Exact<{
+  input: IdInput
+}>
+
+export type VoteMaybeVotingRoundIdeaMutation = { __typename: 'Mutation' } & {
+  voteMaybeVotingRoundIdea:
+    | ({ __typename: 'VoteMaybeVotingRoundIdeaSuccess' } & Pick<
+        VoteMaybeVotingRoundIdeaSuccess,
+        'success'
+      >)
+    | { __typename: 'UnauthorizedResponse' }
+}
+
 export type ThemeVotingForm_EventFragment = { __typename: 'Event' } & Pick<
   Event,
-  'id' | 'eventPhase'
+  'id'
 > & {
     votingRounds?: Maybe<
       Array<
@@ -821,11 +875,6 @@ export type ThemeVotingForm_EventFragment = { __typename: 'Event' } & Pick<
               >
             >
           }
-      >
-    >
-    eventIdeas?: Maybe<
-      Array<
-        { __typename: 'EventIdea' } & Pick<EventIdea, 'id' | 'name' | 'myVote'>
       >
     >
   }
@@ -1417,7 +1466,6 @@ export const ThemeSlaughterForm_EventFragmentDoc = gql`
 export const ThemeVotingForm_EventFragmentDoc = gql`
   fragment ThemeVotingForm_event on Event {
     id
-    eventPhase
     votingRounds {
       name
       page
@@ -1426,11 +1474,6 @@ export const ThemeVotingForm_EventFragmentDoc = gql`
         name
         myVote
       }
-    }
-    eventIdeas {
-      id
-      name
-      myVote
     }
   }
 `
@@ -2037,6 +2080,162 @@ export type DeleteEventIdeaMutationResult = ApolloReactCommon.MutationResult<
 export type DeleteEventIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<
   DeleteEventIdeaMutation,
   DeleteEventIdeaMutationVariables
+>
+export const ApproveVotingRoundIdeaDocument = gql`
+  mutation ApproveVotingRoundIdea($input: IdInput!) {
+    approveVotingRoundIdea(input: $input) {
+      ... on ApproveVotingRoundIdeaSuccess {
+        success
+      }
+    }
+  }
+`
+export type ApproveVotingRoundIdeaMutationFn = ApolloReactCommon.MutationFunction<
+  ApproveVotingRoundIdeaMutation,
+  ApproveVotingRoundIdeaMutationVariables
+>
+
+/**
+ * __useApproveVotingRoundIdeaMutation__
+ *
+ * To run a mutation, you first call `useApproveVotingRoundIdeaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useApproveVotingRoundIdeaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [approveVotingRoundIdeaMutation, { data, loading, error }] = useApproveVotingRoundIdeaMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useApproveVotingRoundIdeaMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    ApproveVotingRoundIdeaMutation,
+    ApproveVotingRoundIdeaMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    ApproveVotingRoundIdeaMutation,
+    ApproveVotingRoundIdeaMutationVariables
+  >(ApproveVotingRoundIdeaDocument, baseOptions)
+}
+export type ApproveVotingRoundIdeaMutationHookResult = ReturnType<
+  typeof useApproveVotingRoundIdeaMutation
+>
+export type ApproveVotingRoundIdeaMutationResult = ApolloReactCommon.MutationResult<
+  ApproveVotingRoundIdeaMutation
+>
+export type ApproveVotingRoundIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  ApproveVotingRoundIdeaMutation,
+  ApproveVotingRoundIdeaMutationVariables
+>
+export const RejectVotingRoundIdeaDocument = gql`
+  mutation RejectVotingRoundIdea($input: IdInput!) {
+    rejectVotingRoundIdea(input: $input) {
+      ... on RejectVotingRoundIdeaSuccess {
+        success
+      }
+    }
+  }
+`
+export type RejectVotingRoundIdeaMutationFn = ApolloReactCommon.MutationFunction<
+  RejectVotingRoundIdeaMutation,
+  RejectVotingRoundIdeaMutationVariables
+>
+
+/**
+ * __useRejectVotingRoundIdeaMutation__
+ *
+ * To run a mutation, you first call `useRejectVotingRoundIdeaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRejectVotingRoundIdeaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [rejectVotingRoundIdeaMutation, { data, loading, error }] = useRejectVotingRoundIdeaMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRejectVotingRoundIdeaMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    RejectVotingRoundIdeaMutation,
+    RejectVotingRoundIdeaMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    RejectVotingRoundIdeaMutation,
+    RejectVotingRoundIdeaMutationVariables
+  >(RejectVotingRoundIdeaDocument, baseOptions)
+}
+export type RejectVotingRoundIdeaMutationHookResult = ReturnType<
+  typeof useRejectVotingRoundIdeaMutation
+>
+export type RejectVotingRoundIdeaMutationResult = ApolloReactCommon.MutationResult<
+  RejectVotingRoundIdeaMutation
+>
+export type RejectVotingRoundIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  RejectVotingRoundIdeaMutation,
+  RejectVotingRoundIdeaMutationVariables
+>
+export const VoteMaybeVotingRoundIdeaDocument = gql`
+  mutation VoteMaybeVotingRoundIdea($input: IdInput!) {
+    voteMaybeVotingRoundIdea(input: $input) {
+      ... on VoteMaybeVotingRoundIdeaSuccess {
+        success
+      }
+    }
+  }
+`
+export type VoteMaybeVotingRoundIdeaMutationFn = ApolloReactCommon.MutationFunction<
+  VoteMaybeVotingRoundIdeaMutation,
+  VoteMaybeVotingRoundIdeaMutationVariables
+>
+
+/**
+ * __useVoteMaybeVotingRoundIdeaMutation__
+ *
+ * To run a mutation, you first call `useVoteMaybeVotingRoundIdeaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useVoteMaybeVotingRoundIdeaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [voteMaybeVotingRoundIdeaMutation, { data, loading, error }] = useVoteMaybeVotingRoundIdeaMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useVoteMaybeVotingRoundIdeaMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    VoteMaybeVotingRoundIdeaMutation,
+    VoteMaybeVotingRoundIdeaMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    VoteMaybeVotingRoundIdeaMutation,
+    VoteMaybeVotingRoundIdeaMutationVariables
+  >(VoteMaybeVotingRoundIdeaDocument, baseOptions)
+}
+export type VoteMaybeVotingRoundIdeaMutationHookResult = ReturnType<
+  typeof useVoteMaybeVotingRoundIdeaMutation
+>
+export type VoteMaybeVotingRoundIdeaMutationResult = ApolloReactCommon.MutationResult<
+  VoteMaybeVotingRoundIdeaMutation
+>
+export type VoteMaybeVotingRoundIdeaMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  VoteMaybeVotingRoundIdeaMutation,
+  VoteMaybeVotingRoundIdeaMutationVariables
 >
 export const GameWidgetDataDocument = gql`
   query GameWidgetData {

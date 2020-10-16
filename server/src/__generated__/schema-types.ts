@@ -65,6 +65,9 @@ export type Mutation = {
   approveEventIdea: ApproveEventIdeaResponse;
   rejectEventIdea: RejectEventIdeaResponse;
   flagEventIdea: FlagEventIdeaResponse;
+  approveVotingRoundIdea: ApproveVotingRoundIdeaResponse;
+  voteMaybeVotingRoundIdea: VoteMaybeVotingRoundIdeaResponse;
+  rejectVotingRoundIdea: RejectVotingRoundIdeaResponse;
   editGame: EditGameResponse;
   addFriend: AddFriendResponse;
   addFriendAndAddToGame: AddFriendAndAddToGameResponse;
@@ -150,6 +153,21 @@ export type MutationRejectEventIdeaArgs = {
 
 
 export type MutationFlagEventIdeaArgs = {
+  input: IdInput;
+};
+
+
+export type MutationApproveVotingRoundIdeaArgs = {
+  input: IdInput;
+};
+
+
+export type MutationVoteMaybeVotingRoundIdeaArgs = {
+  input: IdInput;
+};
+
+
+export type MutationRejectVotingRoundIdeaArgs = {
   input: IdInput;
 };
 
@@ -971,6 +989,9 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   approveEventIdea?: Resolver<ResolversTypes['ApproveEventIdeaResponse'], ParentType, ContextType, RequireFields<MutationApproveEventIdeaArgs, 'input'>>,
   rejectEventIdea?: Resolver<ResolversTypes['RejectEventIdeaResponse'], ParentType, ContextType, RequireFields<MutationRejectEventIdeaArgs, 'input'>>,
   flagEventIdea?: Resolver<ResolversTypes['FlagEventIdeaResponse'], ParentType, ContextType, RequireFields<MutationFlagEventIdeaArgs, 'input'>>,
+  approveVotingRoundIdea?: Resolver<ResolversTypes['ApproveVotingRoundIdeaResponse'], ParentType, ContextType, RequireFields<MutationApproveVotingRoundIdeaArgs, 'input'>>,
+  voteMaybeVotingRoundIdea?: Resolver<ResolversTypes['VoteMaybeVotingRoundIdeaResponse'], ParentType, ContextType, RequireFields<MutationVoteMaybeVotingRoundIdeaArgs, 'input'>>,
+  rejectVotingRoundIdea?: Resolver<ResolversTypes['RejectVotingRoundIdeaResponse'], ParentType, ContextType, RequireFields<MutationRejectVotingRoundIdeaArgs, 'input'>>,
   editGame?: Resolver<ResolversTypes['EditGameResponse'], ParentType, ContextType, RequireFields<MutationEditGameArgs, 'input'>>,
   addFriend?: Resolver<ResolversTypes['AddFriendResponse'], ParentType, ContextType, RequireFields<MutationAddFriendArgs, 'input'>>,
   addFriendAndAddToGame?: Resolver<ResolversTypes['AddFriendAndAddToGameResponse'], ParentType, ContextType, RequireFields<MutationAddFriendAndAddToGameArgs, 'input'>>,

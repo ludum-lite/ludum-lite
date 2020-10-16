@@ -12,7 +12,7 @@ export type Background = 'globalNav' | 'contextualNav' | 'page' | 'white'
 interface StyledButtonProps {
   background: Background
   isBreadcrumb: Boolean
-  customColor?: 'success' | 'error'
+  customColor?: 'success' | 'error' | 'yellow'
 }
 
 const StyledButton = styled(MuiButton).withConfig({
@@ -62,6 +62,17 @@ const StyledButton = styled(MuiButton).withConfig({
               .errorHoverBackground};
           }
         `
+      } else if (customColor === 'yellow') {
+        return css`
+          background: ${theme.themeColors.button.color.contained
+            .yellowBackground};
+          color: ${({ theme }) => theme.themeColors.textBlack};
+
+          &:hover {
+            background: ${theme.themeColors.button.color.contained
+              .yellowHoverBackground};
+          }
+        `
       }
     } else if (variant === 'text') {
       if (customColor === 'success') {
@@ -82,6 +93,15 @@ const StyledButton = styled(MuiButton).withConfig({
               .errorHoverBackground};
           }
         `
+      } else if (customColor === 'yellow') {
+        return css`
+          color: ${theme.themeColors.button.color.text.yellowColor};
+
+          &:hover {
+            background: ${theme.themeColors.button.color.text
+              .yellowHoverBackground};
+          }
+        `
       }
     }
   }}
@@ -97,7 +117,7 @@ const StyledButton = styled(MuiButton).withConfig({
 interface Props {
   background?: Background
   color?: MuiButtonProps['color']
-  customColor?: 'success' | 'error'
+  customColor?: 'success' | 'error' | 'yellow'
   variant?: MuiButtonProps['variant']
   loading?: Boolean
   isBreadcrumb?: Boolean

@@ -22,7 +22,8 @@ import Input from 'components/common/mui/Input'
 import { DebounceInput } from 'react-debounce-input'
 import { Select, MenuItem } from '@material-ui/core'
 import { getVoteColor } from './utils'
-import PreviousVoteRow from './PreviousVoteRow'
+import PreviousEventVoteRow from './PreviousEventVoteRow'
+import PreviousVoteList from './PreviousVoteList'
 
 const keyMap = {
   APPROVE: 'y',
@@ -121,14 +122,9 @@ const SearchIcon = styled(MuiSearchIcon)`
   padding-right: 4px;
 `
 
-const PreviousVotes = styled.div`
-  display: flex;
-  flex-direction: column;
+const PreviousVotes = styled(PreviousVoteList)`
   margin-top: ${({ theme }) => theme.spacing(2)}px;
-  border-radius: ${({ theme }) => theme.shape.borderRadius}px;
-  overflow: auto;
   max-height: 500px;
-  box-shadow: ${({ theme }) => theme.themeColors.cardBoxShadow_bottomHeavy};
 `
 
 /* Distribution Bar */
@@ -191,7 +187,7 @@ interface PreviousVotesBarSegmentProps {
   vote?: number | null
 }
 const PreviousVotesBarSegment = styled.div<PreviousVotesBarSegmentProps>`
-  flex: ${({ count }) => count} 0 0px;
+  flex: ${({ count }) => count || 1} 0 0px;
 
   &:not(:last-child) {
     border-right: 1px solid ${({ theme }) => theme.themeColors.whiteBackground};
@@ -205,10 +201,6 @@ const PreviousVotesBarSegment = styled.div<PreviousVotesBarSegmentProps>`
     `
   }}
 `
-
-// type FormInputs = {
-//   name: string
-// }
 
 interface Props {
   event: ThemeSlaughterForm_EventFragment
@@ -452,17 +444,23 @@ export default function ThemeSlaughterForm({ event }: Props) {
         <PreviousVotesDistributionList>
           <PreviousVotesDistributionItem>
             <DistributionCircle vote={1} />
-            <DistributionNumber>{votedDistributions[1]}</DistributionNumber>
+            <DistributionNumber>
+              {votedDistributions[1] || 0}
+            </DistributionNumber>
             <DistributionText>Approved</DistributionText>
           </PreviousVotesDistributionItem>
           <PreviousVotesDistributionItem>
             <DistributionCircle vote={0} />
-            <DistributionNumber>{votedDistributions[0]}</DistributionNumber>
+            <DistributionNumber>
+              {votedDistributions[0] || 0}
+            </DistributionNumber>
             <DistributionText>Rejected</DistributionText>
           </PreviousVotesDistributionItem>
           <PreviousVotesDistributionItem>
             <DistributionCircle vote={-1} />
-            <DistributionNumber>{votedDistributions[-1]}</DistributionNumber>
+            <DistributionNumber>
+              {votedDistributions[-1] || 0}
+            </DistributionNumber>
             <DistributionText>Flagged</DistributionText>
           </PreviousVotesDistributionItem>
           <PreviousVotesDistributionItem>
@@ -480,63 +478,65 @@ export default function ThemeSlaughterForm({ event }: Props) {
           <PreviousVotesBarSegment count={remainingEventIdeas.length} />
         </PreviousVotesBar>
       </PreviousVotesDistributionContainer>
-      <PreviousVotesContainer>
-        <PreviousVotesActionsRow>
-          <FilterPreviousVotesInput
-            placeholder="Search..."
-            value={searchValue}
-            onChange={(e) => {
-              setSearchValue(e.target.value)
-            }}
-            inputComponent={DebounceInput}
-            inputProps={{
-              debounceTimeout: 200,
-            }}
-            startAdornment={<Icon icon={SearchIcon} />}
-          />
-          <FilterBySelect
-            labelId="demo-simple-select-filled-label"
-            id="demo-simple-select-filled"
-            value={voteFilterBy}
-            variant="filled"
-            renderValue={(value) => (
-              <SelectDisplayValue>
-                <Icon icon={SortIcon} />
-                {VoteFilterByToDisplay[value as VoteFilterBy]}
-              </SelectDisplayValue>
-            )}
-            onChange={(e) => {
-              setVoteFilterBy(e.target.value as VoteFilterBy)
-            }}
-          >
-            <MenuItem value={VoteFilterBy.All}>
-              {VoteFilterByToDisplay[VoteFilterBy.All]}
-            </MenuItem>
-            <MenuItem value={VoteFilterBy.Approved}>
-              {VoteFilterByToDisplay[VoteFilterBy.Approved]}
-            </MenuItem>
-            <MenuItem value={VoteFilterBy.Rejected}>
-              {VoteFilterByToDisplay[VoteFilterBy.Rejected]}
-            </MenuItem>
-            <MenuItem value={VoteFilterBy.Flagged}>
-              {VoteFilterByToDisplay[VoteFilterBy.Flagged]}
-            </MenuItem>
-          </FilterBySelect>
-        </PreviousVotesActionsRow>
-        <PreviousVotes>
-          {filteredVotedEventIdeas.map((eventIdea) => (
-            <PreviousVoteRow
-              key={eventIdea.id}
-              id={eventIdea.id}
-              vote={eventIdea.myVote}
-              eventIdeaName={eventIdea.name}
-              onApprove={approveEventIdea}
-              onReject={rejectEventIdea}
-              onFlag={flagEventIdea}
+      {filteredVotedEventIdeas.length > 0 && (
+        <PreviousVotesContainer>
+          <PreviousVotesActionsRow>
+            <FilterPreviousVotesInput
+              placeholder="Search..."
+              value={searchValue}
+              onChange={(e) => {
+                setSearchValue(e.target.value)
+              }}
+              inputComponent={DebounceInput}
+              inputProps={{
+                debounceTimeout: 200,
+              }}
+              startAdornment={<Icon icon={SearchIcon} />}
             />
-          ))}
-        </PreviousVotes>
-      </PreviousVotesContainer>
+            <FilterBySelect
+              labelId="demo-simple-select-filled-label"
+              id="demo-simple-select-filled"
+              value={voteFilterBy}
+              variant="filled"
+              renderValue={(value) => (
+                <SelectDisplayValue>
+                  <Icon icon={SortIcon} />
+                  {VoteFilterByToDisplay[value as VoteFilterBy]}
+                </SelectDisplayValue>
+              )}
+              onChange={(e) => {
+                setVoteFilterBy(e.target.value as VoteFilterBy)
+              }}
+            >
+              <MenuItem value={VoteFilterBy.All}>
+                {VoteFilterByToDisplay[VoteFilterBy.All]}
+              </MenuItem>
+              <MenuItem value={VoteFilterBy.Approved}>
+                {VoteFilterByToDisplay[VoteFilterBy.Approved]}
+              </MenuItem>
+              <MenuItem value={VoteFilterBy.Rejected}>
+                {VoteFilterByToDisplay[VoteFilterBy.Rejected]}
+              </MenuItem>
+              <MenuItem value={VoteFilterBy.Flagged}>
+                {VoteFilterByToDisplay[VoteFilterBy.Flagged]}
+              </MenuItem>
+            </FilterBySelect>
+          </PreviousVotesActionsRow>
+          <PreviousVotes>
+            {filteredVotedEventIdeas.map((eventIdea) => (
+              <PreviousEventVoteRow
+                key={eventIdea.id}
+                id={eventIdea.id}
+                vote={eventIdea.myVote}
+                name={eventIdea.name}
+                onApprove={approveEventIdea}
+                onReject={rejectEventIdea}
+                onFlag={flagEventIdea}
+              />
+            ))}
+          </PreviousVotes>
+        </PreviousVotesContainer>
+      )}
     </Root>
   )
 }

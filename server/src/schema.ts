@@ -35,6 +35,9 @@ export const typeDefs = gql`
     approveEventIdea(input: IdInput!): ApproveEventIdeaResponse!
     rejectEventIdea(input: IdInput!): RejectEventIdeaResponse!
     flagEventIdea(input: IdInput!): FlagEventIdeaResponse!
+    approveVotingRoundIdea(input: IdInput!): ApproveVotingRoundIdeaResponse!
+    voteMaybeVotingRoundIdea(input: IdInput!): VoteMaybeVotingRoundIdeaResponse!
+    rejectVotingRoundIdea(input: IdInput!): RejectVotingRoundIdeaResponse!
     editGame(input: EditGameInput!): EditGameResponse!
     addFriend(input: IdInput!): AddFriendResponse!
     addFriendAndAddToGame(input: IdInput!): AddFriendAndAddToGameResponse!

@@ -12,7 +12,7 @@ import { unauthorizedResponse } from './const'
 export type ApiVotingRoundsResponse = {
   allowed: number[]
   lists: {
-    [page: number]: {
+    [page: string]: {
       id: number
       node: number
       idea: number
@@ -20,7 +20,7 @@ export type ApiVotingRoundsResponse = {
     }[]
   }
   names: {
-    [page: number]: string
+    [page: string]: string
   }
   pages: number
 }
@@ -50,31 +50,33 @@ export default class VotingRoundAPI extends BaseAPI {
       )) as ApiVotingRoundVotesResponse
 
       const votingRounds: VotingRound[] = map(
-        votingRoundsResponse.lists,
-        (votingRoundIdeas, page) => {
+        votingRoundsResponse.names,
+        (name, page) => {
           const pageInt = parseInt(page)
+          const votingRoundIdeas = votingRoundsResponse.lists[page]
+
+          console.log({
+            votingRoundsResponse,
+            page,
+            votingRoundIdeas,
+          })
 
           return {
             __typename: 'VotingRound',
-            name: votingRoundsResponse.names[pageInt],
+            name: name,
             page: pageInt,
-            votingRoundIdeas: votingRoundIdeas.map((votingRoundIdea) => ({
-              __typename: 'VotingRoundIdea',
-              id: votingRoundIdea.id,
-              name: votingRoundIdea.theme,
-              page: pageInt,
-              myVote: myVotingRoundVotesResponse.votes[votingRoundIdea.id],
-            })),
+            votingRoundIdeas: votingRoundIdeas
+              ? votingRoundIdeas.map((votingRoundIdea) => ({
+                  __typename: 'VotingRoundIdea',
+                  id: votingRoundIdea.id,
+                  name: votingRoundIdea.theme,
+                  page: pageInt,
+                  myVote: myVotingRoundVotesResponse.votes[votingRoundIdea.id],
+                }))
+              : [],
           }
         }
       )
-
-      console.log({
-        votingRoundsResponse,
-        myVotingRoundVotesResponse,
-        votingRounds,
-        eventId,
-      })
 
       return votingRounds
     } catch (e) {

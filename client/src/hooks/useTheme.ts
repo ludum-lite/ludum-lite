@@ -5,6 +5,7 @@ import { createGlobalStyle, css } from 'styled-components/macro'
 import { createMuiTheme, Theme, fade } from '@material-ui/core'
 import useUserLocalStorage from './useUserLocalStorage'
 import useLocalStorage from './useLocalStorage'
+import { transparentize } from 'polished'
 
 type ButtonThemeColors = Partial<{
   color: string
@@ -67,12 +68,16 @@ export type ThemeColors = {
         errorHoverBackground: string
         successColor: string
         successHoverBackground: string
+        yellowColor: string
+        yellowHoverBackground: string
       }
       contained: {
         errorBackground: string
         errorHoverBackground: string
         successBackground: string
         successHoverBackground: string
+        yellowBackground: string
+        yellowHoverBackground: string
       }
     }
   }
@@ -155,6 +160,12 @@ export type ThemeColors = {
     suggestionBackground: string
     remaingVotesBackground: string
   }
+  themeRoundVoting: {
+    approveBackground: string
+    neutralBackground: string
+    rejectBackground: string
+    buttonsBackground: string
+  }
   palette: {
     primary: {
       dark?: string
@@ -215,6 +226,8 @@ const styleVariables = {
   greenDark: 'rgb(80, 177, 128)',
   greenShade: 'rgb(103, 214, 198)',
   greenShadeDark: 'rgb(51, 193, 172)',
+  yellow: 'rgb(252, 255, 85)',
+  yellowDark: 'rgb(203, 206, 57)',
   aliceBlue: 'rgb(229, 233, 239)',
   cultured: 'rgb(238, 242, 247)',
   ghostWhite: 'rgb(249, 249, 255)',
@@ -291,12 +304,16 @@ const lightTheme: ThemeColors = {
         errorHoverBackground: 'rgb(255, 59, 78, 21%)',
         successColor: 'rgb(73, 191, 131)',
         successHoverBackground: 'rgb(73, 191, 131, 26%)',
+        yellowColor: styleVariables.yellow,
+        yellowHoverBackground: 'rgb(252, 255, 85, 25%)',
       },
       contained: {
         errorBackground: styleVariables.red,
         errorHoverBackground: styleVariables.redDark,
         successBackground: styleVariables.green,
         successHoverBackground: styleVariables.greenDark,
+        yellowBackground: styleVariables.yellow,
+        yellowHoverBackground: styleVariables.yellowDark,
       },
     },
   },
@@ -375,6 +392,12 @@ const lightTheme: ThemeColors = {
     suggestionBackground: styleVariables.cultured,
     remaingVotesBackground: styleVariables.greenBlue,
   },
+  themeRoundVoting: {
+    approveBackground: transparentize(0.5, styleVariables.green),
+    neutralBackground: transparentize(0.5, styleVariables.greenBlue),
+    rejectBackground: transparentize(0.5, styleVariables.red),
+    buttonsBackground: 'white',
+  },
   palette: {
     primary: {
       dark: styleVariables.sapphireBlue,
@@ -406,6 +429,8 @@ const ldStyleVariables = {
   blueDeFrance: 'rgb(34, 136, 247)',
   green: 'rgb(102, 204, 34)',
   greenDark: 'rgb(79, 165, 23)',
+  yellow: 'rgb(252, 255, 85)',
+  yellowDark: 'rgb(203, 206, 57)',
   blueGreen: 'rgb(0, 210, 152)',
   blueGreenDark: 'rgb(0, 184, 132)',
   white: 'rgb(253, 255, 255)',
@@ -497,12 +522,16 @@ const darkTheme: ThemeColors = {
         errorHoverBackground: 'rgb(228, 27, 27, 18%)',
         successColor: 'rgb(85, 177, 24)',
         successHoverBackground: 'rgb(102, 204, 34, 23%)',
+        yellowColor: ldStyleVariables.yellow,
+        yellowHoverBackground: 'rgb(252, 255, 85, 25%)',
       },
       contained: {
         errorBackground: ldStyleVariables.red,
         errorHoverBackground: ldStyleVariables.redDark,
         successBackground: ldStyleVariables.green,
         successHoverBackground: ldStyleVariables.greenDark,
+        yellowBackground: ldStyleVariables.yellow,
+        yellowHoverBackground: ldStyleVariables.yellowDark,
       },
     },
   },
@@ -527,7 +556,7 @@ const darkTheme: ThemeColors = {
   },
   postsPage: {
     toggleButtons: {
-      inactiveColor: 'white ',
+      inactiveColor: 'white',
     },
   },
   post: {
@@ -580,6 +609,12 @@ const darkTheme: ThemeColors = {
   themeSlaughter: {
     suggestionBackground: 'white',
     remaingVotesBackground: ldStyleVariables.blueDeFrance,
+  },
+  themeRoundVoting: {
+    approveBackground: 'rgb(186, 255, 141)',
+    neutralBackground: 'rgb(254, 255, 158)',
+    rejectBackground: 'rgb(255, 158, 158)',
+    buttonsBackground: 'white',
   },
   palette: {
     primary: {
