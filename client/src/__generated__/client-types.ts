@@ -583,7 +583,14 @@ export type VotingRound = {
   __typename: 'VotingRound'
   name: Scalars['String']
   page: Scalars['Int']
+  votingPhase: VotingPhase
   votingRoundIdeas: Array<VotingRoundIdea>
+}
+
+export enum VotingPhase {
+  Inactive = 'Inactive',
+  Active = 'Active',
+  Ended = 'Ended',
 }
 
 export type VotingRoundIdea = {
@@ -867,7 +874,10 @@ export type ThemeVotingForm_EventFragment = { __typename: 'Event' } & Pick<
 > & {
     votingRounds?: Maybe<
       Array<
-        { __typename: 'VotingRound' } & Pick<VotingRound, 'name' | 'page'> & {
+        { __typename: 'VotingRound' } & Pick<
+          VotingRound,
+          'name' | 'page' | 'votingPhase'
+        > & {
             votingRoundIdeas: Array<
               { __typename: 'VotingRoundIdea' } & Pick<
                 VotingRoundIdea,
@@ -1469,6 +1479,7 @@ export const ThemeVotingForm_EventFragmentDoc = gql`
     votingRounds {
       name
       page
+      votingPhase
       votingRoundIdeas {
         id
         name

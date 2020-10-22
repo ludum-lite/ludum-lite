@@ -1,10 +1,13 @@
 import React from 'react'
 import { gql } from '@apollo/client'
 import styled from 'styled-components/macro'
-import { ThemeVotingForm_EventFragment, useApproveVotingRoundIdeaMutation, useRejectVotingRoundIdeaMutation, useVoteMaybeVotingRoundIdeaMutation } from '__generated__/client-types'
+import { ThemeVotingForm_EventFragment, useApproveVotingRoundIdeaMutation, useRejectVotingRoundIdeaMutation, useVoteMaybeVotingRoundIdeaMutation, VotingPhase } from '__generated__/client-types'
 import Button from 'components/common/mui/Button'
 import PreviousVoteList from './PreviousVoteList'
 import PreviousRoundVoteRow from './PreviousRoundVoteRow'
+import { useSearchParams } from 'react-router-dom'
+import Typography from 'components/common/mui/Typography'
+import { maxBy } from 'lodash'
 
 const Root = styled.div`
   display: flex;
@@ -22,14 +25,28 @@ const VotingRoundTabs = styled.div`
   }
 `
 
+const VotingEndedMessage = styled(Typography)`
+  margin-bottom: ${({ theme }) => theme.spacing(2)}px;
+`
+
 interface Props {
   event: ThemeVotingForm_EventFragment
 }
 export default function ThemeVotingForm({ event }: Props) {
-  const selectedTab = 1
-  const selectedVotingRound = event.votingRounds?.find(
-    (votingRound) => votingRound.page === selectedTab
-  )
+  const [searchParams, setSearchParams] = useSearchParams()
+  const rawSelectedRound = searchParams.get('selectedRound')
+  const selectedRound = rawSelectedRound ? parseInt(rawSelectedRound) : null
+  const selectedVotingRound = React.useMemo(() => {
+    if (event.votingRounds) {
+      if (selectedRound) {
+        return event.votingRounds.find(
+          (votingRound) => votingRound.page === selectedRound
+        )
+      } else {
+        return maxBy(event.votingRounds, (votingRound) => votingRound.page)
+      }
+    }
+  }, [event.votingRounds, selectedRound])
   const [approveVotingRoundIdeaMutation] = useApproveVotingRoundIdeaMutation()
   const [voteMaybeVotingRoundIdeaMutation] = useVoteMaybeVotingRoundIdeaMutation()
   const [rejectVotingRoundIdeaMutation] = useRejectVotingRoundIdeaMutation()
@@ -110,12 +127,24 @@ export default function ThemeVotingForm({ event }: Props) {
           <VotingRoundTab
             key={votingRound.name}
             variant="contained"
-            color={selectedTab === votingRound.page ? 'secondary' : 'default'}
+            color={(selectedVotingRound?.page === votingRound.page) ? 'secondary' : 'default'}
+            onClick={() => {
+              setSearchParams({
+                selectedRound: votingRound.page.toString()
+              })
+            }}
           >
             {votingRound.name}
           </VotingRoundTab>
         ))}
       </VotingRoundTabs>
+      {
+        selectedVotingRound?.votingPhase === VotingPhase.Ended && (
+          <VotingEndedMessage variant="subtitle2">
+            This round has ended.
+          </VotingEndedMessage>
+        )
+      }
       <PreviousVoteList>
         {selectedVotingRound?.votingRoundIdeas.map((votingRoundIdea) => (
           <PreviousRoundVoteRow
@@ -163,6 +192,7 @@ gql`
     votingRounds {
       name
       page
+      votingPhase
       votingRoundIdeas {
         id
         name

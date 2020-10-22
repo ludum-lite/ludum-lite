@@ -6,6 +6,7 @@ import {
   ApproveVotingRoundIdeaResponse,
   RejectVotingRoundIdeaResponse,
   VoteMaybeVotingRoundIdeaResponse,
+  VotingPhase,
 } from '../__generated__/schema-types'
 import { unauthorizedResponse } from './const'
 
@@ -49,6 +50,8 @@ export default class VotingRoundAPI extends BaseAPI {
         `vx/theme/list/vote/getmy/${eventId}`
       )) as ApiVotingRoundVotesResponse
 
+      const event = await this.context.dataSources.eventApi.getEvent(eventId)
+
       const votingRounds: VotingRound[] = map(
         votingRoundsResponse.names,
         (name, page) => {
@@ -65,6 +68,8 @@ export default class VotingRoundAPI extends BaseAPI {
             __typename: 'VotingRound',
             name: name,
             page: pageInt,
+            // @ts-ignore
+            votingPhase: event[`themeVotingPhase${pageInt}`] as VotingPhase,
             votingRoundIdeas: votingRoundIdeas
               ? votingRoundIdeas.map((votingRoundIdea) => ({
                   __typename: 'VotingRoundIdea',
@@ -81,7 +86,7 @@ export default class VotingRoundAPI extends BaseAPI {
       return votingRounds
     } catch (e) {
       console.error(e)
-      throw e
+      return []
     }
   }
 
@@ -89,7 +94,7 @@ export default class VotingRoundAPI extends BaseAPI {
     id,
   }: IdInput): Promise<ApproveVotingRoundIdeaResponse> {
     try {
-      this.get(`vx/theme/list/vote/yes/${id}`)
+      await this.get(`vx/theme/list/vote/yes/${id}`)
 
       return {
         __typename: 'ApproveVotingRoundIdeaSuccess',
@@ -105,7 +110,7 @@ export default class VotingRoundAPI extends BaseAPI {
     id,
   }: IdInput): Promise<VoteMaybeVotingRoundIdeaResponse> {
     try {
-      this.get(`vx/theme/list/vote/maybe/${id}`)
+      await this.get(`vx/theme/list/vote/maybe/${id}`)
 
       return {
         __typename: 'VoteMaybeVotingRoundIdeaSuccess',
@@ -121,7 +126,7 @@ export default class VotingRoundAPI extends BaseAPI {
     id,
   }: IdInput): Promise<RejectVotingRoundIdeaResponse> {
     try {
-      this.get(`vx/theme/list/vote/no/${id}`)
+      await this.get(`vx/theme/list/vote/no/${id}`)
 
       return {
         __typename: 'RejectVotingRoundIdeaSuccess',

@@ -47,7 +47,7 @@ export default class EventIdeaAPI extends BaseAPI {
       return ideas
     } catch (e) {
       console.error(e)
-      throw e
+      return []
     }
   }
 

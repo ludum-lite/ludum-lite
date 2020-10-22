@@ -458,7 +458,14 @@ export const typeDefs = gql`
   type VotingRound {
     name: String!
     page: Int!
+    votingPhase: VotingPhase!
     votingRoundIdeas: [VotingRoundIdea!]!
+  }
+
+  enum VotingPhase {
+    Inactive
+    Active
+    Ended
   }
 
   #########

@@ -8,6 +8,7 @@ import {
   Event,
   JoinEventResponse,
   EventPhase,
+  VotingPhase,
 } from '../__generated__/schema-types'
 import { unauthorizedResponse } from './const'
 import { filterOutErrorsFromResponses } from './utils'
@@ -24,6 +25,11 @@ export type ApiEventDto = {
     'event-start': string
     'event-end': string
     'theme-idea-limit': string
+    'theme-page-mode-1': string
+    'theme-page-mode-2': string
+    'theme-page-mode-3': string
+    'theme-page-mode-4': string
+    'theme-page-mode-5': string
   }
 }
 
@@ -40,6 +46,11 @@ function apiEventToEvent(event: ApiEventDto): Event {
     startDate: event.meta['event-start'],
     endDate: event.meta['event-end'],
     eventIdeaLimit: parseInt(event.meta['theme-idea-limit']),
+    themeVotingPhase1: parseInt(event.meta['theme-page-mode-1']) as VotingPhase,
+    themeVotingPhase2: parseInt(event.meta['theme-page-mode-2']) as VotingPhase,
+    themeVotingPhase3: parseInt(event.meta['theme-page-mode-3']) as VotingPhase,
+    themeVotingPhase4: parseInt(event.meta['theme-page-mode-4']) as VotingPhase,
+    themeVotingPhase5: parseInt(event.meta['theme-page-mode-5']) as VotingPhase,
   }
 }
 

@@ -248,6 +248,11 @@ const resolvers: Resolvers<Context> = {
     GameVoting: 6,
     Results: 7,
   },
+  VotingPhase: {
+    Inactive: 0,
+    Active: 1,
+    Ended: 2,
+  },
 }
 
 const schema = makeExecutableSchema({
