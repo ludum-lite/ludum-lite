@@ -4,7 +4,7 @@ import Button from './mui/Button'
 import Typography from './mui/Typography'
 import Link from './mui/Link'
 
-const MAX_LENGTH = 120
+const MAX_LENGTH = 150
 
 const StyledButton = styled(Button)`
   span {
@@ -12,6 +12,7 @@ const StyledButton = styled(Button)`
     max-width: ${MAX_LENGTH}px;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
   }
 `
 

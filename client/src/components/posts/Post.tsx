@@ -46,7 +46,7 @@ const Root = styled(Card).withConfig({
   flex-direction: column;
   background: ${({ theme }) => theme.themeColors.post.backgroundColor};
   padding: ${({ theme }) => theme.spacing(2)}px;
-  margin-bottom: ${({ theme }) => theme.spacing(4)}px;
+  /* margin-bottom: ${({ theme }) => theme.spacing(4)}px; */
   border-radius: ${({ theme }) => theme.shape.borderRadius}px;
   transition: box-shadow 5000ms;
 
@@ -128,8 +128,9 @@ interface Props {
   post: Post_PostFragment
   me: Post_MeFragment
   collapsedNewsPost?: boolean
+  className?: string
 }
-export default function Post({ post, me, collapsedNewsPost }: Props) {
+export default function Post({ post, me, collapsedNewsPost, className }: Props) {
   const [, setPostOverlayed] = usePostOverlayed()
   const { activePostId } = useActivePostId()
 
@@ -144,6 +145,7 @@ export default function Post({ post, me, collapsedNewsPost }: Props) {
 
   return (
     <Root
+      className={className}
       onClick={() => onClickCard(post.id)}
       clickable
       active={activePostId === post.id}

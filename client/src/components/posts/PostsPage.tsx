@@ -30,6 +30,10 @@ const Content = styled.div`
   flex-direction: column;
 `
 
+const StyledPost = styled(Post)`
+  margin-bottom: ${({ theme }) => theme.spacing(2)}px;
+`
+
 const Posts = styled.div`
   display: flex;
   flex-direction: column;
@@ -66,7 +70,7 @@ const SortButton = styled(Button).withConfig({
 
 const SortActions = styled.div`
   display: flex;
-  padding: ${({ theme }) => theme.spacing(4)}px 0;
+  padding: ${({ theme }) => theme.spacing(2)}px 0;
 
   ${SortButton} {
     margin-right: ${({ theme }) => theme.spacing(2)}px;
@@ -113,7 +117,7 @@ export default function PostsPage() {
   })
 
   const latestNewsPost = postType === PostType.All && data?.latestNewsPost && (
-    <Post
+    <StyledPost
       key="latestNewsPost"
       post={data?.latestNewsPost}
       me={data?.me}
@@ -123,7 +127,7 @@ export default function PostsPage() {
 
   const postComponents =
     data?.searchPosts?.posts?.map((post) => (
-      <Post key={post.id} post={post} me={data?.me} />
+      <StyledPost key={post.id} post={post} me={data?.me} />
     )) || []
 
   const allPosts = [latestNewsPost, ...postComponents].filter(Boolean)
