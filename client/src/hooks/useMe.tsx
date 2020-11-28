@@ -18,8 +18,14 @@ export const useMe = singletonHook(init, () => {
   const { data, loading } = useGetMeDataQuery({
     onCompleted(data) {
       if (data.me.__typename === 'UnauthorizedResponse') {
-        isLoggedInVar(false)
+        const wasLoggedIn = Boolean(localStorage.getItem('token'))
+
         localStorage.removeItem('token')
+        isLoggedInVar(false)
+
+        if (wasLoggedIn) {
+          window.location.reload();
+        }
       }
     },
   })

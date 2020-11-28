@@ -5,30 +5,39 @@ import { createGlobalStyle, css } from 'styled-components/macro'
 import { createMuiTheme, Theme, fade } from '@material-ui/core'
 import useUserLocalStorage from './useUserLocalStorage'
 import useLocalStorage from './useLocalStorage'
-import { transparentize } from 'polished'
+import { transparentize, tint, shade } from 'polished'
 
-type ButtonThemeColors = Partial<{
+type ButtonColorProps = Partial<{
   color: string
-  text: {
-    hoverBackground: string
-  }
-  outlined: {
-    hoverBackground: string
-  }
-  contained: {
-    hoverBackground: string
-  }
+  background: string
+  hoverBackground: string
+  borderColor: string
+}>
+
+type ButtonColorsForVariant = Partial<{
+  default: ButtonColorProps
+  primary: ButtonColorProps
+  secondary: ButtonColorProps
+  error: ButtonColorProps
+  success: ButtonColorProps
+}>
+
+type ButtonThemeColorsForBackground = Partial<{
+  text: ButtonColorsForVariant
+  outlined: ButtonColorsForVariant
+  contained: ButtonColorsForVariant
 }>
 
 export type ThemeColors = {
-  background: string
-  globalNavBackground: string
-  contextualNavBackground: string
-  pageBackground: string
-  whiteBackground: string
-  loaderBackground: string
-  loaderBarBackground: string
-  logoBackground: string
+  backgrounds: {
+    level1?: string
+    level2?: string
+    level3?: string
+  }
+  loader: {
+    background: string
+    barBackground: string
+  }
   borderColor: string
   fadedWhite: string
   fadedBlack: string
@@ -37,9 +46,6 @@ export type ThemeColors = {
   cardBoxShadow: string
   cardBoxShadow_bottomHeavy: string
   paperBackground: string
-  appBar: {
-    background: string
-  }
   markdown: {
     codeBackground: string
   }
@@ -49,6 +55,15 @@ export type ThemeColors = {
   error: {
     background: string
   }
+  sidebar: {
+    background: string
+    item: {
+      color: string
+      activeBackground: string
+      activeColor: string
+      activeBorderColor: string
+    }
+  }
   input: {
     background: string
     hoverOutlineColor: string
@@ -56,30 +71,9 @@ export type ThemeColors = {
     boxShadow: string
   }
   button: {
-    background: {
-      globalNav: ButtonThemeColors
-      contextualNav: ButtonThemeColors
-      page: ButtonThemeColors
-      white: ButtonThemeColors
-    }
-    color: {
-      text: {
-        errorColor: string
-        errorHoverBackground: string
-        successColor: string
-        successHoverBackground: string
-        yellowColor: string
-        yellowHoverBackground: string
-      }
-      contained: {
-        errorBackground: string
-        errorHoverBackground: string
-        successBackground: string
-        successHoverBackground: string
-        yellowBackground: string
-        yellowHoverBackground: string
-      }
-    }
+    level1?: ButtonThemeColorsForBackground
+    level2?: ButtonThemeColorsForBackground
+    level3?: ButtonThemeColorsForBackground
   }
   rows: {
     background: {
@@ -185,17 +179,17 @@ type Themes = {
   dark: ThemeColors
 }
 
-const borderColor = 'rgba(0, 0, 0, 0.22)'
-const buttonOutlinedBackgroundColor = 'rgba(0, 0, 0, 0.1)'
+const borderColor = 'rgb(222, 222, 222)'
+const buttonOutlinedBackgroundColor = 'transparent'
 const buttonContainedBackgroundColor = 'rgba(0, 0, 0, 0.1)'
-const buttonContainedHoverBackgroundColor = 'rgba(0,0,0,0.32)'
-const buttonLightBackgroundHoverColor = 'rgba(255,255,255,0.2)'
 const buttonContainedColor = 'rgba(0, 0, 0, 0.87)'
 const cardBoxShadow = '0 0 6px 0px rgba(0,0,0,0.04)'
 const cardBoxShadow_bottomHeavy = '0px 1px 3px -1px rgb(0, 0, 0, 28%)'
 const fadedWhite = 'rgba(255,255,255,0.9)'
+const white = 'rgb(255, 255, 255)'
 const fadedBlack = 'rgba(0, 0, 0, 0.44)'
 const textBlack = 'rgba(0, 0, 0, 0.87)'
+const fadedTextBlack = 'rgb(76, 76, 76)'
 const defaultIconBlack = 'rgba(0, 0, 0, 0.78)'
 
 const commonTheme = {
@@ -226,11 +220,12 @@ const styleVariables = {
   greenDark: 'rgb(80, 177, 128)',
   greenShade: 'rgb(103, 214, 198)',
   greenShadeDark: 'rgb(51, 193, 172)',
+  oceanGreen: 'rgb(73, 191, 131)',
   yellow: 'rgb(252, 255, 85)',
   yellowDark: 'rgb(203, 206, 57)',
   aliceBlue: 'rgb(229, 233, 239)',
-  cultured: 'rgb(238, 242, 247)',
-  ghostWhite: 'rgb(249, 249, 255)',
+  cultured: 'rgb(243, 245, 248)',
+  ghostWhite: 'rgb(247, 250, 251)',
   white: 'rgb(253, 255, 255)',
   boxShadow: {
     light: 'rgba(255, 255, 255, 0.25)',
@@ -239,21 +234,19 @@ const styleVariables = {
 
 const lightTheme: ThemeColors = {
   ...commonTheme,
-  background: styleVariables.aliceBlue,
-  globalNavBackground: styleVariables.sapphireBlue,
-  contextualNavBackground: styleVariables.greenBlue,
-  pageBackground: styleVariables.cultured,
-  whiteBackground: styleVariables.white,
-  loaderBackground: 'rgba(0, 0, 0, 0.166)',
-  loaderBarBackground: 'rgba(0, 0, 0, 0.166)',
-  logoBackground: styleVariables.indigoDye,
+  backgrounds: {
+    level1: styleVariables.white,
+    level2: styleVariables.ghostWhite,
+    level3: styleVariables.cultured,
+  },
+  loader: {
+    background: 'rgba(0, 0, 0, 0.166)',
+    barBackground: 'rgba(0, 0, 0, 0.166)',
+  },
   fadedWhite,
   fadedBlack,
   borderColor,
   paperBackground: styleVariables.white,
-  appBar: {
-    background: styleVariables.sapphireBlue,
-  },
   markdown: {
     codeBackground: 'rgba(64, 75, 86, 0.15)',
   },
@@ -263,6 +256,15 @@ const lightTheme: ThemeColors = {
   error: {
     background: styleVariables.bittersweet,
   },
+  sidebar: {
+    background: styleVariables.white,
+    item: {
+      color: fadedTextBlack,
+      activeBackground: transparentize(0.88, styleVariables.greenBlue),
+      activeColor: styleVariables.greenBlue,
+      activeBorderColor: styleVariables.greenBlue,
+    },
+  },
   input: {
     background: styleVariables.cultured,
     hoverOutlineColor: styleVariables.greenBlue,
@@ -270,50 +272,82 @@ const lightTheme: ThemeColors = {
     boxShadow: cardBoxShadow_bottomHeavy,
   },
   button: {
-    background: {
-      globalNav: {
-        color: styleVariables.cultured,
-        text: {
-          hoverBackground: buttonLightBackgroundHoverColor,
-        },
-        outlined: {
-          hoverBackground: buttonLightBackgroundHoverColor,
-        },
-        contained: {
-          hoverBackground: buttonContainedHoverBackgroundColor,
-        },
-      },
-      contextualNav: {
-        color: styleVariables.cultured,
-        text: {
-          hoverBackground: buttonLightBackgroundHoverColor,
-        },
-        outlined: {
-          hoverBackground: buttonLightBackgroundHoverColor,
-        },
-        contained: {
-          hoverBackground: buttonContainedHoverBackgroundColor,
-        },
-      },
-      page: {},
-      white: {},
-    },
-    color: {
+    level1: {
       text: {
-        errorColor: styleVariables.red,
-        errorHoverBackground: 'rgb(255, 59, 78, 21%)',
-        successColor: 'rgb(73, 191, 131)',
-        successHoverBackground: 'rgb(73, 191, 131, 26%)',
-        yellowColor: styleVariables.yellow,
-        yellowHoverBackground: 'rgb(252, 255, 85, 25%)',
+        default: {
+          color: fadedTextBlack,
+          hoverBackground: transparentize(0.85, fadedTextBlack),
+        },
+        primary: {
+          color: styleVariables.greenBlue,
+          hoverBackground: transparentize(0.85, styleVariables.greenBlue),
+        },
+        secondary: {
+          color: styleVariables.bittersweet,
+          hoverBackground: transparentize(0.85, styleVariables.bittersweet),
+        },
+        error: {
+          color: styleVariables.red,
+          hoverBackground: transparentize(0.8, styleVariables.red),
+        },
+        success: {
+          color: styleVariables.oceanGreen,
+          hoverBackground: transparentize(0.8, styleVariables.oceanGreen),
+        },
+      },
+      outlined: {
+        default: {
+          color: fadedTextBlack,
+          hoverBackground: transparentize(0.85, fadedTextBlack),
+          borderColor: fadedTextBlack,
+        },
+        primary: {
+          color: styleVariables.greenBlue,
+          hoverBackground: transparentize(0.85, styleVariables.greenBlue),
+          borderColor: styleVariables.greenBlue,
+        },
+        secondary: {
+          color: styleVariables.bittersweet,
+          hoverBackground: transparentize(0.85, styleVariables.bittersweet),
+          borderColor: styleVariables.bittersweet,
+        },
+        error: {
+          color: styleVariables.red,
+          hoverBackground: transparentize(0.8, styleVariables.red),
+          borderColor: styleVariables.red,
+        },
+        success: {
+          color: styleVariables.oceanGreen,
+          hoverBackground: transparentize(0.8, styleVariables.oceanGreen),
+          borderColor: styleVariables.oceanGreen,
+        },
       },
       contained: {
-        errorBackground: styleVariables.red,
-        errorHoverBackground: styleVariables.redDark,
-        successBackground: styleVariables.green,
-        successHoverBackground: styleVariables.greenDark,
-        yellowBackground: styleVariables.yellow,
-        yellowHoverBackground: styleVariables.yellowDark,
+        default: {
+          color: white,
+          background: fadedTextBlack,
+          hoverBackground: tint(0.3, fadedTextBlack),
+        },
+        primary: {
+          color: white,
+          background: styleVariables.greenBlue,
+          hoverBackground: tint(0.3, styleVariables.greenBlue),
+        },
+        secondary: {
+          color: white,
+          background: styleVariables.bittersweet,
+          hoverBackground: tint(0.3, styleVariables.bittersweet),
+        },
+        error: {
+          color: white,
+          background: styleVariables.red,
+          hoverBackground: tint(0.3, styleVariables.red),
+        },
+        success: {
+          color: white,
+          background: styleVariables.oceanGreen,
+          hoverBackground: tint(0.3, styleVariables.oceanGreen),
+        },
       },
     },
   },
@@ -416,8 +450,10 @@ const lightTheme: ThemeColors = {
 // With darks https://coolors.co/13293d-f87060-f74e3b-67d6c6-33c1ac-ee5533-ed431d-33af00-288f00
 const ldStyleVariables = {
   raisinBlack: 'rgb(31, 36, 41)',
+  onyx: 'rgb(54, 57, 63)',
+  jet: 'rgb(47, 49, 54)',
+  eerieBlack: 'rgb(32, 34, 37)',
   slateGray: 'rgb(111, 121, 132)',
-  metalicSilver: 'rgb(160, 165, 174)', // secondary color to lightGray, not to be used often
   lightGray: 'rgb(208, 208, 216)',
   cultured: 'rgb(238, 242, 247)',
   darkOrange: 'rgb(247, 145, 34)',
@@ -427,6 +463,7 @@ const ldStyleVariables = {
   red: 'rgb(228, 27, 27)',
   redDark: 'rgb(185, 23, 23)',
   blueDeFrance: 'rgb(34, 136, 247)',
+  littleBlueBoy: 'rgb(68, 158, 255)',
   green: 'rgb(102, 204, 34)',
   greenDark: 'rgb(79, 165, 23)',
   yellow: 'rgb(252, 255, 85)',
@@ -441,21 +478,19 @@ const ldStyleVariables = {
 
 const darkTheme: ThemeColors = {
   ...commonTheme,
-  background: ldStyleVariables.slateGray,
-  globalNavBackground: ldStyleVariables.portlandOrange,
-  contextualNavBackground: ldStyleVariables.raisinBlack,
-  pageBackground: ldStyleVariables.cultured,
-  whiteBackground: ldStyleVariables.white,
-  loaderBackground: ldStyleVariables.portlandOrange,
-  loaderBarBackground: ldStyleVariables.darkOrange,
-  logoBackground: '',
+  backgrounds: {
+    level1: ldStyleVariables.onyx,
+    level2: ldStyleVariables.jet,
+    level3: ldStyleVariables.eerieBlack,
+  },
+  loader: {
+    background: ldStyleVariables.portlandOrange,
+    barBackground: ldStyleVariables.darkOrange,
+  },
   fadedWhite,
   fadedBlack,
   borderColor,
   paperBackground: styleVariables.cultured,
-  appBar: {
-    background: ldStyleVariables.portlandOrange,
-  },
   markdown: {
     codeBackground: 'rgba(64, 75, 86, 0.11)',
   },
@@ -465,6 +500,15 @@ const darkTheme: ThemeColors = {
   error: {
     background: styleVariables.bittersweet,
   },
+  sidebar: {
+    background: ldStyleVariables.raisinBlack,
+    item: {
+      color: fadedTextBlack,
+      activeBackground: transparentize(0.85, ldStyleVariables.darkOrange),
+      activeColor: textBlack,
+      activeBorderColor: ldStyleVariables.darkOrange,
+    },
+  },
   input: {
     background: ldStyleVariables.white,
     hoverOutlineColor: ldStyleVariables.portlandOrange,
@@ -472,66 +516,82 @@ const darkTheme: ThemeColors = {
     boxShadow: cardBoxShadow_bottomHeavy,
   },
   button: {
-    background: {
-      globalNav: {
-        color: ldStyleVariables.white,
-        text: {
-          hoverBackground: buttonLightBackgroundHoverColor,
-        },
-        outlined: {
-          hoverBackground: buttonLightBackgroundHoverColor,
-        },
-        contained: {
-          hoverBackground: buttonContainedHoverBackgroundColor,
-        },
-      },
-      contextualNav: {
-        color: ldStyleVariables.white,
-        text: {
-          hoverBackground: buttonLightBackgroundHoverColor,
-        },
-        outlined: {
-          hoverBackground: buttonLightBackgroundHoverColor,
-        },
-        contained: {
-          hoverBackground: buttonContainedHoverBackgroundColor,
-        },
-      },
-      page: {
-        color: ldStyleVariables.white,
-        text: {
-          hoverBackground: buttonLightBackgroundHoverColor,
-        },
-        outlined: {
-          hoverBackground: buttonLightBackgroundHoverColor,
-        },
-        contained: {
-          hoverBackground: buttonContainedHoverBackgroundColor,
-        },
-      },
-      white: {
-        color: undefined,
-        contained: {
-          hoverBackground: buttonContainedHoverBackgroundColor,
-        },
-      },
-    },
-    color: {
+    level1: {
       text: {
-        errorColor: ldStyleVariables.red,
-        errorHoverBackground: 'rgb(228, 27, 27, 18%)',
-        successColor: 'rgb(85, 177, 24)',
-        successHoverBackground: 'rgb(102, 204, 34, 23%)',
-        yellowColor: ldStyleVariables.yellow,
-        yellowHoverBackground: 'rgb(252, 255, 85, 25%)',
+        default: {
+          color: white,
+          hoverBackground: transparentize(0.85, white),
+        },
+        primary: {
+          color: ldStyleVariables.darkOrange,
+          hoverBackground: transparentize(0.85, ldStyleVariables.darkOrange),
+        },
+        secondary: {
+          color: ldStyleVariables.littleBlueBoy,
+          hoverBackground: transparentize(0.8, ldStyleVariables.littleBlueBoy),
+        },
+        error: {
+          color: ldStyleVariables.red,
+          hoverBackground: transparentize(0.8, ldStyleVariables.red),
+        },
+        success: {
+          color: ldStyleVariables.green,
+          hoverBackground: transparentize(0.8, ldStyleVariables.green),
+        },
+      },
+      outlined: {
+        default: {
+          color: white,
+          hoverBackground: transparentize(0.85, white),
+          borderColor: white,
+        },
+        primary: {
+          color: ldStyleVariables.darkOrange,
+          hoverBackground: transparentize(0.85, ldStyleVariables.darkOrange),
+          borderColor: ldStyleVariables.darkOrange,
+        },
+        secondary: {
+          color: ldStyleVariables.littleBlueBoy,
+          hoverBackground: transparentize(0.8, ldStyleVariables.littleBlueBoy),
+          borderColor: ldStyleVariables.littleBlueBoy,
+        },
+        error: {
+          color: ldStyleVariables.red,
+          hoverBackground: transparentize(0.8, ldStyleVariables.red),
+          borderColor: ldStyleVariables.red,
+        },
+        success: {
+          color: ldStyleVariables.green,
+          hoverBackground: transparentize(0.8, ldStyleVariables.green),
+          borderColor: ldStyleVariables.green,
+        },
       },
       contained: {
-        errorBackground: ldStyleVariables.red,
-        errorHoverBackground: ldStyleVariables.redDark,
-        successBackground: ldStyleVariables.green,
-        successHoverBackground: ldStyleVariables.greenDark,
-        yellowBackground: ldStyleVariables.yellow,
-        yellowHoverBackground: ldStyleVariables.yellowDark,
+        default: {
+          color: fadedTextBlack,
+          background: white,
+          hoverBackground: shade(0.2, white),
+        },
+        primary: {
+          color: white,
+          background: ldStyleVariables.darkOrange,
+          hoverBackground: shade(0.2, ldStyleVariables.darkOrange),
+        },
+        secondary: {
+          color: white,
+          background: ldStyleVariables.blueDeFrance,
+          hoverBackground: shade(0.2, ldStyleVariables.blueDeFrance),
+        },
+        error: {
+          color: white,
+          background: ldStyleVariables.red,
+          hoverBackground: shade(0.2, ldStyleVariables.red),
+        },
+        success: {
+          color: white,
+          background: ldStyleVariables.green,
+          hoverBackground: shade(0.2, ldStyleVariables.green),
+        },
       },
     },
   },
@@ -618,9 +678,7 @@ const darkTheme: ThemeColors = {
   },
   palette: {
     primary: {
-      // dark: ldStyleVariables.raisinBlack,
       main: ldStyleVariables.slateGray,
-      // light: ldStyleVariables.lightGray,
       contrastText: ldStyleVariables.white,
     },
     secondary: {
@@ -635,6 +693,11 @@ const themes: Themes = {
 } as const
 
 const defaultTheme = createMuiTheme({
+  palette: {
+    text: {
+      primary: fadedTextBlack,
+    },
+  },
   shape: {
     borderRadius: 8,
   },
@@ -646,6 +709,7 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
   return createMuiTheme({
     ...defaultTheme,
     palette: {
+      ...defaultTheme.palette,
       ...selectedThemeColors.palette,
       action: {
         hoverOpacity: 0.2,
@@ -826,10 +890,10 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
           borderRadius: defaultTheme.shape.borderRadius,
         },
         colorPrimary: {
-          backgroundColor: selectedThemeColors.loaderBackground,
+          backgroundColor: selectedThemeColors.loader.background,
         },
         barColorPrimary: {
-          backgroundColor: selectedThemeColors.loaderBarBackground,
+          backgroundColor: selectedThemeColors.loader.barBackground,
         },
       },
       MuiTextField: {
@@ -845,7 +909,7 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
         },
         input: {
           '&::placeholder': {
-            color: fadedBlack,
+            color: fadedTextBlack,
             opacity: 1,
           },
         },
@@ -950,7 +1014,13 @@ const scThemeGenerator = ({
     7: '2rem',       // 32
     8: '2.5rem',     // 40
     9: '3rem',       // 48
-  } as const
+  } as const,
+  variables: {
+    sidebar: {
+      width: 275,
+      widthPx: '275px',
+    },
+  },
 })
 
 const scTheme = scThemeGenerator({
@@ -1059,8 +1129,12 @@ const globalStyleGenerator = ({
   return createGlobalStyle`
     html {}
 
+    #root {
+      min-height: 100vh;
+    }
+
     body {
-      background: ${themeColors.background};
+      background: ${themeColors.backgrounds.level1};
     }
   
     hr {

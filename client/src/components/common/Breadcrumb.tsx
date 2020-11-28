@@ -4,9 +4,14 @@ import Button from './mui/Button'
 import Typography from './mui/Typography'
 import Link from './mui/Link'
 
+type TextColor = 'black' | 'white'
+
 const MAX_LENGTH = 150
 
-const StyledButton = styled(Button)`
+interface ButtonProps {
+  textColor: TextColor
+}
+const StyledButton = styled(Button)<ButtonProps>`
   span {
     display: block;
     max-width: ${MAX_LENGTH}px;
@@ -27,23 +32,33 @@ const Text = styled(Typography)`
 interface Props {
   to?: string
   children: React.ReactNode
+  textColor?: TextColor
 }
-export default function Breadcrumb({ to, children }: Props) {
+export default function Breadcrumb({
+  to,
+  children,
+  textColor = 'black',
+}: Props) {
   if (to) {
     return (
       <StyledButton
-        background="page"
+        background="level1"
         variant="text"
         // @ts-ignore
         component={Link}
         to={to}
         noUnderline
         isBreadcrumb
+        color={textColor === 'white' ? 'primary' : 'secondary'}
       >
         {children}
       </StyledButton>
     )
   }
 
-  return <Text>{children}</Text>
+  return (
+    <Text textColor={textColor === 'white' ? 'white' : undefined}>
+      {children}
+    </Text>
+  )
 }

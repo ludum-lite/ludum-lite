@@ -1269,15 +1269,6 @@ export type UnlovePostMutation = { __typename: 'Mutation' } & {
     | { __typename: 'UnauthorizedResponse' }
 }
 
-export type GlobalNavDataQueryVariables = Exact<{ [key: string]: never }>
-
-export type GlobalNavDataQuery = { __typename: 'Query' } & {
-  featuredEvent: { __typename: 'Event' } & Pick<
-    Event,
-    'id' | 'currentUserGameId'
-  >
-}
-
 export type AcceptedInvitePageQueryVariables = Exact<{
   input: IdInput
 }>
@@ -3246,62 +3237,6 @@ export type UnlovePostMutationResult = ApolloReactCommon.MutationResult<
 export type UnlovePostMutationOptions = ApolloReactCommon.BaseMutationOptions<
   UnlovePostMutation,
   UnlovePostMutationVariables
->
-export const GlobalNavDataDocument = gql`
-  query GlobalNavData {
-    featuredEvent {
-      id
-      currentUserGameId
-    }
-  }
-`
-
-/**
- * __useGlobalNavDataQuery__
- *
- * To run a query within a React component, call `useGlobalNavDataQuery` and pass it any options that fit your needs.
- * When your component renders, `useGlobalNavDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGlobalNavDataQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGlobalNavDataQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    GlobalNavDataQuery,
-    GlobalNavDataQueryVariables
-  >
-) {
-  return ApolloReactHooks.useQuery<
-    GlobalNavDataQuery,
-    GlobalNavDataQueryVariables
-  >(GlobalNavDataDocument, baseOptions)
-}
-export function useGlobalNavDataLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    GlobalNavDataQuery,
-    GlobalNavDataQueryVariables
-  >
-) {
-  return ApolloReactHooks.useLazyQuery<
-    GlobalNavDataQuery,
-    GlobalNavDataQueryVariables
-  >(GlobalNavDataDocument, baseOptions)
-}
-export type GlobalNavDataQueryHookResult = ReturnType<
-  typeof useGlobalNavDataQuery
->
-export type GlobalNavDataLazyQueryHookResult = ReturnType<
-  typeof useGlobalNavDataLazyQuery
->
-export type GlobalNavDataQueryResult = ApolloReactCommon.QueryResult<
-  GlobalNavDataQuery,
-  GlobalNavDataQueryVariables
 >
 export const AcceptedInvitePageDocument = gql`
   query AcceptedInvitePage($input: IdInput!) {

@@ -37,108 +37,87 @@ const ButtonContainer = styled.div`
   }
 `
 
-const GlobalNavBackground = styled(ButtonContainer)`
-  background: ${({ theme }) => theme.themeColors.globalNavBackground};
+const Level1Background = styled(ButtonContainer)`
+  background: ${({ theme }) => theme.themeColors.backgrounds.level1};
 `
 
-const ContexualNavBackground = styled(ButtonContainer)`
-  background: ${({ theme }) => theme.themeColors.contextualNavBackground};
+const Level2Background = styled(ButtonContainer)`
+  background: ${({ theme }) => theme.themeColors.backgrounds.level2};
 `
 
-const PageBackground = styled(ButtonContainer)`
-  background: ${({ theme }) => theme.themeColors.background};
-`
-
-const WhiteBackground = styled(ButtonContainer)`
-  background: ${({ theme }) => theme.themeColors.post.backgroundColor};
+const Level3Background = styled(ButtonContainer)`
+  background: ${({ theme }) => theme.themeColors.backgrounds.level3};
 `
 
 const Options = styled(Panel)``
 
 const VARIANTS = ['text', 'outlined', 'contained'] as const
-const COLORS = [
-  'default',
-  'primary',
-  'secondary',
-  'success',
-  'error',
-  'yellow',
-] as const
+const COLORS = ['default', 'primary', 'secondary', 'success', 'error'] as const
 function isCustomColor(color: string) {
-  return color === 'success' || color === 'error' || color === 'yellow'
+  return color === 'success' || color === 'error'
 }
 
 type PropCombination = {
   [key in Background]?: {
     [key in NonNullable<ButtonProps['variant']>]?: {
       [key in NonNullable<
-        | Exclude<ButtonProps['color'], 'inherit'>
-        | 'success'
-        | 'error'
-        | 'yellow'
+        Exclude<ButtonProps['color'], 'inherit'> | 'success' | 'error'
       >]?: boolean
     }
   }
 }
 const INVALID_COMBINATIONS: PropCombination = {
-  globalNav: {
-    text: {
-      primary: true,
-      secondary: true,
-      error: true,
-      yellow: true,
-    },
-    outlined: {
-      primary: true,
-      secondary: true,
-      success: true,
-      error: true,
-      yellow: true,
-    },
-  },
-  contextualNav: {
-    text: {
-      primary: true,
-    },
-    outlined: {
-      default: true,
-      primary: true,
-      secondary: true,
-      success: true,
-      error: true,
-      yellow: true,
-    },
-    contained: {
-      default: true,
-    },
-  },
-  page: {
-    text: {
-      primary: true,
-      secondary: true,
-      error: true,
-      yellow: true,
-    },
-    outlined: {
-      secondary: true,
-      primary: true,
-      success: true,
-      error: true,
-      yellow: true,
-    },
-  },
-  white: {
-    text: {
-      primary: true,
-      yellow: true,
-    },
-    outlined: {
-      primary: true,
-      success: true,
-      error: true,
-      yellow: true,
-    },
-  },
+  // globalNav: {
+  //   text: {
+  //     primary: true,
+  //     secondary: true,
+  //     error: true,
+  //   },
+  //   outlined: {
+  //     primary: true,
+  //     secondary: true,
+  //     success: true,
+  //     error: true,
+  //   },
+  // },
+  // contextualNav: {
+  //   text: {
+  //     primary: true,
+  //   },
+  //   outlined: {
+  //     default: true,
+  //     primary: true,
+  //     secondary: true,
+  //     success: true,
+  //     error: true,
+  //   },
+  //   contained: {
+  //     default: true,
+  //   },
+  // },
+  // page: {
+  //   text: {
+  //     // primary: true,
+  //     // secondary: true,
+  //     // error: true,
+  //   },
+  //   outlined: {
+  //     // secondary: true,
+  //     // primary: true,
+  //     // success: true,
+  //     // error: true,
+  //   },
+  // },
+  // white: {
+  //   text: {
+  //     primary: true,
+  //   },
+  //   outlined: {
+  //     primary: true,
+  //     success: true,
+  //     error: true,
+  //   },
+  // },
 }
 
 function renderButtons(
@@ -151,10 +130,7 @@ function renderButtons(
       <Button
         key={`${variant}_${color}`}
         variant={variant}
-        // @ts-ignore
-        color={isCustomColor(color) ? undefined : color}
-        // @ts-ignore
-        customColor={isCustomColor(color) ? color : undefined}
+        color={color}
         background={background}
         size={size}
         loading={isLoading}
@@ -219,18 +195,15 @@ export const Basic = () => {
         </div>
       </Options>
       <Backgrounds>
-        <GlobalNavBackground>
-          {renderButtons('globalNav', size, isLoading)}
-        </GlobalNavBackground>
-        <ContexualNavBackground>
-          {renderButtons('contextualNav', size, isLoading)}
-        </ContexualNavBackground>
-        <PageBackground>
-          {renderButtons('page', size, isLoading)}
-        </PageBackground>
-        <WhiteBackground>
-          {renderButtons('white', size, isLoading)}
-        </WhiteBackground>
+        <Level1Background>
+          {renderButtons('level1', size, isLoading)}
+        </Level1Background>
+        <Level2Background>
+          {renderButtons('level2', size, isLoading)}
+        </Level2Background>
+        <Level3Background>
+          {renderButtons('level3', size, isLoading)}
+        </Level3Background>
       </Backgrounds>
     </BasicRoot>
   )

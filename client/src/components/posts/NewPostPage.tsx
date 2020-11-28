@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components/macro'
 import {
   useCreatePostMutation,
-  useGlobalNavDataQuery,
+  useNewPostPageDataQuery,
 } from '__generated__/client-types'
 import { useSnackbar } from 'notistack'
 import { useNavigate } from 'react-router'
@@ -14,7 +14,7 @@ interface Props {}
 export default function NewPostPage({}: Props) {
   const { enqueueSnackbar } = useSnackbar()
   const navigate = useNavigate()
-  const { data } = useGlobalNavDataQuery()
+  const { data } = useNewPostPageDataQuery()
   const [createPostMutation] = useCreatePostMutation()
 
   React.useEffect(() => {
