@@ -22,31 +22,29 @@ const Root = styled.div`
   padding-bottom: 140px;
   /* Keep scroll bar on bar while loading so the page doesn't jump sideways */
   margin-bottom: -1;
-  margin: 0px ${({ theme }) => theme.spacing(4)}px;
 `
 
 const Content = styled.div`
   display: flex;
   flex-direction: column;
 `
-
-const StyledPost = styled(Post)`
-  margin-bottom: ${({ theme }) => theme.spacing(2)}px;
+const StyledLinearProgress = styled(LinearProgress)`
+  border: 1px solid ${({ theme }) => theme.themeColors.loader.barBackground};
 `
+
+const StyledPost = styled(Post)``
 
 const Posts = styled.div`
   display: flex;
   flex-direction: column;
 `
 
+const FooterContainer = styled.div`
+  margin: ${({ theme }) => theme.spacing(2)}px;
+`
+
 const MoreButton = styled(Button)`
   height: 112px;
-  background-color: ${({ theme }) => theme.themeColors.moreButton.background};
-
-  &:hover {
-    background-color: ${({ theme }) =>
-      theme.themeColors.moreButton.hoverBackground};
-  }
 `
 
 interface SortButtonProps {
@@ -55,22 +53,21 @@ interface SortButtonProps {
 const SortButton = styled(Button).withConfig({
   shouldForwardProp: ignoreProps(['active']),
 })<SortButtonProps>`
-  ${({ active }) =>
+  /* ${({ active }) =>
     active &&
     css`
-      background-color: ${({ theme }) => theme.themeColors.globalNavBackground};
-      color: white;
+      background-color: ${({ theme }) => theme.themeColors.backgrounds.level1};
 
       &:hover {
         background-color: ${({ theme }) =>
-          theme.themeColors.globalNavBackground};
+          theme.themeColors.backgrounds.level1};
       }
-    `}
+    `} */
 `
 
 const SortActions = styled.div`
   display: flex;
-  padding: ${({ theme }) => theme.spacing(2)}px 0;
+  padding: ${({ theme }) => theme.spacing(2)}px;
 
   ${SortButton} {
     margin-right: ${({ theme }) => theme.spacing(2)}px;
@@ -155,13 +152,15 @@ export default function PostsPage() {
     ) {
       return null
     } else if (loading) {
-      return <LinearProgress />
+      return <StyledLinearProgress />
     }
 
     return (
       <MoreButton
-        variant="contained"
+        variant="outlined"
+        color="primary"
         disableElevation
+        fullWidth
         onClick={() => {
           fetchMore({
             variables: {
@@ -193,8 +192,8 @@ export default function PostsPage() {
       <SortActions>
         <SortButton
           onClick={() => setSearchParams({ postType: PostType.All }, undefined)}
-          variant="contained"
-          background="page"
+          color="primary"
+          variant={postType === PostType.All ? 'contained' : 'text'}
           active={postType === PostType.All}
           focusRipple
         >
@@ -204,8 +203,8 @@ export default function PostsPage() {
           onClick={() =>
             setSearchParams({ postType: PostType.News }, undefined)
           }
-          variant="contained"
-          background="page"
+          color="primary"
+          variant={postType === PostType.News ? 'contained' : 'text'}
           active={postType === PostType.News}
         >
           News
@@ -214,8 +213,8 @@ export default function PostsPage() {
           onClick={() =>
             setSearchParams({ postType: PostType.Favorites }, undefined)
           }
-          variant="contained"
-          background="page"
+          color="primary"
+          variant={postType === PostType.Favorites ? 'contained' : 'text'}
           active={postType === PostType.Favorites}
         >
           Favorites
@@ -223,7 +222,7 @@ export default function PostsPage() {
       </SortActions>
       <Content>
         {body}
-        {footer}
+        <FooterContainer>{footer}</FooterContainer>
       </Content>
     </Root>
   )

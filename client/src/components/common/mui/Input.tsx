@@ -6,7 +6,7 @@ import {
 import styled, { css } from 'styled-components/macro'
 import { ignoreProps } from 'utils'
 
-type Background = 'transparent' | null
+type Background = 'transparent' | undefined
 type Color = 'black' | 'white'
 
 interface StyledInputProps {
@@ -27,7 +27,7 @@ const StyledInput = styled(MuiFillInput).withConfig({
       border-color: transparent;
     `}
 
-  ${({ textColor, background }) =>
+  /* ${({ textColor, background }) =>
     textColor === 'white' &&
     background === 'transparent' &&
     css`
@@ -52,7 +52,7 @@ const StyledInput = styled(MuiFillInput).withConfig({
           color: ${({ theme }) => theme.themeColors.fadedBlack};
         }
       }
-    `}
+    `} */
 
   ${({ flushLeftEdge }) =>
     flushLeftEdge &&
@@ -71,10 +71,7 @@ interface InputProps {
 export type Props = InputProps & FilledInputProps
 
 const Input = React.forwardRef<HTMLInputElement, Props>(
-  (
-    { background = null, textColor = 'black', flushLeftEdge, ...other },
-    ref
-  ) => {
+  ({ background, textColor = 'black', flushLeftEdge, ...other }, ref) => {
     return (
       <StyledInput
         inputRef={ref}

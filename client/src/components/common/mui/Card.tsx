@@ -10,12 +10,10 @@ interface StyledCardProps {
 const StyledCard = styled(MuiCard).withConfig({
   shouldForwardProp: (prop) => !['border', 'clickable'].includes(prop),
 })<StyledCardProps>`
-  box-shadow: 0 0 6px 1px rgba(0, 0, 0, 0.03);
-
   ${({ border }) =>
     border &&
     css`
-      border: 1px solid rgba(0, 0, 0, 0.13);
+      border: 1px solid ${({ theme }) => theme.themeColors.borderColor};
     `}
 
   ${({ clickable, border }) =>

@@ -12,7 +12,7 @@ import { borderRadius } from 'polished'
 import Link from 'components/common/mui/Link'
 
 const Root = styled.div`
-  background: ${({ theme }) => theme.themeColors.globalNavBackground};
+  background: ${({ theme }) => theme.themeColors.backgrounds.level1};
   display: flex;
   align-items: center;
   min-height: ${({ theme }) => theme.spacing(8)}px;
@@ -100,7 +100,6 @@ export default function NotificationBar() {
     } else {
       return (
         <IconButton
-          background="globalNav"
           component={Link}
           // @ts-ignore
           to={`events/${featuredEvent?.id}/theme`}

@@ -73,7 +73,7 @@ function PreviousEventVoteRow({
           <Button
             size="small"
             variant={vote === 1 ? 'contained' : 'text'}
-            customColor="success"
+            color="success"
             onClick={() => {
               onApprove(id)
             }}
@@ -83,7 +83,7 @@ function PreviousEventVoteRow({
           <Button
             size="small"
             variant={vote === 0 ? 'contained' : 'text'}
-            customColor="error"
+            color="error"
             onClick={() => {
               onReject(id)
             }}
@@ -93,7 +93,7 @@ function PreviousEventVoteRow({
           {onFlag && (
             <IconButton
               size="small"
-              variant={vote === -1 ? 'contained' : 'default'}
+              variant={vote === -1 ? 'contained' : 'text'}
               onClick={() => {
                 onFlag(id)
               }}

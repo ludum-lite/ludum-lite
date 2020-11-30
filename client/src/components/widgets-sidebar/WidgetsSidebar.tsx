@@ -7,7 +7,7 @@ import GameWidget from '../game-widget/GameWidget'
 import StickyBox from 'react-sticky-box'
 
 const WidgetsContainer = styled.div`
-  margin-right: ${({ theme }) => theme.spacing(2)}px;
+  border-left: 1px solid ${({ theme }) => theme.themeColors.borderColor};
 `
 
 const Widgets = styled(StickyBox)`
@@ -48,8 +48,7 @@ const StyledTeamWidget = styled(TeamWidget)<CommonWidgetProps>`
   ${widgetContainerStyles}
 `
 
-interface Props {}
-export default function WidgetsSidebar({}: Props) {
+export default function WidgetsSidebar() {
   return (
     <WidgetsContainer>
       <Widgets>

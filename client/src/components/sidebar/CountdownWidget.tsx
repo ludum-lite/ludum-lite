@@ -35,7 +35,7 @@ const Root = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  background: ${({ theme }) => theme.themeColors.contextualNavBackground};
+  background: ${({ theme }) => theme.themeColors.backgrounds.level1};
   overflow: hidden;
 `
 
@@ -214,7 +214,6 @@ export default function CountdownWidget({ events, className }: Props) {
                   setCountdownWidgetExpanded(false)
                 }}
                 endIcon={<Icon icon={ExpandLess} />}
-                background="contextualNav"
               >
                 <Subtitle variant="body1">Collapse</Subtitle>
               </ExpandButton>
@@ -232,7 +231,6 @@ export default function CountdownWidget({ events, className }: Props) {
                 setCountdownWidgetExpanded(true)
               }}
               endIcon={<Icon icon={ExpandMore} />}
-              background="contextualNav"
             >
               <Subtitle variant="body1">
                 until {EventPhaseToLabel[nextPhaseForCountdown.eventPhase]}
@@ -254,11 +252,7 @@ export default function CountdownWidget({ events, className }: Props) {
 
   return (
     <Root className={className}>
-      <TitleButton
-        endIcon={<Icon icon={ExpandMore} />}
-        background="contextualNav"
-        onClick={handleClick}
-      >
+      <TitleButton endIcon={<Icon icon={ExpandMore} />} onClick={handleClick}>
         <Typography variant="h4" bold>
           Ludum Dare {selectedEvent?.eventNumber}
         </Typography>
@@ -268,7 +262,6 @@ export default function CountdownWidget({ events, className }: Props) {
         !countdownWidgetExpanded && (
           <EventToggleButtons>
             <Button
-              background="contextualNav"
               fullWidth
               variant={preferredEventType === 'compo' ? 'contained' : 'text'}
               color={preferredEventType === 'compo' ? 'secondary' : 'default'}
@@ -279,7 +272,6 @@ export default function CountdownWidget({ events, className }: Props) {
               Compo
             </Button>
             <Button
-              background="contextualNav"
               fullWidth
               variant={preferredEventType === 'jam' ? 'contained' : 'text'}
               color={preferredEventType === 'jam' ? 'secondary' : 'default'}

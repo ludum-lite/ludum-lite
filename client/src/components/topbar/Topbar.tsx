@@ -16,10 +16,7 @@ const Root = styled.div`
   top: 0;
   right: 0;
   position: sticky;
-
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    margin-left: ${({ theme }) => theme.variables.sidebar.widthPx};
-  }
+  background: ${({ theme }) => theme.themeColors.backgrounds.level1};
 `
 
 const StyledToolbar = styled(Toolbar)`
@@ -35,10 +32,14 @@ const SearchInput = styled(Input)`
 
   &:hover {
     box-shadow: none;
+    background: ${({ theme }) =>
+      theme.themeColors.topbar.searchInput.hoverBackground};
   }
 
   &.Mui-focused {
     box-shadow: none;
+    background: ${({ theme }) =>
+      theme.themeColors.topbar.searchInput.focusBackground};
   }
 
   .MuiInputBase-input {
@@ -48,16 +49,15 @@ const SearchInput = styled(Input)`
 
 const StyledAppBar = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.themeColors.borderColor};
-  margin-left: ${({ theme }) => theme.spacing(2)}px;
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    margin: 0px ${({ theme }) => theme.spacing(1)}px;
+  }
 `
 
 const StyledIconButton = styled(IconButton)`
   border-radius: 0px;
-
-  &:hover {
-    background: ${({ theme }) =>
-      theme.themeColors.button.background.page.text?.hoverBackground};
-  }
+  width: 64px;
 `
 
 const Separator = styled.div`
@@ -85,9 +85,11 @@ export default function Topbar({}: Props) {
             }
           />
           <Separator />
-          <StyledIconButton aria-label="menu" onClick={onClickLeftIcon}>
-            <AppsIcon />
-          </StyledIconButton>
+          <Hidden mdUp>
+            <StyledIconButton aria-label="menu" onClick={onClickLeftIcon}>
+              <AppsIcon />
+            </StyledIconButton>
+          </Hidden>
         </StyledToolbar>
       </StyledAppBar>
     </Root>

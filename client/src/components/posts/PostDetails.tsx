@@ -172,6 +172,7 @@ export default function PostDetails({
               disableElevation
               size="large"
               variant="contained"
+              color="primary"
               onClick={(e) => {
                 e.stopPropagation()
                 setShouldCollapse(false)

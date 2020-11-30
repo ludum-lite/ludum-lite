@@ -18,7 +18,7 @@ const Root = styled(Typography).withConfig({
   ${({ backgroundVariant, theme }) =>
     backgroundVariant === 'inverted' &&
     css`
-      background: ${theme.themeColors.post.backgroundColor};
+      background: ${theme.themeColors.post.newsTagColor};
       color: ${theme.themeColors.post.newsTagBackground};
     `}
 

@@ -5,7 +5,6 @@ import {
   Menu as MuiMenu,
   MenuItem,
   Fade,
-  // Tooltip,
   List,
   ListItem as MuiListItem,
   ListItemText,
@@ -16,14 +15,11 @@ import MuiDarkBrightnessIcon from '@material-ui/icons/Brightness4Outlined'
 import ViewWeekIcon from '@material-ui/icons/ViewWeek'
 import VideogameAssetIcon from '@material-ui/icons/VideogameAsset'
 import LocalPlayIcon from '@material-ui/icons/LocalPlay'
-// import IconButton from 'components/common/mui/IconButton'
 import Icon from 'components/common/mui/Icon'
 import ListItemIcon from 'components/common/mui/ListItemIcon'
-import { ReactComponent as UserIcon } from 'assets/user.svg'
+import Typography from 'components/common/mui/Typography'
 import { useLogin } from 'hooks/useLogin'
 import { useTheme } from 'hooks/useTheme'
-import { gql } from '@apollo/client'
-// import Link from 'components/common/mui/Link'
 import { useSidebarOpen } from 'hooks/useSidebarOpen'
 import { Link as RouterLink, useParams } from 'react-router-dom'
 
@@ -46,6 +42,17 @@ const Root = styled.div`
 //   align-items: flex-start;
 //   padding-top: ${({ theme }) => theme.spacing(1)}px;
 // `
+
+const StyledListItemText = styled(ListItemText).attrs({
+  primaryTypographyProps: {
+    component: Typography,
+    bold: true,
+  },
+})`
+  .MuiListItemText-primary {
+    font-size: 19px;
+  }
+`
 
 const StyledViewWeekIcon = styled(ViewWeekIcon)`
   transform: rotate(90deg) translate(1px, 0px);
@@ -114,11 +121,10 @@ const ListItem = styled(MuiListItem)`
   color: ${({ theme }) => theme.themeColors.sidebar.item.color};
 
   &.Mui-selected {
-    background: ${({ theme }) =>
-      theme.themeColors.sidebar.item.activeBackground};
     color: ${({ theme }) => theme.themeColors.sidebar.item.activeColor};
-    border-right: 6px solid
-      ${({ theme }) => theme.themeColors.sidebar.item.activeBorderColor};
+    background: none;
+    /* border-right: 6px solid
+      ${({ theme }) => theme.themeColors.sidebar.item.activeBorderColor}; */
 
     &:hover {
       background: ${({ theme }) =>
@@ -136,7 +142,6 @@ const ListItem = styled(MuiListItem)`
   }
 ` as typeof MuiListItem
 
-interface Props {}
 export default function GlobalNav() {
   const { themeMode, toggleTheme } = useTheme()
   const { promptLogin, isLoggedIn } = useLogin()
@@ -184,7 +189,7 @@ export default function GlobalNav() {
           <ListItemIcon compactPadding>
             <Icon icon={MuiAddIcon} />
           </ListItemIcon>
-          <ListItemText primary="Create Post" />
+          <StyledListItemText primary="Create Post" />
         </ListItem>
         <ListItem
           button
@@ -198,7 +203,7 @@ export default function GlobalNav() {
           <ListItemIcon compactPadding>
             <Icon icon={StyledViewWeekIcon} />
           </ListItemIcon>
-          <ListItemText primary="Feed" />
+          <StyledListItemText primary="Feed" />
         </ListItem>
         <ListItem
           button
@@ -212,7 +217,7 @@ export default function GlobalNav() {
           <ListItemIcon compactPadding>
             <Icon icon={VideogameAssetIcon} />
           </ListItemIcon>
-          <ListItemText primary="Games" />
+          <StyledListItemText primary="Games" />
         </ListItem>
         <ListItem
           button
@@ -226,7 +231,7 @@ export default function GlobalNav() {
           <ListItemIcon compactPadding>
             <Icon icon={LocalPlayIcon} />
           </ListItemIcon>
-          <ListItemText primary="Events" />
+          <StyledListItemText primary="Events" />
         </ListItem>
       </List>
       <Separator />
@@ -246,7 +251,7 @@ export default function GlobalNav() {
               }
             />
           </ListItemIcon>
-          <ListItemText primary="Toggle Theme" />
+          <StyledListItemText primary="Toggle Theme" />
         </ListItem>
         {/* <ListItem
           button

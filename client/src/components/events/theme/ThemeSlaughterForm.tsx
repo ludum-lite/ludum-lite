@@ -190,7 +190,8 @@ const PreviousVotesBarSegment = styled.div<PreviousVotesBarSegmentProps>`
   flex: ${({ count }) => count || 1} 0 0px;
 
   &:not(:last-child) {
-    border-right: 1px solid ${({ theme }) => theme.themeColors.whiteBackground};
+    border-right: 1px solid
+      ${({ theme }) => theme.themeColors.backgrounds.level1};
   }
 
   ${({ vote, theme }) => {
@@ -420,7 +421,7 @@ export default function ThemeSlaughterForm({ event }: Props) {
             <Button
               size="large"
               variant="contained"
-              customColor="success"
+              color="success"
               onClick={approveCurrentEventIdea}
             >
               <u>Y</u>es
@@ -428,7 +429,7 @@ export default function ThemeSlaughterForm({ event }: Props) {
             <Button
               size="large"
               variant="contained"
-              customColor="error"
+              color="error"
               onClick={rejectCurrentEventIdea}
             >
               <u>N</u>o

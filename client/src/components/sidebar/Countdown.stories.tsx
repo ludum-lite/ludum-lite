@@ -21,7 +21,7 @@ const BasicRoot = styled.div`
 `
 const CountdownBackground = styled.div`
   padding: ${({ theme }) => theme.spacing(2)}px;
-  background: ${({ theme }) => theme.themeColors.contextualNavBackground};
+  background: ${({ theme }) => theme.themeColors.backgrounds.level1};
 `
 
 export const Basic = () => {
@@ -58,7 +58,7 @@ export const Basic = () => {
 }
 
 const WideContainerRoot = styled.div`
-  background: ${({ theme }) => theme.themeColors.contextualNavBackground};
+  background: ${({ theme }) => theme.themeColors.backgrounds.level1};
   padding: ${({ theme }) => theme.spacing(2)}px;
   width: 400px;
 `

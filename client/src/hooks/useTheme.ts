@@ -2,7 +2,7 @@ import React from 'react'
 import { singletonHook } from 'react-singleton-hook'
 import { ThemeMode } from 'utils/types'
 import { createGlobalStyle, css } from 'styled-components/macro'
-import { createMuiTheme, Theme, fade } from '@material-ui/core'
+import { createMuiTheme, Theme } from '@material-ui/core'
 import useUserLocalStorage from './useUserLocalStorage'
 import useLocalStorage from './useLocalStorage'
 import { transparentize, tint, shade } from 'polished'
@@ -45,7 +45,6 @@ export type ThemeColors = {
   defaultIconBlack: string
   cardBoxShadow: string
   cardBoxShadow_bottomHeavy: string
-  paperBackground: string
   markdown: {
     codeBackground: string
   }
@@ -64,11 +63,18 @@ export type ThemeColors = {
       activeBorderColor: string
     }
   }
+  topbar: {
+    searchInput: {
+      hoverBackground: string
+      focusBackground: string
+    }
+  }
   input: {
     background: string
-    hoverOutlineColor: string
+    outlineColor: string
     dividerColor: string
-    boxShadow: string
+    placeholderColor: string
+    color: string
   }
   button: {
     level1?: ButtonThemeColorsForBackground
@@ -161,15 +167,14 @@ export type ThemeColors = {
     buttonsBackground: string
   }
   palette: {
-    primary: {
-      dark?: string
-      main: string
-      light?: string
-      contrastText?: string
+    text: {
+      primary: string
     }
-    secondary?: {
+    primary: {
       main: string
-      contrastText?: string
+    }
+    secondary: {
+      main: string
     }
   }
 }
@@ -185,8 +190,13 @@ const buttonContainedBackgroundColor = 'rgba(0, 0, 0, 0.1)'
 const buttonContainedColor = 'rgba(0, 0, 0, 0.87)'
 const cardBoxShadow = '0 0 6px 0px rgba(0,0,0,0.04)'
 const cardBoxShadow_bottomHeavy = '0px 1px 3px -1px rgb(0, 0, 0, 28%)'
-const fadedWhite = 'rgba(255,255,255,0.9)'
+
 const white = 'rgb(255, 255, 255)'
+const fadedWhite = 'rgba(255,255,255,0.9)'
+const textWhite = 'rgba(255,255,255,0.8)'
+const fadedTextWhite = 'rgba(255,255,255,0.8)'
+
+const black = 'rgb(0, 0, 0)'
 const fadedBlack = 'rgba(0, 0, 0, 0.44)'
 const textBlack = 'rgba(0, 0, 0, 0.87)'
 const fadedTextBlack = 'rgb(76, 76, 76)'
@@ -223,9 +233,8 @@ const styleVariables = {
   oceanGreen: 'rgb(73, 191, 131)',
   yellow: 'rgb(252, 255, 85)',
   yellowDark: 'rgb(203, 206, 57)',
-  aliceBlue: 'rgb(229, 233, 239)',
-  cultured: 'rgb(243, 245, 248)',
-  ghostWhite: 'rgb(247, 250, 251)',
+  gainsboro: 'rgb(218, 218, 218)',
+  cultured: 'rgb(241, 243, 247)',
   white: 'rgb(253, 255, 255)',
   boxShadow: {
     light: 'rgba(255, 255, 255, 0.25)',
@@ -236,17 +245,16 @@ const lightTheme: ThemeColors = {
   ...commonTheme,
   backgrounds: {
     level1: styleVariables.white,
-    level2: styleVariables.ghostWhite,
-    level3: styleVariables.cultured,
+    level2: styleVariables.cultured,
+    level3: styleVariables.gainsboro,
   },
   loader: {
-    background: 'rgba(0, 0, 0, 0.166)',
-    barBackground: 'rgba(0, 0, 0, 0.166)',
+    background: styleVariables.cultured,
+    barBackground: styleVariables.greenBlue,
   },
   fadedWhite,
   fadedBlack,
-  borderColor,
-  paperBackground: styleVariables.white,
+  borderColor: transparentize(0.85, black),
   markdown: {
     codeBackground: 'rgba(64, 75, 86, 0.15)',
   },
@@ -265,11 +273,18 @@ const lightTheme: ThemeColors = {
       activeBorderColor: styleVariables.greenBlue,
     },
   },
+  topbar: {
+    searchInput: {
+      hoverBackground: transparentize(0.95, black),
+      focusBackground: transparentize(0.9, black),
+    },
+  },
   input: {
     background: styleVariables.cultured,
-    hoverOutlineColor: styleVariables.greenBlue,
+    outlineColor: styleVariables.gainsboro,
     dividerColor: styleVariables.white,
-    boxShadow: cardBoxShadow_bottomHeavy,
+    placeholderColor: fadedTextBlack,
+    color: fadedTextBlack,
   },
   button: {
     level1: {
@@ -433,15 +448,14 @@ const lightTheme: ThemeColors = {
     buttonsBackground: 'white',
   },
   palette: {
+    text: {
+      primary: fadedTextBlack,
+    },
     primary: {
-      dark: styleVariables.sapphireBlue,
       main: styleVariables.greenBlue,
-      light: styleVariables.carolinaBlue,
-      contrastText: styleVariables.white,
     },
     secondary: {
       main: styleVariables.bittersweet,
-      contrastText: styleVariables.white,
     },
   },
 }
@@ -484,13 +498,12 @@ const darkTheme: ThemeColors = {
     level3: ldStyleVariables.eerieBlack,
   },
   loader: {
-    background: ldStyleVariables.portlandOrange,
+    background: ldStyleVariables.jet,
     barBackground: ldStyleVariables.darkOrange,
   },
   fadedWhite,
   fadedBlack,
-  borderColor,
-  paperBackground: styleVariables.cultured,
+  borderColor: transparentize(0.85, white),
   markdown: {
     codeBackground: 'rgba(64, 75, 86, 0.11)',
   },
@@ -503,17 +516,24 @@ const darkTheme: ThemeColors = {
   sidebar: {
     background: ldStyleVariables.raisinBlack,
     item: {
-      color: fadedTextBlack,
+      color: fadedWhite,
       activeBackground: transparentize(0.85, ldStyleVariables.darkOrange),
-      activeColor: textBlack,
+      activeColor: ldStyleVariables.darkOrange,
       activeBorderColor: ldStyleVariables.darkOrange,
     },
   },
+  topbar: {
+    searchInput: {
+      hoverBackground: transparentize(0.95, white),
+      focusBackground: transparentize(0.9, white),
+    },
+  },
   input: {
-    background: ldStyleVariables.white,
-    hoverOutlineColor: ldStyleVariables.portlandOrange,
+    background: ldStyleVariables.jet,
+    outlineColor: ldStyleVariables.eerieBlack,
     dividerColor: ldStyleVariables.lightGray,
-    boxShadow: cardBoxShadow_bottomHeavy,
+    placeholderColor: transparentize(0.4, white),
+    color: white,
   },
   button: {
     level1: {
@@ -620,10 +640,10 @@ const darkTheme: ThemeColors = {
     },
   },
   post: {
-    backgroundColor: ldStyleVariables.cultured,
-    activeBorderColor: ldStyleVariables.portlandOrange,
+    backgroundColor: ldStyleVariables.onyx,
+    activeBorderColor: ldStyleVariables.darkOrange,
     editActionRowBackground: ldStyleVariables.portlandOrange,
-    newsTagBackground: ldStyleVariables.blueDeFrance,
+    newsTagBackground: ldStyleVariables.darkOrange,
     newsTagColor: ldStyleVariables.white,
   },
   moreButton: {
@@ -677,12 +697,14 @@ const darkTheme: ThemeColors = {
     buttonsBackground: 'white',
   },
   palette: {
+    text: {
+      primary: fadedWhite,
+    },
     primary: {
-      main: ldStyleVariables.slateGray,
-      contrastText: ldStyleVariables.white,
+      main: ldStyleVariables.darkOrange,
     },
     secondary: {
-      main: ldStyleVariables.portlandOrange,
+      main: ldStyleVariables.littleBlueBoy,
     },
   },
 }
@@ -693,11 +715,6 @@ const themes: Themes = {
 } as const
 
 const defaultTheme = createMuiTheme({
-  palette: {
-    text: {
-      primary: fadedTextBlack,
-    },
-  },
   shape: {
     borderRadius: 8,
   },
@@ -714,6 +731,7 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       action: {
         hoverOpacity: 0.2,
       },
+      type: themeMode,
     },
     typography: {
       fontSize: 16,
@@ -843,7 +861,7 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       },
       MuiDrawer: {
         paper: {
-          background: selectedThemeColors.paperBackground,
+          background: selectedThemeColors.backgrounds.level1,
         },
       },
       MuiTab: {
@@ -879,9 +897,9 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       MuiListItem: {
         button: {
           transition: 'none',
-          '&:hover': {
-            backgroundColor: buttonOutlinedBackgroundColor,
-          },
+          // '&:hover': {
+          //   backgroundColor: buttonOutlinedBackgroundColor,
+          // },
         },
       },
       MuiLinearProgress: {
@@ -896,6 +914,11 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
           backgroundColor: selectedThemeColors.loader.barBackground,
         },
       },
+      MuiPaper: {
+        root: {
+          backgroundColor: selectedThemeColors.backgrounds.level1,
+        },
+      },
       MuiTextField: {
         root: {
           '& input': {
@@ -905,47 +928,49 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       },
       MuiInputBase: {
         root: {
-          boxShadow: selectedThemeColors.input.boxShadow,
+          // boxShadow: selectedThemeColors.input.boxShadow,
+          color: selectedThemeColors.input.color,
         },
         input: {
           '&::placeholder': {
-            color: fadedTextBlack,
+            color: selectedThemeColors.input.placeholderColor,
             opacity: 1,
           },
         },
       },
-      MuiInput: {
-        root: {
-          border: '1px solid #e2e2e1',
-          overflow: 'hidden',
-          borderRadius: 4,
-          backgroundColor: '#fcfcfb',
-          transition: 'none',
-          '&:hover': {
-            backgroundColor: '#fff',
-          },
-          '&$focused': {
-            backgroundColor: '#fff',
-            boxShadow: `${fade(
-              defaultTheme.palette.primary.main,
-              0.25
-            )} 0 0 0 2px`,
-            borderColor: defaultTheme.palette.primary.main,
-          },
-        },
-      },
+      // MuiInput: {
+      //   root: {
+      //     border: '1px solid #e2e2e1',
+      //     overflow: 'hidden',
+      //     borderRadius: 4,
+      //     backgroundColor: '#fcfcfb',
+      //     transition: 'none',
+      //     '&:hover': {
+      //       backgroundColor: '#fff',
+      //     },
+      //     '&$focused': {
+      //       backgroundColor: '#fff',
+      //       boxShadow: `${fade(
+      //         defaultTheme.palette.primary.main,
+      //         0.25
+      //       )} 0 0 0 2px`,
+      //       borderColor: defaultTheme.palette.primary.main,
+      //     },
+      //   },
+      // },
       MuiFilledInput: {
         root: {
           borderRadius: defaultTheme.shape.borderRadius,
           backgroundColor: selectedThemeColors.input.background,
+          boxShadow: `0 0 0 1px ${selectedThemeColors.input.outlineColor}`,
           transition: 'none',
           '&:hover': {
             backgroundColor: selectedThemeColors.input.background,
-            boxShadow: `0 0 0 2px ${selectedThemeColors.input.hoverOutlineColor}`,
+            boxShadow: `0 0 0 2px ${selectedThemeColors.palette.primary.main}`,
           },
           '&$focused': {
             backgroundColor: selectedThemeColors.input.background,
-            boxShadow: `0 0 0 4px ${selectedThemeColors.input.hoverOutlineColor}`,
+            boxShadow: `0 0 0 4px ${selectedThemeColors.palette.primary.main}`,
           },
         },
         input: {
@@ -1128,10 +1153,6 @@ const globalStyleGenerator = ({
 }) => {
   return createGlobalStyle`
     html {}
-
-    #root {
-      min-height: 100vh;
-    }
 
     body {
       background: ${themeColors.backgrounds.level1};

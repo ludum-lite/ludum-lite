@@ -32,16 +32,29 @@ import NewPostPage from './posts/NewPostPage'
 import Topbar from './topbar/Topbar'
 import WidgetsSidebar from './widgets-sidebar/WidgetsSidebar'
 
+const Root = styled.div`
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+`
+
 const AppContent = styled.div`
   display: flex;
   flex: 1 0 0px;
   position: relative;
+  max-width: 1100px;
 
   ${({ theme }) => theme.breakpoints.up('md')} {
-    margin-left: ${({ theme }) => theme.variables.sidebar.widthPx};
-    margin-right: 277px;
+    /* margin-left: ${({ theme }) => theme.variables.sidebar.widthPx}; */
+    /* margin-right: 277px; */
     /* margin-top: ${({ theme }) => theme.spacing(8)}px; */
   }
+`
+
+const MiddleContent = styled.div`
+  flex: 1 1 0px;
+  display: flex;
+  flex-direction: column;
 `
 
 // const WidgetSelector = styled.div`
@@ -139,42 +152,44 @@ export default function App() {
 
   if (hasLoaded) {
     return (
-      <Fragment>
-        <Routes>
-          <Route path="/:basePath*" element={<Sidebar />} />
-        </Routes>
-        <Topbar />
+      <Root>
         <AppContent>
+          <Routes>
+            <Route path="/:basePath*" element={<Sidebar />} />
+          </Routes>
           {/* <NotificationBar /> */}
-          <RoutesWithFallback>
-            <Route path={ROUTES.EVENT.SINGLE_BASE} element={<EventPage />} />
-            <Route path={ROUTES.EVENT.SINGLE} element={<EventPage />} />
-            <Route path="/posts" element={<PostsPage />} />
-            {postOverlayed ? (
+          <MiddleContent>
+            <Topbar />
+            <RoutesWithFallback>
+              <Route path={ROUTES.EVENT.SINGLE_BASE} element={<EventPage />} />
+              <Route path={ROUTES.EVENT.SINGLE} element={<EventPage />} />
+              <Route path="/posts" element={<PostsPage />} />
+              {postOverlayed ? (
+                <Route
+                  path="/posts/:id"
+                  element={
+                    <>
+                      <PostsPage />
+                      <PostPage />
+                    </>
+                  }
+                />
+              ) : (
+                <Route path="/posts/:id" element={<PostPage />} />
+              )}
+              <Route path="/posts/new" element={<NewPostPage />} />
+              <Route path="/posts/:id/edit" element={<PostPage isEditing />} />
+              <Route path="/invite/:userId" element={<InvitePage />} />
               <Route
-                path="/posts/:id"
-                element={
-                  <>
-                    <PostsPage />
-                    <PostPage />
-                  </>
-                }
+                path="/accepted-invite/:userId"
+                element={<AcceptedInvitePage />}
               />
-            ) : (
-              <Route path="/posts/:id" element={<PostPage />} />
-            )}
-            <Route path="/posts/new" element={<NewPostPage />} />
-            <Route path="/posts/:id/edit" element={<PostPage isEditing />} />
-            <Route path="/invite/:userId" element={<InvitePage />} />
-            <Route
-              path="/accepted-invite/:userId"
-              element={<AcceptedInvitePage />}
-            />
-            <Route
-              path="/confirm-invite/:userId"
-              element={<ConfirmInviteAndAddToTeamPage />}
-            />
-          </RoutesWithFallback>
+              <Route
+                path="/confirm-invite/:userId"
+                element={<ConfirmInviteAndAddToTeamPage />}
+              />
+            </RoutesWithFallback>
+          </MiddleContent>
           <Hidden smDown>
             <WidgetsSidebar />
           </Hidden>
@@ -230,7 +245,7 @@ export default function App() {
           </MobileWidgetContainer>
         </Hidden> */}
         {loginComponent}
-      </Fragment>
+      </Root>
     )
   }
 

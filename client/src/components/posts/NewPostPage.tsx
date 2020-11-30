@@ -11,7 +11,7 @@ import { gql } from '@apollo/client'
 const Root = styled.div``
 
 interface Props {}
-export default function NewPostPage({}: Props) {
+export default function NewPostPage() {
   const { enqueueSnackbar } = useSnackbar()
   const navigate = useNavigate()
   const { data } = useNewPostPageDataQuery()

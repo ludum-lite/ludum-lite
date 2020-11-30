@@ -40,7 +40,7 @@ import DialogTitle from 'components/common/mui/DialogTitle'
 
 const Root = styled.div`
   display: flex;
-  background: ${({ theme }) => theme.themeColors.contextualNavBackground};
+  background: ${({ theme }) => theme.themeColors.backgrounds.level1};
   color: white;
   padding: ${({ theme }) => theme.spacing(2)}px;
   flex-direction: column;
@@ -267,7 +267,6 @@ export default function GameWidget({ className }: Props) {
                 My Team
               </Typography>
               <IconButton
-                background="globalNav"
                 // size="small"
                 {...bindTrigger(popupState)}
               >
@@ -379,12 +378,7 @@ export default function GameWidget({ className }: Props) {
                   ))}
               </List>
               <InviteLinkContainer>
-                <InviteButton
-                  text={inviteLink}
-                  fullWidth
-                  background="white"
-                  variant="contained"
-                >
+                <InviteButton text={inviteLink} fullWidth variant="contained">
                   {inviteLink}
                 </InviteButton>
                 <InviteText variant="caption" color="textSecondary">

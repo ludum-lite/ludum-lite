@@ -386,7 +386,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
     if (menuItems.length) {
       return (
         <Fragment>
-          <MenuButton background="white" {...bindTrigger(popupState)}>
+          <MenuButton {...bindTrigger(popupState)}>
             <Icon icon={MoreHorizIcon} />
           </MenuButton>
           <Menu {...bindMenu(popupState)}>{menuItems}</Menu>
@@ -558,10 +558,9 @@ export default function PostPage({ isEditing }: PostPageProps) {
             <PostLoveButton
               post={filter(PostLoveButton_PostFragmentDoc, post)}
               me={filter(PostLoveButton_MeFragmentDoc, me)}
-              background="white"
             />
           )}
-          {post && <PostBookmarkButton postId={post.id} background="white" />}
+          {post && <PostBookmarkButton postId={post.id} />}
           {menu}
         </ActionRow>
       )

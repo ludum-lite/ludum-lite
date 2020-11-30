@@ -9,7 +9,7 @@ import { ignoreProps } from 'utils'
 
 export type Background = 'level1' | 'level2' | 'level3'
 
-type Color = Exclude<
+export type Color = Exclude<
   | 'default'
   | 'primary'
   | 'secondary'
@@ -130,22 +130,22 @@ const StyledButton = styled(MuiButton).withConfig({
   shouldForwardProp: ignoreProps(['background', 'isBreadcrumb', 'customColor']),
 })<StyledButtonProps>`
   ${({ background, customColor, variant, theme }) => {
-    const backgroundColors =
+    const colors =
       theme.themeColors.button?.[background]?.[variant]?.[customColor]
 
     // if (variant === 'text') {
-    //   hoverBackground = backgroundColors.text?.hoverBackground
+    //   hoverBackground = colors.text?.hoverBackground
     // } else if (color === 'default' && variant === 'contained') {
-    //   hoverBackground = backgroundColors.contained?.hoverBackground
+    //   hoverBackground = colors.contained?.hoverBackground
     // }
 
     return css`
-      color: ${backgroundColors?.color};
-      background: ${backgroundColors?.background};
-      border-color: ${backgroundColors?.borderColor};
+      color: ${colors?.color};
+      background: ${colors?.background};
+      border-color: ${colors?.borderColor};
 
       &:hover {
-        background: ${backgroundColors?.hoverBackground};
+        background: ${colors?.hoverBackground};
       }
     `
   }}

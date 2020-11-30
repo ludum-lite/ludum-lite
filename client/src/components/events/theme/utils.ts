@@ -5,9 +5,9 @@ export function getVoteColor(
   theme: DefaultTheme
 ) {
   if (vote === 1) {
-    return theme.themeColors.button.color.contained.successBackground
+    return theme.themeColors.button.level1?.contained?.success?.background
   } else if (vote === 0) {
-    return theme.themeColors.button.color.contained.errorBackground
+    return theme.themeColors.button.level1?.contained?.error?.background
   } else if (vote === -1) {
     return theme.themeColors.defaultIconBlack
   } else {

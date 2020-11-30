@@ -12,14 +12,12 @@ import {
   useLovePostMutation,
   useUnlovePostMutation,
 } from '__generated__/client-types'
-import { Background } from 'components/common/mui/Button'
 
 interface Props {
   post: PostLoveButton_PostFragment
   me: PostLoveButton_MeFragment
-  background: Background
 }
-export default function PostLoveButton({ me, post, background }: Props) {
+export default function PostLoveButton({ me, post }: Props) {
   const { promptLogin, isLoggedIn } = useLogin()
   const theme = useTheme()
 
@@ -49,7 +47,6 @@ export default function PostLoveButton({ me, post, background }: Props) {
       activeIcon={FavoriteIcon}
       defaultIcon={FavoriteBorderIcon}
       size="small"
-      background={background}
       onClick={(e) => {
         e.stopPropagation()
         if (isLoggedIn && me.__typename === 'Me') {

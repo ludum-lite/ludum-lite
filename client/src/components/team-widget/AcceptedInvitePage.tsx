@@ -11,7 +11,7 @@ const Root = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: ${({ theme }) => theme.themeColors.whiteBackground};
+  background: ${({ theme }) => theme.themeColors.backgrounds.level1};
   margin: ${({ theme }) => theme.spacing(4)}px;
   padding: ${({ theme }) => theme.spacing(10)}px;
   border-radius: ${({ theme }) => theme.shape.borderRadius}px;
@@ -50,12 +50,7 @@ export default function AcceptedInvitePage() {
       <SubTitle color="textSecondary" variant="body1">
         Please send this link to your team leader, {data.user.name}.
       </SubTitle>
-      <InviteButton
-        text={returnLink}
-        fullWidth
-        background="white"
-        variant="contained"
-      >
+      <InviteButton text={returnLink} fullWidth variant="contained">
         {returnLink}
       </InviteButton>
     </Root>

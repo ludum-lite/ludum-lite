@@ -18,7 +18,7 @@ const Root = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: ${({ theme }) => theme.themeColors.whiteBackground};
+  background: ${({ theme }) => theme.themeColors.backgrounds.level1};
   margin: ${({ theme }) => theme.spacing(4)}px;
   padding: ${({ theme }) => theme.spacing(10)}px;
   border-radius: ${({ theme }) => theme.shape.borderRadius}px;
@@ -111,7 +111,6 @@ export default function ConfirmInviteAndAddToTeamPage() {
       </SubTitle>
       <StyledButton
         fullWidth
-        background="white"
         variant="contained"
         color="secondary"
         disabled

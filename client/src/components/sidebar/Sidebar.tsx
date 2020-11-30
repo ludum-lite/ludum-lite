@@ -19,6 +19,12 @@ const Root = styled.div`
   height: 100vh;
   width: ${({ theme }) => theme.variables.sidebar.widthPx};
   border-right: 1px solid ${({ theme }) => theme.themeColors.borderColor};
+  background: ${({ theme }) => theme.themeColors.backgrounds.level1};
+`
+
+const DesktopSidebar = styled.div`
+  position: sticky;
+  top: 0px;
 `
 
 const Body = styled.div`
@@ -31,7 +37,8 @@ const Body = styled.div`
 const LogoContainer = styled.div`
   display: flex;
   border-bottom: 1px solid ${({ theme }) => theme.themeColors.borderColor};
-  margin-right: ${({ theme }) => theme.spacing(2)}px;
+  margin-right: ${({ theme }) => theme.spacing(1)}px;
+  padding-right: ${({ theme }) => theme.spacing(1)}px;
   padding-left: ${({ theme }) => theme.spacing(2)}px;
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
@@ -104,7 +111,6 @@ const Sidebar = React.memo(() => {
       {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
       <Hidden mdUp implementation="css">
         <StyledDrawer
-          // variant="temporary"
           anchor="left"
           open={isSidebarOpen}
           onClose={closeSidebar}
@@ -116,9 +122,7 @@ const Sidebar = React.memo(() => {
         </StyledDrawer>
       </Hidden>
       <Hidden smDown implementation="css">
-        <StyledDrawer variant="permanent" open>
-          {content}
-        </StyledDrawer>
+        <DesktopSidebar>{content}</DesktopSidebar>
       </Hidden>
     </Fragment>
   )

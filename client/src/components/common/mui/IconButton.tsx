@@ -1,45 +1,35 @@
 import React from 'react'
-import { IconButton as MuiIconButton, IconButtonProps } from '@material-ui/core'
+import {
+  IconButton as MuiIconButton,
+  IconButtonProps as MuiIconButtonProps,
+} from '@material-ui/core'
 import styled, { css } from 'styled-components/macro'
 import { ignoreProps } from 'utils'
+import { Background, Color } from './Button'
 
-export type Background = 'globalNav' | 'contextualNav' | 'page' | 'white'
+type Variant = 'text' | 'contained'
 
 interface StyledButtonProps {
   background: Background
-  color: IconButtonProps['color']
-  variant: 'default' | 'contained'
+  customColor: Color
+  variant: Variant
 }
 
 const StyledIconButton = styled(MuiIconButton).withConfig({
-  shouldForwardProp: ignoreProps(['background', 'variant']),
+  shouldForwardProp: ignoreProps(['variant']),
 })<StyledButtonProps>`
-  ${({ background, color, theme }) => {
-    const colors = theme.themeColors.button.background[background]
+  ${({ customColor, variant, theme }) => {
+    const colors = theme.themeColors.button.level1?.[variant]?.[customColor]
 
     return css`
-      color: ${(!color || color === 'default') && colors.color};
+      color: ${colors?.color};
+      background: ${colors?.background};
+      border-color: ${colors?.borderColor};
 
       &.MuiIconButton-root:hover {
-        background: ${colors.text?.hoverBackground};
+        background: ${colors?.hoverBackground};
       }
     `
-  }}
-
-  ${({ variant, color, theme }) => {
-    if (variant === 'contained' && color === 'default') {
-      return css`
-        color: white;
-
-        &.MuiIconButton-root {
-          background: ${theme.themeColors.defaultIconBlack};
-
-          &:hover {
-            background: ${theme.themeColors.fadedBlack};
-          }
-        }
-      `
-    }
   }}
 `
 
@@ -56,23 +46,27 @@ const StyledIconButton = styled(MuiIconButton).withConfig({
 export interface Props {
   background?: Background
   component?: React.ElementType
-  color?: IconButtonProps['color']
-  variant?: 'default' | 'contained'
+  color?: Color
+  variant?: Variant
 }
-const IconButton = React.forwardRef<
-  HTMLButtonElement,
-  Props & Omit<IconButtonProps, keyof Props>
->(
+export type IconButtonProps = Props &
+  Omit<MuiIconButtonProps, keyof Props | 'color'>
+const IconButton = React.forwardRef(
   (
-    { background = 'white', variant = 'default', color = 'default', ...others },
+    {
+      background = 'level1',
+      color = 'default',
+      variant = 'text',
+      ...others
+    }: IconButtonProps,
     ref
   ) => {
     return (
       <StyledIconButton
-        ref={ref}
-        background={background}
+        innerRef={ref}
         variant={variant}
-        color={color}
+        customColor={color}
+        background={background}
         {...others}
       />
     )

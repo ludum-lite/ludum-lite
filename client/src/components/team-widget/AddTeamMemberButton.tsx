@@ -9,7 +9,7 @@ const Root = styled.div`
 `
 const StyledIconButton = styled(IconButton)`
   border-radius: 50%;
-  background: ${({ theme }) => theme.themeColors.contextualNavBackground};
+  background: ${({ theme }) => theme.themeColors.backgrounds.level1};
   border: 2px dashed white;
   padding: 0;
   width: 40px;
@@ -23,7 +23,7 @@ interface Props {
 export default function AddTeamMemberButton({ className, onClick }: Props) {
   return (
     <Root className={className}>
-      <StyledIconButton background="contextualNav" onClick={onClick}>
+      <StyledIconButton onClick={onClick}>
         <Icon icon={AddIcon} />
       </StyledIconButton>
     </Root>

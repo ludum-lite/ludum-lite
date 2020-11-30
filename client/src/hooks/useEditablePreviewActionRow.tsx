@@ -58,7 +58,6 @@ export default function useEditablePreviewActionRow({
           onClick={() => {
             setState('write')
           }}
-          background="globalNav"
         >
           Write
         </ActionButton>
@@ -67,19 +66,17 @@ export default function useEditablePreviewActionRow({
           onClick={() => {
             setState('preview')
           }}
-          background="globalNav"
         >
           Preview
         </ActionButton>
         <Separator />
         {onCancel && (
-          <Button background="globalNav" onClick={onCancel} disabled={isSaving}>
+          <Button onClick={onCancel} disabled={isSaving}>
             Cancel
           </Button>
         )}
         <Button
           type="submit"
-          background="globalNav"
           loading={isSaving}
           onClick={async (e) => {
             e.preventDefault()

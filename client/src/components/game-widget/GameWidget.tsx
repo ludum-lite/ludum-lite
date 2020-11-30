@@ -26,7 +26,7 @@ import Typography from 'components/common/mui/Typography'
 
 const Root = styled.div`
   display: flex;
-  background: ${({ theme }) => theme.themeColors.contextualNavBackground};
+  background: ${({ theme }) => theme.themeColors.backgrounds.level1};
   color: white;
 `
 
@@ -193,7 +193,6 @@ export default function GameWidget({ className }: Props) {
             !featuredEvent.currentUserGameId && (
               <JoinButton
                 fullWidth
-                background="contextualNav"
                 onClick={() => setShowJoinEventDialog(true)}
               >
                 <Typography variant="h4">Join Event!</Typography>

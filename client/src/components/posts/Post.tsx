@@ -23,32 +23,44 @@ import {
 } from '__generated__/client-types'
 import Link from 'components/common/mui/Link'
 
+interface RootProps {
+  collapsedNewsPost?: boolean
+}
+const Root = styled.div<RootProps>`
+  border-bottom: 1px solid ${({ theme }) => theme.themeColors.borderColor};
+
+  ${({ collapsedNewsPost }) =>
+    collapsedNewsPost &&
+    css`
+      border-bottom: none;
+    `}
+`
+
 const activeBoxShadowKeyFrames = (color: string) => keyframes`
   0% {
-    box-shadow: 0 0 0px 4px transparent;
+    box-shadow: inset 6px 0 0px 0px transparent;
   }
 
   100% {
-    box-shadow: 0 0 0px 4px ${color};
+    box-shadow: inset 6px 0 0px 0px ${color};
   }
 `
 
-interface RootProps {
+interface StyledCardProps {
   active: boolean
   isNewsType: boolean
   collapsedNewsPost?: boolean
 }
-const Root = styled(Card).withConfig({
+const StyledCard = styled(Card).withConfig({
   shouldForwardProp: ignoreProps(['active', 'isNewsType', 'collapsedNewsPost']),
-})<RootProps>`
+})<StyledCardProps>`
   position: relative;
   display: flex;
   flex-direction: column;
-  background: ${({ theme }) => theme.themeColors.post.backgroundColor};
   padding: ${({ theme }) => theme.spacing(2)}px;
-  /* margin-bottom: ${({ theme }) => theme.spacing(4)}px; */
-  border-radius: ${({ theme }) => theme.shape.borderRadius}px;
+  border-radius: 0px;
   transition: box-shadow 5000ms;
+  background: ${({ theme }) => theme.themeColors.post.backgroundColor};
 
   ${({ active, theme }) =>
     active &&
@@ -57,17 +69,9 @@ const Root = styled(Card).withConfig({
           theme.themeColors.post.activeBorderColor
         )}
         250ms forwards;
+      border-color: transparent;
     `}
 
-  ${({ isNewsType, collapsedNewsPost }) =>
-    isNewsType &&
-    !collapsedNewsPost &&
-    css`
-      padding-left: ${({ theme }) => theme.spacing(1.25)}px;
-      border-left: ${({ theme }) => theme.spacing(1.25)}px solid
-        ${({ theme }) => theme.themeColors.post.newsTagBackground};
-    `}
-  
   ${({ collapsedNewsPost }) =>
     collapsedNewsPost &&
     css`
@@ -130,7 +134,12 @@ interface Props {
   collapsedNewsPost?: boolean
   className?: string
 }
-export default function Post({ post, me, collapsedNewsPost, className }: Props) {
+export default function Post({
+  post,
+  me,
+  collapsedNewsPost,
+  className,
+}: Props) {
   const [, setPostOverlayed] = usePostOverlayed()
   const { activePostId } = useActivePostId()
 
@@ -144,36 +153,36 @@ export default function Post({ post, me, collapsedNewsPost, className }: Props) 
   if (!post) return null
 
   return (
-    <Root
-      className={className}
-      onClick={() => onClickCard(post.id)}
-      clickable
-      active={activePostId === post.id}
-      isNewsType={post.subtype === 'news'}
-      collapsedNewsPost={collapsedNewsPost}
-    >
-      <Link to={`/posts/${post.id}`} overlay />
-      <PostDetails
-        post={filter(PostDetails_PostFragmentDoc, post)}
+    <Root collapsedNewsPost={collapsedNewsPost}>
+      <StyledCard
+        className={className}
+        onClick={() => onClickCard(post.id)}
+        clickable
+        active={activePostId === post.id}
+        isNewsType={post.subtype === 'news'}
         collapsedNewsPost={collapsedNewsPost}
-      />
-      {!collapsedNewsPost && (
-        <ActionRow>
-          <StyledButtonGroup>
-            <PostLoveButton
-              post={filter(PostLoveButton_PostFragmentDoc, post)}
-              me={filter(PostLoveButton_MeFragmentDoc, me)}
-              background="white"
-            />
-            <PostCommentButton
-              post={filter(PostCommentButton_PostFragmentDoc, post)}
-              background="white"
-            />
-            <Separator />
-            <PostBookmarkButton postId={post.id} background="white" />
-          </StyledButtonGroup>
-        </ActionRow>
-      )}
+      >
+        <Link to={`/posts/${post.id}`} overlay />
+        <PostDetails
+          post={filter(PostDetails_PostFragmentDoc, post)}
+          collapsedNewsPost={collapsedNewsPost}
+        />
+        {!collapsedNewsPost && (
+          <ActionRow>
+            <StyledButtonGroup>
+              <PostLoveButton
+                post={filter(PostLoveButton_PostFragmentDoc, post)}
+                me={filter(PostLoveButton_MeFragmentDoc, me)}
+              />
+              <PostCommentButton
+                post={filter(PostCommentButton_PostFragmentDoc, post)}
+              />
+              <Separator />
+              <PostBookmarkButton postId={post.id} />
+            </StyledButtonGroup>
+          </ActionRow>
+        )}
+      </StyledCard>
     </Root>
   )
 }
