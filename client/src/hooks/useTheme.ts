@@ -152,9 +152,11 @@ export type ThemeColors = {
     postAuthorLinkColor: string
   }
   countdown: {
-    titleColor: string
-    fadedTextColor: string
-    dateTextColor: string
+    digitColor: string
+    digitTopBackground: string
+    digitBottomBackground: string
+    digitBoxShadow: string
+    nextUpOutlineColor: string
   }
   themeSlaughter: {
     suggestionBackground: string
@@ -233,12 +235,13 @@ const styleVariables = {
   oceanGreen: 'rgb(73, 191, 131)',
   yellow: 'rgb(252, 255, 85)',
   yellowDark: 'rgb(203, 206, 57)',
-  gainsboro: 'rgb(218, 218, 218)',
+  gainsboro: 'rgb(228, 230, 234)',
   cultured: 'rgb(241, 243, 247)',
-  white: 'rgb(253, 255, 255)',
+  white: 'rgb(256, 255, 255)',
   boxShadow: {
     light: 'rgba(255, 255, 255, 0.25)',
   },
+  borderColor: transparentize(0.85, black),
 } as const
 
 const lightTheme: ThemeColors = {
@@ -254,7 +257,7 @@ const lightTheme: ThemeColors = {
   },
   fadedWhite,
   fadedBlack,
-  borderColor: transparentize(0.85, black),
+  borderColor: styleVariables.borderColor,
   markdown: {
     codeBackground: 'rgba(64, 75, 86, 0.15)',
   },
@@ -433,9 +436,13 @@ const lightTheme: ThemeColors = {
     postAuthorLinkColor: styleVariables.greenBlue,
   },
   countdown: {
-    titleColor: styleVariables.white,
-    fadedTextColor: 'rgba(255,255,255,0.9)',
-    dateTextColor: 'rgba(255,255,255,0.65)',
+    digitColor: fadedTextBlack,
+    // digitTopBackground: 'rgb(210, 210, 210)',
+    // digitBottomBackground: 'rgb(185, 185, 185)',
+    digitTopBackground: 'rgb(228, 228, 228)',
+    digitBottomBackground: 'rgb(212, 212, 212)',
+    digitBoxShadow: '0 1px 5px -2px #0000009c',
+    nextUpOutlineColor: styleVariables.greenBlue,
   },
   themeSlaughter: {
     suggestionBackground: styleVariables.cultured,
@@ -465,7 +472,7 @@ const lightTheme: ThemeColors = {
 const ldStyleVariables = {
   raisinBlack: 'rgb(31, 36, 41)',
   onyx: 'rgb(54, 57, 63)',
-  jet: 'rgb(47, 49, 54)',
+  jet: 'rgb(43, 45, 47)',
   eerieBlack: 'rgb(32, 34, 37)',
   slateGray: 'rgb(111, 121, 132)',
   lightGray: 'rgb(208, 208, 216)',
@@ -488,6 +495,7 @@ const ldStyleVariables = {
   boxShadow: {
     light: 'rgba(255, 255, 255, 0.25)',
   },
+  borderColor: transparentize(0.85, white),
 } as const
 
 const darkTheme: ThemeColors = {
@@ -503,7 +511,7 @@ const darkTheme: ThemeColors = {
   },
   fadedWhite,
   fadedBlack,
-  borderColor: transparentize(0.85, white),
+  borderColor: ldStyleVariables.borderColor,
   markdown: {
     codeBackground: 'rgba(64, 75, 86, 0.11)',
   },
@@ -682,9 +690,13 @@ const darkTheme: ThemeColors = {
     postAuthorLinkColor: ldStyleVariables.darkOrange,
   },
   countdown: {
-    titleColor: 'rgba(255, 255, 255, 0.9)',
-    fadedTextColor: 'rgba(255,255,255,0.85)',
-    dateTextColor: 'rgba(255,255,255,0.5)',
+    digitColor: white,
+    // digitTopBackground: 'rgb(76, 76, 76)',
+    // digitBottomBackground: 'rgb(65, 65, 65)',
+    digitTopBackground: 'rgb(47, 47, 47)',
+    digitBottomBackground: 'rgb(39, 39, 39)',
+    digitBoxShadow: '0 1px 5px -2px #0000009c',
+    nextUpOutlineColor: ldStyleVariables.darkOrange,
   },
   themeSlaughter: {
     suggestionBackground: 'white',

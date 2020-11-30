@@ -36,7 +36,6 @@ const widgetContainerStyles = ({ hide, hasTabs }: CommonWidgetProps) => css`
 `
 
 const StyledCountdownWidget = styled(CountdownWidget)<CommonWidgetProps>`
-  max-height: 600px;
   ${widgetContainerStyles}
 `
 

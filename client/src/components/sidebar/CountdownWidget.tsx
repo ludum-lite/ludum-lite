@@ -35,19 +35,15 @@ const Root = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  background: ${({ theme }) => theme.themeColors.backgrounds.level1};
   overflow: hidden;
 `
 
 const TitleButton = styled(Button)`
-  color: ${({ theme }) => theme.themeColors.countdown.titleColor};
   margin: ${({ theme }) =>
     `${theme.spacing(2)}px ${theme.spacing(2)}px ${theme.spacing(1)}px`};
 `
 
-const Subtitle = styled(Typography)`
-  color: ${({ theme }) => theme.themeColors.countdown.fadedTextColor};
-`
+const Subtitle = styled(Typography)``
 
 const StyledCountdown = styled(Countdown)`
   margin: ${({ theme }) => `0 ${theme.spacing(2)}px`};
@@ -58,7 +54,6 @@ const ExpandButton = styled(Button)`
 `
 
 const EventList = styled(List)`
-  color: white;
   overflow: auto;
   padding: ${({ theme }) => `0 ${theme.spacing(2)}px`};
 `
@@ -67,10 +62,12 @@ const NextTitle = styled.div`
   display: flex;
   justify-content: center;
   padding: ${({ theme }) => theme.spacing(1)}px;
-  color: ${({ theme }) => theme.themeColors.countdown.titleColor};
-  background: rgba(255, 255, 255, 0.54);
+  background: ${({ theme }) => theme.themeColors.backgrounds.level2};
   border-radius: ${({ theme }) =>
     `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`};
+  border: 3px solid
+    ${({ theme }) => theme.themeColors.countdown.nextUpOutlineColor};
+  border-bottom: none;
 `
 
 const EventToggleButtons = styled.div`
@@ -92,25 +89,24 @@ const EventListItem = styled.div
   .withConfig({
     shouldForwardProp: ignoreProps(['isNext']),
   })<EventListItemProps>`
-  color: ${({ theme }) => theme.themeColors.countdown.titleColor};
   padding-left: ${({ theme }) => theme.spacing(2)}px;
 
   ${({ isNext }) =>
     isNext &&
     css`
-      background: rgba(255, 255, 255, 0.36);
       border-radius: ${({ theme }) =>
         `0 0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px`};
+      border: 3px solid
+        ${({ theme }) => theme.themeColors.countdown.nextUpOutlineColor};
+      border-top: none;
     `}
 
   .MuiListItemText-secondary {
-    color: ${({ theme }) => theme.themeColors.countdown.dateTextColor};
     font-size: 0.872rem;
   }
 `
 
 const CheckboxIcon = styled(ListItemIcon)`
-  color: white;
   margin-right: ${({ theme }) => theme.spacing(1)}px;
   min-width: 0;
   position: relative;
@@ -214,6 +210,8 @@ export default function CountdownWidget({ events, className }: Props) {
                   setCountdownWidgetExpanded(false)
                 }}
                 endIcon={<Icon icon={ExpandLess} />}
+                variant="contained"
+                color="primary"
               >
                 <Subtitle variant="body1">Collapse</Subtitle>
               </ExpandButton>

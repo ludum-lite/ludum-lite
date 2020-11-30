@@ -96,6 +96,22 @@ export const events: Event[] = [
       [EventPhase.Results]:           moment.utc('2020-11-27T24:00:00'),
     }),
   },
+  {
+    eventNumber: 48,
+    timeline: generateTimeline({
+      [EventPhase.ThemeSubmission]:   moment.utc('2021-02-12T01:00:00'),
+      [EventPhase.ThemeSlaughter]:    moment.utc('2021-03-04T01:00:00'),
+      [EventPhase.ThemeVotingRound1]: moment.utc('2021-03-11T01:00:00'),
+      [EventPhase.ThemeVotingRound2]: moment.utc('2021-03-13T01:00:00'),
+      [EventPhase.ThemeVotingRound3]: moment.utc('2021-03-15T01:00:00'),
+      [EventPhase.ThemeVotingFinal]:  moment.utc('2021-03-16T01:00:00'),
+      [EventPhase.ThemeReveal]:       moment.utc('2021-03-18T01:00:00'),
+      [EventPhase.CompoEnd]:          moment.utc('2021-03-20T01:00:00'),
+      [EventPhase.JamEnd]:            moment.utc('2021-03-21T01:00:00'),
+      [EventPhase.VotingEnds]:        moment.utc('2021-04-12T20:00:00'),
+      [EventPhase.Results]:           moment.utc('2021-04-12T24:00:00'),
+    })
+  },
 ]
 
 export function generateTimeline(

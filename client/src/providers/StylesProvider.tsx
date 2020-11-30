@@ -19,8 +19,8 @@ export default function StylesProvider({ children }: StyledProviderProps) {
     <Fragment>
       <GlobalStyle />
       <MuiStyledProvider injectFirst>
-        <CssBaseline />
         <MuiThemeProvider theme={muiTheme}>
+          <CssBaseline />
           <ScThemeProvider theme={scTheme}>{children}</ScThemeProvider>
         </MuiThemeProvider>
       </MuiStyledProvider>

@@ -51,7 +51,6 @@ const ClockIndexRoot = styled.div`
 const ClockLabel = styled(Typography)`
   font-weight: 100;
   text-align: center;
-  color: ${({ theme }) => theme.themeColors.countdown.fadedTextColor};
   margin-bottom: 4px;
 `
 
@@ -64,13 +63,45 @@ const ClockDigitRoot = styled.div`
   height: 45px;
   min-width: ${DIGIT_MIN_WIDTH}px;
   max-width: ${DIGIT_MAX_WIDTH}px;
+  color: ${({ theme }) => theme.themeColors.countdown.digitColor};
   flex: 1 1 0px;
-  color: #000000b5;
   font-size: 25px;
   box-shadow: 0 1px 5px -2px #0000009c;
+  border-radius: ${({ theme }) => theme.shape.borderRadius}px;
   &:not(:first-child) {
     margin-left: ${DIGIT_INNER_PADDING}px;
   }
+`
+
+const ClockDigitTop = styled(animated.div)`
+  background: ${({ theme }) => theme.themeColors.countdown.digitTopBackground};
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 51%, 0 51%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  border-radius: 4px;
+`
+
+const ClockDigitBottom = styled(animated.div)`
+  background: ${({ theme }) =>
+    theme.themeColors.countdown.digitBottomBackground};
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  border-radius: 4px;
 `
 
 type ClockDigitProps = {
@@ -83,19 +114,7 @@ const ClockDigit: React.FC<ClockDigitProps> = ({ value }) => {
       tension: 100,
     },
     from: {
-      position: 'absolute' as const,
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      background: 'white',
-      clipPath: 'polygon(0 0, 100% 0, 100% 51%, 0 51%)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backfaceVisibility: 'hidden' as const,
       transform: 'perspective(75px) rotateX(0deg)',
-      borderRadius: 4,
     },
     enter: {},
     leave: {
@@ -109,35 +128,11 @@ const ClockDigit: React.FC<ClockDigitProps> = ({ value }) => {
       tension: 100,
     },
     initial: {
-      position: 'absolute' as const,
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      background: 'rgb(218, 224, 230)',
       life: 100,
-      clipPath: 'polygon(0 50%, 100% 50%, 100% 100%, 0 100%)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backfaceVisibility: 'hidden' as const,
-      borderRadius: 4,
       transform: 'perspective(75px) rotateX(0deg)',
     },
     from: {
-      position: 'absolute' as const,
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      background: 'rgb(218, 224, 230)',
       life: 100,
-      clipPath: 'polygon(0 50%, 100% 50%, 100% 100%, 0 100%)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backfaceVisibility: 'hidden' as const,
-      borderRadius: 4,
       transform: 'perspective(75px) rotateX(180deg)',
     },
     enter: {
@@ -151,10 +146,10 @@ const ClockDigit: React.FC<ClockDigitProps> = ({ value }) => {
   return (
     <ClockDigitRoot>
       {upperTransitions((style, item) => (
-        <animated.div style={style}>{item}</animated.div>
+        <ClockDigitTop style={style}>{item}</ClockDigitTop>
       ))}
       {lowerTransitions((style, item) => (
-        <animated.div style={style}>{item}</animated.div>
+        <ClockDigitBottom style={style}>{item}</ClockDigitBottom>
       ))}
     </ClockDigitRoot>
   )
