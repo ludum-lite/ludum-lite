@@ -261,8 +261,10 @@ export default function CountdownWidget({ events, className }: Props) {
           <EventToggleButtons>
             <Button
               fullWidth
-              variant={preferredEventType === 'compo' ? 'contained' : 'text'}
-              color={preferredEventType === 'compo' ? 'secondary' : 'default'}
+              variant={
+                preferredEventType === 'compo' ? 'contained' : 'outlined'
+              }
+              color="primary"
               onClick={() => {
                 setPreferredEventType('compo')
               }}
@@ -271,8 +273,8 @@ export default function CountdownWidget({ events, className }: Props) {
             </Button>
             <Button
               fullWidth
-              variant={preferredEventType === 'jam' ? 'contained' : 'text'}
-              color={preferredEventType === 'jam' ? 'secondary' : 'default'}
+              variant={preferredEventType === 'jam' ? 'contained' : 'outlined'}
+              color="primary"
               onClick={() => {
                 setPreferredEventType('jam')
               }}
