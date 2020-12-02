@@ -86,7 +86,6 @@ export default function CommentForm({
         </Fade>
         {state === 'write' ? (
           <StyledMultilineTextField
-            key={body ? 'has-body' : 'no-body'}
             name="body"
             placeholder="Leave a comment"
             fullWidth
