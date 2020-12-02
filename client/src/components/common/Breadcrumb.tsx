@@ -12,6 +12,10 @@ interface ButtonProps {
   textColor: TextColor
 }
 const StyledButton = styled(Button)<ButtonProps>`
+  min-width: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+
   span {
     display: block;
     max-width: ${MAX_LENGTH}px;
@@ -23,22 +27,25 @@ const StyledButton = styled(Button)<ButtonProps>`
 
 const Text = styled(Typography)`
   padding: 4px 6px;
-  color: ${({ theme }) => theme.themeColors.breadcrumbs.color};
   max-width: ${MAX_LENGTH}px;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 1.125rem;
+`
+
+const ButtonText = styled(Typography)`
+  max-width: ${MAX_LENGTH}px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1.125rem;
 `
 
 interface Props {
   to?: string
   children: React.ReactNode
-  textColor?: TextColor
+  isParent?: boolean
 }
-export default function Breadcrumb({
-  to,
-  children,
-  textColor = 'black',
-}: Props) {
+export default function Breadcrumb({ to, children, isParent }: Props) {
   if (to) {
     return (
       <StyledButton
@@ -48,17 +55,15 @@ export default function Breadcrumb({
         component={Link}
         to={to}
         noUnderline
-        isBreadcrumb
-        color={textColor === 'white' ? 'primary' : 'secondary'}
       >
-        {children}
+        <ButtonText color={isParent ? 'textSecondary' : 'textPrimary'}>
+          {children}
+        </ButtonText>
       </StyledButton>
     )
   }
 
   return (
-    <Text textColor={textColor === 'white' ? 'white' : undefined}>
-      {children}
-    </Text>
+    <Text color={isParent ? 'textSecondary' : 'textPrimary'}>{children}</Text>
   )
 }

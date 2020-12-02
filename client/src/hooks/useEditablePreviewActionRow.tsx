@@ -16,20 +16,7 @@ interface ActionButtonProps {
 }
 const ActionButton = styled(Button).withConfig({
   shouldForwardProp: ignoreProps(['active']),
-})<ActionButtonProps>`
-  ${({ active }) =>
-    active &&
-    css`
-      color: ${({ theme }) => theme.palette.text.primary};
-      background: ${({ theme }) =>
-        theme.themeColors.addCommentForm.textFieldActiveBackground};
-
-      &:hover {
-        background: ${({ theme }) =>
-          theme.themeColors.addCommentForm.textFieldActiveBackground};
-      }
-    `}
-`
+})<ActionButtonProps>``
 
 const Separator = styled.div`
   flex: 1 1 0px;
@@ -50,11 +37,18 @@ export default function useEditablePreviewActionRow({
 }) {
   const [state, setState] = React.useState<State>('write')
 
+  const wrappedOnCancel = React.useCallback(() => {
+    onCancel?.()
+    setState('write')
+  }, [onCancel])
+
   const actionRow = React.useMemo(() => {
     return (
       <ActionRow>
         <ActionButton
           active={state === 'write'}
+          variant={state === 'write' ? 'contained' : 'outlined'}
+          color={state === 'write' ? 'primary' : 'primary'}
           onClick={() => {
             setState('write')
           }}
@@ -63,6 +57,8 @@ export default function useEditablePreviewActionRow({
         </ActionButton>
         <ActionButton
           active={state === 'preview'}
+          variant={state === 'preview' ? 'contained' : 'outlined'}
+          color={state === 'preview' ? 'primary' : 'primary'}
           onClick={() => {
             setState('preview')
           }}
@@ -71,13 +67,15 @@ export default function useEditablePreviewActionRow({
         </ActionButton>
         <Separator />
         {onCancel && (
-          <Button onClick={onCancel} disabled={isSaving}>
+          <Button onClick={wrappedOnCancel} disabled={isSaving}>
             Cancel
           </Button>
         )}
         <Button
           type="submit"
           loading={isSaving}
+          variant="contained"
+          color="primary"
           onClick={async (e) => {
             e.preventDefault()
 
@@ -92,7 +90,7 @@ export default function useEditablePreviewActionRow({
         </Button>
       </ActionRow>
     )
-  }, [isSaving, onCancel, onSubmit, state])
+  }, [isSaving, wrappedOnCancel, onCancel, onSubmit, state])
 
   return {
     state,

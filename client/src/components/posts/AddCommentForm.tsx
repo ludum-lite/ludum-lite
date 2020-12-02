@@ -54,6 +54,9 @@ export default function AddCommentForm({ className, postId }: Props) {
           },
         })
       }}
+      onCancel={() => {
+        setBody('')
+      }}
     />
   )
 }

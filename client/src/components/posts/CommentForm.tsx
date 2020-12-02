@@ -23,26 +23,32 @@ const Form = styled.form<FormProps>`
   transition-property: background-color;
   transition-duration: ${FADE_TIMEOUT}ms;
 
-  ${({ hasContent }) =>
+  /* ${({ hasContent }) =>
     hasContent &&
     css`
       background-color: ${({ theme }) =>
         theme.themeColors.addCommentForm.background};
-    `}
+    `} */
+`
+
+const StyledMultilineTextField = styled(MultilineTextField)`
+  .MuiInputBase-root {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
 `
 
 const ActionRow = styled.div`
-  padding-bottom: ${({ theme }) => theme.spacing(1 / 2)}px;
+  padding-bottom: ${({ theme }) => theme.spacing(1)}px;
 `
 
 const PreviewContainer = styled.div`
-  background: ${({ theme }) =>
-    theme.themeColors.addCommentForm.textFieldActiveBackground};
   padding: ${({ theme }) =>
     `0 ${theme.spacing(1.5)}px ${theme.spacing(1.5)}px`};
   border-radius: ${({ theme }) => theme.shape.borderRadius}px;
-  min-height: 124px;
+  min-height: 108px;
   white-space: pre;
+  box-shadow: 0 0 0 1px ${({ theme }) => theme.themeColors.input.outlineColor};
 `
 
 interface Props {
@@ -79,7 +85,8 @@ export default function CommentForm({
           <ActionRow>{actionRow}</ActionRow>
         </Fade>
         {state === 'write' ? (
-          <MultilineTextField
+          <StyledMultilineTextField
+            key={body ? 'has-body' : 'no-body'}
             name="body"
             placeholder="Leave a comment"
             fullWidth

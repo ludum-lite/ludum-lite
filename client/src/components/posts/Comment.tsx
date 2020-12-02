@@ -19,17 +19,18 @@ import {
 } from '__generated__/client-types'
 
 const Root = styled.div`
-  border-radius: ${({ theme }) => theme.shape.borderRadius}px;
+  /* border-radius: ${({ theme }) => theme.shape.borderRadius}px; */
   padding: ${({ theme }) => theme.spacing(1)}px;
-  box-shadow: ${({ theme }) => theme.themeColors.comment.boxShadow};
+  /* box-shadow: ${({ theme }) => theme.themeColors.comment.boxShadow}; */
+  border-bottom: 1px solid ${({ theme }) => theme.themeColors.borderColor};
 
-  &:nth-child(even) {
+  /* &:nth-child(even) {
     background: ${({ theme }) => theme.themeColors.comment.evenBackground};
   }
 
   &:nth-child(odd) {
     background: ${({ theme }) => theme.themeColors.comment.oddBackground};
-  }
+  } */
 `
 
 const TitleRow = styled.div`

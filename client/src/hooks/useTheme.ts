@@ -6,6 +6,7 @@ import { createMuiTheme, Theme } from '@material-ui/core'
 import useUserLocalStorage from './useUserLocalStorage'
 import useLocalStorage from './useLocalStorage'
 import { transparentize, tint, shade } from 'polished'
+import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore'
 
 type ButtonColorProps = Partial<{
   color: string
@@ -134,7 +135,8 @@ export type ThemeColors = {
     color: string
   }
   breadcrumbs: {
-    color: string
+    parentColor: string
+    childColor: string
   }
   page: {
     background: string
@@ -142,8 +144,6 @@ export type ThemeColors = {
   }
   addCommentForm: {
     background: string
-    textFieldBackground: string
-    textFieldActiveBackground: string
   }
   comment: {
     evenBackground: string
@@ -155,7 +155,7 @@ export type ThemeColors = {
     digitColor: string
     digitTopBackground: string
     digitBottomBackground: string
-    digitBoxShadow: string
+    digitBoxOutlineColor: string
     nextUpOutlineColor: string
   }
   themeSlaughter: {
@@ -418,7 +418,8 @@ const lightTheme: ThemeColors = {
     hoverBackground: styleVariables.cultured,
   },
   breadcrumbs: {
-    color: textBlack,
+    parentColor: fadedTextBlack,
+    childColor: textBlack,
   },
   page: {
     background: styleVariables.white,
@@ -426,8 +427,6 @@ const lightTheme: ThemeColors = {
   },
   addCommentForm: {
     background: styleVariables.greenBlue,
-    textFieldBackground: styleVariables.cultured,
-    textFieldActiveBackground: styleVariables.white,
   },
   comment: {
     evenBackground: styleVariables.cultured,
@@ -439,9 +438,11 @@ const lightTheme: ThemeColors = {
     digitColor: fadedTextBlack,
     // digitTopBackground: 'rgb(210, 210, 210)',
     // digitBottomBackground: 'rgb(185, 185, 185)',
-    digitTopBackground: 'rgb(228, 228, 228)',
-    digitBottomBackground: 'rgb(212, 212, 212)',
-    digitBoxShadow: '0 1px 5px -2px #0000009c',
+    // digitTopBackground: 'rgb(228, 228, 228)',
+    // digitBottomBackground: 'rgb(212, 212, 212)',
+    digitTopBackground: white,
+    digitBottomBackground: styleVariables.cultured,
+    digitBoxOutlineColor: styleVariables.gainsboro,
     nextUpOutlineColor: styleVariables.greenBlue,
   },
   themeSlaughter: {
@@ -672,16 +673,15 @@ const darkTheme: ThemeColors = {
     color: ldStyleVariables.white,
   },
   breadcrumbs: {
-    color: styleVariables.white,
+    parentColor: fadedTextWhite,
+    childColor: textWhite,
   },
   page: {
     background: ldStyleVariables.cultured,
     actionsBackground: ldStyleVariables.cultured,
   },
   addCommentForm: {
-    background: ldStyleVariables.portlandOrange,
-    textFieldBackground: ldStyleVariables.white,
-    textFieldActiveBackground: ldStyleVariables.white,
+    background: ldStyleVariables.darkOrange,
   },
   comment: {
     evenBackground: ldStyleVariables.white,
@@ -695,7 +695,7 @@ const darkTheme: ThemeColors = {
     // digitBottomBackground: 'rgb(65, 65, 65)',
     digitTopBackground: 'rgb(47, 47, 47)',
     digitBottomBackground: 'rgb(39, 39, 39)',
-    digitBoxShadow: '0 1px 5px -2px #0000009c',
+    digitBoxOutlineColor: ldStyleVariables.eerieBlack,
     nextUpOutlineColor: ldStyleVariables.darkOrange,
   },
   themeSlaughter: {
@@ -710,7 +710,7 @@ const darkTheme: ThemeColors = {
   },
   palette: {
     text: {
-      primary: fadedWhite,
+      primary: white,
     },
     primary: {
       main: ldStyleVariables.darkOrange,
@@ -802,6 +802,9 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
           horizontal: 'right',
         },
       },
+      MuiSelect: {
+        IconComponent: UnfoldMoreIcon,
+      },
     },
     overrides: {
       MuiToolbar: {
@@ -853,11 +856,6 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       MuiToggleButton: {
         root: {
           textTransform: 'none',
-        },
-      },
-      MuiBreadcrumbs: {
-        root: {
-          color: selectedThemeColors.breadcrumbs.color,
         },
       },
       MuiDialogTitle: {

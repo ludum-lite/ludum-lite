@@ -96,9 +96,7 @@ const PageContent = styled.div`
   flex-direction: column;
 `
 
-const Article = styled.div`
-  padding: ${({ theme }) => `${theme.spacing(3)}px`};
-`
+const Article = styled.div``
 
 const TitleText = styled(Typography)`
   font-weight: 500;
@@ -108,6 +106,9 @@ const TitleText = styled(Typography)`
 
 const ActionRow = styled.div`
   display: flex;
+  justify-content: flex-end;
+  padding: ${({ theme }) => theme.spacing(1)}px 0;
+  border-bottom: 1px solid ${({ theme }) => theme.themeColors.borderColor};
 
   & > *:not(:first-child) {
     margin-left: ${({ theme }) => theme.spacing(1)}px;
@@ -119,18 +120,16 @@ const StyledLinearProgress = styled(LinearProgress)`
 `
 
 const StyledAddCommentForm = styled(AddCommentForm)`
-  margin: 0 ${({ theme }) => theme.spacing(3)}px
-    ${({ theme }) => theme.spacing(3)}px;
+  margin-bottom: ${({ theme }) => theme.spacing(3)}px;
+  margin-top: ${({ theme }) => theme.spacing(1)}px;
 `
 
-const CommentsContainer = styled.div`
-  padding: 0 ${({ theme }) => theme.spacing(3)}px;
-`
+const CommentsContainer = styled.div``
 
 const CommentsTitleContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   margin: ${({ theme }) => theme.spacing(3)}px 0;
 `
 
@@ -404,6 +403,25 @@ export default function PostPage({ isEditing }: PostPageProps) {
     setError,
   ])
 
+  const actionRow = React.useMemo(() => {
+    if (!loading && !isEditing && post) {
+      return (
+        <ActionRow>
+          {post && me && (
+            <PostLoveButton
+              post={filter(PostLoveButton_PostFragmentDoc, post)}
+              me={filter(PostLoveButton_MeFragmentDoc, me)}
+            />
+          )}
+          {post && <PostBookmarkButton postId={post.id} />}
+          {menu}
+        </ActionRow>
+      )
+    }
+
+    return null
+  }, [loading, isEditing, post, me, menu])
+
   const pageContent = React.useMemo(() => {
     if (!loading && post) {
       return (
@@ -437,7 +455,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
                           <StyledNewsTag variant="contained" />
                         )}
                         <Title>
-                          <TitleText variant="h4">
+                          <TitleText variant="h3">
                             {(isEditing ? value : post.name) || NO_TITLE_TEXT}
                           </TitleText>
                           {errors.title && (
@@ -473,6 +491,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
               state={isEditing ? state : 'preview'}
               defaultValue={post.body || ''}
             />
+            {actionRow}
           </Article>
           {!isEditing && (
             <Fragment>
@@ -532,14 +551,17 @@ export default function PostPage({ isEditing }: PostPageProps) {
     commentSortBy,
     sortedComments,
     onChangeSortBy,
+    actionRow,
   ])
 
   const breadcrumbs = React.useMemo(() => {
     if (post) {
       return (
         <Breadcrumbs>
-          <Breadcrumb to="/posts">Posts</Breadcrumb>
-          <Breadcrumb to={`/posts/${post.id}`}>
+          <Breadcrumb to="/posts" isParent>
+            Posts
+          </Breadcrumb>
+          <Breadcrumb to={`/posts/${post.id}`} isParent={isEditing}>
             {post.name || NO_TITLE_TEXT}
           </Breadcrumb>
           {isEditing && <Breadcrumb>Edit</Breadcrumb>}
@@ -550,30 +572,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
     return null
   }, [post, isEditing])
 
-  const actionRow = React.useMemo(() => {
-    if (!loading && !isEditing && post) {
-      return (
-        <ActionRow>
-          {post && me && (
-            <PostLoveButton
-              post={filter(PostLoveButton_PostFragmentDoc, post)}
-              me={filter(PostLoveButton_MeFragmentDoc, me)}
-            />
-          )}
-          {post && <PostBookmarkButton postId={post.id} />}
-          {menu}
-        </ActionRow>
-      )
-    }
-
-    return null
-  }, [loading, isEditing, post, me, menu])
-
-  return (
-    <Page breadcrumbs={breadcrumbs} actionRow={actionRow}>
-      {pageContent}
-    </Page>
-  )
+  return <Page breadcrumbs={breadcrumbs}>{pageContent}</Page>
 }
 
 gql`

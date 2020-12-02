@@ -148,8 +148,6 @@ export default function App() {
   const { hasLoaded } = useMe()
   // const { featuredEvent } = useFeaturedEvent()
 
-  console.log(postOverlayed)
-
   if (hasLoaded) {
     return (
       <Root>

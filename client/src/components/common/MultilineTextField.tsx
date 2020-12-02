@@ -14,6 +14,7 @@ export type MutlilineTextFieldProps = Props & TextFieldProps
 export default function MultilineTextField({
   onChange,
   inputRef,
+  value,
   ...others
 }: MutlilineTextFieldProps) {
   const myInputRef = useRef<HTMLInputElement>()
@@ -27,7 +28,7 @@ export default function MultilineTextField({
 
   useEffect(() => {
     updateHeight()
-  }, [])
+  }, [value])
 
   return (
     <StyledTextField
@@ -35,11 +36,15 @@ export default function MultilineTextField({
         if (onChange) {
           onChange(e)
         }
-        updateHeight()
+
+        if (value === undefined) {
+          updateHeight()
+        }
       }}
       fullWidth
       multiline
       rows="4"
+      value={value}
       inputRef={(ref) => {
         if (inputRef) {
           // @ts-ignore

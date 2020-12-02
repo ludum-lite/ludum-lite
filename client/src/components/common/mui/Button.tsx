@@ -21,7 +21,6 @@ export type Color = Exclude<
 
 interface StyledButtonProps {
   background: Background
-  isBreadcrumb: Boolean
   variant: string
   customColor: Color
 }
@@ -127,7 +126,7 @@ interface StyledButtonProps {
 }} */
 
 const StyledButton = styled(MuiButton).withConfig({
-  shouldForwardProp: ignoreProps(['background', 'isBreadcrumb', 'customColor']),
+  shouldForwardProp: ignoreProps(['background', 'customColor']),
 })<StyledButtonProps>`
   ${({ background, customColor, variant, theme }) => {
     const colors =
@@ -149,13 +148,6 @@ const StyledButton = styled(MuiButton).withConfig({
       }
     `
   }}
-
-  ${({ isBreadcrumb }) =>
-    isBreadcrumb &&
-    css`
-      padding: 3px 12px;
-      min-width: 0;
-    `}
 `
 
 interface Props {
@@ -163,7 +155,6 @@ interface Props {
   color?: Color
   variant?: MuiButtonProps['variant']
   loading?: Boolean
-  isBreadcrumb?: Boolean
 }
 export type ButtonProps = Props & Omit<MuiButtonProps, keyof Props | 'color'>
 const Button = React.forwardRef(
@@ -176,7 +167,6 @@ const Button = React.forwardRef(
       disabled,
       children,
       onClick,
-      isBreadcrumb = false,
       ...others
     }: ButtonProps,
     ref
@@ -190,7 +180,6 @@ const Button = React.forwardRef(
         endIcon={loading && <CircularProgress size={20} color="inherit" />}
         children={children}
         onClick={loading ? undefined : onClick}
-        isBreadcrumb={isBreadcrumb}
         {...others}
       />
     )

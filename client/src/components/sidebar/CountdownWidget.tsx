@@ -13,6 +13,7 @@ import Button from 'components/common/mui/Button'
 import Icon from 'components/common/mui/Icon'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import ExpandLess from '@material-ui/icons/ExpandLess'
+import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore'
 import CheckCircle from '@material-ui/icons/CheckCircle'
 import RadioButtonChecked from '@material-ui/icons/RadioButtonChecked'
 import useUserLocalStorage from 'hooks/useUserLocalStorage'
@@ -39,8 +40,7 @@ const Root = styled.div`
 `
 
 const TitleButton = styled(Button)`
-  margin: ${({ theme }) =>
-    `${theme.spacing(2)}px ${theme.spacing(2)}px ${theme.spacing(1)}px`};
+  margin-bottom: ${({ theme }) => theme.spacing(1)}px;
 `
 
 const Subtitle = styled(Typography)``
@@ -50,7 +50,7 @@ const StyledCountdown = styled(Countdown)`
 `
 
 const ExpandButton = styled(Button)`
-  margin: ${({ theme }) => theme.spacing(2)}px;
+  margin-top: ${({ theme }) => theme.spacing(2)}px;
 `
 
 const EventList = styled(List)`
@@ -250,7 +250,10 @@ export default function CountdownWidget({ events, className }: Props) {
 
   return (
     <Root className={className}>
-      <TitleButton endIcon={<Icon icon={ExpandMore} />} onClick={handleClick}>
+      <TitleButton
+        endIcon={<Icon icon={UnfoldMoreIcon} />}
+        onClick={handleClick}
+      >
         <Typography variant="h4" bold>
           Ludum Dare {selectedEvent?.eventNumber}
         </Typography>

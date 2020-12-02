@@ -46,7 +46,6 @@ export default function PostLoveButton({ me, post }: Props) {
       color={theme.themeColors.loveButton.activeColor}
       activeIcon={FavoriteIcon}
       defaultIcon={FavoriteBorderIcon}
-      size="small"
       onClick={(e) => {
         e.stopPropagation()
         if (isLoggedIn && me.__typename === 'Me') {

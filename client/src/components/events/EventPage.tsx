@@ -190,7 +190,9 @@ export default function EventPage(props: EventPageProps) {
     if (event) {
       return (
         <Breadcrumbs>
-          <Breadcrumb to={ROUTES.EVENT.LIST}>Events</Breadcrumb>
+          <Breadcrumb to={ROUTES.EVENT.LIST} isParent>
+            Events
+          </Breadcrumb>
           <Breadcrumb to={ROUTES.EVENT.getEventRoute(eventId)}>
             {event.name}
           </Breadcrumb>

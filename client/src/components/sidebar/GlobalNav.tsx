@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import styled from 'styled-components/macro'
 import { isLoggedInVar } from 'resolvers'
 import {
@@ -14,6 +14,7 @@ import MuiLightBrightnessIcon from '@material-ui/icons/Brightness4'
 import MuiDarkBrightnessIcon from '@material-ui/icons/Brightness4Outlined'
 import ViewWeekIcon from '@material-ui/icons/ViewWeek'
 import VideogameAssetIcon from '@material-ui/icons/VideogameAsset'
+import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore'
 import LocalPlayIcon from '@material-ui/icons/LocalPlay'
 import Icon from 'components/common/mui/Icon'
 import ListItemIcon from 'components/common/mui/ListItemIcon'
@@ -60,6 +61,11 @@ const StyledViewWeekIcon = styled(ViewWeekIcon)`
 
 const Separator = styled.div`
   flex: 1 1 0px;
+`
+
+const ToggleThemeText = styled.span`
+  display: flex;
+  justify-content: space-between;
 `
 
 // interface ProfileCircleProps {
@@ -251,7 +257,14 @@ export default function GlobalNav() {
               }
             />
           </ListItemIcon>
-          <StyledListItemText primary="Toggle Theme" />
+          <StyledListItemText
+            primary={
+              <ToggleThemeText>
+                Toggle Theme
+                {/* <Icon icon={UnfoldMoreIcon} /> */}
+              </ToggleThemeText>
+            }
+          />
         </ListItem>
         {/* <ListItem
           button

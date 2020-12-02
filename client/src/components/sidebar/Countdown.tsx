@@ -66,8 +66,11 @@ const ClockDigitRoot = styled.div`
   color: ${({ theme }) => theme.themeColors.countdown.digitColor};
   flex: 1 1 0px;
   font-size: 25px;
-  box-shadow: 0 1px 5px -2px #0000009c;
+  /* box-shadow: 0 1px 5px -2px #0000009c; */
   border-radius: ${({ theme }) => theme.shape.borderRadius}px;
+  border: 1px solid
+    ${({ theme }) => theme.themeColors.countdown.digitBoxOutlineColor};
+  overflow: hidden;
   &:not(:first-child) {
     margin-left: ${DIGIT_INNER_PADDING}px;
   }
@@ -85,7 +88,6 @@ const ClockDigitTop = styled(animated.div)`
   align-items: center;
   justify-content: center;
   backface-visibility: hidden;
-  border-radius: 4px;
 `
 
 const ClockDigitBottom = styled(animated.div)`
@@ -101,7 +103,6 @@ const ClockDigitBottom = styled(animated.div)`
   align-items: center;
   justify-content: center;
   backface-visibility: hidden;
-  border-radius: 4px;
 `
 
 type ClockDigitProps = {
