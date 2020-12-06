@@ -3,7 +3,9 @@ import React from 'react'
 import styled from 'styled-components/macro'
 import { Hidden, Toolbar } from '@material-ui/core'
 import AppsIcon from '@material-ui/icons/Apps'
+import MenuIcon from '@material-ui/icons/Menu'
 import IconButton from 'components/common/mui/IconButton'
+import { useWidgetsSidebarOpen } from 'hooks/useWidgetsSidebarOpen'
 
 const Root = styled.div`
   display: flex;
@@ -16,7 +18,8 @@ const Root = styled.div`
 `
 
 const StyledAppBar = styled.div`
-  border-bottom: 1px solid ${({ theme }) => theme.themeColors.borderColor};
+  border-bottom: 1px solid
+    ${({ theme }) => theme.themeColors.borderColors.level1};
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     margin: 0px ${({ theme }) => theme.spacing(1)}px;
@@ -38,18 +41,26 @@ const Separator = styled.div`
 
 export default function Topbar() {
   const { setIsSidebarOpen } = useSidebarOpen()
+  const { setIsWidgetsSidebarOpen } = useWidgetsSidebarOpen()
 
   const onClickLeftIcon = React.useCallback(() => {
     setIsSidebarOpen(true)
   }, [setIsSidebarOpen])
+
+  const onClickRightIcon = React.useCallback(() => {
+    setIsWidgetsSidebarOpen(true)
+  }, [setIsWidgetsSidebarOpen])
 
   return (
     <Hidden mdUp>
       <Root>
         <StyledAppBar>
           <StyledToolbar disableGutters>
-            <Separator />
             <StyledIconButton aria-label="menu" onClick={onClickLeftIcon}>
+              <MenuIcon />
+            </StyledIconButton>
+            <Separator />
+            <StyledIconButton aria-label="menu" onClick={onClickRightIcon}>
               <AppsIcon />
             </StyledIconButton>
           </StyledToolbar>

@@ -12,10 +12,6 @@ const Label = styled(Typography)`
   margin-right: ${({ theme }) => theme.spacing(2)}px;
 `
 
-const Value = styled(Typography)`
-  color: ${({ theme }) => theme.themeColors.fadedWhite};
-`
-
 interface Props {
   label: string
   value: React.ReactNode
@@ -24,7 +20,7 @@ interface Props {
 export default function GameDetailListItem({ label, value, className }: Props) {
   const valueComponent = React.useMemo(() => {
     if (typeof value === 'string') {
-      return <Value variant="body2">{value}</Value>
+      return <Typography variant="body2">{value}</Typography>
     } else {
       return value
     }

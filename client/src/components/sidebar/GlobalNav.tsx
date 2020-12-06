@@ -15,6 +15,9 @@ import MuiDarkBrightnessIcon from '@material-ui/icons/Brightness4Outlined'
 import ViewWeekIcon from '@material-ui/icons/ViewWeek'
 import VideogameAssetIcon from '@material-ui/icons/VideogameAsset'
 import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore'
+import AccountCircleIcon from '@material-ui/icons/AccountCircle'
+import PersonIcon from '@material-ui/icons/Person'
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew'
 import LocalPlayIcon from '@material-ui/icons/LocalPlay'
 import Icon from 'components/common/mui/Icon'
 import ListItemIcon from 'components/common/mui/ListItemIcon'
@@ -67,19 +70,6 @@ const ToggleThemeText = styled.span`
   display: flex;
   justify-content: space-between;
 `
-
-// interface ProfileCircleProps {
-//   isLoggedIn: boolean
-// }
-// const ProfileCircle = styled.div<ProfileCircleProps>`
-//   height: 24px;
-//   width: 24px;
-
-//   svg {
-//     fill: ${({ isLoggedIn }) =>
-//       isLoggedIn ? 'white' : 'rgba(255, 255, 255, 0.47)'};
-//   }
-// `
 
 // interface ProfileButtonProps {
 //   isLoggedIn: boolean
@@ -266,7 +256,7 @@ export default function GlobalNav() {
             }
           />
         </ListItem>
-        {/* <ListItem
+        <ListItem
           button
           onClick={(e) => {
             // @ts-ignore
@@ -274,16 +264,10 @@ export default function GlobalNav() {
           }}
         >
           <ListItemIcon compactPadding>
-            <Icon
-              icon={() => (
-                <ProfileCircle isLoggedIn={isLoggedIn}>
-                  <UserIcon />
-                </ProfileCircle>
-              )}
-            />
+            <Icon icon={AccountCircleIcon} />
           </ListItemIcon>
-          <ListItemText primary={isLoggedIn ? 'Account' : 'Login'} />
-        </ListItem> */}
+          <StyledListItemText primary={isLoggedIn ? 'Account' : 'Login'} />
+        </ListItem>
       </List>
       <Menu
         anchorEl={anchorEl}
@@ -291,7 +275,7 @@ export default function GlobalNav() {
         onClose={handleClose}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'right',
+          horizontal: 'left',
         }}
         transformOrigin={{
           vertical: 'bottom',
@@ -302,8 +286,18 @@ export default function GlobalNav() {
         getContentAnchorEl={null}
         TransitionComponent={Fade}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={onLogout}>Logout</MenuItem>
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon compactPadding>
+            <Icon icon={PersonIcon} />
+          </ListItemIcon>
+          Profile
+        </MenuItem>
+        <MenuItem onClick={onLogout}>
+          <ListItemIcon compactPadding>
+            <Icon icon={PowerSettingsNewIcon} />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
       </Menu>
     </Root>
   )

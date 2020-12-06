@@ -27,7 +27,8 @@ interface RootProps {
   collapsedNewsPost?: boolean
 }
 const Root = styled.div<RootProps>`
-  border-bottom: 1px solid ${({ theme }) => theme.themeColors.borderColor};
+  border-bottom: 1px solid
+    ${({ theme }) => theme.themeColors.borderColors.level1};
 
   ${({ collapsedNewsPost }) =>
     collapsedNewsPost &&

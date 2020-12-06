@@ -108,7 +108,8 @@ const ActionRow = styled.div`
   display: flex;
   justify-content: flex-end;
   padding: ${({ theme }) => theme.spacing(1)}px 0;
-  border-bottom: 1px solid ${({ theme }) => theme.themeColors.borderColor};
+  border-bottom: 1px solid
+    ${({ theme }) => theme.themeColors.borderColors.level1};
 
   & > *:not(:first-child) {
     margin-left: ${({ theme }) => theme.spacing(1)}px;

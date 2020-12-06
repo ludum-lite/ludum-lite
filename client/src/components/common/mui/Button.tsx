@@ -25,118 +25,12 @@ interface StyledButtonProps {
   customColor: Color
 }
 
-/* ${({ theme, variant, customColor }) => {
-  if (variant === 'contained') {
-    if (customColor === 'success') {
-      return css`
-        background: ${theme.themeColors.button.color.contained
-          .successBackground};
-        color: white;
-
-        &:hover {
-          background: ${theme.themeColors.button.color.contained
-            .successHoverBackground};
-        }
-      `
-    } else if (customColor === 'error') {
-      return css`
-        background: ${theme.themeColors.button.color.contained
-          .errorBackground};
-        color: white;
-
-        &:hover {
-          background: ${theme.themeColors.button.color.contained
-            .errorHoverBackground};
-        }
-      `
-    } else if (customColor === 'yellow') {
-      return css`
-        background: ${theme.themeColors.button.color.contained
-          .yellowBackground};
-        color: ${({ theme }) => theme.themeColors.textBlack};
-
-        &:hover {
-          background: ${theme.themeColors.button.color.contained
-            .yellowHoverBackground};
-        }
-      `
-    }
-  } else if (variant === 'outlined') {
-    if (customColor === 'success') {
-      return css`
-        color: ${theme.themeColors.button.color.outlined.successColor};
-        border-color: ${theme.themeColors.button.color.outlined.successColor};
-
-        &:hover {
-          background: ${theme.themeColors.button.color.outlined
-            .successHoverBackground};
-        }
-      `
-    } else if (customColor === 'error') {
-      return css`
-        color: ${theme.themeColors.button.color.outlined.errorColor};
-        border-color: ${theme.themeColors.button.color.outlined.errorColor};
-
-        &:hover {
-          background: ${theme.themeColors.button.color.outlined
-            .errorHoverBackground};
-        }
-      `
-    } else if (customColor === 'yellow') {
-      return css`
-        color: ${theme.themeColors.button.color.outlined.yellowColor};
-        border-color: ${theme.themeColors.button.color.outlined.yellowColor};
-
-        &:hover {
-          background: ${theme.themeColors.button.color.outlined
-            .yellowHoverBackground};
-        }
-      `
-    }
-  } else if (variant === 'text') {
-    if (customColor === 'success') {
-      return css`
-        color: ${theme.themeColors.button.color.text.successColor};
-
-        &:hover {
-          background: ${theme.themeColors.button.color.text
-            .successHoverBackground};
-        }
-      `
-    } else if (customColor === 'error') {
-      return css`
-        color: ${theme.themeColors.button.color.text.errorColor};
-
-        &:hover {
-          background: ${theme.themeColors.button.color.text
-            .errorHoverBackground};
-        }
-      `
-    } else if (customColor === 'yellow') {
-      return css`
-        color: ${theme.themeColors.button.color.text.yellowColor};
-
-        &:hover {
-          background: ${theme.themeColors.button.color.text
-            .yellowHoverBackground};
-        }
-      `
-    }
-  }
-}} */
-
 const StyledButton = styled(MuiButton).withConfig({
   shouldForwardProp: ignoreProps(['background', 'customColor']),
 })<StyledButtonProps>`
   ${({ background, customColor, variant, theme }) => {
     const colors =
       theme.themeColors.button?.[background]?.[variant]?.[customColor]
-
-    // if (variant === 'text') {
-    //   hoverBackground = colors.text?.hoverBackground
-    // } else if (color === 'default' && variant === 'contained') {
-    //   hoverBackground = colors.contained?.hoverBackground
-    // }
 
     return css`
       color: ${colors?.color};

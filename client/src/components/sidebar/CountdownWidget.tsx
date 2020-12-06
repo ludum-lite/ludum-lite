@@ -41,6 +41,8 @@ const Root = styled.div`
 
 const TitleButton = styled(Button)`
   margin-bottom: ${({ theme }) => theme.spacing(1)}px;
+  white-space: nowrap;
+  padding: 6px 6px;
 `
 
 const Subtitle = styled(Typography)``
@@ -51,18 +53,19 @@ const StyledCountdown = styled(Countdown)`
 
 const ExpandButton = styled(Button)`
   margin-top: ${({ theme }) => theme.spacing(2)}px;
+  white-space: nowrap;
+  padding: 6px 6px;
 `
 
 const EventList = styled(List)`
   overflow: auto;
-  padding: ${({ theme }) => `0 ${theme.spacing(2)}px`};
 `
 
 const NextTitle = styled.div`
   display: flex;
   justify-content: center;
   padding: ${({ theme }) => theme.spacing(1)}px;
-  background: ${({ theme }) => theme.themeColors.backgrounds.level2};
+  background: ${({ theme }) => theme.themeColors.backgrounds.level3};
   border-radius: ${({ theme }) =>
     `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`};
   border: 3px solid

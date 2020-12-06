@@ -39,7 +39,11 @@ export type ThemeColors = {
     background: string
     barBackground: string
   }
-  borderColor: string
+  borderColors: {
+    level1?: string
+    level2?: string
+    level3?: string
+  }
   fadedWhite: string
   fadedBlack: string
   textBlack: string
@@ -51,6 +55,10 @@ export type ThemeColors = {
   }
   link: {
     color: string
+  }
+  logo: {
+    ludumBackground: string
+    dareBackground: string
   }
   error: {
     background: string
@@ -204,6 +212,48 @@ const textBlack = 'rgba(0, 0, 0, 0.87)'
 const fadedTextBlack = 'rgb(76, 76, 76)'
 const defaultIconBlack = 'rgba(0, 0, 0, 0.78)'
 
+const greys = {
+  100: shade(0.1, white),
+  200: shade(0.2, white),
+  300: shade(0.3, white),
+  400: shade(0.4, white),
+  450: shade(0.45, white),
+  500: shade(0.5, white),
+  600: shade(0.6, white),
+  700: shade(0.7, white),
+  800: shade(0.8, white),
+  900: shade(0.9, white),
+  950: shade(0.95, white),
+}
+
+const transparentWhites = {
+  100: transparentize(0.1, white),
+  200: transparentize(0.2, white),
+  300: transparentize(0.3, white),
+  400: transparentize(0.4, white),
+  450: transparentize(0.45, white),
+  500: transparentize(0.5, white),
+  600: transparentize(0.6, white),
+  700: transparentize(0.7, white),
+  800: transparentize(0.8, white),
+  900: transparentize(0.9, white),
+  950: transparentize(0.95, white),
+}
+
+const transparentBlacks = {
+  100: transparentize(0.1, black),
+  200: transparentize(0.2, black),
+  300: transparentize(0.3, black),
+  400: transparentize(0.4, black),
+  450: transparentize(0.45, black),
+  500: transparentize(0.5, black),
+  600: transparentize(0.6, black),
+  700: transparentize(0.7, black),
+  800: transparentize(0.8, black),
+  900: transparentize(0.9, black),
+  950: transparentize(0.95, black),
+}
+
 const commonTheme = {
   textBlack,
   fadedBlack,
@@ -241,7 +291,6 @@ const styleVariables = {
   boxShadow: {
     light: 'rgba(255, 255, 255, 0.25)',
   },
-  borderColor: transparentize(0.85, black),
 } as const
 
 const lightTheme: ThemeColors = {
@@ -257,12 +306,20 @@ const lightTheme: ThemeColors = {
   },
   fadedWhite,
   fadedBlack,
-  borderColor: styleVariables.borderColor,
+  borderColors: {
+    level1: greys[200],
+    level2: greys[200],
+    level3: greys[300],
+  },
   markdown: {
     codeBackground: 'rgba(64, 75, 86, 0.15)',
   },
   link: {
     color: styleVariables.greenBlue,
+  },
+  logo: {
+    ludumBackground: 'rgb(6, 99, 158)',
+    dareBackground: styleVariables.greenBlue,
   },
   error: {
     background: styleVariables.bittersweet,
@@ -284,7 +341,7 @@ const lightTheme: ThemeColors = {
   },
   input: {
     background: styleVariables.cultured,
-    outlineColor: styleVariables.gainsboro,
+    outlineColor: greys[200],
     dividerColor: styleVariables.white,
     placeholderColor: fadedTextBlack,
     color: fadedTextBlack,
@@ -441,8 +498,8 @@ const lightTheme: ThemeColors = {
     // digitTopBackground: 'rgb(228, 228, 228)',
     // digitBottomBackground: 'rgb(212, 212, 212)',
     digitTopBackground: white,
-    digitBottomBackground: styleVariables.cultured,
-    digitBoxOutlineColor: styleVariables.gainsboro,
+    digitBottomBackground: styleVariables.gainsboro,
+    digitBoxOutlineColor: transparentBlacks[900],
     nextUpOutlineColor: styleVariables.greenBlue,
   },
   themeSlaughter: {
@@ -496,7 +553,6 @@ const ldStyleVariables = {
   boxShadow: {
     light: 'rgba(255, 255, 255, 0.25)',
   },
-  borderColor: transparentize(0.85, white),
 } as const
 
 const darkTheme: ThemeColors = {
@@ -512,12 +568,20 @@ const darkTheme: ThemeColors = {
   },
   fadedWhite,
   fadedBlack,
-  borderColor: ldStyleVariables.borderColor,
+  borderColors: {
+    level1: transparentWhites[700],
+    level2: greys[900],
+    level3: greys[950],
+  },
   markdown: {
     codeBackground: 'rgba(64, 75, 86, 0.11)',
   },
   link: {
     color: ldStyleVariables.darkOrange,
+  },
+  logo: {
+    ludumBackground: ldStyleVariables.portlandOrange,
+    dareBackground: ldStyleVariables.darkOrange,
   },
   error: {
     background: styleVariables.bittersweet,
@@ -539,7 +603,7 @@ const darkTheme: ThemeColors = {
   },
   input: {
     background: ldStyleVariables.jet,
-    outlineColor: ldStyleVariables.eerieBlack,
+    outlineColor: greys[900],
     dividerColor: ldStyleVariables.lightGray,
     placeholderColor: transparentize(0.4, white),
     color: white,
@@ -693,8 +757,8 @@ const darkTheme: ThemeColors = {
     digitColor: white,
     // digitTopBackground: 'rgb(76, 76, 76)',
     // digitBottomBackground: 'rgb(65, 65, 65)',
-    digitTopBackground: 'rgb(47, 47, 47)',
-    digitBottomBackground: 'rgb(39, 39, 39)',
+    digitTopBackground: 'rgb(49, 49, 49)',
+    digitBottomBackground: ldStyleVariables.eerieBlack,
     digitBoxOutlineColor: ldStyleVariables.eerieBlack,
     nextUpOutlineColor: ldStyleVariables.darkOrange,
   },
@@ -820,6 +884,13 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       MuiMenu: {
         paper: {
           minWidth: 150,
+          background: selectedThemeColors.backgrounds.level2,
+        },
+      },
+      MuiMenuItem: {
+        root: {
+          paddingTop: '0.875rem',
+          paddingBottom: '0.75rem',
         },
       },
       MuiButton: {
@@ -938,7 +1009,7 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       },
       MuiInputBase: {
         root: {
-          // boxShadow: selectedThemeColors.input.boxShadow,
+          // : selectedThemeColors.input.boxShadow,
           color: selectedThemeColors.input.color,
         },
         input: {
@@ -948,26 +1019,6 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
           },
         },
       },
-      // MuiInput: {
-      //   root: {
-      //     border: '1px solid #e2e2e1',
-      //     overflow: 'hidden',
-      //     borderRadius: 4,
-      //     backgroundColor: '#fcfcfb',
-      //     transition: 'none',
-      //     '&:hover': {
-      //       backgroundColor: '#fff',
-      //     },
-      //     '&$focused': {
-      //       backgroundColor: '#fff',
-      //       boxShadow: `${fade(
-      //         defaultTheme.palette.primary.main,
-      //         0.25
-      //       )} 0 0 0 2px`,
-      //       borderColor: defaultTheme.palette.primary.main,
-      //     },
-      //   },
-      // },
       MuiFilledInput: {
         root: {
           borderRadius: defaultTheme.shape.borderRadius,
@@ -1038,6 +1089,7 @@ const scThemeGenerator = ({
   themeColors,
   buttonRootBackgroundColor: buttonOutlinedBackgroundColor,
   buttonContainedBackgroundColor,
+  removeTopLeadingStyles: '-0.4rem',
   // prettier-ignore
   layout: {
     1: '0.125rem',   // 2

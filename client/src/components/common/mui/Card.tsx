@@ -13,7 +13,7 @@ const StyledCard = styled(MuiCard).withConfig({
   ${({ border }) =>
     border &&
     css`
-      border: 1px solid ${({ theme }) => theme.themeColors.borderColor};
+      border: 1px solid ${({ theme }) => theme.themeColors.borderColors.level1};
     `}
 
   ${({ clickable, border }) =>

@@ -40,6 +40,7 @@ const Root = styled.div`
 
 const AppContent = styled.div`
   display: flex;
+  align-items: flex-start;
   flex: 1 0 0px;
   position: relative;
   max-width: 1100px;
@@ -55,6 +56,7 @@ const MiddleContent = styled.div`
   flex: 1 1 0px;
   display: flex;
   flex-direction: column;
+  height: 100%;
 `
 
 // const WidgetSelector = styled.div`

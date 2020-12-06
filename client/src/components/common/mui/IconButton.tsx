@@ -16,7 +16,7 @@ interface StyledButtonProps {
 }
 
 const StyledIconButton = styled(MuiIconButton).withConfig({
-  shouldForwardProp: ignoreProps(['variant']),
+  shouldForwardProp: ignoreProps(['variant', 'customColor']),
 })<StyledButtonProps>`
   ${({ customColor, variant, theme }) => {
     const colors = theme.themeColors.button.level1?.[variant]?.[customColor]

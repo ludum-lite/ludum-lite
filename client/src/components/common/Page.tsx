@@ -21,7 +21,12 @@ const StyledAppBar = styled.div`
 
 const StyledToolbar = styled(Toolbar)`
   align-items: stretch;
-  border-bottom: 1px solid ${({ theme }) => theme.themeColors.borderColor};
+  border-bottom: 1px solid
+    ${({ theme }) => theme.themeColors.borderColors.level1};
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    margin: 0px ${({ theme }) => theme.spacing(1)}px;
+  }
 `
 
 const StickyBreadcrumbContainer = styled.div`
@@ -62,12 +67,14 @@ export default function Page({ children, breadcrumbs }: Props) {
   )
 
   return (
-    <Root>
-      <Hidden mdUp>{breadcrumbBar}</Hidden>
-      <Hidden smDown>
-        <StickyBreadcrumbContainer>{breadcrumbBar}</StickyBreadcrumbContainer>
-      </Hidden>
-      <Content>{children}</Content>
-    </Root>
+    <StickyBox>
+      <Root>
+        <Hidden mdUp>{breadcrumbBar}</Hidden>
+        <Hidden smDown>
+          <StickyBreadcrumbContainer>{breadcrumbBar}</StickyBreadcrumbContainer>
+        </Hidden>
+        <Content>{children}</Content>
+      </Root>
+    </StickyBox>
   )
 }

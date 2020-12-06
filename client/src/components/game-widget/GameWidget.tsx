@@ -4,19 +4,8 @@ import { gql } from '@apollo/client'
 
 import {
   useGameWidgetDataQuery,
-  EventPhase,
-  useJoinEventMutation,
   useGameWidget_EditGameMutation,
 } from '__generated__/client-types'
-import Button from 'components/common/mui/Button'
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-} from '@material-ui/core'
-import useUserLocalStorage from 'hooks/useUserLocalStorage'
 import { useLogin } from 'hooks/useLogin'
 import GameDetailListItem from './GameDetailListItem'
 import Input from 'components/common/mui/Input'
@@ -26,15 +15,14 @@ import Typography from 'components/common/mui/Typography'
 
 const Root = styled.div`
   display: flex;
-  background: ${({ theme }) => theme.themeColors.backgrounds.level1};
-  color: white;
+  /* Balance top spacing created by text leading and icon button height */
+  padding-bottom: ${({ theme }) => theme.spacing(1)}px;
 `
 
 const GameDetails = styled.div`
   flex: 1 1 0px;
   display: flex;
   flex-direction: column;
-  padding: ${({ theme }) => theme.spacing(2)}px;
 `
 
 const TopRow = styled.div`
@@ -58,10 +46,6 @@ const GameNameListItem = styled(GameDetailListItem)`
   height: 24px;
 `
 
-const JoinButton = styled(Button)`
-  height: 64px;
-`
-
 interface Props {
   className?: string
 }
@@ -76,34 +60,8 @@ export default function GameWidget({ className }: Props) {
     },
   })
 
-  const [, setPreferredEventType] = useUserLocalStorage<'compo' | 'jam' | null>(
-    'currentEventPreferredEventType',
-    null
-  )
-  const [showJoinEventDialog, setShowJoinEventDialog] = React.useState<boolean>(
-    false
-  )
   const [editGameNameMutation] = useGameWidget_EditGameMutation()
   const { fn: editGameName } = useMinLoadingTime(editGameNameMutation)
-
-  const handleClose = React.useCallback(() => {
-    setShowJoinEventDialog(false)
-  }, [])
-
-  const [joinEventMutation] = useJoinEventMutation()
-
-  const joinEvent = React.useCallback(
-    async (type: 'jam' | 'compo') => {
-      try {
-        await joinEventMutation()
-        setPreferredEventType(type)
-        handleClose()
-      } catch (e) {
-        console.error(e)
-      }
-    },
-    [setPreferredEventType, handleClose, joinEventMutation]
-  )
 
   const persistedGameName = data?.featuredEvent.currentUserGame?.name
 
@@ -123,9 +81,6 @@ export default function GameWidget({ className }: Props) {
                 <Typography variant="h4" bold>
                   My Game
                 </Typography>
-                {/* <IconButton background="contextualNav" size="small">
-                  <Icon icon={MoreHorizIcon} />
-                </IconButton> */}
               </TopRow>
               <GameDetailsBody>
                 <GameNameListItem
@@ -151,6 +106,10 @@ export default function GameWidget({ className }: Props) {
                           data?.featuredEvent.currentUserGameId &&
                           data?.featuredEvent.currentUserGame?.name !== gameName
                         ) {
+                          console.log({
+                            name: data?.featuredEvent.currentUserGame?.name,
+                            gameName,
+                          })
                           await editGameName({
                             variables: {
                               input: {
@@ -178,27 +137,6 @@ export default function GameWidget({ className }: Props) {
               </GameDetailsBody>
             </GameDetails>
           )
-        } else {
-          const featuredEvent = data.featuredEvent
-
-          const joinableEventPhases = [
-            EventPhase.ThemeSubmission,
-            EventPhase.ThemeSlaughter,
-            EventPhase.ThemeVoting,
-            EventPhase.EventRunning,
-          ]
-
-          return (
-            joinableEventPhases.includes(featuredEvent.eventPhase) &&
-            !featuredEvent.currentUserGameId && (
-              <JoinButton
-                fullWidth
-                onClick={() => setShowJoinEventDialog(true)}
-              >
-                <Typography variant="h4">Join Event!</Typography>
-              </JoinButton>
-            )
-          )
         }
       }
     }
@@ -208,35 +146,7 @@ export default function GameWidget({ className }: Props) {
     return null
   }
 
-  return (
-    <Root className={className}>
-      {content}
-      <Dialog open={showJoinEventDialog} onClose={handleClose}>
-        <DialogTitle>Jam or Compo?</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you joining the Jam or Compo? (You can change this later)
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            fullWidth
-            onClick={() => joinEvent('jam')}
-            variant="contained"
-          >
-            Jam
-          </Button>
-          <Button
-            fullWidth
-            onClick={() => joinEvent('compo')}
-            variant="contained"
-          >
-            Compo
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Root>
-  )
+  return <Root className={className}>{content}</Root>
 }
 
 gql`
@@ -249,24 +159,6 @@ gql`
         name
       }
       eventPhase
-    }
-  }
-
-  mutation JoinEvent {
-    joinEvent {
-      ... on JoinEventSuccess {
-        gameId
-        featuredEvent {
-          id
-          currentUserGameId
-          currentUserGame {
-            id
-            teamUsers {
-              ...TeamWidget_teamUser
-            }
-          }
-        }
-      }
     }
   }
 

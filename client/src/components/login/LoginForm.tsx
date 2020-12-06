@@ -76,7 +76,7 @@ export default function LoginForm({ login, error }: Props) {
           name="username"
           id="username"
           label="Username"
-          defaultValue="buildingpdfeconomica"
+          defaultValue="JuIl160KORinfluenc"
           inputRef={register}
           fullWidth
         />
@@ -85,7 +85,7 @@ export default function LoginForm({ login, error }: Props) {
           id="password"
           type="password"
           label="Password"
-          defaultValue="buildingpdfeconomica"
+          defaultValue="JuIl160KORinfluenc"
           inputRef={register}
           fullWidth
         />

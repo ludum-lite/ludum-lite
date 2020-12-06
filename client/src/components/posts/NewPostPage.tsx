@@ -7,15 +7,18 @@ import {
 import { useSnackbar } from 'notistack'
 import { useNavigate } from 'react-router'
 import { gql } from '@apollo/client'
+import { useFocusJoinEventButton } from 'hooks/useFocusJoinEventButton'
+import { useLogin } from 'hooks/useLogin'
 
 const Root = styled.div``
 
-interface Props {}
 export default function NewPostPage() {
   const { enqueueSnackbar } = useSnackbar()
   const navigate = useNavigate()
   const { data } = useNewPostPageDataQuery()
   const [createPostMutation] = useCreatePostMutation()
+  const [, setIsFocusedJoinEventButton] = useFocusJoinEventButton()
+  const { isLoggedIn } = useLogin()
 
   React.useEffect(() => {
     async function createPost() {
@@ -43,10 +46,21 @@ export default function NewPostPage() {
           })
         }
       } else {
-        console.error('Trying to create post error: No game id')
-        enqueueSnackbar('Please login or join the event', {
-          variant: 'error',
-        })
+        if (!isLoggedIn) {
+          enqueueSnackbar('Please login', {
+            variant: 'error',
+          })
+        } else {
+          enqueueSnackbar('Please join the event from the right side bar', {
+            variant: 'error',
+          })
+          setIsFocusedJoinEventButton(true)
+  
+          setTimeout(() => {
+            setIsFocusedJoinEventButton(false)
+          }, 4000)
+        }
+        navigate('/')
       }
     }
 

@@ -22,7 +22,8 @@ const Root = styled.div`
   /* border-radius: ${({ theme }) => theme.shape.borderRadius}px; */
   padding: ${({ theme }) => theme.spacing(1)}px;
   /* box-shadow: ${({ theme }) => theme.themeColors.comment.boxShadow}; */
-  border-bottom: 1px solid ${({ theme }) => theme.themeColors.borderColor};
+  border-bottom: 1px solid ${({ theme }) =>
+    theme.themeColors.borderColors.level1};
 
   /* &:nth-child(even) {
     background: ${({ theme }) => theme.themeColors.comment.evenBackground};

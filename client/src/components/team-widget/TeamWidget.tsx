@@ -40,10 +40,9 @@ import DialogTitle from 'components/common/mui/DialogTitle'
 
 const Root = styled.div`
   display: flex;
-  background: ${({ theme }) => theme.themeColors.backgrounds.level1};
-  color: white;
-  padding: ${({ theme }) => theme.spacing(2)}px;
   flex-direction: column;
+  /* Balance top spacing created by text leading and icon button height */
+  padding-bottom: ${({ theme }) => theme.spacing(1)}px;
 `
 
 const TopRow = styled.div`
@@ -235,8 +234,7 @@ export default function GameWidget({ className }: Props) {
           <DialogTitle>Join a Team</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Please ask your team leader to initiate the join process from
-              their end.
+              Please ask your new team leader to add you to their team.
             </DialogContentText>
           </DialogContent>
         </Dialog>
@@ -281,7 +279,7 @@ export default function GameWidget({ className }: Props) {
                 >
                   Join a different team
                 </MenuItem>
-                {gameId && (
+                {gameId && teamUsers && teamUsers.length > 1 && (
                   <MenuItem
                     onClick={async () => {
                       popupState.close()
@@ -305,34 +303,33 @@ export default function GameWidget({ className }: Props) {
               <AddTeamMemberButton
                 onClick={() => setShowTeamMemberSelectDialog(true)}
               />
-              {teamUsers &&
-                teamUsers
-                  .filter((user) => user.id !== leaderUser?.id)
-                  .sort((user) => {
-                    if (user.id === me.id) {
-                      return -1
-                    } else {
-                      return user.id
-                    }
-                  })
-                  .map((user) => (
-                    <Tooltip
-                      key={user.id}
-                      title={user.name}
-                      enterDelay={0}
-                      arrow
-                      placement="top"
-                    >
-                      <TeamMember
-                        avatarPath={user.avatarPath}
-                        onClick={() => {
-                          if (isLeader) {
-                            setShowUserOptionsForUserId(user.id)
-                          }
-                        }}
-                      />
-                    </Tooltip>
-                  ))}
+              {teamUsers
+                ?.filter((user) => user.id !== leaderUser?.id)
+                .sort((user) => {
+                  if (user.id === me.id) {
+                    return -1
+                  } else {
+                    return user.id
+                  }
+                })
+                .map((user) => (
+                  <Tooltip
+                    key={user.id}
+                    title={user.name}
+                    enterDelay={0}
+                    arrow
+                    placement="top"
+                  >
+                    <TeamMember
+                      avatarPath={user.avatarPath}
+                      onClick={() => {
+                        if (isLeader) {
+                          setShowUserOptionsForUserId(user.id)
+                        }
+                      }}
+                    />
+                  </Tooltip>
+                ))}
               {leaderUser && (
                 <Tooltip
                   title={leaderUser.name}

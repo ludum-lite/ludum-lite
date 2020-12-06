@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import StickyBox from 'react-sticky-box'
 import styled from 'styled-components/macro'
 import { Typography, Hidden, Drawer } from '@material-ui/core'
 import { ReactComponent as LudumLogo } from 'assets/ludum.svg'
@@ -13,33 +14,33 @@ const StyledDrawer = styled(Drawer)`
   }
 `
 
-const Root = styled.div`
+const Root = styled(Hidden)`
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  width: ${({ theme }) => theme.variables.sidebar.widthPx};
-  border-right: 1px solid ${({ theme }) => theme.themeColors.borderColor};
+  align-items: flex-start;
+  height: 100%;
+  border-right: 1px solid
+    ${({ theme }) => theme.themeColors.borderColors.level1};
   background: ${({ theme }) => theme.themeColors.backgrounds.level1};
 `
 
-const DesktopSidebar = styled.div`
-  position: sticky;
-  top: 0px;
-`
-
-const Body = styled.div`
-  flex: 1 1 0px;
+const Body = styled(StickyBox)`
+  flex: 0 1 auto;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  width: ${({ theme }) => theme.variables.sidebar.widthPx};
   padding: ${({ theme }) => theme.spacing(2)}px 0;
+  padding-top: ${({ theme }) => theme.spacing(8)}px;
 `
 
 const LogoContainer = styled.div`
+  position: fixed;
   display: flex;
-  border-bottom: 1px solid ${({ theme }) => theme.themeColors.borderColor};
-  margin-right: ${({ theme }) => theme.spacing(1)}px;
-  padding-right: ${({ theme }) => theme.spacing(1)}px;
-  padding-left: ${({ theme }) => theme.spacing(2)}px;
+  background: ${({ theme }) => theme.themeColors.backgrounds.level1};
+  z-index: 1000;
+  width: ${({ theme }) => theme.variables.sidebar.widthPx};
+  padding: 0 ${({ theme }) => theme.spacing(1)}px;
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
     height: ${({ theme }) => theme.spacing(7)}px;
@@ -70,16 +71,18 @@ const Title = styled(Typography)`
   display: flex;
   align-items: center;
   justify-content: center;
+  border-bottom: 1px solid
+    ${({ theme }) => theme.themeColors.borderColors.level1};
 `
 
 const StyledLudumLogo = styled(LudumLogo)`
-  fill: ${({ theme }) => theme.ldStyleVariables.portlandOrange};
+  fill: ${({ theme }) => theme.themeColors.logo.ludumBackground};
   height: 30px;
   margin-right: ${({ theme }) => theme.spacing(1)}px;
 `
 
 const StyledDareLogo = styled(DareLogo)`
-  fill: ${({ theme }) => theme.ldStyleVariables.darkOrange};
+  fill: ${({ theme }) => theme.themeColors.logo.dareBackground};
   height: 30px;
 `
 
@@ -89,22 +92,6 @@ const Sidebar = React.memo(() => {
   const closeSidebar = React.useCallback(() => {
     setIsSidebarOpen(false)
   }, [setIsSidebarOpen])
-
-  const content = React.useMemo(() => {
-    return (
-      <Root>
-        <LogoContainer>
-          <Title>
-            <StyledLudumLogo />
-            <StyledDareLogo />
-          </Title>
-        </LogoContainer>
-        <Body>
-          <GlobalNav />
-        </Body>
-      </Root>
-    )
-  }, [])
 
   return (
     <Fragment>
@@ -118,12 +105,30 @@ const Sidebar = React.memo(() => {
             keepMounted: true, // Better open performance on mobile.
           }}
         >
-          {content}
+          <Root>
+            <LogoContainer>
+              <Title>
+                <StyledLudumLogo />
+                <StyledDareLogo />
+              </Title>
+            </LogoContainer>
+            <Body>
+              <GlobalNav />
+            </Body>
+          </Root>
         </StyledDrawer>
       </Hidden>
-      <Hidden smDown implementation="css">
-        <DesktopSidebar>{content}</DesktopSidebar>
-      </Hidden>
+      <Root smDown implementation="css">
+        <LogoContainer>
+          <Title>
+            <StyledLudumLogo />
+            <StyledDareLogo />
+          </Title>
+        </LogoContainer>
+        <Body>
+          <GlobalNav />
+        </Body>
+      </Root>
     </Fragment>
   )
 })
