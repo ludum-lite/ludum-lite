@@ -48,12 +48,9 @@ const LogoContainer = styled.div`
   z-index: 1000;
   width: ${({ theme }) => theme.variables.sidebar.widthPx};
   padding: 0 ${({ theme }) => theme.spacing(1)}px;
+  height: ${({ theme }) => theme.spacing(7)}px;
 
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    height: ${({ theme }) => theme.spacing(7)}px;
-  }
-
-  ${({ theme }) => theme.breakpoints.up('md')} {
+  ${({ theme }) => theme.breakpoints.up('sm')} {
     height: ${({ theme }) => theme.spacing(8)}px;
   }
 `
@@ -87,7 +84,7 @@ const Sidebar = React.memo(() => {
   return (
     <Fragment>
       {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-      <Hidden mdUp implementation="css">
+      <Hidden mdUp implementation="js">
         <StyledDrawer
           anchor="left"
           open={isSidebarOpen}

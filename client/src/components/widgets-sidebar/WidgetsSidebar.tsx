@@ -35,7 +35,7 @@ const Root = styled.div`
 
 const SearchInputContainer = styled.div`
   display: flex;
-  min-height: ${({ theme }) => theme.spacing(8)}px;
+  min-height: ${({ theme }) => theme.spacing(7)}px;
   position: fixed;
   top: 0px;
   width: ${WIDTH}px;
@@ -44,6 +44,10 @@ const SearchInputContainer = styled.div`
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     padding: 0 ${({ theme }) => theme.spacing(1)}px;
+  }
+
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    min-height: ${({ theme }) => theme.spacing(8)}px;
   }
 `
 
@@ -103,7 +107,7 @@ export default function WidgetsSidebar() {
   return (
     <Fragment>
       {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-      <Hidden mdUp implementation="css">
+      <Hidden mdUp implementation="js">
         <StyledDrawer
           anchor="right"
           open={isWidgetsSidebarOpen}
