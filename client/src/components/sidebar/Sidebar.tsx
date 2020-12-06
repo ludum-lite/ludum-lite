@@ -26,7 +26,7 @@ const Root = styled.div`
   background: ${({ theme }) => theme.themeColors.backgrounds.level1};
 
   ${({ theme }) => theme.breakpoints.up('md')} {
-    box-shadow: 1px 0 0 0
+    border-right: 1px solid
       ${({ theme }) => theme.themeColors.borderColors.level1};
   }
 `
