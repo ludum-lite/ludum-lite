@@ -37,7 +37,6 @@ interface Props {
   children: React.ReactNode
 }
 export default function Panel({ className, children, layout = 'row' }: Props) {
-  console.log(layout)
   return (
     <Root className={className} layout={layout}>
       {children}

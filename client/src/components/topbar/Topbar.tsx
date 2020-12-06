@@ -6,6 +6,7 @@ import AppsIcon from '@material-ui/icons/Apps'
 import MenuIcon from '@material-ui/icons/Menu'
 import IconButton from 'components/common/mui/IconButton'
 import { useWidgetsSidebarOpen } from 'hooks/useWidgetsSidebarOpen'
+import Logo from 'components/logo/Logo'
 
 const Root = styled.div`
   display: flex;
@@ -48,7 +49,6 @@ export default function Topbar() {
 
   const onClickRightIcon = React.useCallback(() => {
     setIsWidgetsSidebarOpen(true)
-    console.log(true)
   }, [setIsWidgetsSidebarOpen])
 
   return (
@@ -59,6 +59,8 @@ export default function Topbar() {
             <StyledIconButton aria-label="menu" onClick={onClickLeftIcon}>
               <MenuIcon />
             </StyledIconButton>
+            <Separator />
+            <Logo />
             <Separator />
             <StyledIconButton aria-label="menu" onClick={onClickRightIcon}>
               <AppsIcon />

@@ -9,8 +9,6 @@ const init = {
 export const useWidgetsSidebarOpen = singletonHook(init, () => {
   const [isWidgetsSidebarOpen, setIsWidgetsSidebarOpen] = React.useState(false)
 
-  console.log('thelo')
-
   return {
     isWidgetsSidebarOpen,
     setIsWidgetsSidebarOpen,

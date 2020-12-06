@@ -107,10 +107,6 @@ export default function GameWidget({ className }: Props) {
                           data?.featuredEvent.currentUserGameId &&
                           data?.featuredEvent.currentUserGame?.name !== gameName
                         ) {
-                          console.log({
-                            name: data?.featuredEvent.currentUserGame?.name,
-                            gameName,
-                          })
                           await editGameName({
                             variables: {
                               input: {

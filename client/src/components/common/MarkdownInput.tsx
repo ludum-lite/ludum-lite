@@ -90,9 +90,7 @@ export default function MarkdownInput({
               file: acceptedFiles[0],
             },
           })
-          console.log(data)
           if (data?.uploadImage.__typename === 'UploadImageSuccess') {
-            console.log(inputRef)
             if (inputRef.current) {
               insertTextAtCursor(
                 inputRef.current,

@@ -37,7 +37,6 @@ export const useLogin = singletonHook(init, () => {
   const [error, setError] = React.useState('')
   const [loginMutation] = useLoginMutation({
     onCompleted: ({ login }) => {
-      console.log('logged in')
       if (login.__typename === 'LoginSuccess') {
         const { token } = login
         localStorage.setItem('token', token)

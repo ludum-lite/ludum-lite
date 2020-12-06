@@ -102,8 +102,6 @@ export default function WidgetsSidebar() {
     setIsWidgetsSidebarOpen(false)
   }, [setIsWidgetsSidebarOpen])
 
-  console.log(isWidgetsSidebarOpen)
-
   return (
     <Fragment>
       {/* The implementation can be swapped with js to avoid SEO duplication of links. */}

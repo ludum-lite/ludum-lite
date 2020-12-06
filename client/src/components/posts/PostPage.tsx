@@ -307,7 +307,6 @@ export default function PostPage({ isEditing }: PostPageProps) {
             stopEditing()
           }
         } catch (e) {
-          console.log(e)
           enqueueSnackbar('There was an error', {
             variant: 'error',
           })
