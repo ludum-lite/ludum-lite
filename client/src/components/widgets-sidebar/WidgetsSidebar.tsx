@@ -20,8 +20,13 @@ const StyledDrawer = styled(Drawer)`
   }
 `
 
+const StyledHidden = styled(Hidden)`
+  height: 100%;
+`
+
 const WidgetsContainer = styled.div`
   border-left: 1px solid ${({ theme }) => theme.themeColors.borderColors.level1};
+  height: 100%;
 `
 
 const SearchInputContainer = styled.div`
@@ -130,32 +135,34 @@ export default function WidgetsSidebar() {
           </WidgetsContainer>
         </StyledDrawer>
       </Hidden>
-      <WidgetsContainer>
-        <SearchInputContainer>
-          <SearchInput
-            placeholder="Search"
-            startAdornment={
-              <InputAdornment position="start">
-                <Icon icon={SearchIcon} />
-              </InputAdornment>
-            }
-          />
-        </SearchInputContainer>
-        <StickyBox>
-          <Widgets>
-            <WidgetContainer>
-              <CountdownWidget events={events} />
-            </WidgetContainer>
-            <WidgetContainer>
-              <GameWidget />
-            </WidgetContainer>
-            <WidgetContainer>
-              <TeamWidget />
-            </WidgetContainer>
-            <JoinEventWidget />
-          </Widgets>
-        </StickyBox>
-      </WidgetsContainer>
+      <StyledHidden smDown implementation="css">
+        <WidgetsContainer>
+          <SearchInputContainer>
+            <SearchInput
+              placeholder="Search"
+              startAdornment={
+                <InputAdornment position="start">
+                  <Icon icon={SearchIcon} />
+                </InputAdornment>
+              }
+            />
+          </SearchInputContainer>
+          <StickyBox>
+            <Widgets>
+              <WidgetContainer>
+                <CountdownWidget events={events} />
+              </WidgetContainer>
+              <WidgetContainer>
+                <GameWidget />
+              </WidgetContainer>
+              <WidgetContainer>
+                <TeamWidget />
+              </WidgetContainer>
+              <JoinEventWidget />
+            </Widgets>
+          </StickyBox>
+        </WidgetsContainer>
+      </StyledHidden>
     </Fragment>
   )
 }
