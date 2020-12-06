@@ -31,7 +31,7 @@ const Body = styled(StickyBox)`
   min-height: 100vh;
   width: ${({ theme }) => theme.variables.sidebar.widthPx};
   padding: ${({ theme }) => theme.spacing(2)}px 0;
-  padding-top: ${({ theme }) => theme.spacing(8)}px;
+  padding-top: ${({ theme }) => theme.spacing(10)}px;
 `
 
 const LogoContainer = styled.div`
