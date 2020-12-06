@@ -29,6 +29,7 @@ import {
 } from 'utils/timeline'
 import { ignoreProps } from 'utils'
 import Typography from 'components/common/mui/Typography'
+import WidgetContainer from 'components/widgets/WidgetContainer'
 
 // const selectedTimeline = testTimeline
 
@@ -252,72 +253,76 @@ export default function CountdownWidget({ events, className }: Props) {
   ])
 
   return (
-    <Root className={className}>
-      <TitleButton
-        endIcon={<Icon icon={UnfoldMoreIcon} />}
-        onClick={handleClick}
-      >
-        <Typography variant="h4" bold>
-          Ludum Dare {selectedEvent?.eventNumber}
-        </Typography>
-      </TitleButton>
-      {(nextPhase?.eventPhase === EventPhase.CompoEnd ||
-        nextPhase?.eventPhase === EventPhase.CompoSubmissionHourEnd) &&
-        !countdownWidgetExpanded && (
-          <EventToggleButtons>
-            <Button
-              fullWidth
-              variant={
-                preferredEventType === 'compo' ? 'contained' : 'outlined'
-              }
-              color="primary"
-              onClick={() => {
-                setPreferredEventType('compo')
-              }}
-            >
-              Compo
-            </Button>
-            <Button
-              fullWidth
-              variant={preferredEventType === 'jam' ? 'contained' : 'outlined'}
-              color="primary"
-              onClick={() => {
-                setPreferredEventType('jam')
-              }}
-            >
-              Jam
-            </Button>
-          </EventToggleButtons>
-        )}
-      <Popover
-        id="demo-controlled-open-select"
-        open={isEventSelectOpen}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-      >
-        <List>
-          {events.map((event) => (
-            <ListItem
-              key={event.eventNumber}
-              button
-              onClick={() => {
-                handleChangeEvent(event.eventNumber)
-              }}
-            >
-              <ListItemText primary={`Ludum Dare ${event.eventNumber}`} />
-            </ListItem>
-          ))}
-        </List>
-      </Popover>
-      {body}
-    </Root>
+    <WidgetContainer>
+      <Root className={className}>
+        <TitleButton
+          endIcon={<Icon icon={UnfoldMoreIcon} />}
+          onClick={handleClick}
+        >
+          <Typography variant="h4" bold>
+            Ludum Dare {selectedEvent?.eventNumber}
+          </Typography>
+        </TitleButton>
+        {(nextPhase?.eventPhase === EventPhase.CompoEnd ||
+          nextPhase?.eventPhase === EventPhase.CompoSubmissionHourEnd) &&
+          !countdownWidgetExpanded && (
+            <EventToggleButtons>
+              <Button
+                fullWidth
+                variant={
+                  preferredEventType === 'compo' ? 'contained' : 'outlined'
+                }
+                color="primary"
+                onClick={() => {
+                  setPreferredEventType('compo')
+                }}
+              >
+                Compo
+              </Button>
+              <Button
+                fullWidth
+                variant={
+                  preferredEventType === 'jam' ? 'contained' : 'outlined'
+                }
+                color="primary"
+                onClick={() => {
+                  setPreferredEventType('jam')
+                }}
+              >
+                Jam
+              </Button>
+            </EventToggleButtons>
+          )}
+        <Popover
+          id="demo-controlled-open-select"
+          open={isEventSelectOpen}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+        >
+          <List>
+            {events.map((event) => (
+              <ListItem
+                key={event.eventNumber}
+                button
+                onClick={() => {
+                  handleChangeEvent(event.eventNumber)
+                }}
+              >
+                <ListItemText primary={`Ludum Dare ${event.eventNumber}`} />
+              </ListItem>
+            ))}
+          </List>
+        </Popover>
+        {body}
+      </Root>
+    </WidgetContainer>
   )
 }

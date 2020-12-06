@@ -24,20 +24,27 @@ const StyledHidden = styled(Hidden)`
   height: 100%;
 `
 
-const WidgetsContainer = styled.div`
-  border-left: 1px solid ${({ theme }) => theme.themeColors.borderColors.level1};
+const Root = styled.div`
   height: 100%;
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    box-shadow: -1px 0 0 0
+      ${({ theme }) => theme.themeColors.borderColors.level1};
+  }
 `
 
 const SearchInputContainer = styled.div`
   display: flex;
   min-height: ${({ theme }) => theme.spacing(8)}px;
-  padding: 0 ${({ theme }) => theme.spacing(1)}px;
   position: fixed;
   top: 0px;
   width: ${WIDTH}px;
   z-index: 1000;
   background: ${({ theme }) => theme.themeColors.backgrounds.level1};
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding: 0 ${({ theme }) => theme.spacing(1)}px;
+  }
 `
 
 const SearchInput = styled(Input)`
@@ -46,17 +53,18 @@ const SearchInput = styled(Input)`
   background: none;
   flex: 1 1 0px;
   max-width: 400px;
-  border-bottom: 1px solid
-    ${({ theme }) => theme.themeColors.borderColors.level1};
+  box-shadow: 0 1px 0 0 ${({ theme }) => theme.themeColors.borderColors.level1};
 
   &:hover {
-    box-shadow: none;
+    box-shadow: 0 1px 0 0
+      ${({ theme }) => theme.themeColors.borderColors.level1};
     background: ${({ theme }) =>
       theme.themeColors.topbar.searchInput.hoverBackground};
   }
 
   &.Mui-focused {
-    box-shadow: none;
+    box-shadow: 0 1px 0 0
+      ${({ theme }) => theme.themeColors.borderColors.level1};
     background: ${({ theme }) =>
       theme.themeColors.topbar.searchInput.focusBackground};
   }
@@ -80,13 +88,6 @@ const Widgets = styled.div`
   }
 `
 
-const WidgetContainer = styled.div`
-  border-radius: ${({ theme }) => theme.shape.borderRadius}px;
-  background: ${({ theme }) => theme.themeColors.backgrounds.level2};
-  border: 1px solid ${({ theme }) => theme.themeColors.borderColors.level2};
-  padding: ${({ theme }) => theme.spacing(2)}px;
-`
-
 export default function WidgetsSidebar() {
   const {
     isWidgetsSidebarOpen,
@@ -97,19 +98,21 @@ export default function WidgetsSidebar() {
     setIsWidgetsSidebarOpen(false)
   }, [setIsWidgetsSidebarOpen])
 
+  console.log(isWidgetsSidebarOpen)
+
   return (
     <Fragment>
       {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
       <Hidden mdUp implementation="css">
         <StyledDrawer
-          anchor="left"
+          anchor="right"
           open={isWidgetsSidebarOpen}
           onClose={closeSidebar}
           ModalProps={{
             keepMounted: true, // Better open performance on mobile.
           }}
         >
-          <WidgetsContainer>
+          <Root>
             <SearchInputContainer>
               <SearchInput
                 placeholder="Search"
@@ -121,22 +124,16 @@ export default function WidgetsSidebar() {
               />
             </SearchInputContainer>
             <Widgets>
-              <WidgetContainer>
-                <CountdownWidget events={events} />
-              </WidgetContainer>
-              <WidgetContainer>
-                <GameWidget />
-              </WidgetContainer>
-              <WidgetContainer>
-                <TeamWidget />
-              </WidgetContainer>
+              <CountdownWidget events={events} />
+              <GameWidget />
+              <TeamWidget />
               <JoinEventWidget />
             </Widgets>
-          </WidgetsContainer>
+          </Root>
         </StyledDrawer>
       </Hidden>
       <StyledHidden smDown implementation="css">
-        <WidgetsContainer>
+        <Root>
           <SearchInputContainer>
             <SearchInput
               placeholder="Search"
@@ -149,19 +146,13 @@ export default function WidgetsSidebar() {
           </SearchInputContainer>
           <StickyBox>
             <Widgets>
-              <WidgetContainer>
-                <CountdownWidget events={events} />
-              </WidgetContainer>
-              <WidgetContainer>
-                <GameWidget />
-              </WidgetContainer>
-              <WidgetContainer>
-                <TeamWidget />
-              </WidgetContainer>
+              <CountdownWidget events={events} />
+              <GameWidget />
+              <TeamWidget />
               <JoinEventWidget />
             </Widgets>
           </StickyBox>
-        </WidgetsContainer>
+        </Root>
       </StyledHidden>
     </Fragment>
   )

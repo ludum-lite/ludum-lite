@@ -12,6 +12,7 @@ import Input from 'components/common/mui/Input'
 import { useSnackbar } from 'notistack'
 import { useMinLoadingTime } from 'hooks/useMinLoadingTime'
 import Typography from 'components/common/mui/Typography'
+import WidgetContainer from 'components/widgets/WidgetContainer'
 
 const Root = styled.div`
   display: flex;
@@ -146,7 +147,11 @@ export default function GameWidget({ className }: Props) {
     return null
   }
 
-  return <Root className={className}>{content}</Root>
+  return (
+    <WidgetContainer>
+      <Root className={className}>{content}</Root>
+    </WidgetContainer>
+  )
 }
 
 gql`

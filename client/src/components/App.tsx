@@ -190,9 +190,7 @@ export default function App() {
               />
             </RoutesWithFallback>
           </MiddleContent>
-          <Hidden smDown>
-            <WidgetsSidebar />
-          </Hidden>
+          <WidgetsSidebar />
         </AppContent>
         {/* <Hidden mdUp>
           Move to Sidebar

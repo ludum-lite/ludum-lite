@@ -18,8 +18,7 @@ const Root = styled.div`
 `
 
 const StyledAppBar = styled.div`
-  border-bottom: 1px solid
-    ${({ theme }) => theme.themeColors.borderColors.level1};
+  box-shadow: 0 1px 0 0 ${({ theme }) => theme.themeColors.borderColors.level1};
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     margin: 0px ${({ theme }) => theme.spacing(1)}px;
@@ -49,6 +48,7 @@ export default function Topbar() {
 
   const onClickRightIcon = React.useCallback(() => {
     setIsWidgetsSidebarOpen(true)
+    console.log(true)
   }, [setIsWidgetsSidebarOpen])
 
   return (

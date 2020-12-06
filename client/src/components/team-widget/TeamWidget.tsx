@@ -37,6 +37,7 @@ import {
 } from 'material-ui-popup-state/hooks'
 import Typography from 'components/common/mui/Typography'
 import DialogTitle from 'components/common/mui/DialogTitle'
+import WidgetContainer from 'components/widgets/WidgetContainer'
 
 const Root = styled.div`
   display: flex;
@@ -259,134 +260,136 @@ export default function GameWidget({ className }: Props) {
         const isLeader = leaderUser?.id === me.id
 
         return (
-          <Root className={className}>
-            <TopRow>
-              <Typography variant="h4" bold>
-                My Team
-              </Typography>
-              <IconButton
-                // size="small"
-                {...bindTrigger(popupState)}
-              >
-                <Icon icon={MoreHorizIcon} />
-              </IconButton>
-              <Menu {...bindMenu(popupState)}>
-                <MenuItem
-                  onClick={async () => {
-                    popupState.close()
-                    setShowJoinATeamDialog(true)
-                  }}
+          <WidgetContainer>
+            <Root className={className}>
+              <TopRow>
+                <Typography variant="h4" bold>
+                  My Team
+                </Typography>
+                <IconButton
+                  // size="small"
+                  {...bindTrigger(popupState)}
                 >
-                  Join a different team
-                </MenuItem>
-                {gameId && teamUsers && teamUsers.length > 1 && (
+                  <Icon icon={MoreHorizIcon} />
+                </IconButton>
+                <Menu {...bindMenu(popupState)}>
                   <MenuItem
                     onClick={async () => {
                       popupState.close()
-                      await removeUserFromGameMutation({
-                        variables: {
-                          input: {
-                            gameId,
-                            userId: me.id,
-                          },
-                        },
-                      })
-                      await refetch()
+                      setShowJoinATeamDialog(true)
                     }}
                   >
-                    Leave Team
+                    Join a different team
                   </MenuItem>
-                )}
-              </Menu>
-            </TopRow>
-            <TeamList>
-              <AddTeamMemberButton
-                onClick={() => setShowTeamMemberSelectDialog(true)}
-              />
-              {teamUsers
-                ?.filter((user) => user.id !== leaderUser?.id)
-                .sort((user) => {
-                  if (user.id === me.id) {
-                    return -1
-                  } else {
-                    return user.id
-                  }
-                })
-                .map((user) => (
+                  {gameId && teamUsers && teamUsers.length > 1 && (
+                    <MenuItem
+                      onClick={async () => {
+                        popupState.close()
+                        await removeUserFromGameMutation({
+                          variables: {
+                            input: {
+                              gameId,
+                              userId: me.id,
+                            },
+                          },
+                        })
+                        await refetch()
+                      }}
+                    >
+                      Leave Team
+                    </MenuItem>
+                  )}
+                </Menu>
+              </TopRow>
+              <TeamList>
+                <AddTeamMemberButton
+                  onClick={() => setShowTeamMemberSelectDialog(true)}
+                />
+                {teamUsers
+                  ?.filter((user) => user.id !== leaderUser?.id)
+                  .sort((user) => {
+                    if (user.id === me.id) {
+                      return -1
+                    } else {
+                      return user.id
+                    }
+                  })
+                  .map((user) => (
+                    <Tooltip
+                      key={user.id}
+                      title={user.name}
+                      enterDelay={0}
+                      arrow
+                      placement="top"
+                    >
+                      <TeamMember
+                        avatarPath={user.avatarPath}
+                        onClick={() => {
+                          if (isLeader) {
+                            setShowUserOptionsForUserId(user.id)
+                          }
+                        }}
+                      />
+                    </Tooltip>
+                  ))}
+                {leaderUser && (
                   <Tooltip
-                    key={user.id}
-                    title={user.name}
+                    title={leaderUser.name}
                     enterDelay={0}
                     arrow
                     placement="top"
                   >
-                    <TeamMember
-                      avatarPath={user.avatarPath}
-                      onClick={() => {
-                        if (isLeader) {
-                          setShowUserOptionsForUserId(user.id)
-                        }
-                      }}
-                    />
+                    <TeamMember avatarPath={leaderUser.avatarPath} leader />
                   </Tooltip>
-                ))}
-              {leaderUser && (
-                <Tooltip
-                  title={leaderUser.name}
-                  enterDelay={0}
-                  arrow
-                  placement="top"
-                >
-                  <TeamMember avatarPath={leaderUser.avatarPath} leader />
-                </Tooltip>
-              )}
-            </TeamList>
-            <Dialog
-              open={showTeamMemberSelectDialog}
-              onClose={handleCloseAddFriendToTeam}
-            >
-              <DialogTitle>Add friend to team</DialogTitle>
-              <List>
-                {data.me.usersImFollowing
-                  ?.filter((user) => userIdsFollowingMe?.includes(user.id))
-                  .map((user) => (
-                    <ListItem
-                      key={user.id}
-                      button
-                      onClick={() => addUserToGame(user.id, user.name)}
-                    >
-                      <ListItemAvatar>
-                        <Avatar
-                          avatarPath={user.avatarPath || ''}
-                          linkPath={`${user.id}`}
-                          size={40}
-                          circle
-                        />
-                      </ListItemAvatar>
-                      <ListItemText primary={user.name} />
-                      {teamUsers?.some(
-                        (teamUser) => teamUser.id === user.id
-                      ) && (
-                        <AddedTagContainer>
-                          <AddedTag>Added</AddedTag>
-                        </AddedTagContainer>
-                      )}
-                    </ListItem>
-                  ))}
-              </List>
-              <InviteLinkContainer>
-                <InviteButton text={inviteLink} fullWidth variant="contained">
-                  {inviteLink}
-                </InviteButton>
-                <InviteText variant="caption" color="textSecondary">
-                  {`Don't see your friend listed? Send them this link!
+                )}
+              </TeamList>
+              <Dialog
+                open={showTeamMemberSelectDialog}
+                onClose={handleCloseAddFriendToTeam}
+              >
+                <DialogTitle>Add friend to team</DialogTitle>
+                <List>
+                  {data.me.usersImFollowing
+                    ?.filter((user) => userIdsFollowingMe?.includes(user.id))
+                    .map((user) => (
+                      <ListItem
+                        key={user.id}
+                        button
+                        onClick={() => addUserToGame(user.id, user.name)}
+                      >
+                        <ListItemAvatar>
+                          <Avatar
+                            avatarPath={user.avatarPath || ''}
+                            linkPath={`${user.id}`}
+                            size={40}
+                            circle
+                          />
+                        </ListItemAvatar>
+                        <ListItemText primary={user.name} />
+                        {teamUsers?.some(
+                          (teamUser) => teamUser.id === user.id
+                        ) && (
+                          <AddedTagContainer>
+                            <AddedTag>Added</AddedTag>
+                          </AddedTagContainer>
+                        )}
+                      </ListItem>
+                    ))}
+                </List>
+                <InviteLinkContainer>
+                  <InviteButton text={inviteLink} fullWidth variant="contained">
+                    {inviteLink}
+                  </InviteButton>
+                  <InviteText variant="caption" color="textSecondary">
+                    {`Don't see your friend listed? Send them this link!
 They'll get a confirmation link to send back to you.`}
-                </InviteText>
-              </InviteLinkContainer>
-            </Dialog>
-            {userOptionsDialog}
-            {joinATeamDialog}
-          </Root>
+                  </InviteText>
+                </InviteLinkContainer>
+              </Dialog>
+              {userOptionsDialog}
+              {joinATeamDialog}
+            </Root>
+          </WidgetContainer>
         )
       }
     }

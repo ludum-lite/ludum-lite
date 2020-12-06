@@ -23,9 +23,12 @@ const Root = styled.div`
   flex-direction: column;
   align-items: flex-start;
   height: 100%;
-  border-right: 1px solid
-    ${({ theme }) => theme.themeColors.borderColors.level1};
   background: ${({ theme }) => theme.themeColors.backgrounds.level1};
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    box-shadow: 1px 0 0 0
+      ${({ theme }) => theme.themeColors.borderColors.level1};
+  }
 `
 
 const Body = styled(StickyBox)`
@@ -60,8 +63,7 @@ const Title = styled(Typography)`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-bottom: 1px solid
-    ${({ theme }) => theme.themeColors.borderColors.level1};
+  box-shadow: 0 1px 0 0 ${({ theme }) => theme.themeColors.borderColors.level1};
 `
 
 const StyledLudumLogo = styled(LudumLogo)`
