@@ -14,7 +14,11 @@ const StyledDrawer = styled(Drawer)`
   }
 `
 
-const Root = styled(Hidden)`
+const StyledHidden = styled(Hidden)`
+  height: 100%;
+`
+
+const Root = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -50,21 +54,6 @@ const LogoContainer = styled.div`
     height: ${({ theme }) => theme.spacing(8)}px;
   }
 `
-
-// const ContextualNav = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   background: ${({ theme }) => theme.themeColors.contextualNavBackground};
-//   padding: 0px ${({ theme }) => theme.spacing(2)}px;
-
-//   ${({ theme }) => theme.breakpoints.down('sm')} {
-//     width: ${({ theme }) => theme.spacing(30)}px;
-//   }
-
-//   ${({ theme }) => theme.breakpoints.up('md')} {
-//     width: ${({ theme }) => theme.spacing(34)}px;
-//   }
-// `
 
 const Title = styled(Typography)`
   flex: 1 1 0px;
@@ -118,17 +107,19 @@ const Sidebar = React.memo(() => {
           </Root>
         </StyledDrawer>
       </Hidden>
-      <Root smDown implementation="css">
-        <LogoContainer>
-          <Title>
-            <StyledLudumLogo />
-            <StyledDareLogo />
-          </Title>
-        </LogoContainer>
-        <Body>
-          <GlobalNav />
-        </Body>
-      </Root>
+      <StyledHidden smDown implementation="css">
+        <Root>
+          <LogoContainer>
+            <Title>
+              <StyledLudumLogo />
+              <StyledDareLogo />
+            </Title>
+          </LogoContainer>
+          <Body>
+            <GlobalNav />
+          </Body>
+        </Root>
+      </StyledHidden>
     </Fragment>
   )
 })
