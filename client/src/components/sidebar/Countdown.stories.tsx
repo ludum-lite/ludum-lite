@@ -64,9 +64,7 @@ const WideContainerRoot = styled.div`
 `
 
 export const WideContainer = () => {
-  const [targetDate, setTargetDate] = React.useState<Moment>(
-    moment.utc().add(20, 'days')
-  )
+  const [targetDate] = React.useState<Moment>(moment.utc().add(20, 'days'))
   return (
     <WideContainerRoot>
       <Countdown targetDate={targetDate} />

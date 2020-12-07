@@ -78,6 +78,7 @@ const EventDetailIcon = styled(Icon)`
 const TabbedContent = styled.div`
   display: flex;
   flex-direction: column;
+  margin: 0 ${({ theme }) => theme.spacing(1)}px;
 `
 
 const ThemeText = styled(Typography)`

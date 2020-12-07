@@ -94,6 +94,7 @@ const Title = styled.div`
 const PageContent = styled.div`
   display: flex;
   flex-direction: column;
+  margin: ${({ theme }) => theme.spacing(2)}px;
 `
 
 const Article = styled.div``

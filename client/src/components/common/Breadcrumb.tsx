@@ -49,7 +49,6 @@ export default function Breadcrumb({ to, children, isParent }: Props) {
   if (to) {
     return (
       <StyledButton
-        background="level1"
         variant="text"
         // @ts-ignore
         component={Link}

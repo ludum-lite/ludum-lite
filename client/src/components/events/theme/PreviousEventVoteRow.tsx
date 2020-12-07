@@ -11,11 +11,11 @@ import FlagIcon from '@material-ui/icons/Flag'
 const Root = styled.div`
   display: flex;
   align-items: stretch;
-  background: ${({ theme }) =>
-    theme.themeColors.rows.background.white.background};
+  background: ${({ theme }) => theme.themeColors.backgrounds.level2};
 
   &:not(:last-child) {
-    border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
+    border-bottom: 1px solid
+      ${({ theme }) => theme.themeColors.backgrounds.level3};
   }
 `
 

@@ -35,13 +35,14 @@ const Suggestion = styled.div`
   display: flex;
   align-items: center;
   border-radius: ${({ theme }) => theme.shape.borderRadius}px;
-  background: ${({ theme }) => theme.themeColors.backgrounds.level1};
+  background: ${({ theme }) => theme.themeColors.palette.primary.main};
 `
 
 const SuggestionText = styled(Typography)`
   padding-left: ${({ theme }) => theme.spacing(2)}px;
   padding-right: ${({ theme }) => theme.spacing(1)}px;
 `
+
 interface IdeaFormProps {
   hasSuggestions: boolean
 }
@@ -142,7 +143,8 @@ export default function ThemeSubmissionForm({ event }: Props) {
         <Suggestion key={eventIdea.id}>
           <SuggestionText textColor="white">{eventIdea.name}</SuggestionText>
           <IconButton
-            size="small"
+            variant="text"
+            color="white"
             onClick={() => {
               deleteEventIdea({
                 variables: {
@@ -202,7 +204,7 @@ export default function ThemeSubmissionForm({ event }: Props) {
               autoComplete="randomtstring"
               autoCorrect="randomstring"
             />
-            <SubmitButton variant="contained" color="secondary" type="submit">
+            <SubmitButton variant="contained" color="primary" type="submit">
               Submit
             </SubmitButton>
           </InputRow>

@@ -1,8 +1,23 @@
 import React, { useEffect } from 'react'
 import StickyBox from 'react-sticky-box'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { usePostOverlayed } from 'hooks/usePostOverlay'
 import { Hidden, Toolbar } from '@material-ui/core'
+import { useNotificationBar } from 'hooks/useNotificationBar'
+
+interface StyledStickyBoxProps {
+  hasNotificationBar: boolean
+}
+const StyledStickyBox = styled(StickyBox)<StyledStickyBoxProps>`
+  ${({ hasNotificationBar }) =>
+    hasNotificationBar &&
+    css`
+      /* Workaround for react-sticky-box behavior where the notification bar above the sticky element
+  causing jumping when scrolling up the page */
+      margin-top: -64px;
+      padding-top: 64px;
+    `}
+`
 
 const Root = styled.div`
   display: flex;
@@ -10,8 +25,20 @@ const Root = styled.div`
   z-index: 200;
 `
 
-const StyledAppBar = styled.div`
+const StickyBreadcrumbContainer = styled.div`
+  position: sticky;
+  top: 0px;
+  z-index: 1000;
   background: ${({ theme }) => theme.themeColors.backgrounds.level1};
+`
+
+const BreadcrumbContainer = styled.div`
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+`
+
+const StyledAppBar = styled.div`
   z-index: 1000;
 
   ${({ theme }) => theme.breakpoints.up('md')} {
@@ -28,21 +55,7 @@ const StyledToolbar = styled(Toolbar)`
   }
 `
 
-const StickyBreadcrumbContainer = styled.div`
-  position: sticky;
-  top: 0px;
-  z-index: 1000;
-`
-
-const BreadcrumbContainer = styled.div`
-  display: flex;
-  flex: 1 1 auto;
-  align-items: center;
-`
-
-const Content = styled.div`
-  margin: ${({ theme }) => theme.spacing(2)}px;
-`
+const Content = styled.div``
 
 interface Props {
   children: React.ReactNode
@@ -50,6 +63,7 @@ interface Props {
 }
 export default function Page({ children, breadcrumbs }: Props) {
   const [, setUsePostOverlay] = usePostOverlayed()
+  const { notificationBar } = useNotificationBar()
 
   useEffect(() => {
     return () => {
@@ -66,7 +80,7 @@ export default function Page({ children, breadcrumbs }: Props) {
   )
 
   return (
-    <StickyBox>
+    <StyledStickyBox hasNotificationBar={!!notificationBar}>
       <Root>
         <Hidden mdUp>{breadcrumbBar}</Hidden>
         <Hidden smDown>
@@ -74,6 +88,6 @@ export default function Page({ children, breadcrumbs }: Props) {
         </Hidden>
         <Content>{children}</Content>
       </Root>
-    </StickyBox>
+    </StyledStickyBox>
   )
 }

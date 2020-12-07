@@ -5,28 +5,32 @@ import IconButton from 'components/common/mui/IconButton'
 import Icon from 'components/common/mui/Icon'
 import ForwardIcon from '@material-ui/icons/Forward'
 import { getCurrentEvent, events, findCurrentPhase, EventPhase } from 'utils'
-import { useFeaturedEvent } from 'hooks/useFeaturedEvent'
 import { EventPhase as ServerEventPhase } from '__generated__/client-types'
 import moment from 'moment'
-import { borderRadius } from 'polished'
 import Link from 'components/common/mui/Link'
+import { singletonHook } from 'react-singleton-hook'
+import { useFeaturedEvent } from './useFeaturedEvent'
+
+type UseNotificationBarReturnType = {
+  notificationBar: React.ReactElement | null
+}
+
+const init: UseNotificationBarReturnType = {
+  notificationBar: null,
+} as const
 
 const Root = styled.div`
-  background: ${({ theme }) => theme.themeColors.backgrounds.level1};
+  background: ${({ theme }) => theme.themeColors.palette.secondary.main};
   display: flex;
   align-items: center;
   min-height: ${({ theme }) => theme.spacing(8)}px;
   color: white;
-  margin: 0 ${({ theme }) => theme.spacing(4)}px;
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    border-radius: ${({ theme }) => theme.shape.borderRadius}px;
-    margin-top: ${({ theme }) => theme.spacing(4)}px;
     padding: ${({ theme }) => theme.spacing(2)}px;
   }
 
   ${({ theme }) => theme.breakpoints.up('md')} {
-    ${({ theme }) => borderRadius('bottom', theme.shape.borderRadius)}
     padding: 0 ${({ theme }) => theme.spacing(2)}px;
   }
 `
@@ -36,9 +40,7 @@ const NotificationTitle = styled(Typography)`
   margin-right: ${({ theme }) => theme.spacing(1)}px;
 `
 
-const ThemeName = styled.strong``
-
-export default function NotificationBar() {
+export const useNotificationBar = singletonHook(init, () => {
   const { featuredEvent } = useFeaturedEvent()
   const currentEvent = getCurrentEvent(events)
   const currentPhase = currentEvent && findCurrentPhase(currentEvent.timeline)
@@ -66,7 +68,7 @@ export default function NotificationBar() {
         featuredEvent.eventPhase === ServerEventPhase.EventRunning &&
         featuredEvent.theme
       ) {
-        const theme = <ThemeName>{featuredEvent.theme}</ThemeName>
+        const theme = <strong>{featuredEvent.theme}</strong>
         return (
           <span>
             The Ludum Dare {currentEvent?.eventNumber} theme is {theme}!
@@ -103,6 +105,7 @@ export default function NotificationBar() {
           component={Link}
           // @ts-ignore
           to={`events/${featuredEvent?.id}/theme`}
+          color="white"
         >
           <Icon icon={ForwardIcon} />
         </IconButton>
@@ -110,14 +113,20 @@ export default function NotificationBar() {
     }
   }, [featuredEvent])
 
-  if (title) {
-    return (
-      <Root>
-        <NotificationTitle>{title}</NotificationTitle>
-        {actionButton}
-      </Root>
-    )
-  }
+  const notificationBar = React.useMemo(() => {
+    if (title) {
+      return (
+        <Root>
+          <NotificationTitle>{title}</NotificationTitle>
+          {actionButton}
+        </Root>
+      )
+    }
 
-  return null
-}
+    return null
+  }, [actionButton, title])
+
+  return {
+    notificationBar,
+  }
+})

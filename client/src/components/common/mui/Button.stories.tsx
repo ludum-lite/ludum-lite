@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components/macro'
-import Button, { Background } from './Button'
+import Button from './Button'
 import ToggleButton from './ToggleButton'
 import { ButtonProps } from '@material-ui/core/Button'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
@@ -49,21 +49,27 @@ const Level3Background = styled(ButtonContainer)`
   background: ${({ theme }) => theme.themeColors.backgrounds.level3};
 `
 
+const PrimaryBackground = styled(ButtonContainer)`
+  background: ${({ theme }) => theme.themeColors.palette.primary.main};
+`
+
 const Options = styled(Panel)``
 
 const VARIANTS = ['text', 'outlined', 'contained'] as const
-const COLORS = ['default', 'primary', 'secondary', 'success', 'error'] as const
-function isCustomColor(color: string) {
-  return color === 'success' || color === 'error'
-}
+const COLORS = [
+  'default',
+  'primary',
+  'secondary',
+  'success',
+  'error',
+  'white',
+] as const
 
 type PropCombination = {
-  [key in Background]?: {
-    [key in NonNullable<ButtonProps['variant']>]?: {
-      [key in NonNullable<
-        Exclude<ButtonProps['color'], 'inherit'> | 'success' | 'error'
-      >]?: boolean
-    }
+  [key in NonNullable<ButtonProps['variant']>]?: {
+    [key in NonNullable<
+      Exclude<ButtonProps['color'], 'inherit'> | 'success' | 'error' | 'white'
+    >]?: boolean
   }
 }
 const INVALID_COMBINATIONS: PropCombination = {
@@ -120,23 +126,18 @@ const INVALID_COMBINATIONS: PropCombination = {
   // },
 }
 
-function renderButtons(
-  background: Background,
-  size: ButtonProps['size'],
-  isLoading: boolean
-) {
+function renderButtons(size: ButtonProps['size'], isLoading: boolean) {
   return VARIANTS.map((variant) =>
     COLORS.map((color) => (
       <Button
         key={`${variant}_${color}`}
         variant={variant}
         color={color}
-        background={background}
         size={size}
         loading={isLoading}
         style={{
           visibility:
-            INVALID_COMBINATIONS[background]?.[variant]?.[color] === true
+            INVALID_COMBINATIONS[variant]?.[color] === true
               ? 'hidden'
               : 'visible',
         }}
@@ -195,15 +196,10 @@ export const Basic = () => {
         </div>
       </Options>
       <Backgrounds>
-        <Level1Background>
-          {renderButtons('level1', size, isLoading)}
-        </Level1Background>
-        <Level2Background>
-          {renderButtons('level2', size, isLoading)}
-        </Level2Background>
-        <Level3Background>
-          {renderButtons('level3', size, isLoading)}
-        </Level3Background>
+        <Level1Background>{renderButtons(size, isLoading)}</Level1Background>
+        <Level2Background>{renderButtons(size, isLoading)}</Level2Background>
+        <Level3Background>{renderButtons(size, isLoading)}</Level3Background>
+        <PrimaryBackground>{renderButtons(size, isLoading)}</PrimaryBackground>
       </Backgrounds>
     </BasicRoot>
   )

@@ -7,30 +7,27 @@ import {
 import styled, { css } from 'styled-components/macro'
 import { ignoreProps } from 'utils'
 
-export type Background = 'level1' | 'level2' | 'level3'
-
 export type Color = Exclude<
   | 'default'
   | 'primary'
   | 'secondary'
   | 'success'
   | 'error'
+  | 'white'
   | MuiButtonProps['color'],
   'inherit' | undefined
 >
 
 interface StyledButtonProps {
-  background: Background
   variant: string
   customColor: Color
 }
 
 const StyledButton = styled(MuiButton).withConfig({
-  shouldForwardProp: ignoreProps(['background', 'customColor']),
+  shouldForwardProp: ignoreProps(['customColor']),
 })<StyledButtonProps>`
-  ${({ background, customColor, variant, theme }) => {
-    const colors =
-      theme.themeColors.button?.[background]?.[variant]?.[customColor]
+  ${({ customColor, variant, theme }) => {
+    const colors = theme.themeColors.button.level1?.[variant]?.[customColor]
 
     return css`
       color: ${colors?.color};
@@ -45,7 +42,6 @@ const StyledButton = styled(MuiButton).withConfig({
 `
 
 interface Props {
-  background?: Background
   color?: Color
   variant?: MuiButtonProps['variant']
   loading?: Boolean
@@ -54,7 +50,6 @@ export type ButtonProps = Props & Omit<MuiButtonProps, keyof Props | 'color'>
 const Button = React.forwardRef(
   (
     {
-      background = 'level1',
       color = 'default',
       variant = 'text',
       loading,
@@ -68,7 +63,6 @@ const Button = React.forwardRef(
     return (
       <StyledButton
         innerRef={ref}
-        background="level1"
         customColor={color}
         variant={variant}
         endIcon={loading && <CircularProgress size={20} color="inherit" />}

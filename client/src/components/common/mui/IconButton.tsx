@@ -5,12 +5,11 @@ import {
 } from '@material-ui/core'
 import styled, { css } from 'styled-components/macro'
 import { ignoreProps } from 'utils'
-import { Background, Color } from './Button'
+import { Color } from './Button'
 
 type Variant = 'text' | 'contained'
 
 interface StyledButtonProps {
-  background: Background
   customColor: Color
   variant: Variant
 }
@@ -44,7 +43,6 @@ const StyledIconButton = styled(MuiIconButton).withConfig({
  */
 
 export interface Props {
-  background?: Background
   component?: React.ElementType
   color?: Color
   variant?: Variant
@@ -53,12 +51,7 @@ export type IconButtonProps = Props &
   Omit<MuiIconButtonProps, keyof Props | 'color'>
 const IconButton = React.forwardRef(
   (
-    {
-      background = 'level1',
-      color = 'default',
-      variant = 'text',
-      ...others
-    }: IconButtonProps,
+    { color = 'default', variant = 'text', ...others }: IconButtonProps,
     ref
   ) => {
     return (
@@ -66,7 +59,6 @@ const IconButton = React.forwardRef(
         innerRef={ref}
         variant={variant}
         customColor={color}
-        background={background}
         {...others}
       />
     )

@@ -21,6 +21,7 @@ type ButtonColorsForVariant = Partial<{
   secondary: ButtonColorProps
   error: ButtonColorProps
   success: ButtonColorProps
+  white: ButtonColorProps
 }>
 
 type ButtonThemeColorsForBackground = Partial<{
@@ -61,6 +62,9 @@ export type ThemeColors = {
     dareBackground: string
   }
   error: {
+    background: string
+  }
+  notificationBar: {
     background: string
   }
   sidebar: {
@@ -199,7 +203,6 @@ const buttonOutlinedBackgroundColor = 'transparent'
 const buttonContainedBackgroundColor = 'rgba(0, 0, 0, 0.1)'
 const buttonContainedColor = 'rgba(0, 0, 0, 0.87)'
 const cardBoxShadow = '0 0 6px 0px rgba(0,0,0,0.04)'
-const cardBoxShadow_bottomHeavy = '0px 1px 3px -1px rgb(0, 0, 0, 28%)'
 
 const white = 'rgb(255, 255, 255)'
 const fadedWhite = 'rgba(255,255,255,0.9)'
@@ -259,7 +262,6 @@ const commonTheme = {
   fadedBlack,
   defaultIconBlack,
   cardBoxShadow,
-  cardBoxShadow_bottomHeavy,
   dropOverlay: {
     borderColor: 'rgb(32, 208, 0)',
     backgroundColor: 'rgba(72, 208, 15, 0.12)',
@@ -311,6 +313,7 @@ const lightTheme: ThemeColors = {
     level2: greys[200],
     level3: greys[300],
   },
+  cardBoxShadow_bottomHeavy: '0px 1px 3px -1px rgb(0, 0, 0, 28%)',
   markdown: {
     codeBackground: 'rgba(64, 75, 86, 0.15)',
   },
@@ -322,6 +325,9 @@ const lightTheme: ThemeColors = {
     dareBackground: styleVariables.greenBlue,
   },
   error: {
+    background: styleVariables.bittersweet,
+  },
+  notificationBar: {
     background: styleVariables.bittersweet,
   },
   sidebar: {
@@ -369,6 +375,10 @@ const lightTheme: ThemeColors = {
           color: styleVariables.oceanGreen,
           hoverBackground: transparentize(0.8, styleVariables.oceanGreen),
         },
+        white: {
+          color: white,
+          hoverBackground: transparentWhites[800],
+        },
       },
       outlined: {
         default: {
@@ -396,6 +406,11 @@ const lightTheme: ThemeColors = {
           hoverBackground: transparentize(0.8, styleVariables.oceanGreen),
           borderColor: styleVariables.oceanGreen,
         },
+        white: {
+          color: white,
+          hoverBackground: transparentWhites[800],
+          borderColor: white,
+        },
       },
       contained: {
         default: {
@@ -422,6 +437,11 @@ const lightTheme: ThemeColors = {
           color: white,
           background: styleVariables.oceanGreen,
           hoverBackground: tint(0.3, styleVariables.oceanGreen),
+        },
+        white: {
+          color: textBlack,
+          background: white,
+          hoverBackground: transparentWhites[200],
         },
       },
     },
@@ -573,6 +593,7 @@ const darkTheme: ThemeColors = {
     level2: greys[900],
     level3: greys[950],
   },
+  cardBoxShadow_bottomHeavy: '0px 1px 3px -1px rgb(0, 0, 0, 88%)',
   markdown: {
     codeBackground: 'rgba(64, 75, 86, 0.11)',
   },
@@ -585,6 +606,9 @@ const darkTheme: ThemeColors = {
   },
   error: {
     background: styleVariables.bittersweet,
+  },
+  notificationBar: {
+    background: ldStyleVariables.darkOrange,
   },
   sidebar: {
     background: ldStyleVariables.raisinBlack,
@@ -631,6 +655,10 @@ const darkTheme: ThemeColors = {
           color: ldStyleVariables.green,
           hoverBackground: transparentize(0.8, ldStyleVariables.green),
         },
+        white: {
+          color: white,
+          hoverBackground: transparentize(0.85, white),
+        },
       },
       outlined: {
         default: {
@@ -658,6 +686,11 @@ const darkTheme: ThemeColors = {
           hoverBackground: transparentize(0.8, ldStyleVariables.green),
           borderColor: ldStyleVariables.green,
         },
+        white: {
+          color: white,
+          hoverBackground: transparentize(0.85, white),
+          borderColor: white,
+        },
       },
       contained: {
         default: {
@@ -684,6 +717,11 @@ const darkTheme: ThemeColors = {
           color: white,
           background: ldStyleVariables.green,
           hoverBackground: shade(0.2, ldStyleVariables.green),
+        },
+        white: {
+          color: fadedTextBlack,
+          background: white,
+          hoverBackground: shade(0.2, white),
         },
       },
     },
@@ -763,7 +801,7 @@ const darkTheme: ThemeColors = {
     nextUpOutlineColor: ldStyleVariables.darkOrange,
   },
   themeSlaughter: {
-    suggestionBackground: 'white',
+    suggestionBackground: ldStyleVariables.jet,
     remaingVotesBackground: ldStyleVariables.blueDeFrance,
   },
   themeRoundVoting: {
@@ -955,13 +993,10 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       },
       MuiTabs: {
         root: {
-          boxShadow: '0 2px 3px 0px #0000001f',
-          borderBottom: '1px solid #00000021',
+          borderBottom: `1px solid ${selectedThemeColors.borderColors.level1}`,
         },
         indicator: {
-          height: 3,
-          borderTopLeftRadius: 3,
-          borderTopRightRadius: 3,
+          height: 4,
         },
       },
       MuiIconButton: {
@@ -1023,7 +1058,7 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
         root: {
           borderRadius: defaultTheme.shape.borderRadius,
           backgroundColor: selectedThemeColors.input.background,
-          boxShadow: `0 0 0 1px ${selectedThemeColors.input.outlineColor}`,
+          boxShadow: selectedThemeColors.cardBoxShadow_bottomHeavy,
           transition: 'none',
           '&:hover': {
             backgroundColor: selectedThemeColors.input.background,
