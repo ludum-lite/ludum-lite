@@ -12,7 +12,7 @@ import Icon from 'components/common/mui/Icon'
 import Input from 'components/common/mui/Input'
 import { useWidgetsSidebarOpen } from 'hooks/useWidgetsSidebarOpen'
 
-const WIDTH = 277
+const WIDTH = 295
 
 const StyledDrawer = styled(Drawer)`
   .MuiDrawer-paperAnchorDockedRight {

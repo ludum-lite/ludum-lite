@@ -93,7 +93,7 @@ const EventListItem = styled.div
   .withConfig({
     shouldForwardProp: ignoreProps(['isNext']),
   })<EventListItemProps>`
-  padding-left: ${({ theme }) => theme.spacing(2)}px;
+  padding-left: ${({ theme }) => theme.spacing(1)}px;
 
   ${({ isNext }) =>
     isNext &&
