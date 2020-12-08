@@ -515,7 +515,7 @@ export enum EventPhase {
   ThemeVoting = 4,
   EventRunning = 5,
   GameVoting = 6,
-  Results = 7
+  Results = 8
 }
 
 export type JoinEventSuccess = MutationResponse & {

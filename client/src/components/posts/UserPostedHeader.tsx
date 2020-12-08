@@ -72,6 +72,16 @@ export default function UserPostedHeader({
     }
   }, [postedDate])
 
+  const title = React.useMemo(() => {
+    if (typeof postedDate === 'string') {
+      const postedDateMoment = moment(postedDate)
+
+      if (postedDateMoment.isValid()) {
+        return postedDateMoment.format('MMM D, YYYY, h:mm A')
+      }
+    }
+  }, [postedDate])
+
   return (
     <HeaderUserContainer>
       <StyledAvatar
@@ -94,6 +104,7 @@ export default function UserPostedHeader({
         variant="caption"
         color={collapsedNewsPost ? undefined : 'textPrimary'}
         textColor={collapsedNewsPost ? 'white' : undefined}
+        title={title}
       >
         {postedDateComponent}
       </Typography>

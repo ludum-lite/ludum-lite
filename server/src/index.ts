@@ -246,7 +246,7 @@ const resolvers: Resolvers<Context> = {
     ThemeVoting: 4,
     EventRunning: 5,
     GameVoting: 6,
-    Results: 7,
+    Results: 8,
   },
   VotingPhase: {
     Inactive: 0,

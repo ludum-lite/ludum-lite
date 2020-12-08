@@ -34,6 +34,7 @@ export type ApiEventDto = {
 }
 
 function apiEventToEvent(event: ApiEventDto): Event {
+  console.log(event)
   return {
     __typename: 'Event',
     id: event.id,

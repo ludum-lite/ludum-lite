@@ -55,7 +55,12 @@ export default function EventThemePage({ event }: Props) {
           />
         </ThemeSubPage>
       )
-    } else if (event.eventPhase === EventPhase.ThemeVoting) {
+    } else if (
+      event.eventPhase === EventPhase.ThemeVoting ||
+      event.eventPhase === EventPhase.EventRunning ||
+      event.eventPhase === EventPhase.GameVoting ||
+      event.eventPhase === EventPhase.Results
+    ) {
       return (
         <ThemeSubPage title="Theme Voting Round">
           <ThemeVotingForm
@@ -63,12 +68,6 @@ export default function EventThemePage({ event }: Props) {
           />
         </ThemeSubPage>
       )
-    } else if (event.eventPhase === EventPhase.EventRunning) {
-      return <div />
-    } else if (event.eventPhase === EventPhase.GameVoting) {
-      return <div />
-    } else if (event.eventPhase === EventPhase.Results) {
-      return <div />
     }
   }
 
