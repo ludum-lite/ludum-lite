@@ -1,7 +1,13 @@
 import React from 'react'
 import { gql } from '@apollo/client'
 import styled from 'styled-components/macro'
-import { ThemeVotingForm_EventFragment, useApproveVotingRoundIdeaMutation, useRejectVotingRoundIdeaMutation, useVoteMaybeVotingRoundIdeaMutation, VotingPhase } from '__generated__/client-types'
+import {
+  ThemeVotingForm_EventFragment,
+  useApproveVotingRoundIdeaMutation,
+  useRejectVotingRoundIdeaMutation,
+  useVoteMaybeVotingRoundIdeaMutation,
+  VotingPhase,
+} from '__generated__/client-types'
 import Button from 'components/common/mui/Button'
 import PreviousVoteList from './PreviousVoteList'
 import PreviousRoundVoteRow from './PreviousRoundVoteRow'
@@ -25,7 +31,12 @@ const VotingRoundTabs = styled.div`
   }
 `
 
-const VotingEndedMessage = styled(Typography)`
+const VotingEndedMessage = styled(Typography).attrs({
+  variant: 'h5',
+})`
+  display: flex;
+  justify-content: center;
+  padding: ${({ theme }) => theme.spacing(4)}px;
   margin-bottom: ${({ theme }) => theme.spacing(2)}px;
 `
 
@@ -48,7 +59,9 @@ export default function ThemeVotingForm({ event }: Props) {
     }
   }, [event.votingRounds, selectedRound])
   const [approveVotingRoundIdeaMutation] = useApproveVotingRoundIdeaMutation()
-  const [voteMaybeVotingRoundIdeaMutation] = useVoteMaybeVotingRoundIdeaMutation()
+  const [
+    voteMaybeVotingRoundIdeaMutation,
+  ] = useVoteMaybeVotingRoundIdeaMutation()
   const [rejectVotingRoundIdeaMutation] = useRejectVotingRoundIdeaMutation()
 
   const approveVotingRoundIdea = React.useCallback(
@@ -60,7 +73,10 @@ export default function ThemeVotingForm({ event }: Props) {
           },
         },
         update(cache, { data }) {
-          if (data?.approveVotingRoundIdea.__typename === 'ApproveVotingRoundIdeaSuccess') {
+          if (
+            data?.approveVotingRoundIdea.__typename ===
+            'ApproveVotingRoundIdeaSuccess'
+          ) {
             cache.modify({
               id: `VotingRoundIdea:${votingRoundIdeaId}`,
               fields: {
@@ -83,7 +99,10 @@ export default function ThemeVotingForm({ event }: Props) {
           },
         },
         update(cache, { data }) {
-          if (data?.rejectVotingRoundIdea.__typename === 'RejectVotingRoundIdeaSuccess') {
+          if (
+            data?.rejectVotingRoundIdea.__typename ===
+            'RejectVotingRoundIdeaSuccess'
+          ) {
             cache.modify({
               id: `VotingRoundIdea:${votingRoundIdeaId}`,
               fields: {
@@ -106,7 +125,10 @@ export default function ThemeVotingForm({ event }: Props) {
           },
         },
         update(cache, { data }) {
-          if (data?.voteMaybeVotingRoundIdea.__typename === 'VoteMaybeVotingRoundIdeaSuccess') {
+          if (
+            data?.voteMaybeVotingRoundIdea.__typename ===
+            'VoteMaybeVotingRoundIdeaSuccess'
+          ) {
             cache.modify({
               id: `VotingRoundIdea:${votingRoundIdeaId}`,
               fields: {
@@ -126,11 +148,15 @@ export default function ThemeVotingForm({ event }: Props) {
         {event.votingRounds?.map((votingRound) => (
           <VotingRoundTab
             key={votingRound.name}
-            variant="contained"
-            color={(selectedVotingRound?.page === votingRound.page) ? 'secondary' : 'default'}
+            variant={
+              selectedVotingRound?.page === votingRound.page
+                ? 'contained'
+                : 'outlined'
+            }
+            color="primary"
             onClick={() => {
               setSearchParams({
-                selectedRound: votingRound.page.toString()
+                selectedRound: votingRound.page.toString(),
               })
             }}
           >
@@ -138,13 +164,14 @@ export default function ThemeVotingForm({ event }: Props) {
           </VotingRoundTab>
         ))}
       </VotingRoundTabs>
-      {
-        selectedVotingRound?.votingPhase === VotingPhase.Ended && (
-          <VotingEndedMessage variant="subtitle2">
-            This round has ended.
-          </VotingEndedMessage>
-        )
-      }
+      {selectedVotingRound?.votingPhase === VotingPhase.Ended && (
+        <VotingEndedMessage>This round has ended.</VotingEndedMessage>
+      )}
+      {selectedVotingRound?.votingPhase === VotingPhase.Inactive && (
+        <VotingEndedMessage>
+          This round hasn't started yet. Stay tuned!
+        </VotingEndedMessage>
+      )}
       <PreviousVoteList>
         {selectedVotingRound?.votingRoundIdeas.map((votingRoundIdea) => (
           <PreviousRoundVoteRow

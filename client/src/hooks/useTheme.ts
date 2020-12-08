@@ -528,7 +528,7 @@ const lightTheme: ThemeColors = {
   },
   themeRoundVoting: {
     approveBackground: transparentize(0.5, styleVariables.green),
-    neutralBackground: transparentize(0.5, styleVariables.greenBlue),
+    neutralBackground: transparentize(0.5, styleVariables.yellow),
     rejectBackground: transparentize(0.5, styleVariables.red),
     buttonsBackground: 'white',
   },
@@ -805,9 +805,9 @@ const darkTheme: ThemeColors = {
     remaingVotesBackground: ldStyleVariables.blueDeFrance,
   },
   themeRoundVoting: {
-    approveBackground: 'rgb(186, 255, 141)',
-    neutralBackground: 'rgb(254, 255, 158)',
-    rejectBackground: 'rgb(255, 158, 158)',
+    approveBackground: ldStyleVariables.green,
+    neutralBackground: ldStyleVariables.darkOrange,
+    rejectBackground: ldStyleVariables.portlandOrange,
     buttonsBackground: 'white',
   },
   palette: {
@@ -965,6 +965,9 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       MuiToggleButton: {
         root: {
           textTransform: 'none',
+          '&:hover': {
+            backgroundColor: transparentBlacks[900],
+          },
         },
       },
       MuiDialogTitle: {

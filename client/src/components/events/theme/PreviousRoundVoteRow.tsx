@@ -4,9 +4,9 @@ import Typography from 'components/common/mui/Typography'
 import ThumbUpIcon from '@material-ui/icons/ThumbUp'
 import ThumbDownIcon from '@material-ui/icons/ThumbDown'
 import ThumbsUpDownIcon from '@material-ui/icons/ThumbsUpDown'
-import ToggleButton from '@material-ui/lab/ToggleButton'
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import { ignoreProps } from 'utils'
+import ButtonGroup from 'components/common/mui/ButtonGroup'
+import IconButton from 'components/common/mui/IconButton'
 
 interface RootProps {
   vote: number | null | undefined
@@ -14,8 +14,7 @@ interface RootProps {
 const Root = styled.div<RootProps>`
   display: flex;
   align-items: stretch;
-  background: ${({ theme }) =>
-    theme.themeColors.rows.background.white.background};
+  background: ${({ theme }) => theme.themeColors.backgrounds.level2};
 
   &:not(:last-child) {
     border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
@@ -45,39 +44,28 @@ const PreviousVoteContent = styled.div`
   padding: ${({ theme }) => `${theme.spacing(0.5)}px ${theme.spacing(1)}px`};
 `
 
-interface StyledToggleButtonProps {
+interface StyledButtonProps {
   isActive: boolean
 }
-const StyledToggleButton = styled(ToggleButton).withConfig({
-  shouldForwardProp: ignoreProps(['isActive'])
-})<StyledToggleButtonProps>`
-  border: 1px solid transparent;
-
-  && {
-    border-radius: ${({ theme }) => theme.shape.borderRadius}px;
-  }
-
-  &:not(:last-child) {
+const StyledIconButton = styled(IconButton).withConfig({
+  shouldForwardProp: ignoreProps(['isActive']),
+})<StyledButtonProps>`
+  /* &:not(:last-child) {
     margin-right: ${({ theme }) => theme.spacing(0.5)}px;
-  }
+  } */
 
   .MuiSvgIcon-root {
     font-size: 1.25rem;
   }
 
-  ${({ isActive }) =>
-    isActive &&
-    css`
-      && {
+  /* && {
+    ${({ isActive, theme }) =>
+      isActive &&
+      css`
         border: 1px solid rgb(0, 0, 0, 9%);
-      }
-    `}
-
-  && {
-    ${({ isActive, theme }) => isActive && css`
-      background: ${theme.themeColors.rows.background.white.background};
-    `}
-  }
+        background: ${theme.themeColors.rows.background.white.background};
+      `}
+  } */
 `
 
 const PreviousVoteName = styled(Typography)`
@@ -103,43 +91,41 @@ function PreviousRoundVoteRow({
   return (
     <Root vote={vote}>
       <PreviousVoteContent>
-        <ToggleButtonGroup
-          value={vote}
-          size="small"
-          exclusive
-          onChange={(_, newVote) => {
-            if (newVote === -1) {
-              onReject(id)
-            } else if (newVote === 0) {
-              onMaybe(id)
-            } else if (newVote === 1) {
-              onApprove(id)
-            }
-          }}
-          aria-label="text alignment"
-        >
-          <StyledToggleButton
+        <ButtonGroup aria-label="text alignment">
+          <StyledIconButton
             value={-1}
             aria-label="left aligned"
             isActive={vote === -1}
+            variant={vote === -1 ? 'contained' : 'text'}
+            onClick={() => {
+              onReject(id)
+            }}
           >
             <ThumbDownIcon fontSize="small" />
-          </StyledToggleButton>
-          <StyledToggleButton
+          </StyledIconButton>
+          <StyledIconButton
             value={0}
             aria-label="centered"
             isActive={vote === 0}
+            variant={vote === 0 ? 'contained' : 'text'}
+            onClick={() => {
+              onMaybe(id)
+            }}
           >
             <ThumbsUpDownIcon fontSize="small" />
-          </StyledToggleButton>
-          <StyledToggleButton
+          </StyledIconButton>
+          <StyledIconButton
             value={1}
             aria-label="right aligned"
             isActive={vote === 1}
+            variant={vote === 1 ? 'contained' : 'text'}
+            onClick={() => {
+              onApprove(id)
+            }}
           >
             <ThumbUpIcon fontSize="small" />
-          </StyledToggleButton>
-        </ToggleButtonGroup>
+          </StyledIconButton>
+        </ButtonGroup>
         <PreviousVoteName>{name}</PreviousVoteName>
       </PreviousVoteContent>
     </Root>
