@@ -285,4 +285,12 @@ const apolloServer = new ApolloServer({
   }),
 })
 
-export const graphqlHandler = apolloServer.createHandler()
+// https://github.com/apollographql/apollo-server/pull/3926#issuecomment-669302177
+export function graphqlHandler(event: any, context: any, callback: any) {
+  // Busboy (behind the scenes files upload) is specifically looking for the lower case version
+  if (Object.keys(event.headers).includes('Content-Type')) {
+    event.headers['content-type'] = event.headers['Content-Type']
+  }
+
+  return apolloServer.createHandler()(event, context, callback)
+}

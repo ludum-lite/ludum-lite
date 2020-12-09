@@ -141,9 +141,7 @@ const CommentsTitle = styled(Typography)`
 `
 
 const EditActionRow = styled.div`
-  padding: ${({ theme }) => theme.spacing(1)}px;
-  margin-top: ${({ theme }) => theme.spacing(1)}px;
-  background: ${({ theme }) => theme.themeColors.post.editActionRowBackground};
+  padding-bottom: ${({ theme }) => theme.spacing(1)}px;
 `
 
 const TitleInput = styled(FilledInput)`
