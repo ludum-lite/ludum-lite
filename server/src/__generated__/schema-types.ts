@@ -779,14 +779,14 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
-  String: ResolverTypeWrapper<Scalars['String']>,
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
   Event: ResolverTypeWrapper<Event>,
+  String: ResolverTypeWrapper<Scalars['String']>,
   Int: ResolverTypeWrapper<Scalars['Int']>,
   Upload: ResolverTypeWrapper<Scalars['Upload']>,
   Query: ResolverTypeWrapper<{}>,
   Mutation: ResolverTypeWrapper<{}>,
   MutationResponse: ResolversTypes['UploadImageSuccess'] | ResolversTypes['UploadImageFailure'] | ResolversTypes['LoginFailure'] | ResolversTypes['LoginSuccess'] | ResolversTypes['AddFriendSuccess'] | ResolversTypes['AddFriendAndAddToGameSuccess'] | ResolversTypes['LovePostSuccess'] | ResolversTypes['UnlovePostSuccess'] | ResolversTypes['EditPostSuccess'] | ResolversTypes['EditPostFieldError'] | ResolversTypes['CreatePostSuccess'] | ResolversTypes['PublishPostSuccess'] | ResolversTypes['PublishPostNameTooShort'] | ResolversTypes['LoveCommentSuccess'] | ResolversTypes['UnloveCommentSuccess'] | ResolversTypes['AddCommentSuccess'] | ResolversTypes['EditCommentSuccess'] | ResolversTypes['JoinEventSuccess'] | ResolversTypes['AddEventIdeaSuccess'] | ResolversTypes['DeleteEventIdeaSuccess'] | ResolversTypes['EditEventIdeaSuccess'] | ResolversTypes['ApproveEventIdeaSuccess'] | ResolversTypes['RejectEventIdeaSuccess'] | ResolversTypes['FlagEventIdeaSuccess'] | ResolversTypes['ApproveVotingRoundIdeaSuccess'] | ResolversTypes['VoteMaybeVotingRoundIdeaSuccess'] | ResolversTypes['RejectVotingRoundIdeaSuccess'] | ResolversTypes['EditGameSuccess'] | ResolversTypes['AddUserToGameSuccess'] | ResolversTypes['RemoveUserFromGameSuccess'],
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
   UnauthorizedResponse: ResolverTypeWrapper<UnauthorizedResponse>,
   IdInput: IdInput,
   UploadImageSuccess: ResolverTypeWrapper<UploadImageSuccess>,
@@ -876,14 +876,14 @@ export type ResolversTypes = ResolversObject<{
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
-  String: Scalars['String'],
-  Boolean: Scalars['Boolean'],
   Event: Event,
+  String: Scalars['String'],
   Int: Scalars['Int'],
   Upload: Scalars['Upload'],
   Query: {},
   Mutation: {},
   MutationResponse: ResolversParentTypes['UploadImageSuccess'] | ResolversParentTypes['UploadImageFailure'] | ResolversParentTypes['LoginFailure'] | ResolversParentTypes['LoginSuccess'] | ResolversParentTypes['AddFriendSuccess'] | ResolversParentTypes['AddFriendAndAddToGameSuccess'] | ResolversParentTypes['LovePostSuccess'] | ResolversParentTypes['UnlovePostSuccess'] | ResolversParentTypes['EditPostSuccess'] | ResolversParentTypes['EditPostFieldError'] | ResolversParentTypes['CreatePostSuccess'] | ResolversParentTypes['PublishPostSuccess'] | ResolversParentTypes['PublishPostNameTooShort'] | ResolversParentTypes['LoveCommentSuccess'] | ResolversParentTypes['UnloveCommentSuccess'] | ResolversParentTypes['AddCommentSuccess'] | ResolversParentTypes['EditCommentSuccess'] | ResolversParentTypes['JoinEventSuccess'] | ResolversParentTypes['AddEventIdeaSuccess'] | ResolversParentTypes['DeleteEventIdeaSuccess'] | ResolversParentTypes['EditEventIdeaSuccess'] | ResolversParentTypes['ApproveEventIdeaSuccess'] | ResolversParentTypes['RejectEventIdeaSuccess'] | ResolversParentTypes['FlagEventIdeaSuccess'] | ResolversParentTypes['ApproveVotingRoundIdeaSuccess'] | ResolversParentTypes['VoteMaybeVotingRoundIdeaSuccess'] | ResolversParentTypes['RejectVotingRoundIdeaSuccess'] | ResolversParentTypes['EditGameSuccess'] | ResolversParentTypes['AddUserToGameSuccess'] | ResolversParentTypes['RemoveUserFromGameSuccess'],
+  Boolean: Scalars['Boolean'],
   UnauthorizedResponse: UnauthorizedResponse,
   IdInput: IdInput,
   UploadImageSuccess: UploadImageSuccess,
