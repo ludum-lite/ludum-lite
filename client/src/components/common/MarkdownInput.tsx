@@ -9,6 +9,7 @@ import { gql } from '@apollo/client'
 import { useUploadImageMutation } from '__generated__/client-types'
 import Typography from './mui/Typography'
 import insertTextAtCursor from 'insert-text-at-cursor'
+import { useSnackbar } from 'notistack'
 
 const Root = styled.div`
   position: relative;
@@ -50,7 +51,8 @@ const UploadImageLinkContainer = styled.div`
   right: 0;
   bottom: 0;
   height: ${({ theme }) => theme.spacing(4)}px;
-  border-top: 1px dashed ${({ theme }) => theme.themeColors.input.dividerColor};
+  border-top: ${({ theme }) =>
+    `${theme.themeColors.markdownInput.inputDividerWidth}px dashed ${theme.themeColors.input.dividerColor}`};
   display: flex;
 `
 
@@ -76,13 +78,18 @@ export default function MarkdownInput({
   const [uploadImageMutation] = useUploadImageMutation()
   const userId = me?.id
   const inputRef = React.useRef<HTMLTextAreaElement>()
+  const { enqueueSnackbar } = useSnackbar()
 
   const onDrop = React.useCallback(
     async (acceptedFiles) => {
       if (acceptedFiles.length === 0) {
-        console.log('error accepting files')
+        enqueueSnackbar('Please select one file.', {
+          variant: 'error',
+        })
       } else if (!userId) {
-        console.error('no logged user id')
+        enqueueSnackbar('Please login.', {
+          variant: 'error',
+        })
       } else {
         try {
           const { data } = await uploadImageMutation({
@@ -97,13 +104,17 @@ export default function MarkdownInput({
                 `![${data.uploadImage.name}](///raw/${data.uploadImage.path})`
               )
             }
+          } else {
+            enqueueSnackbar('Error occured when processing image.', {
+              variant: 'error',
+            })
           }
         } catch (e) {
           console.error(e)
         }
       }
     },
-    [uploadImageMutation, userId]
+    [enqueueSnackbar, uploadImageMutation, userId]
   )
 
   const onAddImage = React.useCallback(

@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { css } from 'styled-components/macro'
 
-import MultilineTextField from 'components/common/MultilineTextField'
+import MarkdownInput from 'components/common/MarkdownInput'
 import Markdown from 'components/common/Markdown'
 import Fade from '@material-ui/core/Fade'
 import { useLogin } from 'hooks/useLogin'
@@ -31,7 +31,7 @@ const Form = styled.form<FormProps>`
     `} */
 `
 
-const StyledMultilineTextField = styled(MultilineTextField)`
+const StyledMarkdownInput = styled(MarkdownInput)`
   .MuiInputBase-root {
     padding-top: 16px;
     padding-bottom: 16px;
@@ -85,7 +85,7 @@ export default function CommentForm({
           <ActionRow>{actionRow}</ActionRow>
         </Fade>
         {state === 'write' ? (
-          <StyledMultilineTextField
+          <StyledMarkdownInput
             name="body"
             placeholder="Leave a comment"
             fullWidth

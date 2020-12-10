@@ -107,6 +107,9 @@ export type ThemeColors = {
     borderColor: string
     backgroundColor: string
   }
+  markdownInput: {
+    inputDividerWidth: number
+  }
   tag: {
     primaryBackground: string
     primaryColor: string
@@ -455,6 +458,9 @@ const lightTheme: ThemeColors = {
       },
     },
   },
+  markdownInput: {
+    inputDividerWidth: 2,
+  },
   tag: {
     primaryBackground: styleVariables.greenBlue,
     primaryColor: styleVariables.white,
@@ -734,6 +740,9 @@ const darkTheme: ThemeColors = {
         oddBackground: 'rgb(224, 232, 243)',
       },
     },
+  },
+  markdownInput: {
+    inputDividerWidth: 1,
   },
   tag: {
     primaryBackground: ldStyleVariables.portlandOrange,
