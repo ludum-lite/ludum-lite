@@ -1,8 +1,9 @@
 import React from 'react'
-import styled from 'styled-components/macro'
+import styled, { useTheme } from 'styled-components/macro'
 import ReactMarkdown, { ReactMarkdownProps } from 'react-markdown'
 import { getStaticUrl } from 'utils'
 import { Typography } from '@material-ui/core'
+import Zoom from 'react-medium-image-zoom'
 
 const imageSizeRegex = /_33B2BF251EFD_([0-9]+x|x[0-9]+|[0-9]+x[0-9]+)$/
 const imagePreprocessor = (source: string) =>
@@ -22,10 +23,10 @@ const Root = styled.div`
   }
 `
 
-const Image = styled.img`
+const ImageZoomContainer = styled(Zoom).attrs({
+  wrapElement: 'span',
+})`
   max-width: 100%;
-  border-radius: 4px;
-  /* // border: '1px solid rgba(0, 0, 0, 0.23)', */
   display: block;
 
   &:not(:first-child) {
@@ -35,6 +36,12 @@ const Image = styled.img`
   &:not(:last-child) {
     margin-bottom: 1em;
   }
+`
+
+const Image = styled.img`
+  border-radius: 4px;
+  max-width: 100%;
+  /* // border: '1px solid rgba(0, 0, 0, 0.23)', */
 `
 
 const LinkContainer = styled.p`
@@ -51,6 +58,7 @@ interface Props extends ReactMarkdownProps {
 
 export default function Markdown({ source, removeHrefs, ...props }: Props) {
   const renderers: { [index: string]: React.ElementType<any> } = {}
+  const theme = useTheme()
 
   const rootRenderer = (props: React.HTMLAttributes<HTMLDivElement>) => {
     return <Root {...props} />
@@ -60,20 +68,34 @@ export default function Markdown({ source, removeHrefs, ...props }: Props) {
     const match = imageSizeRegex.exec(src)
 
     if (!match) {
-      return <Image src={src} alt="" {...props} />
+      return (
+        <ImageZoomContainer
+          overlayBgColorStart={theme.themeColors.imageZoom.overlayBgColorStart}
+          overlayBgColorEnd={theme.themeColors.imageZoom.overlayBgColorEnd}
+          zoomMargin={40}
+        >
+          <Image src={src} alt="" {...props} />
+        </ImageZoomContainer>
+      )
     }
 
     const [width, height] = match[1]
       .split('x')
       .map((s) => (s === '' ? undefined : Number(s)))
     return (
-      <Image
-        src={src.replace(imageSizeRegex, '')}
-        alt=""
-        width={width}
-        height={height}
-        {...props}
-      />
+      <ImageZoomContainer
+        overlayBgColorStart={theme.themeColors.imageZoom.overlayBgColorStart}
+        overlayBgColorEnd={theme.themeColors.imageZoom.overlayBgColorEnd}
+        zoomMargin={40}
+      >
+        <Image
+          src={src.replace(imageSizeRegex, '')}
+          alt=""
+          width={width}
+          height={height}
+          {...props}
+        />
+      </ImageZoomContainer>
     )
   }
 

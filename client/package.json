@@ -53,6 +53,7 @@
     "react-hook-form": "^6.0.3",
     "react-hotkeys": "^2.0.0",
     "react-markdown": "^4.3.1",
+    "react-medium-image-zoom": "^4.3.1",
     "react-router": "^6.0.0-alpha.5",
     "react-router-dom": "^6.0.0-alpha.5",
     "react-scripts": "3.4.1",

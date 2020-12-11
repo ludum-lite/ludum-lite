@@ -103,6 +103,10 @@ export type ThemeColors = {
       }
     }
   }
+  imageZoom: {
+    overlayBgColorStart: string
+    overlayBgColorEnd: string
+  }
   dropOverlay: {
     borderColor: string
     backgroundColor: string
@@ -458,6 +462,10 @@ const lightTheme: ThemeColors = {
       },
     },
   },
+  imageZoom: {
+    overlayBgColorStart: transparentize(1, white),
+    overlayBgColorEnd: transparentWhites[200],
+  },
   markdownInput: {
     inputDividerWidth: 2,
   },
@@ -740,6 +748,10 @@ const darkTheme: ThemeColors = {
         oddBackground: 'rgb(224, 232, 243)',
       },
     },
+  },
+  imageZoom: {
+    overlayBgColorStart: transparentize(1, black),
+    overlayBgColorEnd: transparentBlacks[200],
   },
   markdownInput: {
     inputDividerWidth: 1,

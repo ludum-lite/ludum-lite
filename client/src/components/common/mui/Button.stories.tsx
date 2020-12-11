@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components/macro'
 import Button from './Button'
-import ToggleButton from './ToggleButton'
+import ToggleButton from '@material-ui/lab/ToggleButton'
 import { ButtonProps } from '@material-ui/core/Button'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import { Typography } from '@material-ui/core'
@@ -166,13 +166,9 @@ export const Basic = () => {
               }
             }}
           >
-            <ToggleButton value="small" padding="text">
-              Small
-            </ToggleButton>
-            <ToggleButton value="medium" padding="text">
-              Medium
-            </ToggleButton>
-            <ToggleButton value="large" padding="text" disabled>
+            <ToggleButton value="small">Small</ToggleButton>
+            <ToggleButton value="medium">Medium</ToggleButton>
+            <ToggleButton value="large" disabled>
               Large
             </ToggleButton>
           </ToggleButtonGroup>
@@ -186,12 +182,8 @@ export const Basic = () => {
               setIsLoading(!isLoading)
             }}
           >
-            <ToggleButton value={false} padding="text">
-              Not Loading
-            </ToggleButton>
-            <ToggleButton value={true} padding="text">
-              Loading
-            </ToggleButton>
+            <ToggleButton value={false}>Not Loading</ToggleButton>
+            <ToggleButton value={true}>Loading</ToggleButton>
           </ToggleButtonGroup>
         </div>
       </Options>

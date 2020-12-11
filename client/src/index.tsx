@@ -1,3 +1,5 @@
+import 'react-medium-image-zoom/dist/styles.css'
+
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
@@ -15,7 +17,7 @@ import * as serviceWorker from './serviceWorker'
 
 import StylesProvider from 'providers/StylesProvider'
 import UserLoadedCheck from 'components/UserLoadedCheck'
-
+import 'react-medium-image-zoom/dist/styles.css'
 /*****************/
 /* Apollo Client */
 /*****************/
