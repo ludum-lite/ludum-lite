@@ -7,6 +7,7 @@ import MenuIcon from '@material-ui/icons/Menu'
 import IconButton from 'components/common/mui/IconButton'
 import { useWidgetsSidebarOpen } from 'hooks/useWidgetsSidebarOpen'
 import Logo from 'components/logo/Logo'
+import Link from 'components/common/mui/Link'
 
 const Root = styled.div`
   display: flex;
@@ -39,6 +40,11 @@ const Separator = styled.div`
   flex: 1 1 0px;
 `
 
+const LogoContainer = styled(Link)`
+  display: flex;
+  align-items: center;
+`
+
 export default function Topbar() {
   const { setIsSidebarOpen } = useSidebarOpen()
   const { setIsWidgetsSidebarOpen } = useWidgetsSidebarOpen()
@@ -60,7 +66,9 @@ export default function Topbar() {
               <MenuIcon />
             </StyledIconButton>
             <Separator />
-            <Logo />
+            <LogoContainer to="/">
+              <Logo />
+            </LogoContainer>
             <Separator />
             <StyledIconButton aria-label="menu" onClick={onClickRightIcon}>
               <AppsIcon />

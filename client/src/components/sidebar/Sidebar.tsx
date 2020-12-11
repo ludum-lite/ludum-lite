@@ -6,6 +6,7 @@ import { Hidden, Drawer } from '@material-ui/core'
 import GlobalNav from './GlobalNav'
 import { useSidebarOpen } from 'hooks/useSidebarOpen'
 import Logo from 'components/logo/Logo'
+import Link from 'components/common/mui/Link'
 
 const StyledDrawer = styled(Drawer)`
   .MuiDrawer-paperAnchorDockedLeft {
@@ -40,7 +41,7 @@ const Body = styled(StickyBox)`
   padding-top: ${({ theme }) => theme.spacing(10)}px;
 `
 
-const LogoContainer = styled.div`
+const LogoContainer = styled(Link)`
   position: fixed;
   display: flex;
   background: ${({ theme }) => theme.themeColors.backgrounds.level1};
@@ -78,7 +79,7 @@ const Sidebar = React.memo(() => {
           }}
         >
           <Root>
-            <LogoContainer>
+            <LogoContainer to="/">
               <StyledLogo />
             </LogoContainer>
             <Body>
@@ -89,7 +90,7 @@ const Sidebar = React.memo(() => {
       </Hidden>
       <StyledHidden smDown implementation="css">
         <Root>
-          <LogoContainer>
+          <LogoContainer to="/">
             <StyledLogo />
           </LogoContainer>
           <Body>
