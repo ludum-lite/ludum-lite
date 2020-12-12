@@ -25,6 +25,7 @@ interface Props {
   variant: Variant
   children: React.ReactNode
 }
+
 export default function Tag({ variant, children }: Props) {
   return <Root variant={variant}>{children}</Root>
 }

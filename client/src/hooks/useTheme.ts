@@ -471,9 +471,9 @@ const lightTheme: ThemeColors = {
   },
   tag: {
     primaryBackground: styleVariables.greenBlue,
-    primaryColor: styleVariables.white,
+    primaryColor: textWhite,
     secondaryBackground: styleVariables.bittersweet,
-    secondaryColor: textBlack,
+    secondaryColor: textWhite,
   },
   dialog: {
     titleBackground: styleVariables.greenBlue,
@@ -758,9 +758,9 @@ const darkTheme: ThemeColors = {
   },
   tag: {
     primaryBackground: ldStyleVariables.portlandOrange,
-    primaryColor: ldStyleVariables.white,
+    primaryColor: textWhite,
     secondaryBackground: ldStyleVariables.darkOrange,
-    secondaryColor: textBlack,
+    secondaryColor: textWhite,
   },
   dialog: {
     titleBackground: ldStyleVariables.darkOrange,
