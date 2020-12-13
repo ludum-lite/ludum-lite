@@ -57,8 +57,6 @@ const TopRow = styled.div`
 
 const TeamList = styled.div`
   display: flex;
-  /* flex-direction: row-reverse; */
-  /* justify-content: flex-end; */
   align-items: flex-end;
   flex-wrap: wrap;
 
