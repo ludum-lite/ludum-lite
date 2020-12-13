@@ -38,6 +38,7 @@ import {
 import Typography from 'components/common/mui/Typography'
 import DialogTitle from 'components/common/mui/DialogTitle'
 import WidgetContainer from 'components/widgets/WidgetContainer'
+import { ignoreProps } from 'utils'
 
 const Root = styled.div`
   display: flex;
@@ -56,13 +57,28 @@ const TopRow = styled.div`
 
 const TeamList = styled.div`
   display: flex;
-  flex-direction: row-reverse;
-  justify-content: flex-end;
+  /* flex-direction: row-reverse; */
+  /* justify-content: flex-end; */
   align-items: flex-end;
+  flex-wrap: wrap;
 
-  & > *:not(:last-child) {
-    margin-left: -8px;
+  & > * {
+    margin-right: -8px;
+    margin-bottom: ${({ theme }) => theme.spacing(1)}px;
   }
+`
+
+const StyledAddTeamMemberButton = styled(AddTeamMemberButton)`
+  order: 1000;
+`
+
+interface StyledTeamMemberProps {
+  order: number
+}
+const StyledTeamMember = styled(TeamMember).withConfig({
+  shouldForwardProp: ignoreProps(['order']),
+})<StyledTeamMemberProps>`
+  order: ${({ order }) => order};
 `
 
 const InviteLinkContainer = styled.div`
@@ -80,8 +96,9 @@ const InviteButton = styled(ClickToCopyButton)`
 `
 
 const InviteText = styled(Typography)`
-  padding-top: ${({ theme }) => theme.spacing(1)}px;
   white-space: pre;
+  margin-bottom: ${({ theme }) => theme.spacing(1)}px;
+  text-align: center;
 `
 
 const AddedTagContainer = styled(ListItemSecondaryAction)`
@@ -259,6 +276,10 @@ export default function GameWidget({ className }: Props) {
         const teamUsers = data.featuredEvent.currentUserGame?.teamUsers
         const isLeader = leaderUser?.id === me.id
 
+        const teamMembersToRender = teamUsers?.filter(
+          (user) => user.id !== leaderUser?.id
+        )
+
         return (
           <WidgetContainer>
             <Root className={className}>
@@ -302,19 +323,18 @@ export default function GameWidget({ className }: Props) {
                 </Menu>
               </TopRow>
               <TeamList>
-                <AddTeamMemberButton
+                <StyledAddTeamMemberButton
                   onClick={() => setShowTeamMemberSelectDialog(true)}
                 />
-                {teamUsers
-                  ?.filter((user) => user.id !== leaderUser?.id)
-                  .sort((user) => {
+                {teamMembersToRender
+                  ?.sort((user) => {
                     if (user.id === me.id) {
                       return -1
                     } else {
                       return user.id
                     }
                   })
-                  .map((user) => (
+                  .map((user, index) => (
                     <Tooltip
                       key={user.id}
                       title={user.name}
@@ -322,8 +342,9 @@ export default function GameWidget({ className }: Props) {
                       arrow
                       placement="top"
                     >
-                      <TeamMember
+                      <StyledTeamMember
                         avatarPath={user.avatarPath}
+                        order={teamMembersToRender.length - index}
                         onClick={() => {
                           if (isLeader) {
                             setShowUserOptionsForUserId(user.id)
@@ -339,7 +360,11 @@ export default function GameWidget({ className }: Props) {
                     arrow
                     placement="top"
                   >
-                    <TeamMember avatarPath={leaderUser.avatarPath} leader />
+                    <StyledTeamMember
+                      avatarPath={leaderUser.avatarPath}
+                      order={0}
+                      leader
+                    />
                   </Tooltip>
                 )}
               </TeamList>
@@ -377,13 +402,13 @@ export default function GameWidget({ className }: Props) {
                     ))}
                 </List>
                 <InviteLinkContainer>
-                  <InviteButton text={inviteLink} fullWidth variant="contained">
-                    {inviteLink}
-                  </InviteButton>
                   <InviteText variant="caption" color="textSecondary">
                     {`Don't see your friend listed? Send them this link!
 They'll get a confirmation link to send back to you.`}
                   </InviteText>
+                  <InviteButton text={inviteLink} fullWidth variant="contained">
+                    {inviteLink}
+                  </InviteButton>
                 </InviteLinkContainer>
               </Dialog>
               {userOptionsDialog}
