@@ -1265,6 +1265,14 @@ export type UnlovePostMutation = { __typename: 'Mutation' } & {
     | { __typename: 'UnauthorizedResponse' }
 }
 
+export type GetCountdownWidgetContainerDataQueryVariables = Exact<{
+  input: IdInput
+}>
+
+export type GetCountdownWidgetContainerDataQuery = { __typename: 'Query' } & {
+  event: { __typename: 'Event' } & Pick<Event, 'id' | 'theme'>
+}
+
 export type AcceptedInvitePageQueryVariables = Exact<{
   input: IdInput
 }>
@@ -3283,6 +3291,63 @@ export type UnlovePostMutationResult = ApolloReactCommon.MutationResult<
 export type UnlovePostMutationOptions = ApolloReactCommon.BaseMutationOptions<
   UnlovePostMutation,
   UnlovePostMutationVariables
+>
+export const GetCountdownWidgetContainerDataDocument = gql`
+  query GetCountdownWidgetContainerData($input: IdInput!) {
+    event(input: $input) {
+      id
+      theme
+    }
+  }
+`
+
+/**
+ * __useGetCountdownWidgetContainerDataQuery__
+ *
+ * To run a query within a React component, call `useGetCountdownWidgetContainerDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCountdownWidgetContainerDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCountdownWidgetContainerDataQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetCountdownWidgetContainerDataQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GetCountdownWidgetContainerDataQuery,
+    GetCountdownWidgetContainerDataQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<
+    GetCountdownWidgetContainerDataQuery,
+    GetCountdownWidgetContainerDataQueryVariables
+  >(GetCountdownWidgetContainerDataDocument, baseOptions)
+}
+export function useGetCountdownWidgetContainerDataLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetCountdownWidgetContainerDataQuery,
+    GetCountdownWidgetContainerDataQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    GetCountdownWidgetContainerDataQuery,
+    GetCountdownWidgetContainerDataQueryVariables
+  >(GetCountdownWidgetContainerDataDocument, baseOptions)
+}
+export type GetCountdownWidgetContainerDataQueryHookResult = ReturnType<
+  typeof useGetCountdownWidgetContainerDataQuery
+>
+export type GetCountdownWidgetContainerDataLazyQueryHookResult = ReturnType<
+  typeof useGetCountdownWidgetContainerDataLazyQuery
+>
+export type GetCountdownWidgetContainerDataQueryResult = ApolloReactCommon.QueryResult<
+  GetCountdownWidgetContainerDataQuery,
+  GetCountdownWidgetContainerDataQueryVariables
 >
 export const AcceptedInvitePageDocument = gql`
   query AcceptedInvitePage($input: IdInput!) {

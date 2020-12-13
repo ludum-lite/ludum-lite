@@ -40,6 +40,7 @@ export type Timeline = {
 }
 
 export type Event = {
+  id?: number
   eventNumber: number
   timeline: Timeline
 }
@@ -97,6 +98,7 @@ export const events: Event[] = [
     }),
   },
   {
+    id: 1228,
     eventNumber: 48,
     timeline: generateTimeline({
       [EventPhase.ThemeSubmission]:   moment.utc('2021-02-12T01:00:00'),

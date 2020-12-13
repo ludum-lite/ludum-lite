@@ -15,30 +15,38 @@ const init: UseMeReturnType = {
 }
 
 export const useMe = singletonHook(init, () => {
-  const { data, loading } = useGetMeDataQuery({
-    onCompleted(data) {
-      if (data.me.__typename === 'UnauthorizedResponse') {
-        const wasLoggedIn = Boolean(localStorage.getItem('token'))
+  // Don't want to use apollo in storybook, so catch the error
+  try {
+    const { data, loading } = useGetMeDataQuery({
+      onCompleted(data) {
+        if (data.me.__typename === 'UnauthorizedResponse') {
+          const wasLoggedIn = Boolean(localStorage.getItem('token'))
 
-        localStorage.removeItem('token')
-        isLoggedInVar(false)
+          localStorage.removeItem('token')
+          isLoggedInVar(false)
 
-        if (wasLoggedIn) {
-          window.location.reload();
+          if (wasLoggedIn) {
+            window.location.reload()
+          }
         }
+      },
+    })
+
+    useEffect(() => {
+      if (data?.me.__typename === 'Me') {
+        console.log(`Welcome - ${data.me.name}`)
       }
-    },
-  })
+    }, [data])
 
-  useEffect(() => {
-    if (data?.me.__typename === 'Me') {
-      console.log(`Welcome - ${data.me.name}`)
+    return {
+      me: data?.me.__typename === 'Me' ? data.me : null,
+      hasLoaded: !loading,
     }
-  }, [data])
-
-  return {
-    me: data?.me.__typename === 'Me' ? data.me : null,
-    hasLoaded: !loading,
+  } catch (e) {
+    return {
+      me: null,
+      hasLoaded: false,
+    }
   }
 })
 

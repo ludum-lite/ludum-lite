@@ -21,8 +21,6 @@ import RadioButtonUnchecked from '@material-ui/icons/RadioButtonUnchecked'
 import {
   EventPhaseToLabel,
   mapTimeline,
-  getCurrentEvent,
-  getEvent,
   findNextPhase,
   Event,
   EventPhase,
@@ -44,6 +42,17 @@ const TitleButton = styled(Button)`
   margin-bottom: ${({ theme }) => theme.spacing(1)}px;
   white-space: nowrap;
   padding: 6px 6px;
+`
+
+const ThemeContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: ${({ theme }) => theme.themeColors.backgrounds.level3};
+  border-radius: ${({ theme }) => theme.shape.borderRadius}px;
+  padding: ${({ theme }) => theme.spacing(1)}px;
+  margin-bottom: ${({ theme }) => theme.spacing(2)}px;
+  text-align: center;
 `
 
 const Subtitle = styled(Typography)``
@@ -118,27 +127,35 @@ const CheckboxIcon = styled(ListItemIcon)`
 
 interface Props {
   events: Event[]
+  selectedEvent?: Event
+  onChangeSelectedEventNum: (num: number) => void
   className?: string
+  theme?: string
 }
-export default function CountdownWidget({ events, className }: Props) {
+export default function CountdownWidget({
+  events,
+  selectedEvent,
+  onChangeSelectedEventNum,
+  className,
+  theme,
+}: Props) {
   const [date] = React.useState(moment.utc())
-  const [selectedEventNum, setSelectedEventNum] = React.useState(
-    getCurrentEvent(events)?.eventNumber
-  )
-  const selectedEvent = selectedEventNum
-    ? getEvent(events, selectedEventNum)
-    : undefined
+
   const nextPhase = selectedEvent
     ? findNextPhase(selectedEvent.timeline, date)
     : undefined
+
   const isSelectedEventOver = !nextPhase
+
   const [
     countdownWidgetExpanded,
     setCountdownWidgetExpanded,
   ] = useUserLocalStorage('countdownWidgetExpanded', false)
+
   const [preferredEventType, setPreferredEventType] = useUserLocalStorage<
     'compo' | 'jam'
   >('countDownPreferredEventType', 'compo')
+
   const forceShowJam =
     (nextPhase?.eventPhase === EventPhase.CompoEnd ||
       nextPhase?.eventPhase === EventPhase.CompoSubmissionHourEnd) &&
@@ -151,10 +168,13 @@ export default function CountdownWidget({ events, className }: Props) {
       }
     : nextPhase
 
-  const handleChangeEvent = React.useCallback((eventNumber: number) => {
-    setSelectedEventNum(eventNumber)
-    setAnchorEl(null)
-  }, [])
+  const handleChangeEvent = React.useCallback(
+    (eventNumber: number) => {
+      onChangeSelectedEventNum(eventNumber)
+      setAnchorEl(null)
+    },
+    [onChangeSelectedEventNum]
+  )
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
   const isEventSelectOpen = Boolean(anchorEl)
@@ -263,6 +283,12 @@ export default function CountdownWidget({ events, className }: Props) {
             Ludum Dare {selectedEvent?.eventNumber}
           </Typography>
         </TitleButton>
+        {theme && (
+          <ThemeContainer>
+            Theme:
+            <Typography variant="h4">{theme}</Typography>
+          </ThemeContainer>
+        )}
         {(nextPhase?.eventPhase === EventPhase.CompoEnd ||
           nextPhase?.eventPhase === EventPhase.CompoSubmissionHourEnd) &&
           !countdownWidgetExpanded && (

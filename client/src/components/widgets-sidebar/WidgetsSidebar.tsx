@@ -2,8 +2,7 @@ import React, { Fragment } from 'react'
 import StickyBox from 'react-sticky-box'
 import styled from 'styled-components/macro'
 import { Drawer, Hidden, InputAdornment } from '@material-ui/core'
-import { events } from 'utils'
-import CountdownWidget from '../sidebar/CountdownWidget'
+import CountdownWidgetContainer from '../sidebar/CountdownWidgetContainer'
 import TeamWidget from '../team-widget/TeamWidget'
 import GameWidget from '../game-widget/GameWidget'
 import JoinEventWidget from '../join-event-widget/JoinEventWidget'
@@ -126,7 +125,7 @@ export default function WidgetsSidebar() {
               />
             </SearchInputContainer>
             <Widgets>
-              <CountdownWidget events={events} />
+              <CountdownWidgetContainer />
               <GameWidget />
               <TeamWidget />
               <JoinEventWidget />
@@ -148,7 +147,7 @@ export default function WidgetsSidebar() {
           </SearchInputContainer>
           <StickyBox>
             <Widgets>
-              <CountdownWidget events={events} />
+              <CountdownWidgetContainer />
               <GameWidget />
               <TeamWidget />
               <JoinEventWidget />
