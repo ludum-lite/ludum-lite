@@ -10,7 +10,12 @@ export const typeDefs = gql`
       filters: SearchPostsFiltersInput!
       limit: Int!
       page: Int!
-    ): SearchPostResponse!
+    ): SearchPostsResponse!
+    searchGames(
+      filters: SearchGamesFiltersInput!
+      limit: Int!
+      page: Int!
+    ): SearchGamesResponse!
     latestNewsPost: Post
     user(input: IdInput!): User!
     featuredEvent: Event!
@@ -212,7 +217,7 @@ export const typeDefs = gql`
 
   union UnlovePostResponse = UnlovePostSuccess | UnauthorizedResponse
 
-  type SearchPostResponse {
+  type SearchPostsResponse {
     limit: Int!
     page: Int!
     posts: [Post!]!
@@ -507,6 +512,11 @@ export const typeDefs = gql`
   # Game
   #########
 
+  enum EventType {
+    Jam
+    Compo
+  }
+
   type Game {
     id: Int!
     name: String!
@@ -522,6 +532,20 @@ export const typeDefs = gql`
     numNotes: Int!
     eventId: Int!
     slug: String
+    coverImagePath: String
+    eventType: EventType
+    # TODO grade object
+    # TODO magic object
+  }
+
+  input SearchGamesFiltersInput {
+    eventId: Int!
+  }
+
+  type SearchGamesResponse {
+    limit: Int!
+    page: Int!
+    games: [Game!]!
   }
 
   input EditGameInput {

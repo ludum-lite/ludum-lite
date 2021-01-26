@@ -25,6 +25,9 @@ const resolvers: Resolvers<Context> = {
     searchPosts(_, args, context) {
       return context.dataSources.postApi.searchPosts(args)
     },
+    searchGames(_, args, context) {
+      return context.dataSources.gameApi.searchGames(args)
+    },
     latestNewsPost(_, __, context) {
       return context.dataSources.postApi.getLatestNewsPost()
     },
@@ -283,6 +286,9 @@ const apolloServer = new ApolloServer({
     imageApi: new ImageAPI(),
     votingRoundApi: new VotingRoundAPI(),
   }),
+  playground: {
+    endpoint: '/dev/graphql',
+  },
 })
 
 // https://github.com/apollographql/apollo-server/pull/3926#issuecomment-669302177
@@ -290,7 +296,12 @@ export function graphqlHandler(event: any, context: any, callback: any) {
   // Busboy (behind the scenes files upload) is specifically looking for the lower case version
   if (Object.keys(event.headers).includes('Content-Type')) {
     event.headers['content-type'] = event.headers['Content-Type']
+    event.headers['Origin'] = event.headers['origin']
   }
-
-  return apolloServer.createHandler()(event, context, callback)
+  return apolloServer.createHandler({
+    cors: {
+      origin: true,
+      credentials: true,
+    },
+  })(event, context, callback)
 }

@@ -13,8 +13,6 @@ export default function CountdownWidgetContainer() {
     ? getEvent(events, selectedEventNum)
     : undefined
 
-  console.log(selectedEventNum)
-
   const { data } = useGetCountdownWidgetContainerDataQuery({
     variables: {
       input: {

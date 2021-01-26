@@ -3,7 +3,8 @@ scalar Upload
 type Query {
   me: MeResponse!
   post(input: IdInput!): Post!
-  searchPosts(filters: SearchPostsFiltersInput!, limit: Int!, page: Int!): SearchPostResponse!
+  searchPosts(filters: SearchPostsFiltersInput!, limit: Int!, page: Int!): SearchPostsResponse!
+  searchGames(filters: SearchGamesFiltersInput!, limit: Int!, page: Int!): SearchGamesResponse!
   latestNewsPost: Post
   user(input: IdInput!): User!
   featuredEvent: Event!
@@ -189,7 +190,7 @@ type UnlovePostSuccess implements MutationResponse {
 
 union UnlovePostResponse = UnlovePostSuccess | UnauthorizedResponse
 
-type SearchPostResponse {
+type SearchPostsResponse {
   limit: Int!
   page: Int!
   posts: [Post!]!
@@ -435,6 +436,11 @@ type RejectVotingRoundIdeaSuccess implements MutationResponse {
 
 union RejectVotingRoundIdeaResponse = RejectVotingRoundIdeaSuccess | UnauthorizedResponse
 
+enum EventType {
+  Jam
+  Compo
+}
+
 type Game {
   id: Int!
   name: String!
@@ -450,6 +456,18 @@ type Game {
   numNotes: Int!
   eventId: Int!
   slug: String
+  coverImagePath: String
+  eventType: EventType
+}
+
+input SearchGamesFiltersInput {
+  eventId: Int!
+}
+
+type SearchGamesResponse {
+  limit: Int!
+  page: Int!
+  games: [Game!]!
 }
 
 input EditGameInput {

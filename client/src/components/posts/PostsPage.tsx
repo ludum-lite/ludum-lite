@@ -28,11 +28,10 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
 `
+
 const StyledLinearProgress = styled(LinearProgress)`
   border: 1px solid ${({ theme }) => theme.themeColors.loader.barBackground};
 `
-
-const StyledPost = styled(Post)``
 
 const Posts = styled.div`
   display: flex;
@@ -114,7 +113,7 @@ export default function PostsPage() {
   })
 
   const latestNewsPost = postType === PostType.All && data?.latestNewsPost && (
-    <StyledPost
+    <Post
       key="latestNewsPost"
       post={data?.latestNewsPost}
       me={data?.me}
@@ -124,7 +123,7 @@ export default function PostsPage() {
 
   const postComponents =
     data?.searchPosts?.posts?.map((post) => (
-      <StyledPost key={post.id} post={post} me={data?.me} />
+      <Post key={post.id} post={post} me={data?.me} />
     )) || []
 
   const allPosts = [latestNewsPost, ...postComponents].filter(Boolean)

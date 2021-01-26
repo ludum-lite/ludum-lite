@@ -41,7 +41,8 @@ export type Query = {
    __typename: 'Query';
   me: MeResponse;
   post: Post;
-  searchPosts: SearchPostResponse;
+  searchPosts: SearchPostsResponse;
+  searchGames: SearchGamesResponse;
   latestNewsPost?: Maybe<Post>;
   user: User;
   featuredEvent: Event;
@@ -56,6 +57,13 @@ export type QueryPostArgs = {
 
 export type QuerySearchPostsArgs = {
   filters: SearchPostsFiltersInput;
+  limit: Scalars['Int'];
+  page: Scalars['Int'];
+};
+
+
+export type QuerySearchGamesArgs = {
+  filters: SearchGamesFiltersInput;
   limit: Scalars['Int'];
   page: Scalars['Int'];
 };
@@ -387,8 +395,8 @@ export type UnlovePostSuccess = MutationResponse & {
 
 export type UnlovePostResponse = UnlovePostSuccess | UnauthorizedResponse;
 
-export type SearchPostResponse = {
-   __typename: 'SearchPostResponse';
+export type SearchPostsResponse = {
+   __typename: 'SearchPostsResponse';
   limit: Scalars['Int'];
   page: Scalars['Int'];
   posts: Array<Post>;
@@ -640,6 +648,11 @@ export type RejectVotingRoundIdeaSuccess = MutationResponse & {
 
 export type RejectVotingRoundIdeaResponse = RejectVotingRoundIdeaSuccess | UnauthorizedResponse;
 
+export enum EventType {
+  Jam = 'Jam',
+  Compo = 'Compo'
+}
+
 export type Game = {
    __typename: 'Game';
   id: Scalars['Int'];
@@ -656,6 +669,19 @@ export type Game = {
   numNotes: Scalars['Int'];
   eventId: Scalars['Int'];
   slug?: Maybe<Scalars['String']>;
+  coverImagePath?: Maybe<Scalars['String']>;
+  eventType?: Maybe<EventType>;
+};
+
+export type SearchGamesFiltersInput = {
+  eventId: Scalars['Int'];
+};
+
+export type SearchGamesResponse = {
+   __typename: 'SearchGamesResponse';
+  limit: Scalars['Int'];
+  page: Scalars['Int'];
+  games: Array<Game>;
 };
 
 export type EditGameInput = {
@@ -810,7 +836,7 @@ export type ResolversTypes = ResolversObject<{
   LovePostResponse: ResolversTypes['LovePostSuccess'] | ResolversTypes['UnauthorizedResponse'],
   UnlovePostSuccess: ResolverTypeWrapper<Omit<UnlovePostSuccess, 'me'> & { me?: Maybe<ResolversTypes['MeResponse']> }>,
   UnlovePostResponse: ResolversTypes['UnlovePostSuccess'] | ResolversTypes['UnauthorizedResponse'],
-  SearchPostResponse: ResolverTypeWrapper<SearchPostResponse>,
+  SearchPostsResponse: ResolverTypeWrapper<SearchPostsResponse>,
   SearchPostsFiltersInput: SearchPostsFiltersInput,
   EditPostInput: EditPostInput,
   EditPostSuccess: ResolverTypeWrapper<EditPostSuccess>,
@@ -862,7 +888,10 @@ export type ResolversTypes = ResolversObject<{
   VoteMaybeVotingRoundIdeaResponse: ResolversTypes['VoteMaybeVotingRoundIdeaSuccess'] | ResolversTypes['UnauthorizedResponse'],
   RejectVotingRoundIdeaSuccess: ResolverTypeWrapper<RejectVotingRoundIdeaSuccess>,
   RejectVotingRoundIdeaResponse: ResolversTypes['RejectVotingRoundIdeaSuccess'] | ResolversTypes['UnauthorizedResponse'],
+  EventType: EventType,
   Game: ResolverTypeWrapper<Game>,
+  SearchGamesFiltersInput: SearchGamesFiltersInput,
+  SearchGamesResponse: ResolverTypeWrapper<SearchGamesResponse>,
   EditGameInput: EditGameInput,
   EditGameSuccess: ResolverTypeWrapper<EditGameSuccess>,
   EditGameResponse: ResolversTypes['EditGameSuccess'] | ResolversTypes['UnauthorizedResponse'],
@@ -907,7 +936,7 @@ export type ResolversParentTypes = ResolversObject<{
   LovePostResponse: ResolversParentTypes['LovePostSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
   UnlovePostSuccess: Omit<UnlovePostSuccess, 'me'> & { me?: Maybe<ResolversParentTypes['MeResponse']> },
   UnlovePostResponse: ResolversParentTypes['UnlovePostSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
-  SearchPostResponse: SearchPostResponse,
+  SearchPostsResponse: SearchPostsResponse,
   SearchPostsFiltersInput: SearchPostsFiltersInput,
   EditPostInput: EditPostInput,
   EditPostSuccess: EditPostSuccess,
@@ -959,7 +988,10 @@ export type ResolversParentTypes = ResolversObject<{
   VoteMaybeVotingRoundIdeaResponse: ResolversParentTypes['VoteMaybeVotingRoundIdeaSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
   RejectVotingRoundIdeaSuccess: RejectVotingRoundIdeaSuccess,
   RejectVotingRoundIdeaResponse: ResolversParentTypes['RejectVotingRoundIdeaSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
+  EventType: EventType,
   Game: Game,
+  SearchGamesFiltersInput: SearchGamesFiltersInput,
+  SearchGamesResponse: SearchGamesResponse,
   EditGameInput: EditGameInput,
   EditGameSuccess: EditGameSuccess,
   EditGameResponse: ResolversParentTypes['EditGameSuccess'] | ResolversParentTypes['UnauthorizedResponse'],
@@ -1002,7 +1034,8 @@ export interface UploadScalarConfig extends GraphQLScalarTypeConfig<ResolversTyp
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   me?: Resolver<ResolversTypes['MeResponse'], ParentType, ContextType>,
   post?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<QueryPostArgs, 'input'>>,
-  searchPosts?: Resolver<ResolversTypes['SearchPostResponse'], ParentType, ContextType, RequireFields<QuerySearchPostsArgs, 'filters' | 'limit' | 'page'>>,
+  searchPosts?: Resolver<ResolversTypes['SearchPostsResponse'], ParentType, ContextType, RequireFields<QuerySearchPostsArgs, 'filters' | 'limit' | 'page'>>,
+  searchGames?: Resolver<ResolversTypes['SearchGamesResponse'], ParentType, ContextType, RequireFields<QuerySearchGamesArgs, 'filters' | 'limit' | 'page'>>,
   latestNewsPost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType>,
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'input'>>,
   featuredEvent?: Resolver<ResolversTypes['Event'], ParentType, ContextType>,
@@ -1201,7 +1234,7 @@ export type UnlovePostResponseResolvers<ContextType = any, ParentType extends Re
   __resolveType: TypeResolveFn<'UnlovePostSuccess' | 'UnauthorizedResponse', ParentType, ContextType>
 }>;
 
-export type SearchPostResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['SearchPostResponse'] = ResolversParentTypes['SearchPostResponse']> = ResolversObject<{
+export type SearchPostsResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['SearchPostsResponse'] = ResolversParentTypes['SearchPostsResponse']> = ResolversObject<{
   limit?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   page?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   posts?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType>,
@@ -1446,6 +1479,15 @@ export type GameResolvers<ContextType = any, ParentType extends ResolversParentT
   numNotes?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   eventId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   slug?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  coverImagePath?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  eventType?: Resolver<Maybe<ResolversTypes['EventType']>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
+export type SearchGamesResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['SearchGamesResponse'] = ResolversParentTypes['SearchGamesResponse']> = ResolversObject<{
+  limit?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
+  page?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
+  games?: Resolver<Array<ResolversTypes['Game']>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;
 
@@ -1512,7 +1554,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   LovePostResponse?: LovePostResponseResolvers,
   UnlovePostSuccess?: UnlovePostSuccessResolvers<ContextType>,
   UnlovePostResponse?: UnlovePostResponseResolvers,
-  SearchPostResponse?: SearchPostResponseResolvers<ContextType>,
+  SearchPostsResponse?: SearchPostsResponseResolvers<ContextType>,
   EditPostSuccess?: EditPostSuccessResolvers<ContextType>,
   EditPostFieldErrorFields?: EditPostFieldErrorFieldsResolvers<ContextType>,
   EditPostFieldError?: EditPostFieldErrorResolvers<ContextType>,
@@ -1555,6 +1597,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   RejectVotingRoundIdeaSuccess?: RejectVotingRoundIdeaSuccessResolvers<ContextType>,
   RejectVotingRoundIdeaResponse?: RejectVotingRoundIdeaResponseResolvers,
   Game?: GameResolvers<ContextType>,
+  SearchGamesResponse?: SearchGamesResponseResolvers<ContextType>,
   EditGameSuccess?: EditGameSuccessResolvers<ContextType>,
   EditGameResponse?: EditGameResponseResolvers,
   AddUserToGameSuccess?: AddUserToGameSuccessResolvers<ContextType>,

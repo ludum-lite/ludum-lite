@@ -58,12 +58,6 @@ export default class VotingRoundAPI extends BaseAPI {
           const pageInt = parseInt(page)
           const votingRoundIdeas = votingRoundsResponse.lists[page]
 
-          console.log({
-            votingRoundsResponse,
-            page,
-            votingRoundIdeas,
-          })
-
           return {
             __typename: 'VotingRound',
             name: name,

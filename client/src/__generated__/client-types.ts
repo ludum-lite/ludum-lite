@@ -22,7 +22,8 @@ export type Query = {
   latestNewsPost?: Maybe<Post>
   me: MeResponse
   post: Post
-  searchPosts: SearchPostResponse
+  searchGames: SearchGamesResponse
+  searchPosts: SearchPostsResponse
   user: User
 }
 
@@ -32,6 +33,12 @@ export type QueryEventArgs = {
 
 export type QueryPostArgs = {
   input: IdInput
+}
+
+export type QuerySearchGamesArgs = {
+  filters: SearchGamesFiltersInput
+  limit: Scalars['Int']
+  page: Scalars['Int']
 }
 
 export type QuerySearchPostsArgs = {
@@ -338,8 +345,8 @@ export type UnlovePostSuccess = MutationResponse & {
 
 export type UnlovePostResponse = UnlovePostSuccess | UnauthorizedResponse
 
-export type SearchPostResponse = {
-  __typename: 'SearchPostResponse'
+export type SearchPostsResponse = {
+  __typename: 'SearchPostsResponse'
   limit: Scalars['Int']
   page: Scalars['Int']
   posts: Array<Post>
@@ -628,6 +635,11 @@ export type RejectVotingRoundIdeaResponse =
   | RejectVotingRoundIdeaSuccess
   | UnauthorizedResponse
 
+export enum EventType {
+  Jam = 'Jam',
+  Compo = 'Compo',
+}
+
 export type Game = {
   __typename: 'Game'
   id: Scalars['Int']
@@ -644,6 +656,19 @@ export type Game = {
   numNotes: Scalars['Int']
   eventId: Scalars['Int']
   slug?: Maybe<Scalars['String']>
+  coverImagePath?: Maybe<Scalars['String']>
+  eventType?: Maybe<EventType>
+}
+
+export type SearchGamesFiltersInput = {
+  eventId: Scalars['Int']
+}
+
+export type SearchGamesResponse = {
+  __typename: 'SearchGamesResponse'
+  limit: Scalars['Int']
+  page: Scalars['Int']
+  games: Array<Game>
 }
 
 export type EditGameInput = {
@@ -914,6 +939,24 @@ export type GameWidget_EditGameMutation = { __typename: 'Mutation' } & {
     | { __typename: 'UnauthorizedResponse' }
 }
 
+export type Game_GameFragment = { __typename: 'Game' } & Pick<
+  Game,
+  'id' | 'coverImagePath' | 'name' | 'eventType'
+>
+
+export type GetGamesPageDataQueryVariables = Exact<{
+  filters: SearchGamesFiltersInput
+  limit: Scalars['Int']
+  page: Scalars['Int']
+}>
+
+export type GetGamesPageDataQuery = { __typename: 'Query' } & {
+  searchGames: { __typename: 'SearchGamesResponse' } & Pick<
+    SearchGamesResponse,
+    'page'
+  > & { games: Array<{ __typename: 'Game' } & Game_GameFragment> }
+}
+
 export type JoinEventWidgetDataQueryVariables = Exact<{ [key: string]: never }>
 
 export type JoinEventWidgetDataQuery = { __typename: 'Query' } & {
@@ -1147,8 +1190,8 @@ export type GetPostsPageDataQuery = { __typename: 'Query' } & Pick<
       { __typename: 'Post' } & Pick<Post, 'id' | 'publishedDate'> &
         Post_PostFragment
     >
-    searchPosts: { __typename: 'SearchPostResponse' } & Pick<
-      SearchPostResponse,
+    searchPosts: { __typename: 'SearchPostsResponse' } & Pick<
+      SearchPostsResponse,
       'page'
     > & {
         posts: Array<
@@ -1494,6 +1537,14 @@ export const EventThemePage_EventFragmentDoc = gql`
   ${ThemeSubmissionForm_EventFragmentDoc}
   ${ThemeSlaughterForm_EventFragmentDoc}
   ${ThemeVotingForm_EventFragmentDoc}
+`
+export const Game_GameFragmentDoc = gql`
+  fragment Game_game on Game {
+    id
+    coverImagePath
+    name
+    eventType
+  }
 `
 export const AddCommentForm_PostFragmentDoc = gql`
   fragment AddCommentForm_post on Post {
@@ -2358,6 +2409,72 @@ export type GameWidget_EditGameMutationResult = ApolloReactCommon.MutationResult
 export type GameWidget_EditGameMutationOptions = ApolloReactCommon.BaseMutationOptions<
   GameWidget_EditGameMutation,
   GameWidget_EditGameMutationVariables
+>
+export const GetGamesPageDataDocument = gql`
+  query GetGamesPageData(
+    $filters: SearchGamesFiltersInput!
+    $limit: Int!
+    $page: Int!
+  ) {
+    searchGames(filters: $filters, limit: $limit, page: $page) {
+      page
+      games {
+        ...Game_game
+      }
+    }
+  }
+  ${Game_GameFragmentDoc}
+`
+
+/**
+ * __useGetGamesPageDataQuery__
+ *
+ * To run a query within a React component, call `useGetGamesPageDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGamesPageDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetGamesPageDataQuery({
+ *   variables: {
+ *      filters: // value for 'filters'
+ *      limit: // value for 'limit'
+ *      page: // value for 'page'
+ *   },
+ * });
+ */
+export function useGetGamesPageDataQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GetGamesPageDataQuery,
+    GetGamesPageDataQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<
+    GetGamesPageDataQuery,
+    GetGamesPageDataQueryVariables
+  >(GetGamesPageDataDocument, baseOptions)
+}
+export function useGetGamesPageDataLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetGamesPageDataQuery,
+    GetGamesPageDataQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    GetGamesPageDataQuery,
+    GetGamesPageDataQueryVariables
+  >(GetGamesPageDataDocument, baseOptions)
+}
+export type GetGamesPageDataQueryHookResult = ReturnType<
+  typeof useGetGamesPageDataQuery
+>
+export type GetGamesPageDataLazyQueryHookResult = ReturnType<
+  typeof useGetGamesPageDataLazyQuery
+>
+export type GetGamesPageDataQueryResult = ApolloReactCommon.QueryResult<
+  GetGamesPageDataQuery,
+  GetGamesPageDataQueryVariables
 >
 export const JoinEventWidgetDataDocument = gql`
   query JoinEventWidgetData {

@@ -1,7 +1,6 @@
 import DataLoader from 'dataloader'
 import { sortBy, isNil } from 'lodash'
 import { DataSourceConfig } from 'apollo-datasource'
-import _ from 'lodash'
 import sort from 'dataloader-sort'
 import BaseAPI from './base-api'
 import { Context } from './context'
@@ -11,7 +10,7 @@ import {
   LovePostResponse,
   UnlovePostResponse,
   QuerySearchPostsArgs,
-  SearchPostResponse,
+  SearchPostsResponse,
   EditPostInput,
   EditPostResponse,
   CreatePostInput,
@@ -90,7 +89,7 @@ export default class PostAPI extends BaseAPI {
     page,
     limit,
     filters: { postType, favoritedIds },
-  }: QuerySearchPostsArgs): Promise<SearchPostResponse> {
+  }: QuerySearchPostsArgs): Promise<SearchPostsResponse> {
     if (postType === PostType.All || postType === PostType.News) {
       const postIdsResponse = await this.get(
         `vx/node/feed/1/all/post${postType === 'News' ? '/news' : ''}`,
@@ -109,7 +108,7 @@ export default class PostAPI extends BaseAPI {
       const posts = sortBy(postsResponse, 'publishedAt')
 
       return {
-        __typename: 'SearchPostResponse',
+        __typename: 'SearchPostsResponse',
         page,
         limit,
         posts,
@@ -127,7 +126,7 @@ export default class PostAPI extends BaseAPI {
       ).filter(Boolean) as Post[]
 
       return {
-        __typename: 'SearchPostResponse',
+        __typename: 'SearchPostsResponse',
         page,
         limit,
         posts,
@@ -135,7 +134,7 @@ export default class PostAPI extends BaseAPI {
     }
 
     return {
-      __typename: 'SearchPostResponse',
+      __typename: 'SearchPostsResponse',
       page: 0,
       limit: 0,
       posts: [],
@@ -143,7 +142,7 @@ export default class PostAPI extends BaseAPI {
   }
 
   async getLatestNewsPost(): Promise<Post | null> {
-    const searchPostResponse = await this.searchPosts({
+    const searchPostsResponse = await this.searchPosts({
       limit: 1,
       page: 0,
       filters: {
@@ -151,11 +150,7 @@ export default class PostAPI extends BaseAPI {
       },
     })
 
-    console.log({
-      searchPostResponse,
-    })
-
-    return searchPostResponse.posts[0] || null
+    return searchPostsResponse.posts[0] || null
   }
 
   async getPost(id: number) {
@@ -219,7 +214,7 @@ export default class PostAPI extends BaseAPI {
         }
       }
 
-      if (_.size(errors) - 1 > 0) {
+      if (Object.keys(errors).length - 1 > 0) {
         return {
           __typename: 'EditPostFieldError',
           success: false,

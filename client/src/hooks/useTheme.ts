@@ -36,6 +36,7 @@ export type ThemeColors = {
     level2?: string
     level3?: string
   }
+  placeholderIconBackgroundColor: string
   loader: {
     background: string
     barBackground: string
@@ -136,6 +137,14 @@ export type ThemeColors = {
     newsTagBackground: string
     newsTagColor: string
   }
+  game: {
+    titleColor: string
+    titleBackgroundColor: string
+    jamTagColor: string
+    jamTagBackgroundColor: string
+    compoTagColor: string
+    compoTagBackgroundColor: string
+  }
   moreButton: {
     background: string
     hoverBackground: string
@@ -213,7 +222,7 @@ const cardBoxShadow = '0 0 6px 0px rgba(0,0,0,0.04)'
 
 const white = 'rgb(255, 255, 255)'
 const fadedWhite = 'rgba(255,255,255,0.9)'
-const textWhite = 'rgba(255,255,255,0.8)'
+const textWhite = 'rgb(255,255,255)'
 const fadedTextWhite = 'rgba(255,255,255,0.8)'
 
 const black = 'rgb(0, 0, 0)'
@@ -309,6 +318,7 @@ const lightTheme: ThemeColors = {
     level2: styleVariables.cultured,
     level3: styleVariables.gainsboro,
   },
+  placeholderIconBackgroundColor: styleVariables.gainsboro,
   loader: {
     background: styleVariables.cultured,
     barBackground: styleVariables.greenBlue,
@@ -491,6 +501,14 @@ const lightTheme: ThemeColors = {
     newsTagBackground: styleVariables.greenBlue,
     newsTagColor: styleVariables.white,
   },
+  game: {
+    titleColor: textBlack,
+    titleBackgroundColor: '',
+    jamTagColor: textWhite,
+    jamTagBackgroundColor: styleVariables.bittersweet,
+    compoTagColor: textWhite,
+    compoTagBackgroundColor: styleVariables.greenBlue,
+  },
   loveButton: {
     activeColor: styleVariables.bittersweet,
   },
@@ -596,6 +614,7 @@ const darkTheme: ThemeColors = {
     level2: ldStyleVariables.jet,
     level3: ldStyleVariables.eerieBlack,
   },
+  placeholderIconBackgroundColor: ldStyleVariables.jet,
   loader: {
     background: ldStyleVariables.jet,
     barBackground: ldStyleVariables.darkOrange,
@@ -777,6 +796,14 @@ const darkTheme: ThemeColors = {
     editActionRowBackground: ldStyleVariables.portlandOrange,
     newsTagBackground: ldStyleVariables.darkOrange,
     newsTagColor: ldStyleVariables.white,
+  },
+  game: {
+    titleColor: textWhite,
+    titleBackgroundColor: '',
+    jamTagColor: textWhite,
+    jamTagBackgroundColor: ldStyleVariables.portlandOrange,
+    compoTagColor: textWhite,
+    compoTagBackgroundColor: ldStyleVariables.darkOrange,
   },
   moreButton: {
     background: ldStyleVariables.cultured,

@@ -11,6 +11,8 @@ import {
   User,
   EditGameInput,
   EditGameResponse,
+  QuerySearchGamesArgs,
+  SearchGamesResponse,
 } from '../__generated__/schema-types'
 import { unauthorizedResponse } from './const'
 import { Context } from './context'
@@ -37,6 +39,7 @@ export type ApiGameDto = {
   version: number
   meta: {
     author: number[]
+    cover?: string
   }
 }
 
@@ -55,6 +58,7 @@ function apiGameToGame(game: ApiGameDto): Game {
     numNotes: game.notes,
     eventId: game.parent,
     slug: game.slug,
+    coverImagePath: game.meta.cover,
   }
 }
 
@@ -75,8 +79,48 @@ export default class GameAPI extends BaseAPI {
     }
   }
 
+  // async getEventGames(eventId: number)
+
   async getGame(id: number): Promise<Game> {
     return this.context.loaders.gameLoader.load(id)
+  }
+
+  async searchGames({
+    page,
+    limit,
+    filters: { eventId },
+  }: QuerySearchGamesArgs): Promise<SearchGamesResponse> {
+    const gameIdsResponse = await this.get(
+      `vx/node/feed/${eventId}/smart+parent/item/game/compo+jam`,
+      {
+        offset: page * limit,
+        limit,
+      }
+    )
+
+    const gameIds = gameIdsResponse.feed.map((game: ApiGameDto) => game.id)
+
+    console.log(gameIdsResponse, gameIds)
+
+    const gamesResponse = (await this.context.loaders.gameLoader.loadMany(
+      gameIds
+    )) as Game[]
+
+    const games = gamesResponse // sortBy(gamesResponse, 'publishedAt')
+
+    return {
+      __typename: 'SearchGamesResponse',
+      page,
+      limit,
+      games,
+    }
+
+    return {
+      __typename: 'SearchGamesResponse',
+      page: 0,
+      limit: 0,
+      games: [],
+    }
   }
 
   async getTeamUsers(id: number): Promise<Game['teamUsers']> {

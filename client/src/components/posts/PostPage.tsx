@@ -499,11 +499,11 @@ export default function PostPage({ isEditing }: PostPageProps) {
                 <CommentsTitleContainer>
                   <CommentsTitle variant="h4">Comments</CommentsTitle>
                   <FormControl variant="filled">
-                    <InputLabel id="demo-simple-select-filled-label">
+                    <InputLabel id="comments-sort-by">
                       Sort By
                     </InputLabel>
                     <Select
-                      labelId="demo-simple-select-filled-label"
+                      labelId="comments-sort-by"
                       id="demo-simple-select-filled"
                       value={commentSortBy}
                       onChange={(e) => {

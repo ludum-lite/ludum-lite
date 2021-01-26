@@ -1,12 +1,11 @@
 import React from 'react'
-import styled, { css, keyframes } from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { gql } from '@apollo/client'
 import { filter } from 'graphql-anywhere'
 
 import PostDetails from './PostDetails'
 import ButtonGroup from 'components/common/mui/ButtonGroup'
 
-import Card from 'components/common/mui/Card'
 import { usePostOverlayed } from 'hooks/usePostOverlay'
 import PostLoveButton from './post-buttons/PostLoveButton'
 import PostBookmarkButton from './post-buttons/PostBookmarkButton'
@@ -22,61 +21,21 @@ import {
   PostCommentButton_PostFragmentDoc,
 } from '__generated__/client-types'
 import Link from 'components/common/mui/Link'
+import FocusableCard from 'components/common/FocusableCard'
 
 interface RootProps {
   collapsedNewsPost?: boolean
 }
-const Root = styled.div<RootProps>`
-  border-bottom: 1px solid
-    ${({ theme }) => theme.themeColors.borderColors.level1};
-
-  ${({ collapsedNewsPost }) =>
-    collapsedNewsPost &&
-    css`
-      border-bottom: none;
-    `}
-`
-
-const activeBoxShadowKeyFrames = (color: string) => keyframes`
-  0% {
-    box-shadow: inset 6px 0 0px 0px transparent;
-  }
-
-  100% {
-    box-shadow: inset 6px 0 0px 0px ${color};
-  }
-`
-
-interface StyledCardProps {
-  active: boolean
-  isNewsType: boolean
-  collapsedNewsPost?: boolean
-}
-const StyledCard = styled(Card).withConfig({
-  shouldForwardProp: ignoreProps(['active', 'isNewsType', 'collapsedNewsPost']),
-})<StyledCardProps>`
-  position: relative;
-  display: flex;
-  flex-direction: column;
+const Root = styled(FocusableCard).withConfig({
+  shouldForwardProp: ignoreProps(['active', 'collapsedNewsPost']),
+})<RootProps>`
   padding: ${({ theme }) => theme.spacing(2)}px;
-  border-radius: 0px;
-  transition: box-shadow 5000ms;
-  background: ${({ theme }) => theme.themeColors.post.backgroundColor};
-
-  ${({ active, theme }) =>
-    active &&
-    css`
-      animation: ${activeBoxShadowKeyFrames(
-          theme.themeColors.post.activeBorderColor
-        )}
-        250ms forwards;
-      border-color: transparent;
-    `}
 
   ${({ collapsedNewsPost }) =>
     collapsedNewsPost &&
     css`
       background: ${({ theme }) => theme.themeColors.post.newsTagBackground};
+      border-bottom: none;
     `}
 `
 
@@ -87,12 +46,6 @@ const StyledButtonGroup = styled(ButtonGroup)`
 const Separator = styled.div`
   flex: 1 1 0px;
 `
-
-// const Card = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   overflow: visible;
-// `
 
 const ActionRow = styled.div`
   display: flex;
@@ -154,36 +107,32 @@ export default function Post({
   if (!post) return null
 
   return (
-    <Root collapsedNewsPost={collapsedNewsPost}>
-      <StyledCard
-        className={className}
-        onClick={() => onClickCard(post.id)}
-        clickable
-        active={activePostId === post.id}
-        isNewsType={post.subtype === 'news'}
+    <Root
+      className={className}
+      onClick={() => onClickCard(post.id)}
+      active={activePostId === post.id}
+      collapsedNewsPost={collapsedNewsPost}
+    >
+      <Link to={`/posts/${post.id}`} overlay />
+      <PostDetails
+        post={filter(PostDetails_PostFragmentDoc, post)}
         collapsedNewsPost={collapsedNewsPost}
-      >
-        <Link to={`/posts/${post.id}`} overlay />
-        <PostDetails
-          post={filter(PostDetails_PostFragmentDoc, post)}
-          collapsedNewsPost={collapsedNewsPost}
-        />
-        {!collapsedNewsPost && (
-          <ActionRow>
-            <StyledButtonGroup>
-              <PostLoveButton
-                post={filter(PostLoveButton_PostFragmentDoc, post)}
-                me={filter(PostLoveButton_MeFragmentDoc, me)}
-              />
-              <PostCommentButton
-                post={filter(PostCommentButton_PostFragmentDoc, post)}
-              />
-              <Separator />
-              <PostBookmarkButton postId={post.id} />
-            </StyledButtonGroup>
-          </ActionRow>
-        )}
-      </StyledCard>
+      />
+      {!collapsedNewsPost && (
+        <ActionRow>
+          <StyledButtonGroup>
+            <PostLoveButton
+              post={filter(PostLoveButton_PostFragmentDoc, post)}
+              me={filter(PostLoveButton_MeFragmentDoc, me)}
+            />
+            <PostCommentButton
+              post={filter(PostCommentButton_PostFragmentDoc, post)}
+            />
+            <Separator />
+            <PostBookmarkButton postId={post.id} />
+          </StyledButtonGroup>
+        </ActionRow>
+      )}
     </Root>
   )
 }

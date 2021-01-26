@@ -1,8 +1,35 @@
 service: ludum-lite
+
+custom:
+  myStage: ${opt:stage, self:provider.stage}
+  myEnvironment:
+    BASE_URL:
+      development: 'http://api.ludumdare.org/'
+      production: 'https://api.ldjam.com/'
+    AUTH_KEY:
+      development: 'SID'
+      production: 'SIDS'
+    CLIENT_ORIGIN:
+      development: 'https://localhost:3000'
+      production: 'https://localhost:3000'
+  customDomain:
+    domainName: api.ludumlite.com
+    certificateName: '*.ludumlite.com'
+    createRoute53Record: true
+    endpointType: 'regional'
+    securityPolicy: tls_1_2
+    apiType: rest
+    autoDomain: false
+
 provider:
   name: aws
   runtime: nodejs12.x
+  stage: production
   region: us-east-1
+  environment:
+    BASE_URL: ${self:custom.myEnvironment.BASE_URL.${self:custom.myStage}}
+    AUTH_KEY: ${self:custom.myEnvironment.AUTH_KEY.${self:custom.myStage}}
+
 functions:
   graphql:
     handler: build/index.graphqlHandler
@@ -15,6 +42,19 @@ functions:
           path: graphql
           method: get
           cors: true
+
 plugins:
-  - serverless-dotenv-plugin
   - serverless-offline
+  - serverless-domain-manager
+
+resources:
+  Resources:
+    GatewayResponseDefault4XX:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'

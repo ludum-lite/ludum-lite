@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Push schema
+      - name: Install Node
         uses: actions/setup-node@v2-beta
         with:
           node-version: '12'
@@ -28,4 +28,4 @@ jobs:
       - name: Serverless deploy
         run: |
           yarn serverless config credentials --provider aws --key ${{ secrets.AWS_ACCESS_KEY }} --secret ${{ secrets.AWS_SECRET_KEY }}
-          yarn serverless deploy --stage production
+          yarn deploy

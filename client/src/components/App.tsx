@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom'
 import Sidebar from './sidebar/Sidebar'
 import RoutesWithFallback from './common/RoutesWithFallback'
 import PostsPage from 'components/posts/PostsPage'
+import GamesPage from 'components/games/GamesPage'
 import { usePostOverlayed } from 'hooks/usePostOverlay'
 import PostPage from './posts/PostPage'
 import { useLogin } from 'hooks/useLogin'
@@ -38,6 +39,7 @@ const MiddleContent = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow-x: hidden;
 `
 
 export default function App() {
@@ -62,6 +64,7 @@ export default function App() {
               <Route path={ROUTES.EVENT.SINGLE_BASE} element={<EventPage />} />
               <Route path={ROUTES.EVENT.SINGLE} element={<EventPage />} />
               <Route path="/posts" element={<PostsPage />} />
+              <Route path="/games" element={<GamesPage />} />
               {postOverlayed ? (
                 <Route
                   path="/posts/:id"
