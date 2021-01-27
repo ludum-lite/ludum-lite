@@ -2,13 +2,15 @@
   "name": "server",
   "private": true,
   "scripts": {
-    "start": "concurrently -n TSC,TYPEGEN,SERVERLESS \"yarn watch:ts\" \"yarn watch:schema\" \"yarn server:offline:start\"",
-    "start:prod": "concurrently -n TSC,TYPEGEN,SERVERLESS \"yarn watch:ts\" \"yarn watch:schema\" \"yarn server:offline:start:prod\"",
-    "watch:ts": "tsc --watch",
+    "start": "concurrently -n TSC,TYPEGEN,SERVERLESS \"yarn typescript:build:watch\" \"yarn watch:schema\" \"yarn server:offline:start\"",
+    "start:prod": "concurrently -n TSC,TYPEGEN,SERVERLESS \"yarn typescript:build:watch\" \"yarn watch:schema\" \"yarn server:offline:start:prod\"",
     "watch:schema": "graphql-codegen --watch --config codegen.yml",
+    "typescript:build": "tsc",
+    "typescript:build:watch": "tsc --watch",
     "server:offline:start": "serverless offline start --stage dev --httpPort=4000",
     "server:offline:start:prod": "serverless offline start --stage production --httpPort=4000",
-    "deploy": "serverless deploy --stage=production"
+    "deploy": "yarn typescript:build && yarn serverless:deploy",
+    "serverless:deploy": "serverless deploy --stage=production"
   },
   "dependencies": {
     "apollo-datasource-rest": "^0.9.4",
@@ -33,7 +35,7 @@
     "apollo": "^2.32.1",
     "concurrently": "^5.3.0",
     "prettier": "2.0.4",
-    "serverless": "2.20.0",
+    "serverless": "^2.21.1",
     "serverless-domain-manager": "^5.1.0",
     "serverless-dotenv-plugin": "^3.1.0",
     "serverless-offline": "^6.8.0",
