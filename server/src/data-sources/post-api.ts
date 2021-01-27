@@ -1,7 +1,7 @@
 import DataLoader from 'dataloader'
 import { sortBy, isNil } from 'lodash'
 import { DataSourceConfig } from 'apollo-datasource'
-import sort from 'dataloader-sort'
+import sort from '../utils/dataloader-sort'
 import BaseAPI from './base-api'
 import { Context } from './context'
 import {

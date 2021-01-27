@@ -97,7 +97,13 @@ export default function PostsPage() {
 
   const { data: favoritedIdsData } = usePostsPage_GetFavoritedIdsQuery()
 
-  const { data, loading, fetchMore, networkStatus } = useGetPostsPageDataQuery({
+  const {
+    data,
+    loading,
+    fetchMore,
+    networkStatus,
+    ...others
+  } = useGetPostsPageDataQuery({
     variables: {
       filters: {
         postType,
@@ -110,6 +116,13 @@ export default function PostsPage() {
       page: 0,
     },
     notifyOnNetworkStatusChange: true,
+  })
+  console.log({
+    data,
+    loading,
+    fetchMore,
+    networkStatus,
+    others,
   })
 
   const latestNewsPost = postType === PostType.All && data?.latestNewsPost && (
