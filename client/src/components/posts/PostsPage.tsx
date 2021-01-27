@@ -125,6 +125,8 @@ export default function PostsPage() {
     others,
   })
 
+  console.log(1)
+
   const latestNewsPost = postType === PostType.All && data?.latestNewsPost && (
     <Post
       key="latestNewsPost"
@@ -133,6 +135,7 @@ export default function PostsPage() {
       collapsedNewsPost
     />
   )
+  console.log(2)
 
   const postComponents =
     data?.searchPosts?.posts?.map((post) => (
@@ -144,14 +147,18 @@ export default function PostsPage() {
   const hasPosts = allPosts.length > 0
 
   const body = React.useMemo(() => {
+    console.log(3)
     if (
       networkStatus === NetworkStatus.loading ||
       networkStatus === NetworkStatus.setVariables
     ) {
+      console.log(4)
       return null
     } else if (hasPosts) {
+      console.log(5)
       return <Posts>{allPosts}</Posts>
     } else {
+      console.log(6)
       return <NoItemsContainer />
     }
   }, [allPosts, hasPosts, networkStatus])
@@ -162,11 +169,14 @@ export default function PostsPage() {
         networkStatus === NetworkStatus.error) &&
       !hasPosts
     ) {
+      console.log(7)
       return null
     } else if (loading) {
+      console.log(8)
       return <StyledLinearProgress />
     }
 
+    console.log(9)
     return (
       <MoreButton
         variant="outlined"
@@ -199,6 +209,7 @@ export default function PostsPage() {
     )
   }, [loading, networkStatus, data, fetchMore, hasPosts])
 
+  console.log(10)
   return (
     <Root>
       <SortActions>
