@@ -140,13 +140,13 @@ export default function Markdown({ source, removeHrefs, ...props }: Props) {
     return <span {...props} />
   }
 
-  renderers.root = rootRenderer
-  renderers.image = imageRenderer
-  // @ts-ignore
-  renderers.link = linkRenderer
-  // @ts-ignore
-  renderers.paragraph = paragraphRenderer
-  renderers.text = textRenderer
+  // renderers.root = rootRenderer
+  // renderers.image = imageRenderer
+  // // @ts-ignore
+  // renderers.link = linkRenderer
+  // // @ts-ignore
+  // renderers.paragraph = paragraphRenderer
+  // renderers.text = textRenderer
 
   return (
     <Typography variant="body2" component="div">

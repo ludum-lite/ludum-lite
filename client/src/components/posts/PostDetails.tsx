@@ -128,6 +128,8 @@ export default function PostDetails({
 
   if (!post || !post.author || !post.publishedDate) return null
 
+  console.log(post)
+
   return (
     <Root className={className}>
       <Header>
@@ -160,12 +162,12 @@ export default function PostDetails({
       </Header>
       {!collapsedNewsPost && (
         <Content>
-          {/* <Collapse
+          <Collapse
             in={!finalShouldCollapse}
             collapsedHeight={initialShouldCollapse ? 350 : 0}
           >
             <Markdown source={post.body} removeHrefs />
-          </Collapse> */}
+          </Collapse>
           <CollapseButtonContainer show={finalShouldCollapse}>
             <Button
               fullWidth
