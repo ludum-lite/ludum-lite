@@ -126,12 +126,12 @@ export default function Markdown({ source, removeHrefs, ...props }: Props) {
   }
 
   // @ts-ignore
-  const paragraphRenderer = (props) => {
-    const element = props.children[0]
+  const paragraphRenderer = ({ children, ...props }) => {
+    const element = props?.children?.[0]
     return element.props?.href ? (
       <LinkContainer>{element}</LinkContainer>
     ) : (
-      <p {...props} />
+      <p {...props}>{props.children || ''}</p>
     )
   }
 
