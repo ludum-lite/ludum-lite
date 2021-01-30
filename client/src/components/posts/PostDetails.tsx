@@ -148,24 +148,24 @@ export default function PostDetails({
             </Title>
           </TitleRow>
           <HeaderUserContainer>
-            {/* <UserPostedHeader
+            <UserPostedHeader
               userProfilePath={post.author.profilePath}
               userAvatarPath={post.author.avatarPath || ''}
               userName={post.author.name}
               postedDate={post.publishedDate}
               collapsedNewsPost={collapsedNewsPost}
-            /> */}
+            />
           </HeaderUserContainer>
         </HeaderContent>
       </Header>
       {!collapsedNewsPost && (
         <Content>
-          <Collapse
+          {/* <Collapse
             in={!finalShouldCollapse}
             collapsedHeight={initialShouldCollapse ? 350 : 0}
           >
             <Markdown source={post.body} removeHrefs />
-          </Collapse>
+          </Collapse> */}
           <CollapseButtonContainer show={finalShouldCollapse}>
             <Button
               fullWidth
