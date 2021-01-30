@@ -140,9 +140,9 @@ export default function Markdown({ source, removeHrefs, ...props }: Props) {
     return <span {...props} />
   }
 
-  // renderers.root = rootRenderer
-  // renderers.image = imageRenderer
-  // // @ts-ignore
+  renderers.root = rootRenderer
+  renderers.image = imageRenderer
+  // @ts-ignore
   // renderers.link = linkRenderer
   // // @ts-ignore
   // renderers.paragraph = paragraphRenderer
