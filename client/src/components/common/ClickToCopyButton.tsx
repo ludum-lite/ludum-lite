@@ -34,3 +34,5 @@ export default function ClickToCopyButton({
     </CopyToClipboard>
   )
 }
+
+ClickToCopyButton.displayName = 'ClickToCopyButton'

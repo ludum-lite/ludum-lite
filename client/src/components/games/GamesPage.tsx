@@ -232,6 +232,8 @@ export default function GamesPage() {
   )
 }
 
+GamesPage.displayName = 'GamesPage'
+
 gql`
   query GetGamesPageData(
     $filters: SearchGamesFiltersInput!

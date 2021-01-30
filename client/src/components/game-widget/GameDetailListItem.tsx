@@ -33,3 +33,5 @@ export default function GameDetailListItem({ label, value, className }: Props) {
     </Root>
   )
 }
+
+GameDetailListItem.displayName = 'GameDetailListItem'

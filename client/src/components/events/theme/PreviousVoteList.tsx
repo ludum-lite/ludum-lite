@@ -16,3 +16,5 @@ interface Props {
 export default function PreviousVoteList({ className, children }: Props) {
   return <Root className={className}>{children}</Root>
 }
+
+PreviousVoteList.displayName = 'PreviousVoteList'

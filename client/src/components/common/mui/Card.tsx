@@ -45,4 +45,6 @@ export const Card: React.FC<Props & CardProps> = ({
   )
 }
 
+Card.displayName = 'Card'
+
 export default Card

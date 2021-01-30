@@ -164,3 +164,5 @@ export default function Markdown({ source, removeHrefs, ...props }: Props) {
     </Typography>
   )
 }
+
+Markdown.displayName = 'Markdown'

@@ -110,3 +110,5 @@ export default function LoginForm({ login, error }: Props) {
     </Root>
   )
 }
+
+LoginForm.displayName = 'LoginForm'

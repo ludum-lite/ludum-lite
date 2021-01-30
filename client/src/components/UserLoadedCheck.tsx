@@ -54,3 +54,5 @@ export default function UserLoadedCheck({ children }: Props) {
 
   return children
 }
+
+UserLoadedCheck.displayName = 'UserLoadedCheck'

@@ -16,3 +16,5 @@ export default function Icon({ icon, ...others }: Props) {
 
   return <Component data-icon={Component.displayName} {...others} />
 }
+
+Icon.displayName = 'Icon'

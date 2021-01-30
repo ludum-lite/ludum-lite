@@ -123,6 +123,8 @@ export default function InvitePage() {
   )
 }
 
+InvitePage.displayName = 'InvitePage'
+
 gql`
   query InvitePage($input: IdInput!) {
     user(input: $input) {

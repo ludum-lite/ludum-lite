@@ -150,3 +150,5 @@ export default function App() {
 
   return null
 }
+
+App.displayName = 'App'

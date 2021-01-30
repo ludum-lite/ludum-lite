@@ -114,7 +114,7 @@ const AddedTag = styled.div`
 interface Props {
   className?: string
 }
-export default function GameWidget({ className }: Props) {
+export default function TeamWidget({ className }: Props) {
   const popupState = usePopupState({ variant: 'popover', popupId: 'menu' })
 
   const { isLoggedIn } = useLogin()
@@ -420,6 +420,8 @@ They'll get a confirmation link to send back to you.`}
 
   return null
 }
+
+TeamWidget.displayName = 'TeamWidget'
 
 gql`
   fragment TeamWidget_teamUser on User {

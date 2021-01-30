@@ -189,6 +189,8 @@ export default function ThemeVotingForm({ event }: Props) {
   )
 }
 
+ThemeVotingForm.displayName = 'ThemeVotingForm'
+
 gql`
   mutation ApproveVotingRoundIdea($input: IdInput!) {
     approveVotingRoundIdea(input: $input) {

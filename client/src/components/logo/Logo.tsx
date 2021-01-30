@@ -32,3 +32,5 @@ export default function Logo({ className }: Props) {
     </Root>
   )
 }
+
+Logo.displayName = 'Logo'

@@ -57,6 +57,8 @@ export default function AcceptedInvitePage() {
   )
 }
 
+AcceptedInvitePage.displayName = 'AcceptedInvitePage'
+
 gql`
   query AcceptedInvitePage($input: IdInput!) {
     user(input: $input) {

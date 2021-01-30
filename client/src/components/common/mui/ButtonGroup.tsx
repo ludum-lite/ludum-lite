@@ -40,4 +40,6 @@ export const ButtonGroup: React.FC<Props> = ({
   )
 }
 
+ButtonGroup.displayName = 'ButtonGroup'
+
 export default ButtonGroup

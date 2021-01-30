@@ -228,3 +228,5 @@ export default function Countdown({
     </Root>
   )
 }
+
+Countdown.displayName = 'Countdown'

@@ -35,3 +35,5 @@ export default function Typography({
 }: Props & TypographyProps) {
   return <StyledTypography textColor={textColor} {...other} />
 }
+
+Typography.displayName = 'Typography'

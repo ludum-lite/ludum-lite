@@ -132,4 +132,6 @@ function PreviousRoundVoteRow({
   )
 }
 
+PreviousRoundVoteRow.displayName = 'PreviousRoundVoteRow'
+
 export default React.memo(PreviousRoundVoteRow)

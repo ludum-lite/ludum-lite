@@ -221,6 +221,8 @@ export default function EventPage(props: EventPageProps) {
   )
 }
 
+EventPage.displayName = 'EventPage'
+
 gql`
   query GetEventPageData($input: IdInput!) {
     event(input: $input) {

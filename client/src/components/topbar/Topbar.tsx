@@ -79,3 +79,5 @@ export default function Topbar() {
     </Hidden>
   )
 }
+
+Topbar.displayName = 'Topbar'

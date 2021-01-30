@@ -12,3 +12,5 @@ export default function RoutesWithFallback({ children }: Props) {
     </Routes>
   )
 }
+
+RoutesWithFallback.displayName = 'RoutesWithFallback'

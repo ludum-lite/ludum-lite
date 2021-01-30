@@ -220,6 +220,8 @@ export default function ThemeSubmissionForm({ event }: Props) {
   )
 }
 
+ThemeSubmissionForm.displayName = 'ThemeSubmissionForm'
+
 gql`
   mutation AddEventIdea($input: AddEventIdeaInput!) {
     addEventIdea(input: $input) {

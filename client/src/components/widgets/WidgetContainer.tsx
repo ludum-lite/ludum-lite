@@ -14,3 +14,5 @@ interface Props {
 export default function WidgetContainer({ children }: Props) {
   return <Root>{children}</Root>
 }
+
+WidgetContainer.displayName = 'WidgetContainer'

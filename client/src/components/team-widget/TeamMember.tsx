@@ -13,7 +13,7 @@ interface Props {
   onClick?: () => void
   className?: string
 }
-export default React.forwardRef<HTMLDivElement, Props>(
+const TeamMember = React.forwardRef<HTMLDivElement, Props>(
   ({ avatarPath, leader, className, ...others }, ref) => {
     const size = leader ? 50 : 40
 
@@ -30,3 +30,7 @@ export default React.forwardRef<HTMLDivElement, Props>(
     )
   }
 )
+
+TeamMember.displayName = 'TeamMember'
+
+export default TeamMember

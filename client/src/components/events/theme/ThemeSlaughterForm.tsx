@@ -542,6 +542,8 @@ export default function ThemeSlaughterForm({ event }: Props) {
   )
 }
 
+ThemeSlaughterForm.displayName = 'ThemeSlaughterForm'
+
 gql`
   mutation ApproveEventIdea($input: IdInput!) {
     approveEventIdea(input: $input) {

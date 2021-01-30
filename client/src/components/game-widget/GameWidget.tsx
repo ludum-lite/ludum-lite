@@ -150,6 +150,8 @@ export default function GameWidget({ className }: Props) {
   )
 }
 
+GameWidget.displayName = 'GameWidget'
+
 gql`
   query GameWidgetData {
     featuredEvent {

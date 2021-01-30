@@ -138,6 +138,8 @@ export default function Game({ game }: Props) {
   )
 }
 
+Game.displayName = 'Game'
+
 gql`
   fragment Game_game on Game {
     id

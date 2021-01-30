@@ -12,3 +12,5 @@ export default function DialogTitle({ children }: Props) {
     </MuiDialogTitle>
   )
 }
+
+DialogTitle.displayName = 'DialogTitle'

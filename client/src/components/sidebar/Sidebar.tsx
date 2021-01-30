@@ -102,4 +102,6 @@ const Sidebar = React.memo(() => {
   )
 })
 
+Sidebar.displayName = 'Sidebar'
+
 export default Sidebar

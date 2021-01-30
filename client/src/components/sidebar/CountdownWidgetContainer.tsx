@@ -31,6 +31,8 @@ export default function CountdownWidgetContainer() {
   )
 }
 
+CountdownWidgetContainer.displayName = 'CountdownWidgetContainer'
+
 gql`
   query GetCountdownWidgetContainerData($input: IdInput!) {
     event(input: $input) {

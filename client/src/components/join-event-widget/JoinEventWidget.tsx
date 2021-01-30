@@ -33,7 +33,7 @@ const JoinButton = styled(Button)`
 interface Props {
   className?: string
 }
-export default function GameWidget({ className }: Props) {
+export default function JoinGameWidget({ className }: Props) {
   const { isLoggedIn } = useLogin()
   const { data } = useJoinEventWidgetDataQuery()
 
@@ -139,6 +139,8 @@ export default function GameWidget({ className }: Props) {
     </Root>
   )
 }
+
+JoinGameWidget.displayName = 'JoinGameWidget'
 
 gql`
   query JoinEventWidgetData {

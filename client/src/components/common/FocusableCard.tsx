@@ -49,3 +49,5 @@ interface Props {
 export default function FocusableCard(props: Props) {
   return <Root {...props} />
 }
+
+FocusableCard.displayName = 'FocusableCard'

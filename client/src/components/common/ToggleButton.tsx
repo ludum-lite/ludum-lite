@@ -103,3 +103,5 @@ export default function ToggleButton({
     </StyledButton>
   )
 }
+
+ToggleButton.displayName = 'ToggleButton'

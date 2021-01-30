@@ -30,3 +30,5 @@ export default function ProgressOverlay({ loading }: Props) {
 
   return null
 }
+
+ProgressOverlay.displayName = 'ProgressOverlay'

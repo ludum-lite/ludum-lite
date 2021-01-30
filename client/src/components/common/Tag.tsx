@@ -29,3 +29,5 @@ interface Props {
 export default function Tag({ variant, children }: Props) {
   return <Root variant={variant}>{children}</Root>
 }
+
+Tag.displayName = 'Tag'

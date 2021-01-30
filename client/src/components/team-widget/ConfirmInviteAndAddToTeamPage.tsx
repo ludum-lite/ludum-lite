@@ -125,6 +125,8 @@ export default function ConfirmInviteAndAddToTeamPage() {
   )
 }
 
+ConfirmInviteAndAddToTeamPage.displayName = 'ConfirmInviteAndAddToTeamPage'
+
 gql`
   query ConfirmInviteAndAddToTeamPage($input: IdInput!) {
     user(input: $input) {

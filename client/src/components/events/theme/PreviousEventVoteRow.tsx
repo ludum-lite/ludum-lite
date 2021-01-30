@@ -107,4 +107,6 @@ function PreviousEventVoteRow({
   )
 }
 
+PreviousEventVoteRow.displayName = 'PreviousEventVoteRow'
+
 export default React.memo(PreviousEventVoteRow)

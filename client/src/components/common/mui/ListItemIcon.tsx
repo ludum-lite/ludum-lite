@@ -33,4 +33,6 @@ export const ListItemIcon: React.FC<Props & ListItemIconProps> = ({
   return <StyledListItemIcon compactPadding={compactPadding} {...other} />
 }
 
+ListItemIcon.displayName = 'ListItemIcon'
+
 export default ListItemIcon

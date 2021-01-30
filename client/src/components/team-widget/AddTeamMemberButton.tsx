@@ -29,3 +29,5 @@ export default function AddTeamMemberButton({ className, onClick }: Props) {
     </Root>
   )
 }
+
+AddTeamMemberButton.displayName = 'AddTeamMemberButton'

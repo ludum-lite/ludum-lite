@@ -163,3 +163,5 @@ gql`
     }
   }
 `
+
+MarkdownInput.displayName = 'MarkdownInput'

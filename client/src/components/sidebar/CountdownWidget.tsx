@@ -352,3 +352,5 @@ export default function CountdownWidget({
     </WidgetContainer>
   )
 }
+
+CountdownWidget.displayName = 'CountdownWidget'

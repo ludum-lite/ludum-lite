@@ -91,3 +91,5 @@ export default function Page({ children, breadcrumbs }: Props) {
     </StyledStickyBox>
   )
 }
+
+Page.displayName = 'Page'

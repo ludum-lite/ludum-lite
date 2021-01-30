@@ -74,6 +74,8 @@ export default function EventThemePage({ event }: Props) {
   return null
 }
 
+EventThemePage.displayName = 'EventThemePage'
+
 gql`
   fragment EventThemePage_event on Event {
     id

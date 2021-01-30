@@ -66,3 +66,5 @@ export default function Breadcrumb({ to, children, isParent }: Props) {
     <Text color={isParent ? 'textSecondary' : 'textPrimary'}>{children}</Text>
   )
 }
+
+Breadcrumb.displayName = 'Breadcrumb'

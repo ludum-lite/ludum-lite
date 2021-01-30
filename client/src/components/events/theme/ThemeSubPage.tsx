@@ -24,3 +24,5 @@ export default function ThemeSubPage({ title, children }: Props) {
     </Root>
   )
 }
+
+ThemeSubPage.displayName = 'ThemeSubPage'

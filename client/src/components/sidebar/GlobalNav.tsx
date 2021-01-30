@@ -302,3 +302,5 @@ export default function GlobalNav() {
     </Root>
   )
 }
+
+GlobalNav.displayName = 'GlobalNav'

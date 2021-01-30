@@ -33,3 +33,5 @@ export default function MultilineInput({ onChange, ...others }: InputProps) {
     />
   )
 }
+
+MultilineInput.displayName = 'MultilineInput'
