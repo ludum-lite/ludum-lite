@@ -61,6 +61,8 @@ export default function AddCommentForm({ className, postId }: Props) {
   )
 }
 
+AddCommentForm.displayName = 'AddCommentForm'
+
 gql`
   fragment AddCommentForm_post on Post {
     id

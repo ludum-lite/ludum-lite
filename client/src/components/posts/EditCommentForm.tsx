@@ -50,6 +50,8 @@ export default function EditCommentForm({
   )
 }
 
+EditCommentForm.displayName = 'EditCommentForm'
+
 gql`
   fragment EditCommentForm_comment on Comment {
     id

@@ -10,7 +10,7 @@ import { PostCommentButton_PostFragment } from '__generated__/client-types'
 interface Props {
   post: PostCommentButton_PostFragment
 }
-export default function PostCommentButon({ post }: Props) {
+export default function PostCommentButton({ post }: Props) {
   const theme = useTheme()
 
   return (
@@ -24,6 +24,8 @@ export default function PostCommentButon({ post }: Props) {
     </ToggleButton>
   )
 }
+
+PostCommentButton.displayName = 'PostCommentButton'
 
 gql`
   fragment PostCommentButton_post on Post {

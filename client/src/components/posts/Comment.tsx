@@ -99,6 +99,8 @@ export default function Comment({ comment, post, className }: Props) {
   }
 }
 
+Comment.displayName = 'Comment'
+
 gql`
   fragment Comment_comment on Comment {
     id

@@ -111,3 +111,5 @@ export default function UserPostedHeader({
     </HeaderUserContainer>
   )
 }
+
+UserPostedHeader.displayName = 'UserPostedHeader'

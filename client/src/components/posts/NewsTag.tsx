@@ -41,3 +41,5 @@ export default function NewsTag({ className, variant }: Props) {
     </Root>
   )
 }
+
+NewsTag.displayName = 'NewsTag'

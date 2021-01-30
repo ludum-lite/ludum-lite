@@ -42,6 +42,8 @@ export default function PostBookmarkButton({ postId }: Props) {
   )
 }
 
+PostBookmarkButton.displayName = 'PostBookmarkButton'
+
 gql`
   query PostBookmarkButton_GetFavoritedIds {
     favoritedIds @client

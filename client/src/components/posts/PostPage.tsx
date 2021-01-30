@@ -499,9 +499,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
                 <CommentsTitleContainer>
                   <CommentsTitle variant="h4">Comments</CommentsTitle>
                   <FormControl variant="filled">
-                    <InputLabel id="comments-sort-by">
-                      Sort By
-                    </InputLabel>
+                    <InputLabel id="comments-sort-by">Sort By</InputLabel>
                     <Select
                       labelId="comments-sort-by"
                       id="demo-simple-select-filled"
@@ -573,6 +571,8 @@ export default function PostPage({ isEditing }: PostPageProps) {
 
   return <Page breadcrumbs={breadcrumbs}>{pageContent}</Page>
 }
+
+PostPage.displayName = 'PostPage'
 
 gql`
   query GetPostPageData($input: IdInput!) {

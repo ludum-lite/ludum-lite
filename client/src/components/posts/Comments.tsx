@@ -54,6 +54,8 @@ export default function Comments({ comments, post }: Props) {
   }
 }
 
+Comments.displayName = 'Comments'
+
 gql`
   fragment Comments_comment on Comment {
     ...Comment_comment

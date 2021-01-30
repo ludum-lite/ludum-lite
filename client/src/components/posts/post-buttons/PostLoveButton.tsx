@@ -101,6 +101,8 @@ export default function PostLoveButton({ me, post }: Props) {
   )
 }
 
+PostLoveButton.displayName = 'PostLoveButton'
+
 gql`
   fragment PostLoveButton_post on Post {
     id

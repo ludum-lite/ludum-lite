@@ -139,6 +139,8 @@ export default function Post({
   )
 }
 
+Post.displayName = 'Post'
+
 gql`
   fragment Post_post on Post {
     id

@@ -59,3 +59,5 @@ export default function Avatar({
     </AvatarLink>
   )
 }
+
+Avatar.displayName = 'Avatar'

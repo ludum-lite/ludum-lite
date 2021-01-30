@@ -99,6 +99,8 @@ export default function CommentLoveButton({ comment, post }: Props) {
   )
 }
 
+CommentLoveButton.displayName = 'CommentLoveButton'
+
 gql`
   fragment CommentLoveButton_comment on Comment {
     id

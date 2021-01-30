@@ -55,7 +55,7 @@ export default function NewPostPage() {
             variant: 'error',
           })
           setIsFocusedJoinEventButton(true)
-  
+
           setTimeout(() => {
             setIsFocusedJoinEventButton(false)
           }, 4000)
@@ -70,6 +70,8 @@ export default function NewPostPage() {
 
   return <Root />
 }
+
+NewPostPage.displayName = 'NewPostPage'
 
 gql`
   query NewPostPageData {

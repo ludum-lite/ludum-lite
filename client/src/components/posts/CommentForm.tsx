@@ -120,3 +120,5 @@ export default function CommentForm({
     </Root>
   )
 }
+
+CommentForm.displayName = 'CommentForm'

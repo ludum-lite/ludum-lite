@@ -188,6 +188,8 @@ export default function PostDetails({
   )
 }
 
+PostDetails.displayName = 'PostDetails'
+
 gql`
   fragment PostDetails_post on Post {
     id

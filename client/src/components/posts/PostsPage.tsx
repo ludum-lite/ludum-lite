@@ -251,6 +251,8 @@ export default function PostsPage() {
   )
 }
 
+PostsPage.displayName = 'PostsPage'
+
 gql`
   query PostsPage_GetFavoritedIds {
     favoritedIds @client
