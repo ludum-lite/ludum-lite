@@ -210,47 +210,45 @@ export default function PostsPage() {
   }, [loading, networkStatus, data, fetchMore, hasPosts])
 
   console.log(10)
-
-  return null
-  // return (
-  //   <Root>
-  //     <SortActions>
-  //       <SortButton
-  //         onClick={() => setSearchParams({ postType: PostType.All }, undefined)}
-  //         color="primary"
-  //         variant={postType === PostType.All ? 'contained' : 'text'}
-  //         active={postType === PostType.All}
-  //         focusRipple
-  //       >
-  //         All
-  //       </SortButton>
-  //       <SortButton
-  //         onClick={() =>
-  //           setSearchParams({ postType: PostType.News }, undefined)
-  //         }
-  //         color="primary"
-  //         variant={postType === PostType.News ? 'contained' : 'text'}
-  //         active={postType === PostType.News}
-  //       >
-  //         News
-  //       </SortButton>
-  //       <SortButton
-  //         onClick={() =>
-  //           setSearchParams({ postType: PostType.Favorites }, undefined)
-  //         }
-  //         color="primary"
-  //         variant={postType === PostType.Favorites ? 'contained' : 'text'}
-  //         active={postType === PostType.Favorites}
-  //       >
-  //         Favorites
-  //       </SortButton>
-  //     </SortActions>
-  //     <Content>
-  //       {body}
-  //       <FooterContainer>{footer}</FooterContainer>
-  //     </Content>
-  //   </Root>
-  // )
+  return (
+    <Root>
+      <SortActions>
+        <SortButton
+          onClick={() => setSearchParams({ postType: PostType.All }, undefined)}
+          color="primary"
+          variant={postType === PostType.All ? 'contained' : 'text'}
+          active={postType === PostType.All}
+          focusRipple
+        >
+          All
+        </SortButton>
+        <SortButton
+          onClick={() =>
+            setSearchParams({ postType: PostType.News }, undefined)
+          }
+          color="primary"
+          variant={postType === PostType.News ? 'contained' : 'text'}
+          active={postType === PostType.News}
+        >
+          News
+        </SortButton>
+        <SortButton
+          onClick={() =>
+            setSearchParams({ postType: PostType.Favorites }, undefined)
+          }
+          color="primary"
+          variant={postType === PostType.Favorites ? 'contained' : 'text'}
+          active={postType === PostType.Favorites}
+        >
+          Favorites
+        </SortButton>
+      </SortActions>
+      <Content>
+        {body}
+        <FooterContainer>{footer}</FooterContainer>
+      </Content>
+    </Root>
+  )
 }
 
 gql`
