@@ -116,10 +116,10 @@ export default function Post({
       collapsedNewsPost={collapsedNewsPost}
     >
       <Link to={`/posts/${post.id}`} overlay />
-      {/* <PostDetails
+      <PostDetails
         post={filter(PostDetails_PostFragmentDoc, post)}
         collapsedNewsPost={collapsedNewsPost}
-      /> */}
+      />
       {!collapsedNewsPost && (
         <ActionRow>
           <StyledButtonGroup>

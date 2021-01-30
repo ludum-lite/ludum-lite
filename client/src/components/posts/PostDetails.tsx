@@ -148,13 +148,13 @@ export default function PostDetails({
             </Title>
           </TitleRow>
           <HeaderUserContainer>
-            <UserPostedHeader
+            {/* <UserPostedHeader
               userProfilePath={post.author.profilePath}
               userAvatarPath={post.author.avatarPath || ''}
               userName={post.author.name}
               postedDate={post.publishedDate}
               collapsedNewsPost={collapsedNewsPost}
-            />
+            /> */}
           </HeaderUserContainer>
         </HeaderContent>
       </Header>
