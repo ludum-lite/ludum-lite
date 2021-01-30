@@ -145,7 +145,7 @@ export default function Markdown({ source, removeHrefs, ...props }: Props) {
   // @ts-ignore
   renderers.link = linkRenderer
   // // @ts-ignore
-  // renderers.paragraph = paragraphRenderer
+  renderers.paragraph = paragraphRenderer
   // renderers.text = textRenderer
 
   return (
