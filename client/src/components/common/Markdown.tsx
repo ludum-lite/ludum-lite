@@ -104,7 +104,8 @@ export default function Markdown({ source, removeHrefs, ...props }: Props) {
   const linkRenderer = (
     props: React.AnchorHTMLAttributes<HTMLAnchorElement>
   ) => {
-    const element = React.Children.toArray(props.children)[0]
+    // @ts-ignore
+    const element = props.children?.[0]
 
     // @ts-ignore
     if (element?.props?.src && removeHrefs) {
