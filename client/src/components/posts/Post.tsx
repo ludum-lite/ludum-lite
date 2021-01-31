@@ -104,9 +104,7 @@ export default function Post({
     [setPostOverlayed]
   )
 
-  console.log('post', post)
   if (!post) return null
-  console.log('rendering post')
 
   return (
     <Root

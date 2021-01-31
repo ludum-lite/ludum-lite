@@ -34,10 +34,6 @@ import 'react-medium-image-zoom/dist/styles.css'
 //       }
 //     })
 //   }
-//   console.log({
-//     graphQLErrors,
-//     networkError,
-//   })
 // })
 
 const authLink = setContext((_, { headers }) => {

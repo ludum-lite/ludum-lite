@@ -104,11 +104,11 @@ export default function Markdown({ source, removeHrefs, ...props }: Props) {
   const linkRenderer = (
     props: React.AnchorHTMLAttributes<HTMLAnchorElement>
   ) => {
-    // @ts-ignore
-    const element = props.children[0]
+    const element = React.Children.toArray(props.children)[0]
 
+    // @ts-ignore
     if (element?.props?.src && removeHrefs) {
-      return props.children
+      return props.children || null
     }
 
     return (
@@ -140,15 +140,12 @@ export default function Markdown({ source, removeHrefs, ...props }: Props) {
     return <span {...props} />
   }
 
-  console.log(props)
-
   renderers.root = rootRenderer
   renderers.image = imageRenderer
   // @ts-ignore
   renderers.link = linkRenderer
-  // // @ts-ignore
   renderers.paragraph = paragraphRenderer
-  // renderers.text = textRenderer
+  renderers.text = textRenderer
 
   return (
     <Typography variant="body2" component="div">

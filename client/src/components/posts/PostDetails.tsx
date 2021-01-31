@@ -128,8 +128,6 @@ export default function PostDetails({
 
   if (!post || !post.author || !post.publishedDate) return null
 
-  console.log(post)
-
   return (
     <Root className={className}>
       <Header>
