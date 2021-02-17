@@ -286,9 +286,6 @@ const apolloServer = new ApolloServer({
     imageApi: new ImageAPI(),
     votingRoundApi: new VotingRoundAPI(),
   }),
-  playground: {
-    endpoint: '/dev/graphql',
-  },
 })
 
 // https://github.com/apollographql/apollo-server/pull/3926#issuecomment-669302177

@@ -7,7 +7,7 @@
     "watch:schema": "graphql-codegen --watch --config codegen.yml",
     "typescript:build": "tsc",
     "typescript:build:watch": "tsc --watch",
-    "server:offline:start": "serverless offline start --stage dev --httpPort=4000",
+    "server:offline:start": "serverless offline start --stage development --httpPort=4000",
     "server:offline:start:prod": "serverless offline start --stage production --httpPort=4000",
     "deploy": "yarn typescript:build && yarn serverless:deploy",
     "serverless:deploy": "serverless deploy --stage=production"
