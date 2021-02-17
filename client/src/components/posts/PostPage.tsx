@@ -48,6 +48,7 @@ import Tag from 'components/common/Tag'
 import PreviewableMarkdownInput from 'components/common/PreviewableMarkdownInput'
 import Breadcrumb from 'components/common/Breadcrumb'
 import NewsTag from './NewsTag'
+import Emoji from 'react-emoji-render'
 
 const NO_TITLE_TEXT = '-- No Title  --'
 
@@ -455,7 +456,11 @@ export default function PostPage({ isEditing }: PostPageProps) {
                         )}
                         <Title>
                           <TitleText variant="h3">
-                            {(isEditing ? value : post.name) || NO_TITLE_TEXT}
+                            {(isEditing ? (
+                              <Emoji text={value} />
+                            ) : (
+                              <Emoji text={post.name} />
+                            )) || NO_TITLE_TEXT}
                           </TitleText>
                           {errors.title && (
                             <Typography variant="caption" color="error">
@@ -559,7 +564,7 @@ export default function PostPage({ isEditing }: PostPageProps) {
             Posts
           </Breadcrumb>
           <Breadcrumb to={`/posts/${post.id}`} isParent={isEditing}>
-            {post.name || NO_TITLE_TEXT}
+            <Emoji text={post.name || NO_TITLE_TEXT} />
           </Breadcrumb>
           {isEditing && <Breadcrumb>Edit</Breadcrumb>}
         </Breadcrumbs>

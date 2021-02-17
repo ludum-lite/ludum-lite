@@ -17,7 +17,6 @@ const StyledButton = styled(Button)<ButtonProps>`
   padding-right: 8px;
 
   span {
-    display: block;
     max-width: ${MAX_LENGTH}px;
     overflow: hidden;
     text-overflow: ellipsis;

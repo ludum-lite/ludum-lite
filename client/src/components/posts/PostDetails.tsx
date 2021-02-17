@@ -10,6 +10,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 import Icon from 'components/common/mui/Icon'
 import { PostDetails_PostFragment } from '__generated__/client-types'
 import Typography from 'components/common/mui/Typography'
+import Emoji from 'react-emoji-render'
 import NewsTag from './NewsTag'
 
 const Root = styled.div`
@@ -143,7 +144,7 @@ export default function PostDetails({
                 variant="h4"
                 textColor={collapsedNewsPost ? 'white' : undefined}
               >
-                {post.name}
+                <Emoji text={post.name} />
               </TitleText>
             </Title>
           </TitleRow>

@@ -4,6 +4,8 @@ import ReactMarkdown, { ReactMarkdownProps } from 'react-markdown'
 import { getStaticUrl } from 'utils'
 import { Typography } from '@material-ui/core'
 import Zoom from 'react-medium-image-zoom'
+// @ts-ignore
+import emoji from 'remark-emoji'
 
 const imageSizeRegex = /_33B2BF251EFD_([0-9]+x|x[0-9]+|[0-9]+x[0-9]+)$/
 const imagePreprocessor = (source: string) =>
@@ -41,7 +43,6 @@ const ImageZoomContainer = styled(Zoom).attrs({
 const Image = styled.img`
   border-radius: 4px;
   max-width: 100%;
-  /* // border: '1px solid rgba(0, 0, 0, 0.23)', */
 `
 
 const LinkContainer = styled.p`
@@ -152,6 +153,7 @@ export default function Markdown({ source, removeHrefs, ...props }: Props) {
       <ReactMarkdown
         source={processedSource}
         renderers={renderers}
+        plugins={[emoji]}
         transformImageUri={(
           uri: string
           // children?: React.ReactNode,

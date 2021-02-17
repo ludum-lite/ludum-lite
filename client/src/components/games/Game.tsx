@@ -125,7 +125,7 @@ export default function Game({ game }: Props) {
         <Icon icon={NoImageIcon} />
       </NoImage>
     )
-  }, [])
+  }, [game.coverImagePath])
 
   return (
     <Root>
