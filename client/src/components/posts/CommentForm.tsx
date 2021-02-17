@@ -31,12 +31,7 @@ const Form = styled.form<FormProps>`
     `} */
 `
 
-const StyledMarkdownInput = styled(MarkdownInput)`
-  .MuiInputBase-root {
-    padding-top: 16px;
-    padding-bottom: 16px;
-  }
-`
+const StyledMarkdownInput = styled(MarkdownInput)``
 
 const ActionRow = styled.div`
   padding-bottom: ${({ theme }) => theme.spacing(1)}px;

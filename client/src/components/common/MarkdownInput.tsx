@@ -10,6 +10,9 @@ import { useUploadImageMutation } from '__generated__/client-types'
 import Typography from './mui/Typography'
 import insertTextAtCursor from 'insert-text-at-cursor'
 import { useSnackbar } from 'notistack'
+// @ts-ignore
+import ReactTextareaAutocomplete from '@webscopeio/react-textarea-autocomplete'
+import emoji from '@jukben/emoji-search'
 
 const Root = styled.div`
   position: relative;
@@ -67,6 +70,10 @@ const UploadImageLabel = styled.label`
   align-items: center;
   padding: 0 12px;
 `
+
+const Item = ({ entity: { name, char } }: any) => (
+  <div>{`${name}: ${char}`}</div>
+)
 
 interface Props {}
 type MarkdownInputProps = Props & MutlilineTextFieldProps
@@ -133,7 +140,26 @@ export default function MarkdownInput({
     <Root {...getRootProps()} tabIndex={undefined} className={className}>
       <input {...getInputProps()} />
       <DropOverlay active={isDragActive} />
-      <StyledMultilineTextField inputRef={inputRef} {...others} />
+      {/* <StyledMultilineTextField ref={inputRef} {...others} /> */}
+      <ReactTextareaAutocomplete
+        loadingComponent={() => <div>Loading</div>}
+        textAreaComponent={StyledMultilineTextField}
+        innerRef={(ref: any) => {
+          inputRef.current = ref
+        }}
+        {...others}
+        trigger={{
+          ':': {
+            dataProvider: (token: any) => {
+              return emoji(token)
+                .slice(0, 10)
+                .map(({ name, char }: any) => ({ name, char }))
+            },
+            component: Item,
+            output: (item: any, trigger: any) => item.char,
+          },
+        }}
+      />
       <UploadImageLinkContainer>
         <UploadImageLabel>
           <UploadImageInput
