@@ -279,6 +279,7 @@ export default function MarkdownInput({
         loadingComponent={LoadingComponent}
         textAreaComponent={StyledMultilineTextField}
         innerRef={setInputRef}
+        renderToBody
         {...others}
         trigger={trigger}
       />
