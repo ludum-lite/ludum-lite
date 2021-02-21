@@ -24,7 +24,7 @@ import {
   bindTrigger,
   usePopupState,
 } from 'material-ui-popup-state/hooks'
-import { Menu } from '@material-ui/core'
+import { CircularProgress, Menu } from '@material-ui/core'
 import { useTheme } from 'hooks/useTheme'
 
 // Workaround to set react input programatically
@@ -149,6 +149,21 @@ const EmojiIconButton = styled(IconButton)`
 
 const LoadingComponent = () => <div>Loading</div>
 
+const LoadingIndicatorContainer = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(0, 0, 0, 0.13);
+  border-radius: ${({ theme }) => theme.shape.borderRadius}px;
+`
+
+const StyledCircularProgress = styled(CircularProgress)``
+
 interface Props {}
 type MarkdownInputProps = Props & MutlilineTextFieldProps
 export default function MarkdownInput({
@@ -165,6 +180,7 @@ export default function MarkdownInput({
     variant: 'popover',
     popupId: 'emoji-picker',
   })
+  const [isProcessingFiles, setIsProcessingFiles] = React.useState(false)
 
   const onDrop = React.useCallback(
     async (acceptedFiles) => {
@@ -178,19 +194,23 @@ export default function MarkdownInput({
         })
       } else {
         try {
+          setIsProcessingFiles(true)
           const { data } = await uploadImageMutation({
             variables: {
               file: acceptedFiles[0],
             },
           })
-          if (data?.uploadImage.__typename === 'UploadImageSuccess') {
-            if (inputRef.current) {
-              insertTextAtCursor(
-                inputRef.current,
-                `![${data.uploadImage.name}](///raw/${data.uploadImage.path})`
-              )
-            }
+          if (
+            data?.uploadImage.__typename === 'UploadImageSuccess' &&
+            inputRef.current
+          ) {
+            setIsProcessingFiles(false)
+            insertTextAtCursor(
+              inputRef.current,
+              `![${data.uploadImage.name}](///raw/${data.uploadImage.path})`
+            )
           } else {
+            setIsProcessingFiles(false)
             enqueueSnackbar('Error occured when processing image.', {
               variant: 'error',
             })
@@ -309,6 +329,11 @@ export default function MarkdownInput({
           </Typography>
         </UploadImageLabel>
       </UploadImageLinkContainer>
+      {isProcessingFiles && (
+        <LoadingIndicatorContainer>
+          <StyledCircularProgress size={40} />
+        </LoadingIndicatorContainer>
+      )}
     </Root>
   )
 }
