@@ -42,8 +42,6 @@ const PreviewContainer = styled.div`
     `0 ${theme.spacing(1.5)}px ${theme.spacing(1.5)}px`};
   border-radius: ${({ theme }) => theme.shape.borderRadius}px;
   min-height: 108px;
-  white-space: pre;
-  box-shadow: 0 0 0 1px ${({ theme }) => theme.themeColors.input.outlineColor};
 `
 
 interface Props {

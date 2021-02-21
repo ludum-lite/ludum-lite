@@ -2,7 +2,6 @@
 import React, { useRef, useEffect } from 'react'
 import styled from 'styled-components/macro'
 import TextField, { TextFieldProps } from '@material-ui/core/TextField'
-import '@webscopeio/react-textarea-autocomplete/style.css'
 
 const StyledTextField = styled(TextField)`
   .MuiInputBase-input {

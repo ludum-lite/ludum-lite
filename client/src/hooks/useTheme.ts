@@ -50,7 +50,6 @@ export type ThemeColors = {
   fadedBlack: string
   textBlack: string
   defaultIconBlack: string
-  cardBoxShadow: string
   cardBoxShadow_bottomHeavy: string
   markdown: {
     codeBackground: string
@@ -89,6 +88,7 @@ export type ThemeColors = {
     dividerColor: string
     placeholderColor: string
     color: string
+    emojiTextColor: string
   }
   button: {
     level1?: ButtonThemeColorsForBackground
@@ -124,6 +124,9 @@ export type ThemeColors = {
   dialog: {
     titleBackground: string
     titleColor: string
+  }
+  menu: {
+    backgroundColor: string
   }
   postsPage: {
     toggleButtons: {
@@ -176,7 +179,6 @@ export type ThemeColors = {
   comment: {
     evenBackground: string
     oddBackground: string
-    boxShadow: string
     postAuthorLinkColor: string
   }
   countdown: {
@@ -207,6 +209,14 @@ export type ThemeColors = {
       main: string
     }
   }
+  reactTextareaAutocomplete: {
+    boxShadow: string
+    color: string
+    entity: {
+      selectedBackgroundColor: string
+      selectedColor: string
+    }
+  }
 }
 
 type Themes = {
@@ -218,7 +228,7 @@ const borderColor = 'rgb(222, 222, 222)'
 const buttonOutlinedBackgroundColor = 'transparent'
 const buttonContainedBackgroundColor = 'rgba(0, 0, 0, 0.1)'
 const buttonContainedColor = 'rgba(0, 0, 0, 0.87)'
-const cardBoxShadow = '0 0 6px 0px rgba(0,0,0,0.04)'
+const cardBoxShadow_dark = '0 0 6px 0px rgba(0,0,0,0.7)'
 
 const white = 'rgb(255, 255, 255)'
 const fadedWhite = 'rgba(255,255,255,0.9)'
@@ -277,7 +287,6 @@ const commonTheme = {
   textBlack,
   fadedBlack,
   defaultIconBlack,
-  cardBoxShadow,
   dropOverlay: {
     borderColor: 'rgb(32, 208, 0)',
     backgroundColor: 'rgba(72, 208, 15, 0.12)',
@@ -368,6 +377,7 @@ const lightTheme: ThemeColors = {
     dividerColor: styleVariables.white,
     placeholderColor: fadedTextBlack,
     color: fadedTextBlack,
+    emojiTextColor: 'rgb(107, 107, 107)',
   },
   button: {
     level1: {
@@ -489,6 +499,9 @@ const lightTheme: ThemeColors = {
     titleBackground: styleVariables.greenBlue,
     titleColor: styleVariables.white,
   },
+  menu: {
+    backgroundColor: styleVariables.white,
+  },
   postsPage: {
     toggleButtons: {
       inactiveColor: buttonContainedColor,
@@ -540,7 +553,6 @@ const lightTheme: ThemeColors = {
   comment: {
     evenBackground: styleVariables.cultured,
     oddBackground: 'rgba(75,80,97,0.17)',
-    boxShadow: cardBoxShadow,
     postAuthorLinkColor: styleVariables.greenBlue,
   },
   countdown: {
@@ -563,6 +575,14 @@ const lightTheme: ThemeColors = {
     neutralBackground: transparentize(0.5, styleVariables.yellow),
     rejectBackground: transparentize(0.5, styleVariables.red),
     buttonsBackground: 'white',
+  },
+  reactTextareaAutocomplete: {
+    boxShadow: '0 0 2px 1px rgb(0, 0, 0, 0.15)',
+    color: fadedTextBlack,
+    entity: {
+      selectedBackgroundColor: styleVariables.greenBlue,
+      selectedColor: textWhite,
+    },
   },
   palette: {
     text: {
@@ -664,6 +684,7 @@ const darkTheme: ThemeColors = {
     dividerColor: ldStyleVariables.lightGray,
     placeholderColor: transparentize(0.4, white),
     color: white,
+    emojiTextColor: 'rgb(220, 220, 220)',
   },
   button: {
     level1: {
@@ -785,6 +806,9 @@ const darkTheme: ThemeColors = {
     titleBackground: ldStyleVariables.darkOrange,
     titleColor: ldStyleVariables.white,
   },
+  menu: {
+    backgroundColor: ldStyleVariables.jet,
+  },
   postsPage: {
     toggleButtons: {
       inactiveColor: 'white',
@@ -836,7 +860,6 @@ const darkTheme: ThemeColors = {
   comment: {
     evenBackground: ldStyleVariables.white,
     oddBackground: 'rgba(75,80,97,0.17)',
-    boxShadow: cardBoxShadow,
     postAuthorLinkColor: ldStyleVariables.darkOrange,
   },
   countdown: {
@@ -857,6 +880,14 @@ const darkTheme: ThemeColors = {
     neutralBackground: ldStyleVariables.darkOrange,
     rejectBackground: ldStyleVariables.portlandOrange,
     buttonsBackground: 'white',
+  },
+  reactTextareaAutocomplete: {
+    boxShadow: '0 0 2px 1px rgb(0, 0, 0, 0.35)',
+    color: textWhite,
+    entity: {
+      selectedBackgroundColor: ldStyleVariables.darkOrange,
+      selectedColor: textWhite,
+    },
   },
   palette: {
     text: {
@@ -970,7 +1001,7 @@ const muiThemeGenerator = ({ themeMode }: { themeMode: ThemeMode }) => {
       MuiMenu: {
         paper: {
           minWidth: 150,
-          background: selectedThemeColors.backgrounds.level2,
+          background: selectedThemeColors.menu.backgroundColor,
         },
       },
       MuiMenuItem: {
@@ -1312,10 +1343,6 @@ const globalStyleGenerator = ({
   
     a {
       color: ${themeColors.link.color};
-
-      &:hover {
-        font-weight: 500;
-      }
     }
 
     .MuiSvgIcon-root path {
@@ -1338,6 +1365,80 @@ const globalStyleGenerator = ({
 
     .MuiFormLabel-root + .MuiInputBase-root .MuiSelect-root {
       padding-top: 25px;
+    }
+
+    .rta__autocomplete {
+      z-index: 5;
+      overflow: auto;
+      max-height: 300px;
+      width: 400px;
+      border-radius: 4px;
+      box-shadow: ${themeColors.reactTextareaAutocomplete.boxShadow};
+
+      .rta__list {
+        background-color: ${themeColors.menu.backgroundColor};
+        border: none;
+        color: ${themeColors.reactTextareaAutocomplete.color};
+
+        .rta__item {
+          &:not(:last-child) {
+            border-bottom: none;
+          }
+        }
+
+        .rta__entity {
+          background: initial;
+          & > * {
+            padding: 8px 16px 8px 8px;
+          }
+        }
+
+        .rta__entity--selected {
+          background-color: ${
+            themeColors.reactTextareaAutocomplete.entity.selectedBackgroundColor
+          };
+          color: ${themeColors.reactTextareaAutocomplete.entity.selectedColor};
+        }
+      }
+    }
+
+    .emoji-mart {
+      button {
+        cursor: pointer;
+      }
+
+      .emoji-mart-scroll {
+        .emoji-mart-emoji-native {
+          width: 39px;
+          height: 39px;
+          display: flex;
+          cursor: pointer;
+        }
+      }
+
+      .emoji-mart-category {
+        .emoji-mart-emoji {
+          &:hover:before {
+            background-color: #e2e2e2;
+          }
+
+          span {
+            cursor: pointer;
+          }
+        }
+      }
+
+      .emoji-mart-preview-data {
+        left: 80px;
+      }
+
+      .emoji-mart-preview-emoji {
+        .emoji-mart-emoji {
+          span {
+            font-size: 36px;
+          }
+        }
+      }
     }
   `
 }
