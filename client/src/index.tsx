@@ -2,7 +2,7 @@ import 'react-medium-image-zoom/dist/styles.css'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, Route } from 'react-router-dom'
 import { SnackbarProvider } from 'notistack'
 
 import { SingletonHooksContainer } from 'react-singleton-hook'
@@ -15,6 +15,7 @@ import { cache, resolvers, typeDefs } from './resolvers'
 import App from 'components/App'
 import * as serviceWorker from './serviceWorker'
 
+import { QueryParamProvider } from 'use-query-params'
 import StylesProvider from 'providers/StylesProvider'
 import UserLoadedCheck from 'components/UserLoadedCheck'
 import 'react-medium-image-zoom/dist/styles.css'
@@ -92,7 +93,9 @@ const Root = () => {
                 vertical: 'bottom',
               }}
             >
-              <App />
+              <QueryParamProvider ReactRouterRoute={Route}>
+                <App />
+              </QueryParamProvider>
             </SnackbarProvider>
           </StylesProvider>
         </UserLoadedCheck>

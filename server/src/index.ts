@@ -37,6 +37,9 @@ const resolvers: Resolvers<Context> = {
     event(_, { input: { id } }, context) {
       return context.dataSources.eventApi.getEvent(id)
     },
+    events(_, __, context) {
+      return context.dataSources.eventApi.getEvents()
+    },
   },
   Mutation: {
     login(_, { input: { email, password } }, context) {

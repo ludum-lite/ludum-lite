@@ -20,6 +20,7 @@ export const typeDefs = gql`
     user(input: IdInput!): User!
     featuredEvent: Event!
     event(input: IdInput!): Event!
+    events: [Event!]!
   }
 
   type Mutation {

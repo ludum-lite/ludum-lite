@@ -16,6 +16,7 @@ export type Scalars = {
 export type Query = {
   __typename: 'Query'
   event: Event
+  events: Array<Event>
   favoritedIds: Array<Scalars['Int']>
   featuredEvent: Event
   isLoggedIn: Scalars['Boolean']
@@ -955,6 +956,7 @@ export type GetGamesPageDataQuery = { __typename: 'Query' } & {
     SearchGamesResponse,
     'page'
   > & { games: Array<{ __typename: 'Game' } & Game_GameFragment> }
+  events: Array<{ __typename: 'Event' } & Pick<Event, 'id' | 'name'>>
 }
 
 export type JoinEventWidgetDataQueryVariables = Exact<{ [key: string]: never }>
@@ -2421,6 +2423,10 @@ export const GetGamesPageDataDocument = gql`
       games {
         ...Game_game
       }
+    }
+    events {
+      id
+      name
     }
   }
   ${Game_GameFragmentDoc}

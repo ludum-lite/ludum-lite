@@ -148,7 +148,7 @@ export default function App() {
     )
   }
 
-  return null
+  return <div />
 }
 
 App.displayName = 'App'

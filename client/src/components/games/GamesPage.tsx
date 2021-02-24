@@ -15,6 +15,7 @@ import {
   // usePostsPage_GetFavoritedIdsQuery,
 } from '__generated__/client-types'
 import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core'
+import { NumberParam, useQueryParam } from 'use-query-params'
 
 const Root = styled.div`
   display: flex;
@@ -96,6 +97,8 @@ export default function GamesPage() {
 
   // const postType = searchParams.get('postType') as PostType
 
+  const [selectedEventId, setSelectedEventId] = useQueryParam('e', NumberParam)
+
   const { data, loading, fetchMore, networkStatus } = useGetGamesPageDataQuery({
     variables: {
       filters: {
@@ -115,6 +118,22 @@ export default function GamesPage() {
     data?.searchGames?.games?.map((game) => (
       <Game key={game.id} game={game} />
     )) || []
+
+  const events = data?.events || []
+
+  React.useEffect(() => {
+    if (!selectedEventId && events.length) {
+      const latestEvent = events.reduce((foundEvent, nextEvent) => {
+        if (foundEvent.id > nextEvent.id) {
+          return nextEvent
+        }
+
+        return foundEvent
+      }, events[0])
+
+      setSelectedEventId(latestEvent.id)
+    }
+  }, [selectedEventId, events, setSelectedEventId])
 
   const hasGames = gameComponents.length > 0
 
@@ -174,6 +193,10 @@ export default function GamesPage() {
     )
   }, [loading, networkStatus, data, fetchMore, hasGames])
 
+  if (!selectedEventId) {
+    return null
+  }
+
   return (
     <Root>
       <SortActions>
@@ -182,12 +205,17 @@ export default function GamesPage() {
           <Select
             labelId="games-event-label"
             id="games-event-select"
-            value="47"
+            value={selectedEventId}
             // onChange={(e) => {
             //   onChangeSortBy(e.target.value as CommentSortBy)
             // }}
           >
-            <MenuItem value="47">Ludum Dare 47</MenuItem>
+            {events.length &&
+              events.map((event) => (
+                <MenuItem key={event.id} value={event.id}>
+                  {event.name}
+                </MenuItem>
+              ))}
           </Select>
         </FormControl>
         <FormControl variant="filled">
@@ -245,6 +273,11 @@ gql`
       games {
         ...Game_game
       }
+    }
+
+    events {
+      id
+      name
     }
   }
   ${Game_GameFragmentDoc}

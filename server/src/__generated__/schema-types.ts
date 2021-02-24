@@ -47,6 +47,7 @@ export type Query = {
   user: User;
   featuredEvent: Event;
   event: Event;
+  events: Array<Event>;
 };
 
 
@@ -1040,6 +1041,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'input'>>,
   featuredEvent?: Resolver<ResolversTypes['Event'], ParentType, ContextType>,
   event?: Resolver<ResolversTypes['Event'], ParentType, ContextType, RequireFields<QueryEventArgs, 'input'>>,
+  events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>,
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{

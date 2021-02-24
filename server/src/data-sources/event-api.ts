@@ -82,6 +82,42 @@ export default class EventAPI extends BaseAPI {
     return this.context.loaders.eventLoader.load(id)
   }
 
+  async getEventsByIds(ids: number[]): Promise<Event[]> {
+    return filterOutErrorsFromResponses(
+      await this.context.loaders.eventLoader.loadMany(ids)
+    )
+  }
+
+  async getEvents(): Promise<Event[]> {
+    const rootNodeResponse = await this.get(
+      `vx/node2/walk/1/events/ludum-dare?node&parent&superparent&author`
+    )
+
+    // I don't have a great understanding of types. This was decided by looking at the differences between local and prod
+    const eventNode = rootNodeResponse.node.find(
+      (node: any) => node.type === 'events' || node.subtype === 'events'
+    )
+
+    try {
+      if (eventNode) {
+        const eventIdsResponse = await this.get(
+          `vx/node/feed/${eventNode.id}/parent/event`
+        )
+        const eventIds = eventIdsResponse.feed.map(
+          (feedEntry: any) => feedEntry.id
+        )
+
+        const eventsResponse = await this.getEventsByIds(eventIds)
+        return eventsResponse
+      } else {
+        return []
+      }
+    } catch (e) {
+      console.error('getEvents error', e)
+      return []
+    }
+  }
+
   async joinEvent(): Promise<JoinEventResponse> {
     const event = await this.getFeaturedEvent()
 
