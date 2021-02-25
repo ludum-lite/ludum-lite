@@ -124,7 +124,7 @@ export default function GamesPage() {
   React.useEffect(() => {
     if (!selectedEventId && events.length) {
       const latestEvent = events.reduce((foundEvent, nextEvent) => {
-        if (foundEvent.id > nextEvent.id) {
+        if (foundEvent.id < nextEvent.id) {
           return nextEvent
         }
 
@@ -193,7 +193,7 @@ export default function GamesPage() {
     )
   }, [loading, networkStatus, data, fetchMore, hasGames])
 
-  if (!selectedEventId) {
+  if (!selectedEventId || !events.length) {
     return null
   }
 
